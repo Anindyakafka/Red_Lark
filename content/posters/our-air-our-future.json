@@ -1,0 +1,144 @@
+{
+  "slug": "our-air-our-future",
+  "title": "Our air, our future",
+  "languages": ["English"],
+  "artist": "mirafra-type-lab",
+  "year": 2025,
+  "themes": ["Climate"],
+  "movements": ["Climate justice"],
+  "colorMode": "color",
+  "region": "Open archive",
+  "formats": [
+    {
+      "format": "PDF",
+      "size": "A4",
+      "path": "/posters/our-air-our-future/A4.pdf",
+      "bytes": 28337
+    },
+    {
+      "format": "PDF",
+      "size": "A3",
+      "path": "/posters/our-air-our-future/A3.pdf",
+      "bytes": 28345
+    },
+    {
+      "format": "PDF",
+      "size": "A2",
+      "path": "/posters/our-air-our-future/A2.pdf",
+      "bytes": 28333
+    },
+    {
+      "format": "PDF",
+      "size": "18x24",
+      "path": "/posters/our-air-our-future/18x24.pdf",
+      "bytes": 28280
+    },
+    {
+      "format": "PNG",
+      "size": "A3",
+      "path": "/posters/our-air-our-future/A3.png",
+      "bytes": 559305
+    },
+    {
+      "format": "SVG",
+      "size": "A3",
+      "path": "/posters/our-air-our-future/source.svg",
+      "bytes": 61663
+    },
+    {
+      "format": "ZIP",
+      "size": "Bundle",
+      "path": "/posters/our-air-our-future/bundle.zip",
+      "bytes": 46123
+    }
+  ],
+  "license": "CC0-1.0",
+  "licenseUrl": "https://creativecommons.org/publicdomain/zero/1.0/",
+  "allowsDerivatives": true,
+  "commercialUseAllowed": true,
+  "source": "/poster/our-air-our-future/",
+  "artistUrl": "/artist/mirafra-type-lab/",
+  "alt": "Off-white typographic print reading â€œOUR AIR OUR FUTUREâ€, with an arrow and a clearly marked placeholder credit.",
+  "caption": "Original vector study authored for the Mirafra rebuild. Placeholder artwork, free under CC0; not a contribution by a real artist.",
+  "remixable": true,
+  "placeholder": true,
+  "preview": "/posters/our-air-our-future/preview.webp",
+  "dominantColor": "#f3f0e6",
+  "studioLayers": {
+    "version": 2,
+    "preset": "A3",
+    "background": "#f3f0e6",
+    "colors": 2,
+    "layers": [
+      {
+        "id": "our-air-our-future-type",
+        "kind": "text",
+        "name": "Headline",
+        "x": 28,
+        "y": 50,
+        "width": 544,
+        "height": 340,
+        "rotation": 0,
+        "color": "#e32219",
+        "text": "OUR AIR\nOUR FUTURE",
+        "font": "display",
+        "fontSize": 145,
+        "locked": false,
+        "hidden": false,
+        "credit": {
+          "id": "our-air-our-future",
+          "title": "Our air, our future",
+          "artist": "Mirafra Type Lab",
+          "license": "CC0-1.0",
+          "source": "/poster/our-air-our-future/"
+        }
+      },
+      {
+        "id": "our-air-our-future-symbol",
+        "kind": "arrow",
+        "name": "arrow",
+        "x": 35,
+        "y": 480,
+        "width": 520,
+        "height": 200,
+        "rotation": -8,
+        "color": "#e32219",
+        "text": "YOUR\nWORDS HERE",
+        "font": "display",
+        "fontSize": 100,
+        "locked": false,
+        "hidden": false,
+        "credit": {
+          "id": "our-air-our-future",
+          "title": "Our air, our future",
+          "artist": "Mirafra Type Lab",
+          "license": "CC0-1.0",
+          "source": "/poster/our-air-our-future/"
+        }
+      },
+      {
+        "id": "our-air-our-future-edition",
+        "kind": "text",
+        "name": "Headline",
+        "x": 28,
+        "y": 740,
+        "width": 544,
+        "height": 45,
+        "rotation": 0,
+        "color": "#e32219",
+        "text": "PLACEHOLDER / 05 / CC0",
+        "font": "mono",
+        "fontSize": 15,
+        "locked": false,
+        "hidden": false,
+        "credit": {
+          "id": "our-air-our-future",
+          "title": "Our air, our future",
+          "artist": "Mirafra Type Lab",
+          "license": "CC0-1.0",
+          "source": "/poster/our-air-our-future/"
+        }
+      }
+    ]
+  }
+}

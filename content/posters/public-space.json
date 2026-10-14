@@ -1,0 +1,144 @@
+{
+  "slug": "public-space",
+  "title": "Public space",
+  "languages": ["English"],
+  "artist": "mirafra-print-lab",
+  "year": 2025,
+  "themes": ["Housing"],
+  "movements": ["Right to the city"],
+  "colorMode": "color",
+  "region": "Open archive",
+  "formats": [
+    {
+      "format": "PDF",
+      "size": "A4",
+      "path": "/posters/public-space/A4.pdf",
+      "bytes": 28189
+    },
+    {
+      "format": "PDF",
+      "size": "A3",
+      "path": "/posters/public-space/A3.pdf",
+      "bytes": 28199
+    },
+    {
+      "format": "PDF",
+      "size": "A2",
+      "path": "/posters/public-space/A2.pdf",
+      "bytes": 28188
+    },
+    {
+      "format": "PDF",
+      "size": "18x24",
+      "path": "/posters/public-space/18x24.pdf",
+      "bytes": 28160
+    },
+    {
+      "format": "PNG",
+      "size": "A3",
+      "path": "/posters/public-space/A3.png",
+      "bytes": 527696
+    },
+    {
+      "format": "SVG",
+      "size": "A3",
+      "path": "/posters/public-space/source.svg",
+      "bytes": 59257
+    },
+    {
+      "format": "ZIP",
+      "size": "Bundle",
+      "path": "/posters/public-space/bundle.zip",
+      "bytes": 45713
+    }
+  ],
+  "license": "CC0-1.0",
+  "licenseUrl": "https://creativecommons.org/publicdomain/zero/1.0/",
+  "allowsDerivatives": true,
+  "commercialUseAllowed": true,
+  "source": "/poster/public-space/",
+  "artistUrl": "/artist/mirafra-print-lab/",
+  "alt": "Off-white typographic print reading â€œPUBLIC SPACEâ€, with an arrow and a clearly marked placeholder credit.",
+  "caption": "Original vector study authored for the Mirafra rebuild. Placeholder artwork, free under CC0; not a contribution by a real artist.",
+  "remixable": true,
+  "placeholder": true,
+  "preview": "/posters/public-space/preview.webp",
+  "dominantColor": "#f3f0e6",
+  "studioLayers": {
+    "version": 2,
+    "preset": "A3",
+    "background": "#f3f0e6",
+    "colors": 2,
+    "layers": [
+      {
+        "id": "public-space-type",
+        "kind": "text",
+        "name": "Headline",
+        "x": 28,
+        "y": 50,
+        "width": 544,
+        "height": 340,
+        "rotation": 0,
+        "color": "#e32219",
+        "text": "PUBLIC\nSPACE",
+        "font": "display",
+        "fontSize": 145,
+        "locked": false,
+        "hidden": false,
+        "credit": {
+          "id": "public-space",
+          "title": "Public space",
+          "artist": "Mirafra Print Lab",
+          "license": "CC0-1.0",
+          "source": "/poster/public-space/"
+        }
+      },
+      {
+        "id": "public-space-symbol",
+        "kind": "arrow",
+        "name": "arrow",
+        "x": 35,
+        "y": 480,
+        "width": 520,
+        "height": 200,
+        "rotation": -8,
+        "color": "#e32219",
+        "text": "YOUR\nWORDS HERE",
+        "font": "display",
+        "fontSize": 100,
+        "locked": false,
+        "hidden": false,
+        "credit": {
+          "id": "public-space",
+          "title": "Public space",
+          "artist": "Mirafra Print Lab",
+          "license": "CC0-1.0",
+          "source": "/poster/public-space/"
+        }
+      },
+      {
+        "id": "public-space-edition",
+        "kind": "text",
+        "name": "Headline",
+        "x": 28,
+        "y": 740,
+        "width": 544,
+        "height": 45,
+        "rotation": 0,
+        "color": "#e32219",
+        "text": "PLACEHOLDER / 08 / CC0",
+        "font": "mono",
+        "fontSize": 15,
+        "locked": false,
+        "hidden": false,
+        "credit": {
+          "id": "public-space",
+          "title": "Public space",
+          "artist": "Mirafra Print Lab",
+          "license": "CC0-1.0",
+          "source": "/poster/public-space/"
+        }
+      }
+    ]
+  }
+}

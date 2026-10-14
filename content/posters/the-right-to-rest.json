@@ -1,0 +1,145 @@
+{
+  "slug": "the-right-to-rest",
+  "title": "The right to rest",
+  "titleOriginal": "Le droit au repos",
+  "languages": ["French"],
+  "artist": "mirafra-print-lab",
+  "year": 2025,
+  "themes": ["Labor"],
+  "movements": ["May Day"],
+  "colorMode": "color",
+  "region": "Open archive",
+  "formats": [
+    {
+      "format": "PDF",
+      "size": "A4",
+      "path": "/posters/the-right-to-rest/A4.pdf",
+      "bytes": 28415
+    },
+    {
+      "format": "PDF",
+      "size": "A3",
+      "path": "/posters/the-right-to-rest/A3.pdf",
+      "bytes": 28394
+    },
+    {
+      "format": "PDF",
+      "size": "A2",
+      "path": "/posters/the-right-to-rest/A2.pdf",
+      "bytes": 28416
+    },
+    {
+      "format": "PDF",
+      "size": "18x24",
+      "path": "/posters/the-right-to-rest/18x24.pdf",
+      "bytes": 28328
+    },
+    {
+      "format": "PNG",
+      "size": "A3",
+      "path": "/posters/the-right-to-rest/A3.png",
+      "bytes": 546443
+    },
+    {
+      "format": "SVG",
+      "size": "A3",
+      "path": "/posters/the-right-to-rest/source.svg",
+      "bytes": 61106
+    },
+    {
+      "format": "ZIP",
+      "size": "Bundle",
+      "path": "/posters/the-right-to-rest/bundle.zip",
+      "bytes": 46266
+    }
+  ],
+  "license": "CC0-1.0",
+  "licenseUrl": "https://creativecommons.org/publicdomain/zero/1.0/",
+  "allowsDerivatives": true,
+  "commercialUseAllowed": true,
+  "source": "/poster/the-right-to-rest/",
+  "artistUrl": "/artist/mirafra-print-lab/",
+  "alt": "Black typographic print reading â€œLE DROIT AU REPOSâ€, with an arrow and a clearly marked placeholder credit.",
+  "caption": "Original vector study authored for the Mirafra rebuild. Placeholder artwork, free under CC0; not a contribution by a real artist.",
+  "remixable": true,
+  "placeholder": true,
+  "preview": "/posters/the-right-to-rest/preview.webp",
+  "dominantColor": "#151515",
+  "studioLayers": {
+    "version": 2,
+    "preset": "A3",
+    "background": "#151515",
+    "colors": 2,
+    "layers": [
+      {
+        "id": "the-right-to-rest-type",
+        "kind": "text",
+        "name": "Headline",
+        "x": 28,
+        "y": 50,
+        "width": 544,
+        "height": 340,
+        "rotation": 0,
+        "color": "#f3f0e6",
+        "text": "LE DROIT\nAU REPOS",
+        "font": "display",
+        "fontSize": 145,
+        "locked": false,
+        "hidden": false,
+        "credit": {
+          "id": "the-right-to-rest",
+          "title": "The right to rest",
+          "artist": "Mirafra Print Lab",
+          "license": "CC0-1.0",
+          "source": "/poster/the-right-to-rest/"
+        }
+      },
+      {
+        "id": "the-right-to-rest-symbol",
+        "kind": "arrow",
+        "name": "arrow",
+        "x": 35,
+        "y": 480,
+        "width": 520,
+        "height": 200,
+        "rotation": -8,
+        "color": "#f3f0e6",
+        "text": "YOUR\nWORDS HERE",
+        "font": "display",
+        "fontSize": 100,
+        "locked": false,
+        "hidden": false,
+        "credit": {
+          "id": "the-right-to-rest",
+          "title": "The right to rest",
+          "artist": "Mirafra Print Lab",
+          "license": "CC0-1.0",
+          "source": "/poster/the-right-to-rest/"
+        }
+      },
+      {
+        "id": "the-right-to-rest-edition",
+        "kind": "text",
+        "name": "Headline",
+        "x": 28,
+        "y": 740,
+        "width": 544,
+        "height": 45,
+        "rotation": 0,
+        "color": "#f3f0e6",
+        "text": "PLACEHOLDER / 14 / CC0",
+        "font": "mono",
+        "fontSize": 15,
+        "locked": false,
+        "hidden": false,
+        "credit": {
+          "id": "the-right-to-rest",
+          "title": "The right to rest",
+          "artist": "Mirafra Print Lab",
+          "license": "CC0-1.0",
+          "source": "/poster/the-right-to-rest/"
+        }
+      }
+    ]
+  }
+}

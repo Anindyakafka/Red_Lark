@@ -10,3 +10,7 @@ coverage/
 .DS_Store
 Thumbs.db
 *.log
+!docs/evidence/**/checks.log
+test-results/
+playwright-report/
+.qa/

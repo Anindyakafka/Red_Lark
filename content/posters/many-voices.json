@@ -1,0 +1,144 @@
+{
+  "slug": "many-voices",
+  "title": "Many voices",
+  "languages": ["English"],
+  "artist": "mirafra-type-lab",
+  "year": 2024,
+  "themes": ["Solidarity"],
+  "movements": ["Mutual aid"],
+  "colorMode": "color",
+  "region": "Open archive",
+  "formats": [
+    {
+      "format": "PDF",
+      "size": "A4",
+      "path": "/posters/many-voices/A4.pdf",
+      "bytes": 60403
+    },
+    {
+      "format": "PDF",
+      "size": "A3",
+      "path": "/posters/many-voices/A3.pdf",
+      "bytes": 60430
+    },
+    {
+      "format": "PDF",
+      "size": "A2",
+      "path": "/posters/many-voices/A2.pdf",
+      "bytes": 60402
+    },
+    {
+      "format": "PDF",
+      "size": "18x24",
+      "path": "/posters/many-voices/18x24.pdf",
+      "bytes": 60367
+    },
+    {
+      "format": "PNG",
+      "size": "A3",
+      "path": "/posters/many-voices/A3.png",
+      "bytes": 721935
+    },
+    {
+      "format": "SVG",
+      "size": "A3",
+      "path": "/posters/many-voices/source.svg",
+      "bytes": 81320
+    },
+    {
+      "format": "ZIP",
+      "size": "Bundle",
+      "path": "/posters/many-voices/bundle.zip",
+      "bytes": 71049
+    }
+  ],
+  "license": "CC0-1.0",
+  "licenseUrl": "https://creativecommons.org/publicdomain/zero/1.0/",
+  "allowsDerivatives": true,
+  "commercialUseAllowed": true,
+  "source": "/poster/many-voices/",
+  "artistUrl": "/artist/mirafra-type-lab/",
+  "alt": "Black typographic print reading â€œMANY VOICESâ€, with an array of halftone dots and a clearly marked placeholder credit.",
+  "caption": "Original vector study authored for the Mirafra rebuild. Placeholder artwork, free under CC0; not a contribution by a real artist.",
+  "remixable": true,
+  "placeholder": true,
+  "preview": "/posters/many-voices/preview.webp",
+  "dominantColor": "#151515",
+  "studioLayers": {
+    "version": 2,
+    "preset": "A3",
+    "background": "#151515",
+    "colors": 2,
+    "layers": [
+      {
+        "id": "many-voices-type",
+        "kind": "text",
+        "name": "Headline",
+        "x": 28,
+        "y": 50,
+        "width": 544,
+        "height": 340,
+        "rotation": 0,
+        "color": "#f3f0e6",
+        "text": "MANY\nVOICES",
+        "font": "display",
+        "fontSize": 145,
+        "locked": false,
+        "hidden": false,
+        "credit": {
+          "id": "many-voices",
+          "title": "Many voices",
+          "artist": "Mirafra Type Lab",
+          "license": "CC0-1.0",
+          "source": "/poster/many-voices/"
+        }
+      },
+      {
+        "id": "many-voices-symbol",
+        "kind": "halftone",
+        "name": "halftone",
+        "x": 35,
+        "y": 480,
+        "width": 520,
+        "height": 200,
+        "rotation": 0,
+        "color": "#f3f0e6",
+        "text": "YOUR\nWORDS HERE",
+        "font": "display",
+        "fontSize": 100,
+        "locked": false,
+        "hidden": false,
+        "credit": {
+          "id": "many-voices",
+          "title": "Many voices",
+          "artist": "Mirafra Type Lab",
+          "license": "CC0-1.0",
+          "source": "/poster/many-voices/"
+        }
+      },
+      {
+        "id": "many-voices-edition",
+        "kind": "text",
+        "name": "Headline",
+        "x": 28,
+        "y": 740,
+        "width": 544,
+        "height": 45,
+        "rotation": 0,
+        "color": "#f3f0e6",
+        "text": "PLACEHOLDER / 09 / CC0",
+        "font": "mono",
+        "fontSize": 15,
+        "locked": false,
+        "hidden": false,
+        "credit": {
+          "id": "many-voices",
+          "title": "Many voices",
+          "artist": "Mirafra Type Lab",
+          "license": "CC0-1.0",
+          "source": "/poster/many-voices/"
+        }
+      }
+    ]
+  }
+}

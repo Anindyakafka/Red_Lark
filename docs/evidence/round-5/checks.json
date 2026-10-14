@@ -1,0 +1,38 @@
+[
+  {
+    "command": "npm install --prefer-offline --no-audit --no-fund --cache .npm-cache",
+    "exitCode": 0
+  },
+  {
+    "command": "npm run typecheck",
+    "exitCode": 0
+  },
+  {
+    "command": "npm run lint",
+    "exitCode": 0
+  },
+  {
+    "command": "npm run format:check",
+    "exitCode": 0
+  },
+  {
+    "command": "npm run validate:content",
+    "exitCode": 0
+  },
+  {
+    "command": "npm run build",
+    "exitCode": 0
+  },
+  {
+    "command": "npm test",
+    "exitCode": 0
+  },
+  {
+    "command": "C:\\Program Files\\nodejs\\node.exe node_modules/tsx/dist/cli.mjs scripts/qa-fixture.tsx",
+    "exitCode": 0
+  },
+  {
+    "command": "npm run test:e2e",
+    "exitCode": 0
+  }
+]

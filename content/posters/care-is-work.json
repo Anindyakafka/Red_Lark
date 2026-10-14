@@ -1,0 +1,144 @@
+{
+  "slug": "care-is-work",
+  "title": "Care is work",
+  "languages": ["English"],
+  "artist": "mirafra-type-lab",
+  "year": 2024,
+  "themes": ["Labor"],
+  "movements": ["May Day"],
+  "colorMode": "bw",
+  "region": "Open archive",
+  "formats": [
+    {
+      "format": "PDF",
+      "size": "A4",
+      "path": "/posters/care-is-work/A4.pdf",
+      "bytes": 60713
+    },
+    {
+      "format": "PDF",
+      "size": "A3",
+      "path": "/posters/care-is-work/A3.pdf",
+      "bytes": 60750
+    },
+    {
+      "format": "PDF",
+      "size": "A2",
+      "path": "/posters/care-is-work/A2.pdf",
+      "bytes": 60707
+    },
+    {
+      "format": "PDF",
+      "size": "18x24",
+      "path": "/posters/care-is-work/18x24.pdf",
+      "bytes": 60635
+    },
+    {
+      "format": "PNG",
+      "size": "A3",
+      "path": "/posters/care-is-work/A3.png",
+      "bytes": 727551
+    },
+    {
+      "format": "SVG",
+      "size": "A3",
+      "path": "/posters/care-is-work/source.svg",
+      "bytes": 82134
+    },
+    {
+      "format": "ZIP",
+      "size": "Bundle",
+      "path": "/posters/care-is-work/bundle.zip",
+      "bytes": 70224
+    }
+  ],
+  "license": "CC0-1.0",
+  "licenseUrl": "https://creativecommons.org/publicdomain/zero/1.0/",
+  "allowsDerivatives": true,
+  "commercialUseAllowed": true,
+  "source": "/poster/care-is-work/",
+  "artistUrl": "/artist/mirafra-type-lab/",
+  "alt": "Off-white typographic print reading â€œCARE IS WORKâ€, with an array of halftone dots and a clearly marked placeholder credit.",
+  "caption": "Original vector study authored for the Mirafra rebuild. Placeholder artwork, free under CC0; not a contribution by a real artist.",
+  "remixable": true,
+  "placeholder": true,
+  "preview": "/posters/care-is-work/preview.webp",
+  "dominantColor": "#f3f0e6",
+  "studioLayers": {
+    "version": 2,
+    "preset": "A3",
+    "background": "#f3f0e6",
+    "colors": 1,
+    "layers": [
+      {
+        "id": "care-is-work-type",
+        "kind": "text",
+        "name": "Headline",
+        "x": 28,
+        "y": 50,
+        "width": 544,
+        "height": 340,
+        "rotation": 0,
+        "color": "#151515",
+        "text": "CARE\nIS WORK",
+        "font": "display",
+        "fontSize": 145,
+        "locked": false,
+        "hidden": false,
+        "credit": {
+          "id": "care-is-work",
+          "title": "Care is work",
+          "artist": "Mirafra Type Lab",
+          "license": "CC0-1.0",
+          "source": "/poster/care-is-work/"
+        }
+      },
+      {
+        "id": "care-is-work-symbol",
+        "kind": "halftone",
+        "name": "halftone",
+        "x": 35,
+        "y": 480,
+        "width": 520,
+        "height": 200,
+        "rotation": 0,
+        "color": "#151515",
+        "text": "YOUR\nWORDS HERE",
+        "font": "display",
+        "fontSize": 100,
+        "locked": false,
+        "hidden": false,
+        "credit": {
+          "id": "care-is-work",
+          "title": "Care is work",
+          "artist": "Mirafra Type Lab",
+          "license": "CC0-1.0",
+          "source": "/poster/care-is-work/"
+        }
+      },
+      {
+        "id": "care-is-work-edition",
+        "kind": "text",
+        "name": "Headline",
+        "x": 28,
+        "y": 740,
+        "width": 544,
+        "height": 45,
+        "rotation": 0,
+        "color": "#151515",
+        "text": "PLACEHOLDER / 03 / CC0",
+        "font": "mono",
+        "fontSize": 15,
+        "locked": false,
+        "hidden": false,
+        "credit": {
+          "id": "care-is-work",
+          "title": "Care is work",
+          "artist": "Mirafra Type Lab",
+          "license": "CC0-1.0",
+          "source": "/poster/care-is-work/"
+        }
+      }
+    ]
+  }
+}

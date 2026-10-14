@@ -1,0 +1,144 @@
+{
+  "slug": "a-future-we-share",
+  "title": "A future we share",
+  "languages": ["English"],
+  "artist": "mirafra-print-lab",
+  "year": 2026,
+  "themes": ["Ecology"],
+  "movements": ["Climate justice"],
+  "colorMode": "color",
+  "region": "Open archive",
+  "formats": [
+    {
+      "format": "PDF",
+      "size": "A4",
+      "path": "/posters/a-future-we-share/A4.pdf",
+      "bytes": 28287
+    },
+    {
+      "format": "PDF",
+      "size": "A3",
+      "path": "/posters/a-future-we-share/A3.pdf",
+      "bytes": 28322
+    },
+    {
+      "format": "PDF",
+      "size": "A2",
+      "path": "/posters/a-future-we-share/A2.pdf",
+      "bytes": 28285
+    },
+    {
+      "format": "PDF",
+      "size": "18x24",
+      "path": "/posters/a-future-we-share/18x24.pdf",
+      "bytes": 28173
+    },
+    {
+      "format": "PNG",
+      "size": "A3",
+      "path": "/posters/a-future-we-share/A3.png",
+      "bytes": 559390
+    },
+    {
+      "format": "SVG",
+      "size": "A3",
+      "path": "/posters/a-future-we-share/source.svg",
+      "bytes": 61155
+    },
+    {
+      "format": "ZIP",
+      "size": "Bundle",
+      "path": "/posters/a-future-we-share/bundle.zip",
+      "bytes": 46374
+    }
+  ],
+  "license": "CC0-1.0",
+  "licenseUrl": "https://creativecommons.org/publicdomain/zero/1.0/",
+  "allowsDerivatives": true,
+  "commercialUseAllowed": true,
+  "source": "/poster/a-future-we-share/",
+  "artistUrl": "/artist/mirafra-print-lab/",
+  "alt": "Signal-red typographic print reading â€œA FUTURE WE SHAREâ€, with an angular starburst and a clearly marked placeholder credit.",
+  "caption": "Original vector study authored for the Mirafra rebuild. Placeholder artwork, free under CC0; not a contribution by a real artist.",
+  "remixable": true,
+  "placeholder": true,
+  "preview": "/posters/a-future-we-share/preview.webp",
+  "dominantColor": "#e32219",
+  "studioLayers": {
+    "version": 2,
+    "preset": "A3",
+    "background": "#e32219",
+    "colors": 2,
+    "layers": [
+      {
+        "id": "a-future-we-share-type",
+        "kind": "text",
+        "name": "Headline",
+        "x": 28,
+        "y": 50,
+        "width": 544,
+        "height": 340,
+        "rotation": 0,
+        "color": "#f3f0e6",
+        "text": "A FUTURE\nWE SHARE",
+        "font": "display",
+        "fontSize": 145,
+        "locked": false,
+        "hidden": false,
+        "credit": {
+          "id": "a-future-we-share",
+          "title": "A future we share",
+          "artist": "Mirafra Print Lab",
+          "license": "CC0-1.0",
+          "source": "/poster/a-future-we-share/"
+        }
+      },
+      {
+        "id": "a-future-we-share-symbol",
+        "kind": "star",
+        "name": "star",
+        "x": 170,
+        "y": 480,
+        "width": 250,
+        "height": 200,
+        "rotation": 0,
+        "color": "#f3f0e6",
+        "text": "YOUR\nWORDS HERE",
+        "font": "display",
+        "fontSize": 100,
+        "locked": false,
+        "hidden": false,
+        "credit": {
+          "id": "a-future-we-share",
+          "title": "A future we share",
+          "artist": "Mirafra Print Lab",
+          "license": "CC0-1.0",
+          "source": "/poster/a-future-we-share/"
+        }
+      },
+      {
+        "id": "a-future-we-share-edition",
+        "kind": "text",
+        "name": "Headline",
+        "x": 28,
+        "y": 740,
+        "width": 544,
+        "height": 45,
+        "rotation": 0,
+        "color": "#f3f0e6",
+        "text": "PLACEHOLDER / 16 / CC0",
+        "font": "mono",
+        "fontSize": 15,
+        "locked": false,
+        "hidden": false,
+        "credit": {
+          "id": "a-future-we-share",
+          "title": "A future we share",
+          "artist": "Mirafra Print Lab",
+          "license": "CC0-1.0",
+          "source": "/poster/a-future-we-share/"
+        }
+      }
+    ]
+  }
+}
