@@ -1,0 +1,11 @@
+node_modules
+.next
+out
+.npm-cache
+package-lock.json
+public
+src/generated
+docs/evidence
+test-results
+playwright-report
+next-env.d.ts
