@@ -14,7 +14,7 @@ export default function Home() {
         <p className="label">[01] AN OPEN PRINT ARCHIVE / NO ACCOUNTS / NO PAYWALL</p>
         <h1>
           PRINT.
-          <br className="mobile-break" /> MAKE NOISE.
+          <br className="mobile-break" /> <span className="hero-title-line">MAKE NOISE.</span>
         </h1>
         <div className="hero-bottom">
           <p>Free posters for public walls. Find one. Make one. Put it out there.</p>

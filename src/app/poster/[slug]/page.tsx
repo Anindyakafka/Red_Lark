@@ -26,6 +26,13 @@ export default async function Page({ params }: { params: Promise<{ slug: string 
   const artist = artistFor(p.artist);
   return (
     <article className="poster-detail">
+      <header className="mobile-poster-intro">
+        <p className="label">[POSTER / PLACEHOLDER / {p.license}]</p>
+        <p className="mobile-poster-title">{p.titleOriginal ?? p.title}</p>
+        <a href="#downloads" className="button accent">
+          [DOWNLOAD PRINT FILES] ↓
+        </a>
+      </header>
       <div className="detail-art">
         <PosterImage poster={p} priority large />
       </div>
@@ -36,7 +43,7 @@ export default async function Page({ params }: { params: Promise<{ slug: string 
         <p className="label">
           [PLACEHOLDER] / {p.year} / {p.languages.join(" / ")}
         </p>
-        <h1>{p.titleOriginal ?? p.title}</h1>
+        <h1 className="desktop-poster-title">{p.titleOriginal ?? p.title}</h1>
         {p.titleOriginal && <p className="detail-translation">{p.title}</p>}
         <p>
           BY{" "}
@@ -46,7 +53,7 @@ export default async function Page({ params }: { params: Promise<{ slug: string 
         </p>
         <p>{p.caption}</p>
         <LicenseGate poster={p} />
-        <section className="downloads">
+        <section className="downloads" id="downloads">
           <h2>[DOWNLOAD]</h2>
           <p className="small">
             RGB print files. Correct physical size, outlined type. No bleed. Choose “actual size”

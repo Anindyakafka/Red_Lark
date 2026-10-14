@@ -77,7 +77,9 @@ export default function Studio() {
             "[UNSUPPORTED BROWSER] Use a recent browser with SVG, Pointer Events and file downloads.",
           );
         const load = async (path: string) => {
-          const r = await fetch(path);
+          const r = await fetch(path).catch(() => {
+            throw new Error("A local font could not load. Check your connection or reload.");
+          });
           if (!r.ok) throw new Error("A local font failed to load. Reload the page.");
           return opentype.parse(await r.arrayBuffer());
         };

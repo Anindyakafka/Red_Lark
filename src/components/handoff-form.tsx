@@ -36,7 +36,7 @@ export function HandoffForm({ kind, email }: { kind: "contact" | "submit"; email
     setErrors(next);
     if (Object.keys(next).length) {
       requestAnimationFrame(() =>
-        form.current?.querySelector<HTMLElement>(`[name="${Object.keys(next)[0]}"]`)?.focus(),
+        form.current?.querySelector<HTMLElement>('[aria-invalid="true"]')?.focus(),
       );
       return;
     }

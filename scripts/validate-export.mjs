@@ -1,14 +1,24 @@
 import fs from "node:fs";
 import path from "node:path";
 const html = [];
+const segmentFiles = [];
 function walk(dir) {
   for (const item of fs.readdirSync(dir, { withFileTypes: true })) {
     const file = path.join(dir, item.name);
     if (item.isDirectory()) walk(file);
     else if (item.name.endsWith(".html")) html.push(file);
+    else if (item.name.endsWith(".txt") && file.includes("__next.")) segmentFiles.push(file);
   }
 }
 walk("out");
+// Emit physical aliases for Next's flattened segment requests on ordinary static hosts.
+for (const file of segmentFiles) {
+  const parts = file.split(path.sep);
+  const start = parts.findIndex((part) => part.startsWith("__next."));
+  if (start < 0 || start === parts.length - 1) continue;
+  const alias = path.join(...parts.slice(0, start), parts.slice(start).join("."));
+  fs.copyFileSync(file, alias);
+}
 const errors = [];
 const titles = new Map();
 for (const file of html) {

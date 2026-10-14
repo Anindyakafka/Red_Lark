@@ -1,6 +1,7 @@
 import http from "node:http";
 import fs from "node:fs/promises";
 import path from "node:path";
+import { gzipSync } from "node:zlib";
 const root = path.resolve("out");
 const port = Number(process.env.PORT ?? 3000);
 const types = {
@@ -46,6 +47,10 @@ http
         }
       }
       const bytes = await fs.readFile(file);
+      const compress =
+        /\.(html|js|css|json|txt|xml|webmanifest)$/.test(file) &&
+        /gzip/.test(req.headers["accept-encoding"] ?? "");
+      const payload = compress ? gzipSync(bytes) : bytes;
       res.writeHead(status, {
         "Content-Type": types[path.extname(file)] ?? "application/octet-stream",
         "Content-Security-Policy": csp,
@@ -53,9 +58,13 @@ http
         "X-Content-Type-Options": "nosniff",
         "X-Frame-Options": "DENY",
         "Permissions-Policy": "camera=(), microphone=(), geolocation=()",
-        "Cache-Control": "no-cache",
+        "Cache-Control": file.includes(`${path.sep}_next${path.sep}static${path.sep}`)
+          ? "public, max-age=31536000, immutable"
+          : "no-cache",
+        Vary: "Accept-Encoding",
+        ...(compress ? { "Content-Encoding": "gzip" } : {}),
       });
-      res.end(req.method === "HEAD" ? undefined : bytes);
+      res.end(req.method === "HEAD" ? undefined : payload);
     } catch {
       res.writeHead(500);
       res.end("Static file unavailable");

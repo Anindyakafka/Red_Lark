@@ -74,7 +74,17 @@ export async function pngAt300Ppi(blob: Blob) {
   view.setUint32(12, 11811);
   chunk[16] = 1;
   view.setUint32(17, crc32(chunk.slice(4, 17)));
-  return new Blob([bytes.slice(0, 33), chunk, bytes.slice(33)], { type: "image/png" });
+  const parts: BlobPart[] = [bytes.slice(0, 33), chunk];
+  const reader = new DataView(bytes.buffer);
+  for (let at = 33; at + 12 <= bytes.length;) {
+    const length = reader.getUint32(at);
+    const end = at + length + 12;
+    if (end > bytes.length) throw new Error("Invalid PNG chunk during export.");
+    const type = new TextDecoder().decode(bytes.slice(at + 4, at + 8));
+    if (type !== "pHYs") parts.push(bytes.slice(at, end));
+    at = end;
+  }
+  return new Blob(parts, { type: "image/png" });
 }
 export async function exportFile(
   scene: Scene,

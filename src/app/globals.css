@@ -1615,3 +1615,39 @@ picture {
     transition: none !important;
   }
 }
+.artist-credit {
+  min-height: 32px;
+  display: inline-flex;
+  align-items: center;
+}
+.mobile-poster-intro {
+  display: none;
+}
+html {
+  scroll-padding-bottom: 100px;
+}
+@media (max-width: 800px) {
+  .mobile-poster-intro {
+    display: block;
+    padding: 22px 4%;
+    border-bottom: 3px solid var(--ink);
+  }
+  .mobile-poster-title {
+    font-family: var(--font-display), Impact, sans-serif;
+    font-size: 54px;
+    line-height: 0.95;
+    text-transform: uppercase;
+    margin: 16px 0 22px;
+  }
+}
+@media (max-width: 560px) {
+  .home-hero h1 {
+    font-size: 19.5vw;
+  }
+  .hero-title-line {
+    white-space: nowrap;
+  }
+  .site-header nav a {
+    min-height: 44px;
+  }
+}

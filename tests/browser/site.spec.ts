@@ -30,7 +30,9 @@ for (const path of paths)
     await expect(page.locator("h1")).toHaveCount(1);
     await page.evaluate(() => document.fonts.ready);
     if (path === "/studio/") await expect(page.locator(".studio-paper")).toBeVisible();
-    const a = await new AxeBuilder({ page }).withTags(["wcag2a", "wcag2aa", "wcag21aa"]).analyze();
+    const a = await new AxeBuilder({ page })
+      .withTags(["wcag2a", "wcag2aa", "wcag21aa", "wcag22aa"])
+      .analyze();
     expect(
       a.violations.map((v) => ({
         id: v.id,

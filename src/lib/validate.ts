@@ -1,4 +1,5 @@
 import { LICENSES, type Artist, type Poster } from "./types";
+import { validateScene } from "../studio/model";
 export function validatePoster(p: Poster, artists: Artist[]): string[] {
   const errors: string[] = [];
   for (const field of [
@@ -26,6 +27,7 @@ export function validatePoster(p: Poster, artists: Artist[]): string[] {
   }
   if (p.remixable && !p.allowsDerivatives) errors.push("Remix cannot bypass the derivative gate");
   if (p.remixable && !p.studioLayers) errors.push("Remix needs editable source layers");
+  if (p.studioLayers && !validateScene(p.studioLayers)) errors.push("Editable scene is invalid");
   if (
     !Array.isArray(p.languages) ||
     !p.languages.length ||

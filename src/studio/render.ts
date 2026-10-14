@@ -34,7 +34,15 @@ export function layerMarkup(l: Layer, fonts: Fonts) {
   let inner = "";
   switch (l.kind) {
     case "text":
-      inner = textPaths(l.text, fonts[l.font], 0, 0, l.fontSize, w, l.color);
+      inner = textPaths(
+        l.text,
+        fonts[l.font],
+        0,
+        0,
+        Math.min(l.fontSize, h / Math.max(1, l.text.split("\n").length) / 1.05),
+        w,
+        l.color,
+      );
       break;
     case "rectangle":
       inner = `<rect width="${w}" height="${h}" fill="${l.color}"/>`;
@@ -56,7 +64,7 @@ export function layerMarkup(l: Layer, fonts: Fonts) {
       break;
     case "halftone":
     case "grain": {
-      const step = l.kind === "halftone" ? 14 : 11;
+      const step = Math.max(l.kind === "halftone" ? 14 : 11, Math.sqrt((w * h) / 1600));
       const marks: string[] = [];
       for (let y = 3; y < h; y += step)
         for (let x = 3; x < w; x += step) {

@@ -76,7 +76,7 @@ try {
       await page.screenshot({ path: `${dir}/${file}`, fullPage: false });
       summary.screenshots.push(file);
       const a = await new AxeBuilder({ page })
-        .withTags(["wcag2a", "wcag2aa", "wcag21aa"])
+        .withTags(["wcag2a", "wcag2aa", "wcag21aa", "wcag22aa"])
         .analyze();
       summary.axe.push({
         page: name,

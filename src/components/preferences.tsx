@@ -33,6 +33,21 @@ export function BrowseCTA() {
   const path = usePathname();
   useEffect(() => {
     track("pageview");
+    const onFocus = (event: FocusEvent) => {
+      const target = event.target;
+      const bar = document.querySelector<HTMLElement>(".mobile-cta, .studio-mobile-toolbar");
+      if (
+        !(target instanceof HTMLElement) ||
+        !bar ||
+        getComputedStyle(bar).display === "none" ||
+        bar.contains(target)
+      )
+        return;
+      const overlap = target.getBoundingClientRect().bottom - bar.getBoundingClientRect().top + 12;
+      if (overlap > 0) window.scrollBy({ top: overlap, behavior: "instant" });
+    };
+    document.addEventListener("focusin", onFocus);
+    return () => document.removeEventListener("focusin", onFocus);
   }, [path]);
   const browse =
     path === "/" ||
