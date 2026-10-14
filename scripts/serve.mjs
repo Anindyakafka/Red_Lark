@@ -1,7 +1,7 @@
 import http from "node:http";
 import fs from "node:fs/promises";
 import path from "node:path";
-import { gzipSync } from "node:zlib";
+import { gzipSync, brotliCompressSync, constants } from "node:zlib";
 const root = path.resolve("out");
 const port = Number(process.env.PORT ?? 3000);
 const types = {
@@ -49,8 +49,13 @@ http
       const bytes = await fs.readFile(file);
       const compress =
         /\.(html|js|css|json|txt|xml|webmanifest)$/.test(file) &&
-        /gzip/.test(req.headers["accept-encoding"] ?? "");
-      const payload = compress ? gzipSync(bytes) : bytes;
+        /br|gzip/.test(req.headers["accept-encoding"] ?? "");
+      const brotli = compress && /\bbr\b/.test(req.headers["accept-encoding"] ?? "");
+      const payload = compress
+        ? brotli
+          ? brotliCompressSync(bytes, { params: { [constants.BROTLI_PARAM_QUALITY]: 6 } })
+          : gzipSync(bytes)
+        : bytes;
       res.writeHead(status, {
         "Content-Type": types[path.extname(file)] ?? "application/octet-stream",
         "Content-Security-Policy": csp,
@@ -62,7 +67,7 @@ http
           ? "public, max-age=31536000, immutable"
           : "no-cache",
         Vary: "Accept-Encoding",
-        ...(compress ? { "Content-Encoding": "gzip" } : {}),
+        ...(compress ? { "Content-Encoding": brotli ? "br" : "gzip" } : {}),
       });
       res.end(req.method === "HEAD" ? undefined : payload);
     } catch {

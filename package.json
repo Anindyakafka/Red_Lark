@@ -14,7 +14,7 @@
     "typecheck": "tsc --noEmit",
     "test": "tsx --test tests/*.test.ts",
     "brand:build": "node scripts/refine-logo.mjs",
-    "seed": "tsx scripts/seed.ts",
+    "seed": "tsx scripts/seed.ts && node scripts/preview-derivatives.mjs && tsx scripts/validate-content.ts",
     "validate:content": "tsx scripts/validate-content.ts",
     "lint": "eslint . --max-warnings 0",
     "format": "prettier --write .",

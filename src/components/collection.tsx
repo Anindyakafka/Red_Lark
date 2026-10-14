@@ -156,6 +156,9 @@ export function Collection({
             setFilters({ ...emptyFilters, theme: initialTheme });
             setDraft("");
             setError("");
+            const url = new URL(location.href);
+            url.searchParams.delete("q");
+            history.replaceState(null, "", url);
           }}
         >
           All [↺]
@@ -198,6 +201,24 @@ export function Collection({
         </strong>
       </div>
       <p className="hydration-status" role="status">
+        {saved.length > 0 && (
+          <button
+            className="clear-bookmarks"
+            onClick={() => {
+              setSaved([]);
+              try {
+                localStorage.removeItem("mirafra.saved.v1");
+                setStorageNotice("All local bookmarks cleared.");
+              } catch {
+                setStorageNotice(
+                  "Bookmarks cleared for this visit; browser storage is unavailable.",
+                );
+              }
+            }}
+          >
+            [CLEAR {saved.length} LOCAL BOOKMARKS]
+          </button>
+        )}
         {hydrated
           ? `${results.length} posters ready. All artwork is placeholder content.`
           : "Loading collection…"}

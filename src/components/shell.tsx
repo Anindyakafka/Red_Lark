@@ -5,7 +5,7 @@ export function Header() {
   return (
     <header className="site-header">
       <div className="masthead">
-        <Link className="wordmark" href="/" aria-label="Mirafra home">
+        <Link prefetch={false} className="wordmark" href="/" aria-label="Mirafra home">
           <Image src="/icons/mark.svg" alt="" width={32} height={32} />
           MIRAFRA<span className="edition">[FREE PRINT ARCHIVE]</span>
         </Link>
@@ -43,12 +43,24 @@ export function Footer() {
         </p>
       </div>
       <nav aria-label="Footer navigation">
-        <Link href="/submit">Submit a poster</Link>
-        <Link href="/contact">Contact / takedown</Link>
-        <Link href="/privacy">How we handle data</Link>
-        <Link href="/terms">Terms & licences</Link>
-        <Link href="/themes">Themes & movements</Link>
-        <Link href="/about">About / support artists</Link>
+        <Link prefetch={false} href="/submit">
+          Submit a poster
+        </Link>
+        <Link prefetch={false} href="/contact">
+          Contact / takedown
+        </Link>
+        <Link prefetch={false} href="/privacy">
+          How we handle data
+        </Link>
+        <Link prefetch={false} href="/terms">
+          Terms & licences
+        </Link>
+        <Link prefetch={false} href="/themes">
+          Themes & movements
+        </Link>
+        <Link prefetch={false} href="/about">
+          About / support artists
+        </Link>
       </nav>
       <p className="footer-credit">
         An open archive built for public walls.

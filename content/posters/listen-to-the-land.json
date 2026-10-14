@@ -13,31 +13,31 @@
       "format": "PDF",
       "size": "A4",
       "path": "/posters/listen-to-the-land/A4.pdf",
-      "bytes": 27694
+      "bytes": 27661
     },
     {
       "format": "PDF",
       "size": "A3",
       "path": "/posters/listen-to-the-land/A3.pdf",
-      "bytes": 27721
+      "bytes": 27692
     },
     {
       "format": "PDF",
       "size": "A2",
       "path": "/posters/listen-to-the-land/A2.pdf",
-      "bytes": 27693
+      "bytes": 27660
     },
     {
       "format": "PDF",
       "size": "18x24",
       "path": "/posters/listen-to-the-land/18x24.pdf",
-      "bytes": 27636
+      "bytes": 27605
     },
     {
       "format": "PNG",
       "size": "A3",
       "path": "/posters/listen-to-the-land/A3.png",
-      "bytes": 538281
+      "bytes": 539848
     },
     {
       "format": "SVG",
@@ -49,7 +49,7 @@
       "format": "ZIP",
       "size": "Bundle",
       "path": "/posters/listen-to-the-land/bundle.zip",
-      "bytes": 45340
+      "bytes": 45288
     }
   ],
   "license": "CC0-1.0",
@@ -58,16 +58,16 @@
   "commercialUseAllowed": true,
   "source": "/poster/listen-to-the-land/",
   "artistUrl": "/artist/mirafra-type-lab/",
-  "alt": "Signal-red typographic print reading “LISTEN TO THE LAND”, with an angular starburst and a clearly marked placeholder credit.",
+  "alt": "Off-white typographic print reading â€œLISTEN TO THE LANDâ€, with an angular starburst and a clearly marked placeholder credit.",
   "caption": "Original vector study authored for the Mirafra rebuild. Placeholder artwork, free under CC0; not a contribution by a real artist.",
   "remixable": true,
   "placeholder": true,
   "preview": "/posters/listen-to-the-land/preview.webp",
-  "dominantColor": "#e32219",
+  "dominantColor": "#f3f0e6",
   "studioLayers": {
     "version": 2,
     "preset": "A3",
-    "background": "#e32219",
+    "background": "#f3f0e6",
     "colors": 1,
     "layers": [
       {
@@ -79,7 +79,7 @@
         "width": 544,
         "height": 340,
         "rotation": 0,
-        "color": "#f3f0e6",
+        "color": "#151515",
         "text": "LISTEN\nTO THE LAND",
         "font": "display",
         "fontSize": 145,
@@ -102,7 +102,7 @@
         "width": 250,
         "height": 200,
         "rotation": 0,
-        "color": "#f3f0e6",
+        "color": "#151515",
         "text": "YOUR\nWORDS HERE",
         "font": "display",
         "fontSize": 100,
@@ -125,7 +125,7 @@
         "width": 544,
         "height": 45,
         "rotation": 0,
-        "color": "#f3f0e6",
+        "color": "#151515",
         "text": "PLACEHOLDER / 07 / CC0",
         "font": "mono",
         "fontSize": 15,

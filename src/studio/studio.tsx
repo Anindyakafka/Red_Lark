@@ -331,8 +331,8 @@ export default function Studio() {
     else if (d.mode === "resize")
       l = {
         ...l,
-        width: Math.max(20, snapTo(l.width + dx)),
-        height: Math.max(20, snapTo(l.height + dy)),
+        width: Math.min(2000, Math.max(20, snapTo(l.width + dx))),
+        height: Math.min(2000, Math.max(20, snapTo(l.height + dy))),
         fontSize:
           l.kind === "text"
             ? Math.max(6, Math.min(600, (l.fontSize * (l.width + dx)) / l.width))
@@ -727,8 +727,9 @@ export default function Studio() {
                         width={l.width}
                         height={l.height}
                         fill="transparent"
-                        stroke={selected === l.id ? "#265dff" : "none"}
+                        stroke={selected === l.id ? "#151515" : "none"}
                         strokeWidth={selected === l.id ? 3 : 0}
+                        strokeDasharray={selected === l.id ? "9 5" : undefined}
                       />
                       {selected === l.id && !l.locked && (
                         <>
@@ -738,7 +739,7 @@ export default function Studio() {
                             width="24"
                             height="24"
                             fill="#f3f0e6"
-                            stroke="#265dff"
+                            stroke="#151515"
                             strokeWidth="3"
                             onPointerDown={(e) => startDrag(e, l, "resize")}
                           />
@@ -747,7 +748,7 @@ export default function Studio() {
                             cy="-25"
                             r="12"
                             fill="#f3f0e6"
-                            stroke="#265dff"
+                            stroke="#151515"
                             strokeWidth="3"
                             onPointerDown={(e) => startDrag(e, l, "rotate")}
                           />

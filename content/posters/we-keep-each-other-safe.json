@@ -13,43 +13,43 @@
       "format": "PDF",
       "size": "A4",
       "path": "/posters/we-keep-each-other-safe/A4.pdf",
-      "bytes": 33238
+      "bytes": 33203
     },
     {
       "format": "PDF",
       "size": "A3",
       "path": "/posters/we-keep-each-other-safe/A3.pdf",
-      "bytes": 33228
+      "bytes": 33193
     },
     {
       "format": "PDF",
       "size": "A2",
       "path": "/posters/we-keep-each-other-safe/A2.pdf",
-      "bytes": 33239
+      "bytes": 33204
     },
     {
       "format": "PDF",
       "size": "18x24",
       "path": "/posters/we-keep-each-other-safe/18x24.pdf",
-      "bytes": 33203
+      "bytes": 33168
     },
     {
       "format": "PNG",
       "size": "A3",
       "path": "/posters/we-keep-each-other-safe/A3.png",
-      "bytes": 592728
+      "bytes": 552335
     },
     {
       "format": "SVG",
       "size": "A3",
       "path": "/posters/we-keep-each-other-safe/source.svg",
-      "bytes": 72760
+      "bytes": 72777
     },
     {
       "format": "ZIP",
       "size": "Bundle",
       "path": "/posters/we-keep-each-other-safe/bundle.zip",
-      "bytes": 54498
+      "bytes": 54429
     }
   ],
   "license": "CC0-1.0",
@@ -58,7 +58,7 @@
   "commercialUseAllowed": true,
   "source": "/poster/we-keep-each-other-safe/",
   "artistUrl": "/artist/mirafra-type-lab/",
-  "alt": "Signal-red typographic print reading “WE KEEP EACH OTHER SAFE”, with an angular starburst and a clearly marked placeholder credit.",
+  "alt": "Signal-red typographic print reading â€œWE KEEP EACH OTHER SAFEâ€, with an angular starburst and a clearly marked placeholder credit.",
   "caption": "Original vector study authored for the Mirafra rebuild. Placeholder artwork, free under CC0; not a contribution by a real artist.",
   "remixable": true,
   "placeholder": true,

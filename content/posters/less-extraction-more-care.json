@@ -13,43 +13,43 @@
       "format": "PDF",
       "size": "A4",
       "path": "/posters/less-extraction-more-care/A4.pdf",
-      "bytes": 69393
+      "bytes": 69332
     },
     {
       "format": "PDF",
       "size": "A3",
       "path": "/posters/less-extraction-more-care/A3.pdf",
-      "bytes": 69477
+      "bytes": 69416
     },
     {
       "format": "PDF",
       "size": "A2",
       "path": "/posters/less-extraction-more-care/A2.pdf",
-      "bytes": 69393
+      "bytes": 69332
     },
     {
       "format": "PDF",
       "size": "18x24",
       "path": "/posters/less-extraction-more-care/18x24.pdf",
-      "bytes": 69332
+      "bytes": 69271
     },
     {
       "format": "PNG",
       "size": "A3",
       "path": "/posters/less-extraction-more-care/A3.png",
-      "bytes": 811168
+      "bytes": 761589
     },
     {
       "format": "SVG",
       "size": "A3",
       "path": "/posters/less-extraction-more-care/source.svg",
-      "bytes": 103239
+      "bytes": 103209
     },
     {
       "format": "ZIP",
       "size": "Bundle",
       "path": "/posters/less-extraction-more-care/bundle.zip",
-      "bytes": 84535
+      "bytes": 84600
     }
   ],
   "license": "CC0-1.0",
@@ -58,7 +58,7 @@
   "commercialUseAllowed": true,
   "source": "/poster/less-extraction-more-care/",
   "artistUrl": "/artist/mirafra-print-lab/",
-  "alt": "Off-white typographic print reading “LESS EXTRACTION MORE CARE”, with an array of halftone dots and a clearly marked placeholder credit.",
+  "alt": "Off-white typographic print reading â€œLESS EXTRACTION MORE CAREâ€, with an array of halftone dots and a clearly marked placeholder credit.",
   "caption": "Original vector study authored for the Mirafra rebuild. Placeholder artwork, free under CC0; not a contribution by a real artist.",
   "remixable": true,
   "placeholder": true,

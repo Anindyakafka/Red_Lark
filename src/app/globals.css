@@ -1651,3 +1651,23 @@ html {
     min-height: 44px;
   }
 }
+
+.clear-bookmarks {
+  margin-top: 12px;
+  font-size: 10px;
+}
+@media (max-width: 560px) {
+  .studio-intro {
+    padding: 12px 4%;
+  }
+  .studio-intro h1 {
+    font-size: 48px;
+    margin: 6px 0;
+  }
+  .studio-intro p:last-child {
+    font-size: 10px;
+  }
+  .canvas-controls input {
+    width: 55px;
+  }
+}

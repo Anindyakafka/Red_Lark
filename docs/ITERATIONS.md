@@ -34,3 +34,21 @@ Remaining weaknesses, ranked:
 5. Add actual pointer resize/rotate/zoom tests, empty canvas/export-failure checks and analytics DNT/payload tests. The existing tests prove the main workflow, but not every control branch yet.
 
 The shorter mobile Home and early poster CTA resolve the biggest presentation weakness. Print downloads and credited poster layouts remain dominant. No visual overlap or horizontal document scrolling at tested sizes.
+
+## Round 3 critique
+
+Added Brotli with gzip fallback, disabled unnecessary shell prefetches, generated responsive 240/400/700px local AVIF/WebP images, enforced variant availability, compacted mobile Studio, used neutral dashed selection outlines, bounded pointer resizing, added clear-bookmark/search-reset actions, loaded local environment configuration consistently, and regenerated all seed files to match the fitted-text renderer. Corrected the black-and-white seed flag/artwork mismatch. Active-filter captures now show the bar and actual results.
+
+All install/typecheck/lint/format/content/build checks, 10 model tests and **58 browser tests** pass. New tests exercise pointer movement/resize/rotation, zoom/pan/preset changes, bookmark clearing, URL reset, honeypot rejection and recoverable export failure. All required 390/1440 light/dark screenshots were viewed; zero axe violations, zero external requests and zero runtime errors in the review capture.
+
+Lighthouse: Home **97/100/100/100**, Collection **99/100/100/100**, Poster **98/100/100/100**. CLS ~0.00003. All measured targets now pass, but the minimum five-round protocol is not complete.
+
+Remaining weaknesses, ranked:
+
+1. Harden compressed share-state decoding with an explicit output memory bound. The existing length check occurs after decompression.
+2. Prove analytics' DNT and content-omission behaviour under configured test conditions, not just its disabled default.
+3. Clarify how user-added material is licensed on export; source credits should not imply an automatic CC0 dedication of arbitrary uploads. Preserve mandatory ShareAlike terms while distinguishing source rights from user additions.
+4. Verify touch pinch and smaller/full-size paper exports, not merely mouse zoom controls. Check the real PDFs' declared page boxes and raster dimensions.
+5. Checklist generation must key PASS to recorded green checks and an explicit final fresh-eyes review, rather than round number alone. Document the compression/static-file requirements for production hosts.
+
+Appearance is consistently raw and usable. The filtered grid now communicates bilingual titles, artist, region, file metadata and saved controls together. Mobile Studio shows more paper and keeps a separate bottom toolbar. Remaining presentation choices are minor polish; the next round focuses on trust boundaries and proof.

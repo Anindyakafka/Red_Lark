@@ -68,8 +68,13 @@ try {
       await page.goto(url, { waitUntil: "networkidle" });
       await page.evaluate(() => document.fonts.ready);
       if (name === "studio") await page.locator(".studio-paper").waitFor();
-      if (name === "collection")
+      if (name === "collection") {
         await page.getByLabel("Theme", { exact: true }).selectOption("Labor");
+        await page.evaluate(() => {
+          const bar = document.querySelector(".filter-bar");
+          if (bar) window.scrollTo(0, bar.getBoundingClientRect().top + window.scrollY - 8);
+        });
+      }
       if (name === "submit-errors")
         await page.getByRole("button", { name: "[PREPARE EMAIL]" }).click();
       const file = `${name}-${width}.png`;

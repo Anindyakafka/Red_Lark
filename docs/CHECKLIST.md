@@ -1,6 +1,6 @@
 # Required checklist
 
-Last reviewed: Round 2. Evidence paths are relative to the repository. No human-only configuration is invented.
+Last reviewed: Round 3. Evidence paths are relative to the repository. No human-only configuration is invented.
 
 | Item                                                                 | Status | Evidence                                                        | Note                                                                                         |
 | -------------------------------------------------------------------- | ------ | --------------------------------------------------------------- | -------------------------------------------------------------------------------------------- |
@@ -45,8 +45,8 @@ Last reviewed: Round 2. Evidence paths are relative to the repository. No human-
 | Licence: ShareAlike credit strip / metadata                          | PASS   | creditLines; sceneSvg; licence mixing tests                     |                                                                                              |
 | Licence: Incompatible licences reject export                         | PASS   | exportLicense; core tests                                       |                                                                                              |
 | Licence: Original CC0 placeholders only                              | PASS   | scripts/seed.ts; content/README; 18 JSON records                |                                                                                              |
-| Lighthouse mobile ≥95 in all four categories                         | FAIL   | docs/evidence/round-2/lighthouse-*.json; summary.json           | home: 94/100/100/100; collection: 98/100/100/100; poster: 99/100/100/100                     |
-| Axe = zero                                                           | PASS   | docs/evidence/round-2/summary.json; every-route browser results | Light/dark key screenshots + all public routes.                                              |
+| Lighthouse mobile ≥95 in all four categories                         | PASS   | docs/evidence/round-3/lighthouse-*.json; summary.json           | home: 97/100/100/100; collection: 99/100/100/100; poster: 98/100/100/100                     |
+| Axe = zero                                                           | PASS   | docs/evidence/round-3/summary.json; every-route browser results | Light/dark key screenshots + all public routes.                                              |
 | Fresh-eyes final round                                               | FAIL   | docs/ITERATIONS.md                                              | Must reread brief, inspect screenshots, click every route and exercise form/licence paths.   |
 
-Screenshot evidence for this review: docs/evidence/round-2/. Check command output: checks.log. Human launch requirements remain in TODO_HUMAN.md.
+Screenshot evidence for this review: docs/evidence/round-3/. Check command output: checks.log. Human launch requirements remain in TODO_HUMAN.md.

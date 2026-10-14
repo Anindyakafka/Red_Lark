@@ -2,6 +2,7 @@ import fs from "node:fs";
 import path from "node:path";
 import { LICENSES, type Artist, type Poster } from "../src/lib/types";
 import { validatePoster } from "../src/lib/validate";
+if (fs.existsSync(".env.local")) process.loadEnvFile(".env.local");
 
 const read = <T>(dir: string): T[] =>
   fs
@@ -27,6 +28,14 @@ for (const poster of posters) {
   }
   if (poster.preview && !fs.existsSync(path.join("public", poster.preview)))
     errors.push(`${poster.slug}: missing preview`);
+  for (const w of [240, 400, 700])
+    for (const format of ["webp", "avif"])
+      if (
+        !fs.existsSync(
+          path.join("public", poster.preview.replace("preview.webp", `preview-${w}.${format}`)),
+        )
+      )
+        errors.push(`${poster.slug}: missing responsive preview ${w}.${format}`);
 }
 for (const [label, ids] of [
   ["poster", posters.map((p) => p.slug)],

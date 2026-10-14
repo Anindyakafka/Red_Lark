@@ -81,7 +81,7 @@ for (let i = 0; i < entries.length; i++) {
   const artist = artists[i % 2];
   const bw = i % 4 === 2;
   const dark = i % 5 === 3;
-  const bg = dark ? "#151515" : i % 3 === 0 ? "#e32219" : "#f3f0e6";
+  const bg = bw ? "#f3f0e6" : dark ? "#151515" : i % 3 === 0 ? "#e32219" : "#f3f0e6";
   const ink = dark || bg === "#e32219" ? "#f3f0e6" : bw ? "#151515" : "#e32219";
   const scene: Scene = { ...freshScene(), background: bg, colors: bw ? 1 : 2, layers: [] };
   const credit = {
