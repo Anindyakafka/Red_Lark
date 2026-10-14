@@ -1,0 +1,144 @@
+{
+  "slug": "borders-are-lines",
+  "title": "Borders are lines",
+  "languages": ["English"],
+  "artist": "mirafra-type-lab",
+  "year": 2024,
+  "themes": ["Migration"],
+  "movements": ["Freedom of movement"],
+  "colorMode": "bw",
+  "region": "Open archive",
+  "formats": [
+    {
+      "format": "PDF",
+      "size": "A4",
+      "path": "/posters/borders-are-lines/A4.pdf",
+      "bytes": 65120
+    },
+    {
+      "format": "PDF",
+      "size": "A3",
+      "path": "/posters/borders-are-lines/A3.pdf",
+      "bytes": 65179
+    },
+    {
+      "format": "PDF",
+      "size": "A2",
+      "path": "/posters/borders-are-lines/A2.pdf",
+      "bytes": 65120
+    },
+    {
+      "format": "PDF",
+      "size": "18x24",
+      "path": "/posters/borders-are-lines/18x24.pdf",
+      "bytes": 65076
+    },
+    {
+      "format": "PNG",
+      "size": "A3",
+      "path": "/posters/borders-are-lines/A3.png",
+      "bytes": 745380
+    },
+    {
+      "format": "SVG",
+      "size": "A3",
+      "path": "/posters/borders-are-lines/source.svg",
+      "bytes": 92185
+    },
+    {
+      "format": "ZIP",
+      "size": "Bundle",
+      "path": "/posters/borders-are-lines/bundle.zip",
+      "bytes": 78046
+    }
+  ],
+  "license": "CC0-1.0",
+  "licenseUrl": "https://creativecommons.org/publicdomain/zero/1.0/",
+  "allowsDerivatives": true,
+  "commercialUseAllowed": true,
+  "source": "/poster/borders-are-lines/",
+  "artistUrl": "/artist/mirafra-type-lab/",
+  "alt": "Off-white typographic print reading “BORDERS ARE LINES”, with an array of halftone dots and a clearly marked placeholder credit.",
+  "caption": "Original vector study authored for the Mirafra rebuild. Placeholder artwork, free under CC0; not a contribution by a real artist.",
+  "remixable": true,
+  "placeholder": true,
+  "preview": "/posters/borders-are-lines/preview.webp",
+  "dominantColor": "#f3f0e6",
+  "studioLayers": {
+    "version": 2,
+    "preset": "A3",
+    "background": "#f3f0e6",
+    "colors": 1,
+    "layers": [
+      {
+        "id": "borders-are-lines-type",
+        "kind": "text",
+        "name": "Headline",
+        "x": 28,
+        "y": 50,
+        "width": 544,
+        "height": 340,
+        "rotation": 0,
+        "color": "#151515",
+        "text": "BORDERS\nARE LINES",
+        "font": "display",
+        "fontSize": 145,
+        "locked": false,
+        "hidden": false,
+        "credit": {
+          "id": "borders-are-lines",
+          "title": "Borders are lines",
+          "artist": "Mirafra Type Lab",
+          "license": "CC0-1.0",
+          "source": "/poster/borders-are-lines/"
+        }
+      },
+      {
+        "id": "borders-are-lines-symbol",
+        "kind": "halftone",
+        "name": "halftone",
+        "x": 35,
+        "y": 480,
+        "width": 520,
+        "height": 200,
+        "rotation": 0,
+        "color": "#151515",
+        "text": "YOUR\nWORDS HERE",
+        "font": "display",
+        "fontSize": 100,
+        "locked": false,
+        "hidden": false,
+        "credit": {
+          "id": "borders-are-lines",
+          "title": "Borders are lines",
+          "artist": "Mirafra Type Lab",
+          "license": "CC0-1.0",
+          "source": "/poster/borders-are-lines/"
+        }
+      },
+      {
+        "id": "borders-are-lines-edition",
+        "kind": "text",
+        "name": "Headline",
+        "x": 28,
+        "y": 740,
+        "width": 544,
+        "height": 45,
+        "rotation": 0,
+        "color": "#151515",
+        "text": "PLACEHOLDER / 15 / CC0",
+        "font": "mono",
+        "fontSize": 15,
+        "locked": false,
+        "hidden": false,
+        "credit": {
+          "id": "borders-are-lines",
+          "title": "Borders are lines",
+          "artist": "Mirafra Type Lab",
+          "license": "CC0-1.0",
+          "source": "/poster/borders-are-lines/"
+        }
+      }
+    ]
+  }
+}

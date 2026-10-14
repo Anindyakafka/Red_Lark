@@ -1,0 +1,158 @@
+import { PRESETS, type Layer, type Scene } from "@/lib/types";
+import { exportLicense, sceneCredits } from "@/lib/licenses";
+
+export function dimensions(scene: Scene) {
+  const p = PRESETS[scene.preset];
+  return { width: 600, height: (600 * p.height) / p.width };
+}
+export function newLayer(kind: Layer["kind"], id = crypto.randomUUID()): Layer {
+  return {
+    id,
+    kind,
+    name: kind === "text" ? "Headline" : kind,
+    x: 50,
+    y: 160,
+    width: kind === "text" ? 500 : 180,
+    height: kind === "text" ? 130 : 180,
+    rotation: 0,
+    color: "#e32219",
+    text: "YOUR\nWORDS HERE",
+    font: "display",
+    fontSize: 100,
+    locked: false,
+    hidden: false,
+  };
+}
+export function freshScene(): Scene {
+  return {
+    version: 2,
+    preset: "A3",
+    background: "#f3f0e6",
+    colors: 2,
+    layers: [
+      {
+        ...newLayer("text", "headline"),
+        y: 60,
+        height: 300,
+        text: "MAKE\nYOURSELF\nHEARD.",
+        fontSize: 132,
+      },
+      { ...newLayer("arrow", "arrow"), y: 480, width: 460, height: 120, color: "#151515" },
+      {
+        ...newLayer("text", "small-print"),
+        y: 700,
+        height: 60,
+        text: "FREE TO PRINT. FREE TO PASS ON.",
+        fontSize: 18,
+        font: "mono",
+        color: "#151515",
+      },
+    ],
+  };
+}
+export function validateScene(input: unknown): input is Scene {
+  if (!input || typeof input !== "object") return false;
+  const s = input as Partial<Scene>;
+  if (
+    s.version !== 2 ||
+    !s.preset ||
+    !(s.preset in PRESETS) ||
+    typeof s.background !== "string" ||
+    !/^#[\da-f]{6}$/i.test(s.background) ||
+    ![1, 2, 3].includes(s.colors ?? 0) ||
+    !Array.isArray(s.layers) ||
+    s.layers.length > 80
+  )
+    return false;
+  const ids = new Set<string>();
+  return s.layers.every((l) => {
+    if (!l || typeof l !== "object" || typeof l.id !== "string" || !l.id || ids.has(l.id))
+      return false;
+    ids.add(l.id);
+    if (
+      !["text", "rectangle", "circle", "star", "arrow", "halftone", "grain", "image"].includes(
+        l.kind,
+      ) ||
+      typeof l.text !== "string" ||
+      l.text.length > 1500 ||
+      typeof l.name !== "string" ||
+      l.name.length > 100 ||
+      !["display", "mono"].includes(l.font) ||
+      typeof l.locked !== "boolean" ||
+      typeof l.hidden !== "boolean" ||
+      !/^#[\da-f]{6}$/i.test(l.color)
+    )
+      return false;
+    for (const key of ["x", "y", "width", "height", "rotation", "fontSize"] as const)
+      if (typeof l[key] !== "number" || !Number.isFinite(l[key]) || Math.abs(l[key]) > 5000)
+        return false;
+    if (
+      l.width < 10 ||
+      l.height < 10 ||
+      l.fontSize < 6 ||
+      l.fontSize > 600 ||
+      Math.abs(l.rotation) > 180
+    )
+      return false;
+    if (
+      l.kind === "image" &&
+      (typeof l.image !== "string" ||
+        !/^data:image\/png;base64,[A-Za-z0-9+/=]+$/.test(l.image) ||
+        l.image.length > 8_000_000)
+    )
+      return false;
+    if (
+      l.credit &&
+      (typeof l.credit.id !== "string" ||
+        typeof l.credit.artist !== "string" ||
+        typeof l.credit.title !== "string" ||
+        typeof l.credit.source !== "string" ||
+        l.credit.source.length > 500 ||
+        ![
+          "CC0-1.0",
+          "CC-BY-4.0",
+          "CC-BY-SA-4.0",
+          "CC-BY-NC-4.0",
+          "CC-BY-NC-SA-4.0",
+          "CC-BY-ND-4.0",
+          "CC-BY-NC-ND-4.0",
+        ].includes(l.credit.license))
+    )
+      return false;
+    return true;
+  });
+}
+export function assertExportable(scene: Scene) {
+  if (!validateScene(scene)) throw new Error("This saved composition is invalid or unsupported.");
+  return exportLicense(sceneCredits(scene));
+}
+export interface History {
+  past: Scene[];
+  present: Scene;
+  future: Scene[];
+}
+export type Action =
+  | { type: "commit"; scene: Scene }
+  | { type: "undo" }
+  | { type: "redo" }
+  | { type: "reset"; scene: Scene };
+export function reducer(state: History, action: Action): History {
+  if (action.type === "reset") return { past: [], present: action.scene, future: [] };
+  if (action.type === "commit") {
+    if (JSON.stringify(state.present) === JSON.stringify(action.scene)) return state;
+    return { past: [...state.past, state.present].slice(-60), present: action.scene, future: [] };
+  }
+  if (action.type === "undo" && state.past.length)
+    return {
+      past: state.past.slice(0, -1),
+      present: state.past.at(-1)!,
+      future: [state.present, ...state.future],
+    };
+  if (action.type === "redo" && state.future.length)
+    return {
+      past: [...state.past, state.present],
+      present: state.future[0],
+      future: state.future.slice(1),
+    };
+  return state;
+}

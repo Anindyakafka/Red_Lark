@@ -1,0 +1,144 @@
+{
+  "slug": "take-up-space",
+  "title": "Take up space",
+  "languages": ["English"],
+  "artist": "mirafra-print-lab",
+  "year": 2024,
+  "themes": ["Accessibility"],
+  "movements": ["Disability justice"],
+  "colorMode": "color",
+  "region": "Open archive",
+  "formats": [
+    {
+      "format": "PDF",
+      "size": "A4",
+      "path": "/posters/take-up-space/A4.pdf",
+      "bytes": 61786
+    },
+    {
+      "format": "PDF",
+      "size": "A3",
+      "path": "/posters/take-up-space/A3.pdf",
+      "bytes": 61813
+    },
+    {
+      "format": "PDF",
+      "size": "A2",
+      "path": "/posters/take-up-space/A2.pdf",
+      "bytes": 61788
+    },
+    {
+      "format": "PDF",
+      "size": "18x24",
+      "path": "/posters/take-up-space/18x24.pdf",
+      "bytes": 61728
+    },
+    {
+      "format": "PNG",
+      "size": "A3",
+      "path": "/posters/take-up-space/A3.png",
+      "bytes": 715560
+    },
+    {
+      "format": "SVG",
+      "size": "A3",
+      "path": "/posters/take-up-space/source.svg",
+      "bytes": 84696
+    },
+    {
+      "format": "ZIP",
+      "size": "Bundle",
+      "path": "/posters/take-up-space/bundle.zip",
+      "bytes": 72469
+    }
+  ],
+  "license": "CC0-1.0",
+  "licenseUrl": "https://creativecommons.org/publicdomain/zero/1.0/",
+  "allowsDerivatives": true,
+  "commercialUseAllowed": true,
+  "source": "/poster/take-up-space/",
+  "artistUrl": "/artist/mirafra-print-lab/",
+  "alt": "Off-white typographic print reading “TAKE UP SPACE”, with an array of halftone dots and a clearly marked placeholder credit.",
+  "caption": "Original vector study authored for the Mirafra rebuild. Placeholder artwork, free under CC0; not a contribution by a real artist.",
+  "remixable": true,
+  "placeholder": true,
+  "preview": "/posters/take-up-space/preview.webp",
+  "dominantColor": "#f3f0e6",
+  "studioLayers": {
+    "version": 2,
+    "preset": "A3",
+    "background": "#f3f0e6",
+    "colors": 2,
+    "layers": [
+      {
+        "id": "take-up-space-type",
+        "kind": "text",
+        "name": "Headline",
+        "x": 28,
+        "y": 50,
+        "width": 544,
+        "height": 340,
+        "rotation": 0,
+        "color": "#e32219",
+        "text": "TAKE\nUP SPACE",
+        "font": "display",
+        "fontSize": 145,
+        "locked": false,
+        "hidden": false,
+        "credit": {
+          "id": "take-up-space",
+          "title": "Take up space",
+          "artist": "Mirafra Print Lab",
+          "license": "CC0-1.0",
+          "source": "/poster/take-up-space/"
+        }
+      },
+      {
+        "id": "take-up-space-symbol",
+        "kind": "halftone",
+        "name": "halftone",
+        "x": 35,
+        "y": 480,
+        "width": 520,
+        "height": 200,
+        "rotation": 0,
+        "color": "#e32219",
+        "text": "YOUR\nWORDS HERE",
+        "font": "display",
+        "fontSize": 100,
+        "locked": false,
+        "hidden": false,
+        "credit": {
+          "id": "take-up-space",
+          "title": "Take up space",
+          "artist": "Mirafra Print Lab",
+          "license": "CC0-1.0",
+          "source": "/poster/take-up-space/"
+        }
+      },
+      {
+        "id": "take-up-space-edition",
+        "kind": "text",
+        "name": "Headline",
+        "x": 28,
+        "y": 740,
+        "width": 544,
+        "height": 45,
+        "rotation": 0,
+        "color": "#e32219",
+        "text": "PLACEHOLDER / 18 / CC0",
+        "font": "mono",
+        "fontSize": 15,
+        "locked": false,
+        "hidden": false,
+        "credit": {
+          "id": "take-up-space",
+          "title": "Take up space",
+          "artist": "Mirafra Print Lab",
+          "license": "CC0-1.0",
+          "source": "/poster/take-up-space/"
+        }
+      }
+    ]
+  }
+}
