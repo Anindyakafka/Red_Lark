@@ -20,7 +20,7 @@ export default function Page() {
       <div className="content-width index-grid">
         {artists.map((a) => (
           <article className="index-card" key={a.id}>
-            <span className="label">[PLACEHOLDER CREDIT]</span>
+            <span className="label">[{a.placeholder ? "PLACEHOLDER CREDIT" : "ARTIST"}]</span>
             <h2>
               <Link href={`/artist/${a.id}`}>{a.name} ↗</Link>
             </h2>

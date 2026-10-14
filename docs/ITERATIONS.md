@@ -70,3 +70,27 @@ Remaining issues for the fresh-eyes round:
 5. Final review must click through actual navigation, recheck form focus/honeypot/unavailable delivery and ND gate, and inspect an empty/recovered Studio. Only then write the fresh-eyes acceptance marker.
 
 These are bounded fixes within the stated mission. No accounts, database, remote assets, fabricated submissions or invented contact details are introduced.
+
+## Round 5 critique — fresh eyes
+
+Re-read the mission and all nineteen requirements against the final source and UI. Split the client search/artist index from full poster content, stripped Studio scenes and duplicate file variants from collection hydration, and removed unnecessary initial state updates. Home HTML now contains no Studio-layer data. Community reads an initially empty, validated list of approved non-placeholder poster slugs. Added real font-kit download, visible supplied artist links, safe ingest fields, conditional placeholder labels, and consistent single-ink additions/colour replacement.
+
+Install, strict typecheck, ESLint (zero warnings), Prettier, content validation, static build/internal-link validation, **14 model/privacy tests** and **65 Playwright tests** are green. The fresh-eyes clickthrough visits all 18 posters, both artist pages and all seven theme pages through real index links; the every-route smoke/axe suite covers all 42 explicit public page routes plus unknown-URL behaviour. Contact/submit required-field/reply/unavailable-inbox/honeypot paths are exercised, first-error focus verified, ND fixture rechecked, and a truly empty Studio is restored and made usable. Pointer/touch, storage/network/unsupported states, share/recovery, real exports and source credits remain green.
+
+Viewed all sixteen required 390/1440 screenshots (including light/dark Home). The result is recognisably brutalist and collection-led: hard rules, blunt condensed type, no rounded/blurred panels, dense bilingual records, visible rights and direct print actions. No overlap, contrast failure, unexpected layout scroll, generic marketing section, fabricated community entry or misleading delivery claim was found. Minor polish opportunities only: longer real titles may benefit from curated line breaks, and physical prints need a human review on the intended equipment.
+
+### Final measured results
+
+Three consecutive cold-cache mobile Lighthouse runs per key route, with **every raw JSON/HTML report retained**. All nine runs score at least 97 for Performance and 100 in the other categories. Median results:
+
+| Route      | Performance | Accessibility | Best Practices | SEO | Performance samples |
+| ---------- | ----------- | ------------- | -------------- | --- | ------------------- |
+| Home       | 97          | 100           | 100            | 100 | 97 / 97 / 99        |
+| Collection | 99          | 100           | 100            | 100 | 99 / 99 / 97        |
+| Poster     | 98          | 100           | 100            | 100 | 98 / 98 / 99        |
+
+Maximum CLS across all runs is **0.0231**, below 0.05. Round screenshot axe and every-route axe have zero violations. Review capture has zero external requests and zero page runtime errors. Prior low scores remain in earlier rounds; none were deleted or promoted to PASS.
+
+**Round 5 fresh-eyes: PASS**
+
+No technical checklist failure remains. Image search is N-A by the brief's permitted coming-soon option; cookie banner is N-A because there is no non-essential storage/tracking. Real mailbox, legal review, permissions, domain/hosting, optional analytics operation and physical print approval are explicit human launch actions in TODO_HUMAN. The repository remains local on `rebuild`; no deployment, push or external communication was performed.

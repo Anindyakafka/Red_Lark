@@ -160,6 +160,19 @@ export default function Studio() {
   const patch = useCallback(
     (update: Partial<Layer>) => {
       if (!selectedLayer || selectedLayer.locked) return;
+      const inks = [...new Set(scene.layers.filter((l) => l.kind !== "image").map((l) => l.color))];
+      if (update.color && !inks.includes(update.color) && inks.length >= scene.colors) {
+        commit({
+          ...scene,
+          layers: scene.layers.map((l) =>
+            l.color === selectedLayer.color ? { ...l, color: update.color! } : l,
+          ),
+        });
+        setStatus(
+          "[INK REPLACED] This print mode is full. The matching ink was replaced throughout the composition.",
+        );
+        return;
+      }
       commit({
         ...scene,
         layers: scene.layers.map((l) => (l.id === selected ? { ...l, ...update } : l)),
@@ -227,6 +240,8 @@ export default function Studio() {
       return;
     }
     const layer = newLayer(kind);
+    const inks = [...new Set(scene.layers.filter((l) => l.kind !== "image").map((l) => l.color))];
+    if (!inks.includes(layer.color) && inks.length >= scene.colors) layer.color = inks[0];
     commit({ ...scene, layers: [...scene.layers, layer] });
     setSelected(layer.id);
     setMobileTab("controls");
@@ -244,6 +259,8 @@ export default function Studio() {
       height: 200,
       credit: sourceCredit(p, artistFor(p.artist).name),
     };
+    const inks = [...new Set(scene.layers.filter((l) => l.kind !== "image").map((l) => l.color))];
+    if (!inks.includes(layer.color) && inks.length >= scene.colors) layer.color = inks[0];
     try {
       assertExportable({ ...scene, layers: [...scene.layers, layer] });
       commit({ ...scene, layers: [...scene.layers, layer] });

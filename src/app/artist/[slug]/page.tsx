@@ -1,6 +1,6 @@
 import { notFound } from "next/navigation";
 import { PageIntro } from "@/components/page-intro";
-import { Collection } from "@/components/collection";
+import { Collection } from "@/components/archive";
 import { artists, posters } from "@/lib/catalog";
 import { pageMeta } from "@/lib/metadata";
 export const dynamicParams = false;
@@ -25,6 +25,15 @@ export default async function Page({ params }: { params: Promise<{ slug: string 
         action="Support artists"
         href="/about"
       />
+      {a.links.length > 0 && (
+        <nav className="content-width" aria-label="Artist links">
+          {a.links.map((link) => (
+            <a className="button" href={link.url} rel="noreferrer" key={link.url}>
+              {link.label} ↗
+            </a>
+          ))}
+        </nav>
+      )}
       {a.supportUrl && (
         <p className="content-width">
           <a href={a.supportUrl} rel="noreferrer">

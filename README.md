@@ -100,6 +100,10 @@ No runtime database, server-side design storage, comments, payments, newsletter 
 
 Recorded browser checks are Chromium/Edge evidence, not a promise that every physical printer or browser behaves identically. Human-only launch decisions remain explicit.
 
+Five numbered rounds are complete. Final checks: 14 model/privacy tests, 65 browser tests, zero axe violations. All nine cold-cache mobile Lighthouse samples meet the targets; performance medians are Home 97, Collection 99, Poster 98, with 100 for Accessibility, Best Practices and SEO. Highest CLS is 0.0231. See the retained raw reports and critiques rather than relying on a single score.
+
+The Community list is `content/community.json` (empty until approved contributions exist). Collection hydration deliberately omits Studio scenes; the Studio loads them only on its own route. Run `node scripts/font-pack.mjs` to regenerate the local type-kit ZIP if font files change.
+
 ## Licence
 
 Existing AGPL v3 software licence retained. Original placeholder artwork under content/posters and public/posters is dedicated to CC0-1.0. Self-hosted fonts carry their own OFL licences in public/fonts. Supplied and refined Mirafra brand assets remain separate. A deployed AGPL service must provide corresponding source as required by its licence.

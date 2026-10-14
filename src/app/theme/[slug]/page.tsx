@@ -1,6 +1,6 @@
 import { notFound } from "next/navigation";
 import { PageIntro } from "@/components/page-intro";
-import { Collection } from "@/components/collection";
+import { Collection } from "@/components/archive";
 import { themes, posters, slugify } from "@/lib/catalog";
 import { pageMeta } from "@/lib/metadata";
 export const dynamicParams = false;

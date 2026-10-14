@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { Collection } from "@/components/collection";
+import { Collection } from "@/components/archive";
 import { posters } from "@/lib/catalog";
 import { pageMeta } from "@/lib/metadata";
 export const metadata = pageMeta(

@@ -2,6 +2,23 @@ import { LICENSES, type Artist, type Poster } from "./types";
 import { validateScene } from "../studio/model";
 export function validatePoster(p: Poster, artists: Artist[]): string[] {
   const errors: string[] = [];
+  if (!Number.isInteger(p.year) || p.year < 1900 || p.year > 2100)
+    errors.push("Missing or invalid year");
+  if (typeof p.region !== "string" || !p.region.trim()) errors.push("Missing region");
+  if (typeof p.remixable !== "boolean" || typeof p.placeholder !== "boolean")
+    errors.push("Remix/placeholder flags must be explicit booleans");
+  if (!/^\/posters\/[a-z0-9-]+\/preview\.webp$/.test(p.preview ?? ""))
+    errors.push("Preview must be an approved local file");
+  if (!/^#[\da-f]{6}$/i.test(p.dominantColor ?? "")) errors.push("Missing dominant colour");
+  if (
+    p.titleOriginal !== undefined &&
+    (typeof p.titleOriginal !== "string" || !p.titleOriginal.trim())
+  )
+    errors.push("Original-language title must be meaningful text");
+  if (!["bw", "color"].includes(p.colorMode)) errors.push("Invalid colour mode");
+  for (const values of [p.languages, p.themes, p.movements])
+    if (Array.isArray(values) && !values.every((v) => typeof v === "string" && v.trim()))
+      errors.push("Facet values must be non-empty text");
   for (const field of [
     "slug",
     "title",

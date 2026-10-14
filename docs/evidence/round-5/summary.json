@@ -1,0 +1,258 @@
+{
+  "round": 5,
+  "screenshots": [
+    "home-390.png",
+    "collection-390.png",
+    "poster-390.png",
+    "studio-390.png",
+    "404-390.png",
+    "privacy-390.png",
+    "submit-errors-390.png",
+    "home-1440.png",
+    "collection-1440.png",
+    "poster-1440.png",
+    "studio-1440.png",
+    "404-1440.png",
+    "privacy-1440.png",
+    "submit-errors-1440.png"
+  ],
+  "axe": [
+    {
+      "page": "home",
+      "width": 390,
+      "violations": []
+    },
+    {
+      "page": "collection",
+      "width": 390,
+      "violations": []
+    },
+    {
+      "page": "poster",
+      "width": 390,
+      "violations": []
+    },
+    {
+      "page": "studio",
+      "width": 390,
+      "violations": []
+    },
+    {
+      "page": "404",
+      "width": 390,
+      "violations": []
+    },
+    {
+      "page": "privacy",
+      "width": 390,
+      "violations": []
+    },
+    {
+      "page": "submit-errors",
+      "width": 390,
+      "violations": []
+    },
+    {
+      "page": "home-dark",
+      "width": 390,
+      "violations": []
+    },
+    {
+      "page": "home",
+      "width": 1440,
+      "violations": []
+    },
+    {
+      "page": "collection",
+      "width": 1440,
+      "violations": []
+    },
+    {
+      "page": "poster",
+      "width": 1440,
+      "violations": []
+    },
+    {
+      "page": "studio",
+      "width": 1440,
+      "violations": []
+    },
+    {
+      "page": "404",
+      "width": 1440,
+      "violations": []
+    },
+    {
+      "page": "privacy",
+      "width": 1440,
+      "violations": []
+    },
+    {
+      "page": "submit-errors",
+      "width": 1440,
+      "violations": []
+    },
+    {
+      "page": "home-dark",
+      "width": 1440,
+      "violations": []
+    }
+  ],
+  "lighthouse": [
+    {
+      "page": "home",
+      "method": "Median of three consecutive cold-cache mobile Lighthouse runs; all raw runs retained",
+      "scores": {
+        "performance": 97,
+        "accessibility": 100,
+        "best-practices": 100,
+        "seo": 100
+      },
+      "cls": 0.00003158959233585534,
+      "lcp": 2584.3734000000004,
+      "tbt": 24,
+      "runs": [
+        {
+          "run": 1,
+          "scores": {
+            "performance": 97,
+            "accessibility": 100,
+            "best-practices": 100,
+            "seo": 100
+          },
+          "cls": 0.00003158959233585534,
+          "lcp": 2597.6696000000006,
+          "tbt": 28.5
+        },
+        {
+          "run": 2,
+          "scores": {
+            "performance": 97,
+            "accessibility": 100,
+            "best-practices": 100,
+            "seo": 100
+          },
+          "cls": 0.00003158959233585534,
+          "lcp": 2584.3734000000004,
+          "tbt": 22
+        },
+        {
+          "run": 3,
+          "scores": {
+            "performance": 99,
+            "accessibility": 100,
+            "best-practices": 100,
+            "seo": 100
+          },
+          "cls": 0.00003158959233585534,
+          "lcp": 2192.567,
+          "tbt": 24
+        }
+      ]
+    },
+    {
+      "page": "collection",
+      "method": "Median of three consecutive cold-cache mobile Lighthouse runs; all raw runs retained",
+      "scores": {
+        "performance": 99,
+        "accessibility": 100,
+        "best-practices": 100,
+        "seo": 100
+      },
+      "cls": 0.023043202089808958,
+      "lcp": 2192.7232,
+      "tbt": 25.5,
+      "runs": [
+        {
+          "run": 1,
+          "scores": {
+            "performance": 99,
+            "accessibility": 100,
+            "best-practices": 100,
+            "seo": 100
+          },
+          "cls": 0.00003158959233585534,
+          "lcp": 2046.8662000000002,
+          "tbt": 30
+        },
+        {
+          "run": 2,
+          "scores": {
+            "performance": 99,
+            "accessibility": 100,
+            "best-practices": 100,
+            "seo": 100
+          },
+          "cls": 0.00003158959233585534,
+          "lcp": 2192.7232,
+          "tbt": 24.5
+        },
+        {
+          "run": 3,
+          "scores": {
+            "performance": 97,
+            "accessibility": 100,
+            "best-practices": 100,
+            "seo": 100
+          },
+          "cls": 0.023043202089808958,
+          "lcp": 2687.8451999999997,
+          "tbt": 25.5
+        }
+      ]
+    },
+    {
+      "page": "poster",
+      "method": "Median of three consecutive cold-cache mobile Lighthouse runs; all raw runs retained",
+      "scores": {
+        "performance": 98,
+        "accessibility": 100,
+        "best-practices": 100,
+        "seo": 100
+      },
+      "cls": 0.00003158959233585534,
+      "lcp": 2371.0357,
+      "tbt": 28,
+      "runs": [
+        {
+          "run": 1,
+          "scores": {
+            "performance": 98,
+            "accessibility": 100,
+            "best-practices": 100,
+            "seo": 100
+          },
+          "cls": 0.00003158959233585534,
+          "lcp": 2372.002,
+          "tbt": 29.5
+        },
+        {
+          "run": 2,
+          "scores": {
+            "performance": 98,
+            "accessibility": 100,
+            "best-practices": 100,
+            "seo": 100
+          },
+          "cls": 0.00003158959233585534,
+          "lcp": 2371.0357,
+          "tbt": 28
+        },
+        {
+          "run": 3,
+          "scores": {
+            "performance": 99,
+            "accessibility": 100,
+            "best-practices": 100,
+            "seo": 100
+          },
+          "cls": 0.00003158959233585534,
+          "lcp": 1965.2223000000001,
+          "tbt": 21.5
+        }
+      ]
+    }
+  ],
+  "externalRequests": [],
+  "errors": []
+}

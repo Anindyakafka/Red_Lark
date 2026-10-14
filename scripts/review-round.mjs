@@ -2,7 +2,7 @@ import fs from "node:fs/promises";
 import { spawn } from "node:child_process";
 import { chromium } from "@playwright/test";
 import AxeBuilder from "@axe-core/playwright";
-import lighthouse from "lighthouse";
+import { measurePage } from "./lighthouse-series.mjs";
 import { launch } from "chrome-launcher";
 const round = Number(process.argv[2]);
 if (!Number.isInteger(round) || round < 1 || round > 15)
@@ -112,34 +112,9 @@ try {
     ],
   });
   for (const [name, url] of routes.slice(0, 3)) {
-    const result = await lighthouse(`http://localhost:3000${url}`, {
-      port: chrome.port,
-      output: ["json", "html"],
-      logLevel: "error",
-      onlyCategories: ["performance", "accessibility", "best-practices", "seo"],
-      formFactor: "mobile",
-      screenEmulation: {
-        mobile: true,
-        width: 390,
-        height: 844,
-        deviceScaleFactor: 1,
-        disabled: false,
-      },
-    });
-    if (!result) throw new Error("Lighthouse did not return a result");
-    await fs.writeFile(`${dir}/lighthouse-${name}.json`, result.report[0]);
-    await fs.writeFile(`${dir}/lighthouse-${name}.html`, result.report[1]);
-    summary.lighthouse.push({
-      page: name,
-      scores: Object.fromEntries(
-        Object.entries(result.lhr.categories).map(([k, v]) => [k, Math.round(v.score * 100)]),
-      ),
-      cls: result.lhr.audits["cumulative-layout-shift"].numericValue,
-      lcp: result.lhr.audits["largest-contentful-paint"].numericValue,
-      failures: Object.values(result.lhr.audits)
-        .filter((a) => a.score !== null && a.score < 1 && a.scoreDisplayMode !== "informative")
-        .map((a) => ({ id: a.id, score: a.score, title: a.title, displayValue: a.displayValue })),
-    });
+    summary.lighthouse.push(
+      await measurePage({ name, url: "http://localhost:3000" + url, dir, port: chrome.port }),
+    );
     console.log(name, JSON.stringify(summary.lighthouse.at(-1)));
   }
 } finally {

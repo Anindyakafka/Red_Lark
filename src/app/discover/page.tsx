@@ -35,7 +35,10 @@ export default function Page() {
                   <Link href={`/poster/${p.slug}`} key={p.slug}>
                     <PosterImage poster={p} />
                     <h3>{p.title}</h3>
-                    <p className="small">{p.languages.join(" / ")} / CC0 / PLACEHOLDER</p>
+                    <p className="small">
+                      {p.languages.join(" / ")} / {p.license} /{" "}
+                      {p.placeholder ? "PLACEHOLDER" : "PUBLISHED"}
+                    </p>
                   </Link>
                 ))}
             </div>
@@ -50,6 +53,17 @@ export default function Page() {
           <Link className="button" href="/collection">
             [BROWSE LANGUAGES] ↗
           </Link>
+        </section>
+        <section className="notice">
+          <h2>[PRINT + TYPE KITS]</h2>
+          <p>
+            Each poster detail page offers a graphics ZIP with a vector source, A3 PDF and licence
+            file. The local type kit contains Bebas Neue and IBM Plex Mono with their original open
+            font licences.
+          </p>
+          <a className="button accent" href="/bundles/mirafra-type-kit.zip" download>
+            [DOWNLOAD FONT PACK / OFL] ↓
+          </a>
         </section>
       </div>
     </>

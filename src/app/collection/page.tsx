@@ -1,4 +1,4 @@
-import { Collection } from "@/components/collection";
+import { Collection } from "@/components/archive";
 import { PageIntro } from "@/components/page-intro";
 import { posters } from "@/lib/catalog";
 import { pageMeta } from "@/lib/metadata";

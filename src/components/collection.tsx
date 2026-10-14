@@ -1,7 +1,7 @@
 "use client";
 import { useEffect, useMemo, useState } from "react";
 import Link from "next/link";
-import { artists, emptyFilters, filterPosters, fileSize, type Filters } from "@/lib/catalog";
+import { artists, emptyFilters, filterPosters, fileSize, type Filters } from "@/lib/query";
 import type { Poster } from "@/lib/types";
 import { PosterImage } from "./poster-image";
 
@@ -24,15 +24,18 @@ export function Collection({
     setHydrated(true);
     try {
       const raw = JSON.parse(localStorage.getItem("mirafra.saved.v1") ?? "[]") as unknown;
-      if (Array.isArray(raw) && raw.every((s) => typeof s === "string")) setSaved(raw);
+      if (Array.isArray(raw) && raw.length > 0 && raw.every((s) => typeof s === "string"))
+        setSaved(raw);
     } catch {
       setStorageNotice(
         "Bookmarks are unavailable in this browser. You can still browse and download.",
       );
     }
     const params = new URLSearchParams(location.search);
-    setDraft(params.get("q") ?? "");
-    setFilters((f) => ({ ...f, query: params.get("q") ?? "" }));
+    if (params.has("q")) {
+      setDraft(params.get("q") ?? "");
+      setFilters((f) => ({ ...f, query: params.get("q") ?? "" }));
+    }
   }, []);
   const results = useMemo(() => filterPosters(posters, filters, saved), [posters, filters, saved]);
   function set<K extends keyof Filters>(key: K, value: Filters[K]) {
@@ -121,7 +124,8 @@ export function Collection({
       </div>
       <p className="license-note">
         <strong>[PLEASE READ BEFORE USING]</strong> Free to download does not mean free to change.
-        Check the licence and credit on every poster. These original placeholders are CC0.
+        Check the licence and credit on every poster. Original placeholders are CC0; contributions
+        keep their own licences.
       </p>
       <form onSubmit={search} className="search-form" role="search" noValidate>
         <label htmlFor="archive-search" className="label">
@@ -220,7 +224,7 @@ export function Collection({
           </button>
         )}
         {hydrated
-          ? `${results.length} posters ready. All artwork is placeholder content.`
+          ? `${results.length} posters ready. Check each licence before reuse.`
           : "Loading collection…"}
       </p>
       {storageNotice && (
@@ -263,7 +267,7 @@ export function Collection({
                 <p className="card-meta">
                   {p.formats[0].format} · {fileSize(p.formats[0].bytes)} · {p.license}
                 </p>
-                <span className="placeholder-label">[PLACEHOLDER]</span>
+                {p.placeholder && <span className="placeholder-label">[PLACEHOLDER]</span>}
               </div>
             </article>
           ))}

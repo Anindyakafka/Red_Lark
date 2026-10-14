@@ -143,3 +143,15 @@ test("print raster dimensions and PNG physical resolution are real", async () =>
   assert.equal(view.getUint32(41), 11811);
   assert.equal(view.getUint32(45), 11811);
 });
+test("ingest rejects missing model fields, unsafe previews and mismatched editable layers", () => {
+  for (const patch of [
+    { year: undefined },
+    { region: "" },
+    { remixable: undefined },
+    { placeholder: undefined },
+    { preview: "https://remote.invalid/image.webp" },
+    { colorMode: "other" },
+    { studioLayers: { version: 99 } },
+  ])
+    assert.ok(validatePoster({ ...posters[0], ...patch } as Poster, artists).length);
+});

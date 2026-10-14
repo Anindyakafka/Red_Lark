@@ -11,6 +11,7 @@ const read = <T>(dir: string): T[] =>
     .map((f) => JSON.parse(fs.readFileSync(path.join(dir, f), "utf8")) as T);
 const artists = read<Artist>("content/artists");
 const posters = read<Poster>("content/posters");
+const community: unknown = JSON.parse(fs.readFileSync("content/community.json", "utf8"));
 const errors: string[] = [];
 for (const artist of artists) {
   if (!artist.id || !artist.name || !artist.bio || !Array.isArray(artist.links))
@@ -43,12 +44,20 @@ for (const [label, ids] of [
 ] as const)
   if (new Set(ids).size !== ids.length) errors.push(`Duplicate ${label} identifiers`);
 if (!posters.length) errors.push("Archive has no posters");
+if (
+  !Array.isArray(community) ||
+  !community.every(
+    (slug) => typeof slug === "string" && posters.some((p) => p.slug === slug && !p.placeholder),
+  )
+)
+  errors.push("Community curation must list approved non-placeholder poster slugs only.");
 if (errors.length) {
   console.error(errors.join("\n"));
   process.exit(1);
 }
 fs.mkdirSync("src/generated", { recursive: true });
 fs.writeFileSync("src/generated/catalog.json", JSON.stringify({ posters, artists }));
+fs.writeFileSync("src/generated/artists.json", JSON.stringify(artists));
 if (!process.env.CONTACT_EMAIL)
   console.warn(
     "[HUMAN CONFIGURATION] CONTACT_EMAIL is unset. Contact and submission delivery are unavailable; see docs/TODO_HUMAN.md.",
