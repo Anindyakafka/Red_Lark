@@ -6,6 +6,16 @@ const green =
   summary.lighthouse.length === 3 &&
   summary.lighthouse.every((p) => Object.values(p.scores).every((s) => s >= 95));
 const axe = summary.axe.every((p) => p.violations.length === 0);
+const commandChecks = JSON.parse(fs.readFileSync(dir + "/checks.json", "utf8"));
+const browserResults = JSON.parse(fs.readFileSync(dir + "/browser-results.json", "utf8"));
+const testsGreen =
+  commandChecks.length >= 8 &&
+  commandChecks.every((c) => c.exitCode === 0) &&
+  browserResults.stats.unexpected === 0 &&
+  browserResults.stats.skipped === 0;
+const freshEyes = fs
+  .readFileSync("docs/ITERATIONS.md", "utf8")
+  .includes("Round " + round + " fresh-eyes: PASS");
 const row = (name, status, evidence, note = "") =>
   `| ${name} | ${status} | ${evidence} | ${note} |`;
 const lines = [
@@ -23,9 +33,9 @@ const checks = [
   ],
   [
     "2. Key-page above-fold CTA",
-    round >= 2 ? "PASS" : "FAIL",
+    round >= 2 && testsGreen ? "PASS" : "FAIL",
     "home-390.png; poster-390.png; page-intro.tsx",
-    "Round 1 mobile detail puts action too far below image; improve in Round 2.",
+    "Mobile entry has a download CTA before the image; verified by screenshots.",
   ],
   [
     "3. Unique titles",
@@ -72,7 +82,7 @@ const checks = [
   ],
   [
     "11. Mobile browse CTA",
-    round >= 2 ? "PASS" : "FAIL",
+    round >= 2 && testsGreen ? "PASS" : "FAIL",
     "src/components/preferences.tsx; mobile screenshots/tests",
     "Safe-area bar hidden in Studio; improve focused-target avoidance.",
   ],
@@ -84,9 +94,9 @@ const checks = [
   ],
   [
     "13. Accessible form/search failures",
-    round >= 2 ? "PASS" : "FAIL",
+    round >= 2 && testsGreen ? "PASS" : "FAIL",
     "handoff-form.tsx; submit-errors screenshots; browser tests",
-    "Fix first-invalid-field focus; email flow has no server/network submit.",
+    "First visually invalid field receives focus; unavailable inbox and honeypot tested. No server/network submission exists.",
   ],
   [
     "14. Thank-you",
@@ -158,7 +168,7 @@ for (const [name, evidence] of studio)
   lines.push(
     row(
       `Studio: ${name}`,
-      round >= 2 ? "PASS" : "FAIL",
+      round >= 2 && testsGreen ? "PASS" : "FAIL",
       evidence,
       round >= 2
         ? "See browser tests and source for coverage; no server storage."
@@ -193,7 +203,7 @@ lines.push(
 lines.push(
   row(
     "Fresh-eyes final round",
-    round >= 5 ? "PASS" : "FAIL",
+    round >= 5 && freshEyes && testsGreen && green && axe ? "PASS" : "FAIL",
     "docs/ITERATIONS.md",
     "Must reread brief, inspect screenshots, click every route and exercise form/licence paths.",
   ),

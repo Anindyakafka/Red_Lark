@@ -52,3 +52,21 @@ Remaining weaknesses, ranked:
 5. Checklist generation must key PASS to recorded green checks and an explicit final fresh-eyes review, rather than round number alone. Document the compression/static-file requirements for production hosts.
 
 Appearance is consistently raw and usable. The filtered grid now communicates bilingual titles, artist, region, file metadata and saved controls together. Mobile Studio shows more paper and keeps a separate bottom toolbar. Remaining presentation choices are minor polish; the next round focuses on trust boundaries and proof.
+
+## Round 4 critique
+
+Replaced the share codec with version-tagged deflate/base64url and a fixed 160,001-byte output buffer; oversized decompression is rejected before JSON parsing. Distinguished source permissions from user-added rights, while retaining mandatory ShareAlike adaptation licences. Added uploaded-image result-size/layer limits. Checklist generation now requires recorded green commands/browser results and an explicit fresh-eyes acceptance marker.
+
+All install/typecheck/lint/format/validation/build checks, **13 model/privacy tests** and **61 browser tests** pass. New tests cover decompression bounds, analytics DNT/off-origin rejection/content omission, touch pinch, every paper PDF page box, A2 PNG dimensions and sharing a credited remix into a second tab. Zero axe violations. All required 390/1440 light/dark screenshots were viewed; no new visual defect.
+
+Lighthouse: Home **92/100/100/100**, Collection **99/100/100/100**, Poster **99/100/100/100**. Home has 230ms simulated blocking time in this fresh pass; the failure is recorded despite Round 3's 97. CLS remains ~0.00003.
+
+Remaining issues for the fresh-eyes round:
+
+1. Shrink the catalogue hydration boundary: Studio source scenes should not be serialised into a browsing grid or bundled with artist-only search data. Remove needless initial filter state updates. Record repeated cold-cache runs and their median to expose variability, rather than selecting the best score.
+2. Community must accept file-based human curation, not be a permanently hardcoded empty page. Keep its checked-in list empty until reviewed contributions exist.
+3. File ingest must require year/region/booleans/safe preview paths and original-language labels consistently. Real contributions must not inherit hardcoded PLACEHOLDER badges or claims that all content is CC0.
+4. Expose the openly licensed local font pack as a downloadable bundle alongside graphics packages. Artist links should be visible when supplied.
+5. Final review must click through actual navigation, recheck form focus/honeypot/unavailable delivery and ND gate, and inspect an empty/recovered Studio. Only then write the fresh-eyes acceptance marker.
+
+These are bounded fixes within the stated mission. No accounts, database, remote assets, fabricated submissions or invented contact details are introduced.

@@ -47,7 +47,10 @@ export function creditLines(scene: Scene) {
   const credits = sceneCredits(scene);
   const license = exportLicense(credits);
   return [
-    `COMPOSITION: ${license}`,
+    `SOURCE LICENCE: ${license}`,
+    ...(credits.some((c) => LICENSES[c.license].shareAlike)
+      ? [`ADAPTATION: ${license} REQUIRED / YOUR ADDITIONS MUST COMPLY`]
+      : ["USER ADDITIONS: RIGHTS RETAINED / SOURCE PERMISSIONS REMAIN IN FORCE"]),
     ...credits.map((c) => `${c.title} / ${c.artist} / ${c.license} / ${c.source}`),
     ...(scene.layers.some((l) => !l.hidden && l.kind === "image" && !l.credit)
       ? ["User image: rights retained by its owner; confirm permission before sharing."]

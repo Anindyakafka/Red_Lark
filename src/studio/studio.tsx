@@ -366,10 +366,18 @@ export default function Studio() {
   }
   async function upload(file: File | undefined) {
     if (!file) return;
+    if (scene.layers.length >= 80) {
+      setFailure("[LIMIT] Remove a layer before adding an image.");
+      return;
+    }
     setBusy(true);
     setFailure("");
     try {
       const image = await importImage(file);
+      if (image.data.length > 8_000_000)
+        throw new Error(
+          "This re-encoded image is too large for a browser-local draft. Choose a smaller image.",
+        );
       const layer = {
         ...newLayer("image"),
         image: image.data,

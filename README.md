@@ -18,7 +18,7 @@ npm run build
 npm start
 ```
 
-The export is in out/. npm start serves it locally with the documented security headers. A static host needs those headers too; do not assume Next.js runtime headers apply to a static export.
+The export is in out/. The build also emits physical Next segment-file aliases for ordinary static hosts. Enable Brotli/gzip text compression and immutable caching for hashed framework assets on the production host; the verification server does both. npm start serves it locally with the documented security headers. A static host needs those headers too; do not assume Next.js runtime headers apply to a static export.
 
 ## Scripts
 
@@ -69,7 +69,7 @@ Explicit artist credit, source, licence and alt are mandatory. Licence flags are
 
 The hand-rolled SVG scene is independent of the UI and stored as schema version 2. Add/remove/reorder/lock/hide text, shapes, stamps, halftone, grain and local images. Eligible poster detail links load that poster's real source layers. Shelf additions retain source credits. Drag/resize/rotate, labelled numeric controls, self-hosted typefaces, ink swatches, one/two/three-ink previews, paper presets, snapping, keyboard shortcuts, zoom/pan and mobile tool tabs are provided.
 
-SVG/PDF exports preserve shapes and outlined type. PNG exports use true preset pixels and a 300-PPI physical-resolution chunk for paper presets; Social stays 1080x1350 px. A4 tiled PDF uses 10mm margins and tile labels for home assembly. Ink separation ZIPs are uncalibrated composition previews, not press-ready plates. An automatic small credit strip and licence metadata travels with exports.
+SVG/PDF exports preserve shapes and outlined type. PNG exports use true preset pixels and a 300-PPI physical-resolution chunk for paper presets; Social stays 1080x1350 px. A4 tiled PDF uses 10mm margins and tile labels for home assembly. Ink separation ZIPs are uncalibrated composition previews, not press-ready plates. An automatic small credit strip and licence metadata travels with exports. Source rights are distinguished from user additions: original additions are not automatically dedicated to CC0. ShareAlike adaptations must use the required source licence.
 
 Drafts autosave to localStorage. Start fresh clears the previous draft/history; Restore recovers the draft present when the session opened. No server stores designs. Share links encode compact scene state in the URL fragment; recipients can read it. Links reject uploaded images and oversized state. Local uploads accept JPEG/PNG/WebP/AVIF, discard EXIF/GPS by decoding and re-encoding as PNG and downsample to a maximum dimension of 1800px. This avoids oversized drafts; use original vectors for large prints. Visible image content can still identify people.
 

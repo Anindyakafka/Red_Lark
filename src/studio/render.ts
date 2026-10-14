@@ -1,6 +1,7 @@
 import type { Font } from "opentype.js";
+import { LICENSES } from "@/lib/types";
 import { PRESETS, type FontId, type Layer, type Scene } from "@/lib/types";
-import { creditLines } from "@/lib/licenses";
+import { creditLines, sceneCredits } from "@/lib/licenses";
 import { assertExportable, dimensions } from "./model";
 export type Fonts = Record<FontId, Font>;
 export const xml = (s: string) =>
@@ -99,5 +100,5 @@ export function sceneSvg(scene: Scene, fonts: Fonts, separation?: string) {
       textPaths(line, fonts.mono, 10, stripTop + 5 + i * 10, 7, width - 20, "#151515"),
     )
     .join("");
-  return `<svg xmlns="http://www.w3.org/2000/svg" width="${preset.width}${preset.unit}" height="${preset.height}${preset.unit}" viewBox="0 0 ${width} ${height}"><title>Mirafra composition</title><metadata>${xml(JSON.stringify({ license, credits: creditLines(scene), preset: scene.preset, rasterPpi: preset.unit === "mm" ? 300 : undefined }))}</metadata><defs><clipPath id="artboard"><rect width="${width}" height="${stripTop}"/></clipPath></defs><rect width="${width}" height="${height}" fill="${separation ? "#ffffff" : scene.background}"/><g clip-path="url(#artboard)">${layers}</g><rect y="${stripTop}" width="${width}" height="${stripHeight}" fill="#f3f0e6"/><path d="M0 ${stripTop}H${width}" stroke="#151515"/>${credits}</svg>`;
+  return `<svg xmlns="http://www.w3.org/2000/svg" width="${preset.width}${preset.unit}" height="${preset.height}${preset.unit}" viewBox="0 0 ${width} ${height}"><title>Mirafra composition</title><metadata>${xml(JSON.stringify({ sourceLicense: license, adaptationLicense: sceneCredits(scene).some((c) => LICENSES[c.license].shareAlike) ? license : "User additions: rights retained", credits: creditLines(scene), preset: scene.preset, rasterPpi: preset.unit === "mm" ? 300 : undefined }))}</metadata><defs><clipPath id="artboard"><rect width="${width}" height="${stripTop}"/></clipPath></defs><rect width="${width}" height="${height}" fill="${separation ? "#ffffff" : scene.background}"/><g clip-path="url(#artboard)">${layers}</g><rect y="${stripTop}" width="${width}" height="${stripHeight}" fill="#f3f0e6"/><path d="M0 ${stripTop}H${width}" stroke="#151515"/>${credits}</svg>`;
 }

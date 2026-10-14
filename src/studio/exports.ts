@@ -158,7 +158,7 @@ export async function exportFile(
     } else await pdf.svg(node, { x: 0, y: 0, width, height });
     pdf.setProperties({
       title: "Mirafra composition",
-      subject: license,
+      subject: `Source permissions: ${license}. See credit strip for adaptation and user-image rights.`,
       author: "See source credit strip",
       keywords: "Mirafra, browser-only, outlined vector type",
     });

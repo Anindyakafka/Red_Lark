@@ -65,7 +65,7 @@ test("ShareAlike exports carry every unique source and reject incompatible licen
   s.layers[1].credit = b;
   s.layers[2].credit = a;
   const lines = creditLines(s);
-  assert.equal(lines.length, 3);
+  assert.equal(lines.length, 4);
   assert.ok(lines[0].includes("CC-BY-NC-SA-4.0"));
   assert.ok(sceneSvg(s, fonts).includes("CC-BY-NC-SA-4.0"));
 });
