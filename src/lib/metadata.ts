@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
-export const siteUrl = (process.env.SITE_URL ?? "http://localhost:3000").replace(/\/$/, "");
+import { resolveSiteOrigin } from "./site-origin";
+export const siteUrl = resolveSiteOrigin(process.env);
 export function pageMeta(
   title: string,
   description: string,

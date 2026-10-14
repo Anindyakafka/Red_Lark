@@ -1,0 +1,11 @@
+# Next.js exports directory routes and a real 404.html; no SPA rewrite is needed.
+[build]
+  command = "npm run build"
+  publish = "out"
+
+[build.environment]
+  NODE_VERSION = "24"
+  # Serve the static export without the server-rendering adapter/functions.
+  NETLIFY_NEXT_PLUGIN_SKIP = "true"
+
+# Security and cache headers live in public/_headers, copied into out/ at build.

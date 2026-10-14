@@ -44,7 +44,7 @@ Copy .env.example to .env.local for Next builds. Values are baked into the stati
 
 | Variable                       | Purpose                                                                                            |
 | ------------------------------ | -------------------------------------------------------------------------------------------------- |
-| SITE_URL                       | Production origin for canonical, OG and sitemap URLs; defaults to localhost for development        |
+| SITE_URL                       | Optional canonical/OG/sitemap origin override; otherwise uses Netlify deployment URL or localhost  |
 | CONTACT_EMAIL                  | Real monitored contact/takedown inbox. Unset produces a build warning and a visibly unavailable UI |
 | NEXT_PUBLIC_ANALYTICS_DOMAIN   | Optional self-hosted Plausible site identifier                                                     |
 | NEXT_PUBLIC_ANALYTICS_ENDPOINT | Optional same-origin event proxy path; e.g. /analytics/event. No remote script URL                 |
@@ -84,6 +84,25 @@ The necessary browser-local draft/bookmark features are disclosed through a visi
 Analytics is disabled by default. Optional analytics uses a self-hosted Plausible **same-origin proxy** (host configuration required), not an external script. It respects Do Not Track and allows only pageview, poster-download and studio-export. Payloads omit query strings, fragments, designs, form messages, image metadata and identifiers. Configure the proxy to omit cookies/authorization and document its retention. If hosting access logs exist, the operator must document them too.
 
 ## Deployment
+
+### Netlify
+
+Import this GitHub repository into Netlify and choose `rebuild` as the production branch while this work lives there (or your release branch after merging). Leave the base directory at the repository root. The committed `netlify.toml` supplies:
+
+- Build command: `npm run build`
+- Publish directory: `out`
+- Node.js: `24`
+- `NETLIFY_NEXT_PLUGIN_SKIP=true` for the static export, as documented in [Netlify's framework guide](https://docs.netlify.com/build/frameworks/overview/).
+
+Set `CONTACT_EMAIL` to your real monitored inbox in Netlify's environment variables with **Builds** scope. No `.env.local` needs to be uploaded. Leave `SITE_URL` unset to use Netlify's primary site/custom-domain URL in production and the preview URL for branch deploys/Deploy Previews. An explicit `SITE_URL` takes precedence in every context; set it only for production if previews should keep their own URLs. Changing any build-time value or the domain requires a new deploy.
+
+Netlify serves the exported directory routes and `404.html` directly. Do not add a `/* /index.html 200` rewrite: it would break real missing-page responses. Security headers from `public/_headers` are copied to `out/_headers`; hashed Next.js assets also receive immutable caching. Keep Forms detection, snippet injection, third-party analytics and other optional Netlify integrations disabled unless separately reviewed; the current forms still hand off to the visitor's mail app. No server-rendering adapter or Functions are needed.
+
+After deployment, open `/collection/`, a poster URL, `/studio/` and an unknown URL directly and refresh each. Verify the unknown URL returns HTTP 404, `/sitemap.xml` uses the intended domain, and responses include the CSP and `Referrer-Policy: no-referrer`. Document Netlify access-log handling in the privacy policy before launch. This configuration prepares deployment; it does not publish the site or configure your Netlify account/domain.
+
+Deployment follow-up checks passed: typecheck, lint, formatting, content/export validation, production build with Netlify-style environment variables, 18 unit tests and all 65 browser tests. Exported canonical/sitemap/robots URLs, `404.html` and copied security/cache headers were checked locally. Live Netlify CDN behaviour still needs the post-deploy checks above.
+
+### Other static hosts
 
 1. Supply the real inbox and production SITE_URL; complete human permission/legal review.
 2. npm ci, typecheck, lint, validation, tests and build.

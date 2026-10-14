@@ -47,3 +47,9 @@ Image uploads are decoded and re-encoded locally as PNG before entering a scene;
 ## Delivery / verification policy
 
 Work on `rebuild`, with numbered rounds and small commits. Minimum five rounds, maximum fifteen. Each round records install, typecheck, lint, validation, build, model/browser tests, screenshots reviewed at 390 and 1440, axe and mobile Lighthouse for Home/Collection/Poster. Never record an unmeasured score as PASS. Human-only remaining decisions go in `docs/TODO_HUMAN.md`; technical failures stay visible in CHECKLIST/ITERATIONS until fixed.
+
+## Hosting follow-up: Netlify
+
+The owner selected Netlify after the five rebuild rounds. Keep `output: "export"`: all routes and Studio behaviour work without a Next.js server. `netlify.toml` fixes the build command to `npm run build`, publication to `out`, Node to 24 and `NETLIFY_NEXT_PLUGIN_SKIP=true` to bypass the server adapter. This follows [Netlify's static Next.js guidance](https://docs.netlify.com/build/frameworks/overview/). Existing static security headers remain in `public/_headers`; hashed framework assets get immutable caching. No catch-all SPA rewrite, account integration, submission backend or deployment is added.
+
+Canonical/OG/sitemap origins use explicit `SITE_URL`, then Netlify's contextual URL, then localhost for development. Production uses `URL`; preview/branch contexts use `DEPLOY_PRIME_URL`, following [Netlify's build-variable definitions](https://docs.netlify.com/build/configure-builds/environment-variables/). Blank overrides are ignored and invalid origins fail validation/build. Operators still supply the inbox, domain, legal review and hosting-log policy.
