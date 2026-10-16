@@ -14,6 +14,9 @@ export function Header() {
           </span>
         </Link>
         <div className="header-controls">
+          <Link className="account-link" href="/account">
+            <UiText id="Account" />
+          </Link>
           <LanguageSwitcher />
           <Preferences />
         </div>
@@ -21,10 +24,11 @@ export function Header() {
       <nav aria-label="Main navigation">
         {[
           ["Collection", "/collection"],
-          ["Discover", "/discover"],
+          ["Categories", "/categories"],
           ["Artists", "/artists"],
           ["Studio", "/studio"],
           ["Community", "/community"],
+          ["Blog", "/blog"],
           ["About", "/about"],
         ].map(([name, href]) => (
           <Link key={href} href={href} prefetch={false}>
@@ -64,8 +68,8 @@ export function Footer() {
         <Link prefetch={false} href="/terms">
           <UiText id={"Terms & licences"} />
         </Link>
-        <Link prefetch={false} href="/themes">
-          <UiText id={"Themes & movements"} />
+        <Link prefetch={false} href="/categories">
+          <UiText id={"Categories"} />
         </Link>
         <Link prefetch={false} href="/about">
           <UiText id={"About / support artists"} />

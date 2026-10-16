@@ -16,6 +16,7 @@ import { freshScene, newLayer } from "../src/studio/model";
 import { sceneSvg, type Fonts } from "../src/studio/render";
 import * as hb from "harfbuzzjs";
 import { createShapedFont } from "../src/studio/shaping";
+import workshop from "../content/workshop.json";
 
 await Promise.all(
   ["content/posters", "content/artists", "public/posters", "src/generated", "public/icons"].map(
@@ -35,7 +36,7 @@ const artists: Artist[] = [
   {
     id: "wet-ink-workshop",
     name: "The Wet Ink Workshop",
-    bio: "An invented credit for original typographic placeholder studies authored for this build. Not a real artist collective.",
+    bio: "In-house credit for original AI-assisted vector placeholder studies used to test this archive. These are not contributions by a featured artist.",
     links: [],
     placeholder: true,
   },
@@ -205,6 +206,8 @@ for (let i = 0; i < entries.length; i++) {
     bytes: bundle.byteLength,
   });
   const poster: Poster = {
+    ...workshop[slug as keyof typeof workshop],
+    aiUse: "generated",
     slug,
     title,
     ...(original ? { titleOriginal: original } : {}),
@@ -220,7 +223,7 @@ for (let i = 0; i < entries.length; i++) {
         }
       : {},
     artist: artist.id,
-    year: 2026 - (i % 3),
+    year: 2026,
     themes: [theme],
     movements: [movement],
     colorMode: bw ? "bw" : "color",

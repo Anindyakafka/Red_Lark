@@ -63,7 +63,7 @@ try {
         if (name === "collection") {
           const select = page.locator('select[aria-label="Category"]');
           if (await select.count()) await select.selectOption("workers");
-          else await page.locator('select[aria-label="Theme"]').selectOption("Labor");
+          else await page.locator('select[aria-label="Category"]').selectOption("workers");
         }
         if (name.endsWith("errors")) await page.locator('button[type="submit"]').first().click();
         const positions = name === "landing" ? ["top", "middle", "bottom"] : ["top"];

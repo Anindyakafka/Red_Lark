@@ -4,7 +4,7 @@
   "languages": ["English"],
   "translations": {},
   "artist": "wet-ink-workshop",
-  "year": 2024,
+  "year": 2026,
   "themes": ["Migration"],
   "movements": ["Freedom of movement"],
   "colorMode": "color",
@@ -141,5 +141,12 @@
         }
       }
     ]
-  }
+  },
+  "categories": ["displacement-and-migration"],
+  "tags": ["migration", "freedom of movement"],
+  "kind": "poster-placard",
+  "imageCode": "1i",
+  "captionCode": "2k",
+  "aiUse": "generated",
+  "aiDisclosure": "Original AI-assisted vector placeholder created for site testing. This is not a curated human submission or a contribution by a real artist."
 }

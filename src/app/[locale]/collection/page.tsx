@@ -1,23 +1,29 @@
 import { localizeMetadata } from "@/i18n/metadata";
 import { Collection } from "@/components/archive";
-import { PageIntro } from "@/components/page-intro";
+import { Link, UiText } from "@/i18n/client";
 import { posters } from "@/lib/catalog";
 import { pageMeta } from "@/lib/metadata";
 const baseMetadata = pageMeta(
   "Collection",
-  "Search free print posters by theme, movement, language, artist, colour, format and licence. Original CC0 placeholder collection.",
+  "Search free print posters by category, language, artist, colour, artwork format and licence. Original CC0 placeholder collection.",
   "/collection",
 );
 export default function Page() {
   return (
     <>
-      <PageIntro
-        index="02"
-        title="THE COLLECTION."
-        description="Find a poster. Read the small print. Take it to a wall."
-        action="Open Studio"
-        href="/studio"
-      />
+      <section className="archive-intro">
+        <div>
+          <h1>
+            <UiText id="THE COLLECTION." />
+          </h1>
+          <p>
+            <UiText id="Find a poster. Read the small print. Take it to a wall." />
+          </p>
+        </div>
+        <Link className="button accent" href="/studio">
+          <UiText id="Open Studio" /> ↗
+        </Link>
+      </section>
       <Collection posters={posters} />
     </>
   );

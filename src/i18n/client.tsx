@@ -1,7 +1,7 @@
 "use client";
 import { createContext, useContext, type ComponentProps, type ReactNode } from "react";
 import NextLink from "next/link";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import { languageNames, locales, localePath, type Locale } from "./config";
 const Context = createContext<{ locale: Locale; strings: Record<string, string> }>({
   locale: "en",
@@ -38,6 +38,7 @@ export function Link({ href, ...props }: ComponentProps<typeof NextLink>) {
   );
 }
 export function LanguageSwitcher({ landing = false }: { landing?: boolean }) {
+  const router = useRouter();
   const path = usePathname();
   const { locale, t } = useI18n();
   const rest = path.replace(/^\/(en|hi|bn|ml)(?=\/|$)/, "") || "/";
@@ -51,6 +52,19 @@ export function LanguageSwitcher({ landing = false }: { landing?: boolean }) {
           prefetch={false}
           hrefLang={l}
           lang={l}
+          onClick={(event) => {
+            // Preserve collection filters and private Studio share fragments.
+            if (
+              !event.metaKey &&
+              !event.ctrlKey &&
+              !event.shiftKey &&
+              !event.altKey &&
+              (location.search || location.hash)
+            ) {
+              event.preventDefault();
+              router.push(`${localePath(l, rest)}${location.search}${location.hash}`);
+            }
+          }}
           aria-current={l === locale ? "page" : undefined}
         >
           {landing && l !== "en" ? `${["English", "Hindi", "Bengali", "Malayalam"][i]} / ` : ""}

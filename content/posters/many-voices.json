@@ -4,7 +4,7 @@
   "languages": ["English"],
   "translations": {},
   "artist": "wet-ink-workshop",
-  "year": 2024,
+  "year": 2026,
   "themes": ["Solidarity"],
   "movements": ["Mutual aid"],
   "colorMode": "color",
@@ -141,5 +141,12 @@
         }
       }
     ]
-  }
+  },
+  "categories": ["democracy"],
+  "tags": ["solidarity", "mutual aid"],
+  "kind": "sticker",
+  "imageCode": "1j",
+  "captionCode": "2l",
+  "aiUse": "generated",
+  "aiDisclosure": "Original AI-assisted vector placeholder created for site testing. This is not a curated human submission or a contribution by a real artist."
 }

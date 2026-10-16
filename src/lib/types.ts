@@ -101,7 +101,13 @@ export interface PosterFile {
   bytes: number;
 }
 export interface Poster {
-  categories?: string[];
+  categories: string[];
+  tags: string[];
+  kind: string;
+  imageCode: string;
+  captionCode: string;
+  aiUse: "none" | "minimal-assisted" | "generated";
+  aiDisclosure: string;
   translations?: Partial<
     Record<
       "en" | "hi" | "bn" | "ml",

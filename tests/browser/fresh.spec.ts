@@ -1,6 +1,7 @@
 ﻿import { test, expect } from "@playwright/test";
-import { posters, artists, themes, slugify } from "../../src/lib/catalog";
-test("fresh-eyes clickthrough of poster, artist and theme indexes", async ({ page }) => {
+import { posters, artists } from "../../src/lib/catalog";
+import categories from "../../content/categories.json" with { type: "json" };
+test("fresh-eyes clickthrough of poster, artist and category indexes", async ({ page }) => {
   test.setTimeout(120000);
   for (const p of posters) {
     await page.goto("/collection/");
@@ -14,11 +15,13 @@ test("fresh-eyes clickthrough of poster, artist and theme indexes", async ({ pag
     await page.locator(`.index-card a[href="/en/artist/${a.id}/"]`).click();
     await expect(page).toHaveURL(new RegExp(`/artist/${a.id}/`));
   }
-  for (const t of themes) {
-    await page.goto("/themes/");
-    await page.locator(`a[href="/en/theme/${slugify(t)}/"]`).click();
-    await expect(page).toHaveURL(new RegExp(`/theme/${slugify(t)}/`));
-    await expect(page.locator(".poster-card").first()).toBeVisible();
+  for (const category of categories) {
+    await page.goto("/categories/");
+    await page.locator(`.category-grid a[href="/en/category/${category.slug}/"]`).click();
+    await expect(page).toHaveURL(new RegExp(`/category/${category.slug}/`));
+    await expect(page.locator(".poster-card")).toHaveCount(
+      posters.filter((p) => p.categories.includes(category.slug)).length,
+    );
   }
 });
 test("fresh-eyes form focus and true empty Studio recovery", async ({ page }) => {

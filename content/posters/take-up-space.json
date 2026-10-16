@@ -4,7 +4,7 @@
   "languages": ["English"],
   "translations": {},
   "artist": "wet-ink-workshop",
-  "year": 2024,
+  "year": 2026,
   "themes": ["Accessibility"],
   "movements": ["Disability justice"],
   "colorMode": "color",
@@ -141,5 +141,12 @@
         }
       }
     ]
-  }
+  },
+  "categories": ["miscellaneous"],
+  "tags": ["accessibility", "disability justice"],
+  "kind": "poster-placard",
+  "imageCode": "1o",
+  "captionCode": "2q",
+  "aiUse": "generated",
+  "aiDisclosure": "Original AI-assisted vector placeholder created for site testing. This is not a curated human submission or a contribution by a real artist."
 }

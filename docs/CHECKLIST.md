@@ -19,6 +19,14 @@ The original rows below are preserved as historical evidence. Their PASS entries
 
 ## Historical baseline
 
+| M4 acceptance                                                  | Status | Evidence                                                              | Note                                              |
+| -------------------------------------------------------------- | ------ | --------------------------------------------------------------------- | ------------------------------------------------- |
+| Exact 28 categories and 10 artwork formats                     | PASS   | content/categories.json; content/formats.json; tests/taxonomy.test.ts | File formats are a separate concept.              |
+| Category pages, counts, combined search/facets, newest default | PASS   | collection.tsx; query.ts; taxonomy browser/unit tests                 | Empty categories show real zero counts.           |
+| Filter URL restore/reset and language-switch preservation      | PASS   | tests/browser/taxonomy.spec.ts                                        | No tracking cookie.                               |
+| Primary navigation and legacy taxonomy redirects               | PASS   | shell.tsx; legacy-routes.json; Edge tests                             | Existing paths remain compatible.                 |
+| Account/admin functionality                                    | FAIL   | M7 HOLD; noindex service notices                                      | No fake forms, sessions, uploads or review queue. |
+
 M3 measured checkpoint: `docs/evidence/redlark-round-9/summary.json` records zero axe violations and no external requests/page errors. Mobile Lighthouse medians: en 97/98/97, hi 96/98/97 (landing/collection/item); other categories all 100. Full browser suite: 73 passed. Unit suite: 30 passed. Copy, brand, strict types, lint, content validation and 284-page export validation pass. This measurement covers the current public checkpoint; the combined new-site/end-to-end row above remains FAIL because required backend work is held. Earlier round 3-8 performance failures are retained with critiques.
 
 Last reviewed: previous Round 5. Evidence paths are relative to the repository. No human-only configuration is invented.

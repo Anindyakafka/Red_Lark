@@ -3,7 +3,8 @@ import { localizeMetadata } from "@/i18n/metadata";
 import { Link } from "@/i18n/client";
 import { PageIntro } from "@/components/page-intro";
 import { PosterImage } from "@/components/poster-image";
-import { posters, movements, slugify } from "@/lib/catalog";
+import { posters } from "@/lib/catalog";
+import categories from "../../../../content/categories.json";
 import { pageMeta } from "@/lib/metadata";
 const baseMetadata = pageMeta(
   "Discover",
@@ -16,36 +17,37 @@ export default function Page() {
       <PageIntro
         index="03"
         title="FIND YOUR THREAD."
-        description="By movement. By language. By a little curiosity."
+        description="By category. By language. By a little curiosity."
       />
       <div className="content-width">
-        {movements.slice(0, 3).map((m) => (
-          <section className="discover-rail" key={m}>
-            <div className="rail-heading">
-              <h2>{m}</h2>
-              <Link
-                href={`/theme/${slugify(posters.find((p) => p.movements.includes(m))!.themes[0])}`}
-              >
-                <UiText id={"[EXPLORE] ↗"} />
-              </Link>
-            </div>
-            <div className="rail-grid">
-              {posters
-                .filter((p) => p.movements.includes(m))
-                .slice(0, 3)
-                .map((p) => (
-                  <Link href={`/poster/${p.slug}`} key={p.slug}>
-                    <PosterImage poster={p} />
-                    <h3>{p.title}</h3>
-                    <p className="small">
-                      {p.languages.join(" / ")} / {p.license} /{" "}
-                      {p.placeholder ? "PLACEHOLDER" : "PUBLISHED"}
-                    </p>
-                  </Link>
-                ))}
-            </div>
-          </section>
-        ))}
+        {categories
+          .filter((category) => posters.some((poster) => poster.categories.includes(category.slug)))
+          .slice(0, 3)
+          .map((category) => (
+            <section className="discover-rail" key={category.slug}>
+              <div className="rail-heading">
+                <h2>{category.label}</h2>
+                <Link href={`/category/${category.slug}/`}>
+                  <UiText id={"[EXPLORE] ↗"} />
+                </Link>
+              </div>
+              <div className="rail-grid">
+                {posters
+                  .filter((p) => p.categories.includes(category.slug))
+                  .slice(0, 3)
+                  .map((p) => (
+                    <Link href={`/poster/${p.slug}`} key={p.slug}>
+                      <PosterImage poster={p} />
+                      <h3>{p.title}</h3>
+                      <p className="small">
+                        {p.languages.join(" / ")} / {p.license} /{" "}
+                        {p.placeholder ? "PLACEHOLDER" : "PUBLISHED"}
+                      </p>
+                    </Link>
+                  ))}
+              </div>
+            </section>
+          ))}
         <section className="notice">
           <h2>
             <UiText id={"WORDS TRAVEL."} />
@@ -53,7 +55,7 @@ export default function Page() {
           <p>
             <UiText
               id={
-                "Original-language titles sit beside English titles. Explore the Spanish and French placeholder studies in the collection’s language filter."
+                "Original-language titles sit beside English titles. Explore the Hindi, Bengali and Malayalam placeholder studies in the collection’s language filter. Draft translations need native review."
               }
             />
           </p>

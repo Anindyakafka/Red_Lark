@@ -1,7 +1,21 @@
 import { LICENSES, type Artist, type Poster } from "./types";
 import { validateScene } from "../studio/model";
+import categories from "../../content/categories.json";
+import formats from "../../content/formats.json";
 export function validatePoster(p: Poster, artists: Artist[]): string[] {
   const errors: string[] = [];
+  if (
+    !Array.isArray(p.categories) ||
+    p.categories.some((slug) => !categories.some((c) => c.slug === slug))
+  )
+    errors.push("Categories must use the approved category slugs");
+  if (!Array.isArray(p.tags) || p.tags.some((tag) => typeof tag !== "string" || !tag.trim()))
+    errors.push("Tags must be non-empty text");
+  if (!formats.some((format) => format.slug === p.kind)) errors.push("Unknown artwork format");
+  if (!["none", "minimal-assisted", "generated"].includes(p.aiUse) || !p.aiDisclosure?.trim())
+    errors.push("AI use and disclosure are required");
+  if (!/^1[a-z]+$/.test(p.imageCode ?? "") || !/^2[a-z]+$/.test(p.captionCode ?? ""))
+    errors.push("Image and caption codes are required");
   if (!Number.isInteger(p.year) || p.year < 1900 || p.year > 2100)
     errors.push("Missing or invalid year");
   if (typeof p.region !== "string" || !p.region.trim()) errors.push("Missing region");

@@ -1,6 +1,6 @@
 # Copy decisions and questions
 
-Planning only, 16 October 2026; landing text has not been implemented or edited.
+Updated during implementation, 16 October 2026. Landing text is rendered verbatim and locked by independent source and rendered-text tests. No editorial changes have been made to Appendix A.
 
 - Appendix A, including curly quotes, capitalization, sentence order and repeated policy links, is canonical. Slide spacing does not override it.
 - Format lists differ between slides. Use Appendix C's instructed union: Badge, Caricature, Cartoon, Flyer, Meme, Portrait, Poster/Placard, Stencil, Sticker, Zine.

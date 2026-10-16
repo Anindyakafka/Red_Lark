@@ -55,6 +55,8 @@ export function BrowseCTA() {
     path === "/" ||
     [
       "/collection",
+      "/categories",
+      "/category/",
       "/discover",
       "/poster/",
       "/artists",

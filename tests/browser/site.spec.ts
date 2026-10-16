@@ -65,8 +65,8 @@ test("all specified breakpoints have no horizontal document overflow", async ({ 
 });
 test("filters/search/count/save are real and search errors are accessible", async ({ page }) => {
   await page.goto("/collection/");
-  await page.getByLabel("Theme", { exact: true }).selectOption("Housing");
-  await expect(page.locator(".poster-card")).toHaveCount(3);
+  await page.getByLabel("Category", { exact: true }).selectOption("displacement-and-migration");
+  await expect(page.locator(".poster-card")).toHaveCount(5);
   await page.getByLabel("SEARCH THE ARCHIVE").fill("homes");
   await page.getByRole("button", { name: "[SEARCH]" }).click();
   await expect(page.locator(".poster-card")).toHaveCount(1);

@@ -423,6 +423,15 @@
     "Your draft is still here. Choose another format or retry.": "Your draft is still here. Choose another format or retry.",
     "[SHARE LINK READY] Anyone with the link can read this design. It contains no uploaded image.": "[SHARE LINK READY] Anyone with the link can read this design. It contains no uploaded image.",
     "[FRESH START] Previous draft removed. This new composition will autosave locally.": "[FRESH START] Previous draft removed. This new composition will autosave locally.",
-    "[RESTORED] The draft saved when you opened this session.": "[RESTORED] The draft saved when you opened this session."
+    "[RESTORED] The draft saved when you opened this session.": "[RESTORED] The draft saved when you opened this session.",
+    "ALL (Uncategorized)": "ALL (Uncategorized)",
+    "Contributor accounts": "Contributor accounts",
+    "Find political graphics by subject. A work can belong to more than one category.": "Find political graphics by subject. A work can belong to more than one category.",
+    "Contributor accounts and the review service are not enabled yet. Browsing, downloading and the Studio are free without an account.": "Contributor accounts and the review service are not enabled yet. Browsing, downloading and the Studio are free without an account.",
+    "[NOT AVAILABLE YET] No account is created, and no credentials or artwork are collected here.": "[NOT AVAILABLE YET] No account is created, and no credentials or artwork are collected here.",
+    "The team has paused backend setup. Please use Contact to discuss a contribution through your own email app.": "The team has paused backend setup. Please use Contact to discuss a contribution through your own email app.",
+    "Notes from the workshop": "Notes from the workshop",
+    "Printing, distribution and conversations with artists. Editorial content is being prepared.": "Printing, distribution and conversations with artists. Editorial content is being prepared.",
+    "[EDITORIAL PLACEHOLDERS] Draft posts are being prepared; no artist interview has been published.": "[EDITORIAL PLACEHOLDERS] Draft posts are being prepared; no artist interview has been published."
   }
 }

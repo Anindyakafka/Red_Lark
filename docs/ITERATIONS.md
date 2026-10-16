@@ -1,5 +1,15 @@
 # Numbered rebuild rounds
 
+## Red Lark Round 10 critique — M4 taxonomy and navigation
+
+Wired all 28 canonical categories and ten artwork formats into real collection filters; default remains ALL (Uncategorized). Works have category arrays/free tags and draft-native title/caption/tag search. Filter URLs restore on load, survive language changes, and reset completely. Source placeholders now state their actual 2026 creation year and truthful AI-assisted origin. Category index/counts and sitemap entries are generated. Discover uses categories; old theme paths redirect with locale/query preserved in Netlify Edge and local preview. The header now follows the requested navigation and includes an account control.
+
+Account/login/reset/admin destinations are honest, noindex service-pending notices, collecting no credentials or uploads; they do not satisfy M7. Blog currently explains that editorial placeholders are in preparation; publishing the authored MDX assets remains M9. Explicit backend hold is unchanged.
+
+Checks: 32 unit tests, independent copy test, types/lint/brand/content/build pass; 316 HTML pages validate. Full browser suite: 75 passed, including all category links, combined filters, native search, locale switching, ND gate and axe. Targeted English/Malayalam captures at 390/1440 are under docs/evidence/redlark-round-10. Visual review found the collection introduction unnecessarily tall; compacted it to bring filters/grid closer to the first screen, then reran affected browser checks. No new Lighthouse claim this milestone: the full required checkpoint repeats at M6.
+
+Ranked next work: (1) item codes/AI disclosure, per-field public consent and print guidance; (2) real A4/A2 raster choices; (3) format-first Studio and coded libraries; (4) localized MDX and complete policies. Category emptiness is honestly counted, with no invented contributions.
+
 ## Red Lark Round 9 critique — M3 measured checkpoint
 
 Compact browser messages now transmit only translated overrides; keys themselves provide English fallback. Added current-vocabulary Noto UI subsets with full-font fallback. All 424 complete localized strings render pixel-for-pixel and width-identically to full fonts in Edge, including Bengali canonical decomposition and Malayalam chillus. Hindi UI transfer falls from 50,416 to 29,032 bytes. Provenance and source hashes are committed with assets; no remote fonts/scripts are requested.

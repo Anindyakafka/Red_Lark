@@ -1,5 +1,6 @@
 import { chooseLocale, isLocale } from "../../src/i18n/config";
 import { SECURITY_HEADERS } from "../../src/config/security";
+import legacyRoutes from "../../content/legacy-routes.json";
 interface EdgeContext {
   next: () => Promise<Response>;
 }
@@ -19,6 +20,12 @@ async function route(request: Request, context: EdgeContext) {
       status: 302,
       headers: { Location: url.href, Vary: "Accept-Language", "Cache-Control": "no-store" },
     });
+  }
+  const legacy = url.pathname.replace(/^\/(en|hi|bn|ml)/, "").replace(/\/$/, "");
+  const destination = legacyRoutes[legacy as keyof typeof legacyRoutes];
+  if (destination) {
+    url.pathname = `/${first}${destination}`;
+    return new Response(null, { status: 308, headers: { Location: url.href } });
   }
   const response = await context.next();
   if (response.status !== 404) return response;

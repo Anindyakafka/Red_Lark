@@ -141,5 +141,12 @@
         }
       }
     ]
-  }
+  },
+  "categories": ["ecology-environment-land"],
+  "tags": ["ecology", "climate justice"],
+  "kind": "poster-placard",
+  "imageCode": "1a",
+  "captionCode": "2c",
+  "aiUse": "generated",
+  "aiDisclosure": "Original AI-assisted vector placeholder created for site testing. This is not a curated human submission or a contribution by a real artist."
 }

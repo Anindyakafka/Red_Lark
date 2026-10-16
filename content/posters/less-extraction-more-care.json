@@ -4,7 +4,7 @@
   "languages": ["English"],
   "translations": {},
   "artist": "wet-ink-workshop",
-  "year": 2024,
+  "year": 2026,
   "themes": ["Climate"],
   "movements": ["Climate justice"],
   "colorMode": "color",
@@ -141,5 +141,12 @@
         }
       }
     ]
-  }
+  },
+  "categories": ["ecology-environment-land"],
+  "tags": ["climate", "climate justice"],
+  "kind": "poster-placard",
+  "imageCode": "1g",
+  "captionCode": "2i",
+  "aiUse": "generated",
+  "aiDisclosure": "Original AI-assisted vector placeholder created for site testing. This is not a curated human submission or a contribution by a real artist."
 }

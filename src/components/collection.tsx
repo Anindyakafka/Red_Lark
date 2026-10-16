@@ -7,6 +7,8 @@ import { artists, emptyFilters, filterPosters, fileSize, type Filters } from "@/
 import type { Poster } from "@/lib/types";
 import { PosterImage } from "./poster-image";
 import { migrateLocalDrafts } from "@/lib/storage";
+import categories from "../../content/categories.json";
+import formats from "../../content/formats.json";
 
 export function Collection({
   posters,
@@ -36,14 +38,30 @@ export function Collection({
       );
     }
     const params = new URLSearchParams(location.search);
-    if (params.has("q")) {
-      setDraft(params.get("q") ?? "");
-      setFilters((f) => ({ ...f, query: params.get("q") ?? "" }));
-    }
+    setDraft(params.get("q") ?? "");
+    setFilters((current) => {
+      const next = { ...current, query: params.get("q") ?? "" };
+      for (const key of [
+        "category",
+        "kind",
+        "language",
+        "artist",
+        "license",
+        "color",
+        "sort",
+      ] as const)
+        if (params.has(key)) next[key] = params.get(key) ?? "";
+      return next;
+    });
   }, []);
   const results = useMemo(() => filterPosters(posters, filters, saved), [posters, filters, saved]);
   function set<K extends keyof Filters>(key: K, value: Filters[K]) {
     setFilters((f) => ({ ...f, [key]: value }));
+    const url = new URL(location.href);
+    const parameter = key === "query" ? "q" : key;
+    if (value && value !== emptyFilters[key]) url.searchParams.set(parameter, String(value));
+    else url.searchParams.delete(parameter);
+    history.replaceState(null, "", url);
   }
   function search(e: React.FormEvent) {
     e.preventDefault();
@@ -74,23 +92,14 @@ export function Collection({
     values: { value: string; label: string }[];
   }[] = [
     {
-      key: "format",
+      key: "kind",
       label: "Format",
-      values: ["PDF", "PNG", "SVG", "ZIP"].map((v) => ({ value: v, label: v })),
+      values: formats.map((f) => ({ value: f.slug, label: f.label })),
     },
     {
-      key: "theme",
-      label: "Theme",
-      values: [...new Set(posters.flatMap((p) => p.themes))]
-        .sort()
-        .map((v) => ({ value: v, label: v })),
-    },
-    {
-      key: "movement",
-      label: "Movement",
-      values: [...new Set(posters.flatMap((p) => p.movements))]
-        .sort()
-        .map((v) => ({ value: v, label: v })),
+      key: "category",
+      label: "Category",
+      values: categories.map((c) => ({ value: c.slug, label: c.label })),
     },
     {
       key: "language",
@@ -106,12 +115,12 @@ export function Collection({
     },
     {
       key: "license",
-      label: "License",
+      label: "Licence",
       values: [...new Set(posters.map((p) => p.license))].map((v) => ({ value: v, label: v })),
     },
     {
       key: "color",
-      label: "Color",
+      label: "Colour",
       values: [
         { value: "bw", label: "Black & white" },
         { value: "color", label: "Color" },
@@ -172,11 +181,22 @@ export function Collection({
             setDraft("");
             setError("");
             const url = new URL(location.href);
-            url.searchParams.delete("q");
+            for (const key of [
+              "q",
+              "category",
+              "kind",
+              "language",
+              "artist",
+              "license",
+              "color",
+              "sort",
+              "saved",
+            ])
+              url.searchParams.delete(key);
             history.replaceState(null, "", url);
           }}
         >
-          <UiText id={"All [↺]"} />
+          <UiText id={"ALL (Uncategorized)"} />
         </button>
         {facets.map((f) => (
           <label className="facet" key={f.key}>

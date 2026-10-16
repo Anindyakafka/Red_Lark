@@ -4,6 +4,7 @@ import path from "node:path";
 import { gzipSync, brotliCompressSync, constants } from "node:zlib";
 const root = path.resolve("out");
 const port = Number(process.env.PORT ?? 3000);
+const legacyRoutes = JSON.parse(await fs.readFile("content/legacy-routes.json", "utf8"));
 const types = {
   ".html": "text/html; charset=utf-8",
   ".js": "text/javascript; charset=utf-8",
@@ -37,8 +38,19 @@ http
       ) {
         const options = String(req.headers["accept-language"] ?? "")
           .split(",")
-          .map((x) => x.trim().split(";")[0].split("-")[0]);
-        const locale = options.find((l) => ["en", "hi", "bn", "ml"].includes(l)) ?? "en";
+          .map((part, index) => {
+            const [language, quality] = part.trim().split(";");
+            return {
+              language: language.toLowerCase().split("-")[0],
+              quality: quality ? Number(quality.replace(/^q=/, "")) : 1,
+              index,
+            };
+          })
+          .filter((entry) => Number.isFinite(entry.quality) && entry.quality > 0)
+          .sort((a, b) => b.quality - a.quality || a.index - b.index);
+        const locale =
+          options.find((entry) => ["en", "hi", "bn", "ml"].includes(entry.language))?.language ??
+          "en";
         res.writeHead(302, {
           Location: `/${locale}${req.url}`,
           Vary: "Accept-Language",
@@ -48,6 +60,17 @@ http
         return;
       }
       let file = path.resolve(root, "." + pathname);
+      const legacy = pathname.replace(/^\/(en|hi|bn|ml)/, "").replace(/\/$/, "");
+      if (legacyRoutes[legacy]) {
+        const locale = pathname.split("/")[1];
+        res.writeHead(308, {
+          Location: `/${locale}${legacyRoutes[legacy]}${new URL(req.url, "http://localhost").search}`,
+          "Referrer-Policy": "no-referrer",
+          "Content-Security-Policy": csp,
+        });
+        res.end();
+        return;
+      }
       if (file !== root && !file.startsWith(root + path.sep)) {
         res.writeHead(403);
         res.end();

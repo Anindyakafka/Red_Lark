@@ -4,7 +4,7 @@
   "languages": ["English"],
   "translations": {},
   "artist": "wet-ink-workshop",
-  "year": 2025,
+  "year": 2026,
   "themes": ["Housing"],
   "movements": ["Housing justice"],
   "colorMode": "color",
@@ -141,5 +141,12 @@
         }
       }
     ]
-  }
+  },
+  "categories": ["displacement-and-migration"],
+  "tags": ["housing", "housing justice"],
+  "kind": "poster-placard",
+  "imageCode": "1f",
+  "captionCode": "2h",
+  "aiUse": "generated",
+  "aiDisclosure": "Original AI-assisted vector placeholder created for site testing. This is not a curated human submission or a contribution by a real artist."
 }
