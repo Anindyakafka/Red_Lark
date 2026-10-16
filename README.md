@@ -1,4 +1,10 @@
-# Mirafra
+# RED LARK WORKSHOP — planning branch
+
+The `redlark` branch currently contains the audit and staged plan for the new brief. Application branding and behaviour are still the previous implementation. Supabase-dependent implementation is explicitly on hold; this is not a completed account/upload/admin/mail release.
+
+Start with [AUDIT](docs/AUDIT.md), [PLAN](docs/PLAN.md), [COPY_QUESTIONS](docs/COPY_QUESTIONS.md) and [human prerequisites](docs/TODO_HUMAN.md). Recommended independent work: M1-M5, M6 CREATE and public M9 content. This checkpoint stops after planning; it does not configure provider resources or change the live deployment.
+
+## Existing application setup
 
 A free, open protest-poster archive and a private, browser-only poster-making Studio. Built on the **rebuild** branch with Next.js App Router, strict TypeScript, Tailwind 4, self-hosted fonts and file-based content. No accounts or database.
 

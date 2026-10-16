@@ -1,55 +1,36 @@
-# Phase 0 audit — 14 October 2026
+﻿# RED LARK WORKSHOP: current audit
 
-Recorded before application changes. The starting working tree was clean on `main`.
+Audited 16 October 2026. This checkpoint is documentation only. Supabase implementation is on hold at the owner's request.
 
-## Existing implementation
+## Current system
 
-- Framework: Next.js App Router 16.4.0 (manifest `^16.0.0`), React/React DOM 19.3.0 (manifest `^19.2.0`). TypeScript 5.9.3, strict mode.
-- Package manager: npm with a committed `package-lock.json`; Node >=22 declared, Node 24 used locally. No workspace packages.
-- Scripts: `dev` = next dev; `build` = next build; `start` = next start; `typecheck` = tsc --noEmit; `test` = tsx --test tests/*.test.ts; `brand:build` = node scripts/refine-logo.mjs.
-- Runtime dependencies: Next, React, React DOM only. Development dependencies: TypeScript, Node/React types, tsx, sharp 0.34.5, imagetracerjs 1.2.6.
-- Layout: `src/app` routes and global CSS; `src/components` header/footer; `src/content/catalog.ts` six seed records; `src/features/catalog` filters/details; `src/features/studio` React SVG editor and model; `tests` five model/search tests; `public/samples` six SVGs; `public/brand` traced identity; `scripts/refine-logo.mjs`; four planning documents; GitHub Actions checks.
-- Routes: `/`, `/posters`, `/posters/[slug]`, `/stickers`, `/stickers/[slug]`, `/studio`, `/about`, `/print-guide`, framework not-found.
-- Shared components: SiteHeader, SiteFooter, Catalogue, ArtworkDetail, Studio. Metadata includes a title template and global description, but lacks a canonical/OG strategy, manifest, sitemap, and robots.
-- Styling: hand-written CSS; editorial serif layout, thin borders, blurred shadows; unsuitable for the requested brutalist direction.
-- Studio: fixed A3-ratio scene, text/bird/circle/rectangle, drag, numeric transforms, colours, history and an explicit localStorage save. SVG only; system fonts; no provenance, licence gate, PDF/PNG, templates, uploads, autosave, or share URLs.
-- CI: install, typecheck, unit tests, build. No ESLint/Prettier, browser tests, axe, Lighthouse, content validation, or screenshots.
-- Infrastructure: none connected. `.env.example` proposes Supabase/R2, which conflict with this mission's file-based, account-free scope.
+- Locked versions: Next.js 16.4.0 App Router, React 19.3.0, strict TypeScript 5.9.3, Tailwind 4.3.3. npm/package-lock.json; Node 24 on Netlify.
+- Pure static export: next.config.ts sets output=export and trailingSlash. netlify.toml runs npm run build, publishes out and skips the Next.js server adapter. Content and exported links/metadata are validated during build.
+- Routes: /, /collection, /poster/[slug], /discover, /artists, /artist/[slug], /themes, /theme/[slug], /studio, /community, /submit, /about, /contact, /privacy, /terms, /thank-you, /404, /search/image, sitemap, robots and manifest.
+- No accounts, server handlers, contribution database or delivery service exist. Current forms prepare an email in the visitor's mail app.
+- Keep the brutalist design system, self-hosted fonts, responsive previews, 18 original CC0 placeholders, licensing/derivative validation, source credit strip, lazy client SVG Studio, exports and model/browser/accessibility tests.
+- Replace branding and embedded artwork credits; extend localization, category/format taxonomy, item metadata and consent. Reuse existing code through tested migrations rather than rewriting the working editor.
 
-## Keep / replace
+## Bugs and reference evidence
 
-Keep Next.js, strict TypeScript, npm lockfile, the original `mirafra.jpeg`, refined brand artifacts for historical reference, the existing AGPL software licence, and the idea of a serialisable SVG scene independent from the UI. Keep testing the actual history/export boundary.
+UTF-8 reads confirm mojibake (U+00E2 sequences) in scripts/seed.ts and content/posters/a-future-we-share.json. Fix the generator and source JSON, regenerate all affected catalogue/print/preview assets, then test output and charset. A charset tag alone cannot repair already corrupted strings. Do not blindly transcode valid Indic text.
 
-Replace the entire application UI, six-item TS catalogue, fixed-schema Studio, route layout, styling, metadata, tests, CI and old README/planning documents. Delete superseded poster/sticker routes and sample assets after the new archive is in place. Keep a separately authored simple favicon; do not imply the user-supplied mark is CC0. No database, accounts, payments, newsletter, comments, or submission storage are introduced.
+src/lib/site-origin.ts already supports SITE_URL and Netlify production/preview URL fallbacks. The reported live localhost metadata could reflect an older deploy/configuration. The live URL could not be fetched through the web tool in this audit. M1 must verify absolute canonical/OG/Twitter image URLs in the production build AND live deployment, and reject localhost in production.
 
-## Chosen stack
+Red Lark Workshop.pptx exists but is untracked: git ls-files '*.pptx' returns nothing. Only slide XML text was inspected; no media was extracted or reused. The deck remains untracked. Appendices A-C override slide spacing, omissions and differing format lists.
 
-- **Next.js App Router + strict TypeScript + Tailwind CSS 4.** Retain the reasonable existing framework; use static export so the result can be hosted on an ordinary static host. Content lives in `content/posters/*.json` and `content/artists/*.json`, with validated generated indexes. No runtime database. Tailwind supplies tokens/utilities alongside a small authored component stylesheet.
-- **Self-hosted Bebas Neue and IBM Plex Mono**, with retained open font licences and full system fallbacks. All browser font requests are same-origin. Display font is condensed and loud; mono supports labels and controls.
-- **Hand-rolled SVG scene engine.** Shapes and outlined text remain vectors. Locally bundled font outlines give consistent SVG/PDF rendering without an external font service. jsPDF + svg2pdf handle vector PDF; browser canvas renders a dimensioned 300-PPI PNG with embedded physical-resolution metadata. No canvas-library state is persisted. This keeps the model inspectable and source/credit rules testable.
-- **ESLint + Prettier, Node/tsx model tests, Playwright + axe, Lighthouse.** Browser checks run against the built static site, including every route, breakpoints, licensing, form states, and Studio exports. Record measurements honestly per round.
-- **No submission backend.** Forms prepare a local email handoff only if CONTACT_EMAIL exists. When unset, they explain the missing configuration and do not claim a submission succeeded. Human deployment must supply a real inbox. File-based reviewed community entries are curated in Git.
-- **Analytics disabled by default.** Optional same-origin self-hosted Plausible proxy, configured by environment. Respect DNT; allow only pageview, poster-download, studio-export. No design contents or identifiers. No default third-party scripts.
+The previous five rounds and their measurements apply to the old site, not this new brief.
 
-## Reference study
+## Architecture recommendation
 
-- [Ciggies](https://ciggies.app/): large title, immediate collection, slim navigation, dense item records, multi-facet filtering, original/translated titles. Adapt structural patterns; copy no assets, code, or prose.
-- [Justseeds](https://justseeds.org/graphics/): useful subject/movement/colour/sort facets, visible file metadata, artist support and explicit permissions before use. Its default ND notice is a reminder that free download is not permission to remix.
-- [Amplifier](https://amplifier.org/free-downloads/): print-size and artist context, language filters, prominent non-commercial rules. Mirafra applies each work's specific licence rather than inventing one global restriction for CC0 placeholders.
-- [Another World Press](https://anotherworldpress.org/): direct print-oriented presentation, edition context, and practical printing tone. No real artwork is imported.
+Keep Next.js/TypeScript/Tailwind and Netlify. Keep the name RED LARK WORKSHOP, give the Archive primary visual weight and Studio the secondary CTA. Browsing, downloads and Studio remain anonymous.
 
-## Privacy / storage / headers
+Store canonical English copy, locale messages/review flags, categories/formats and blog content in files. Add /en /hi /bn /ml with next-intl or a typed equivalent. Accept-Language negotiation needs request-time handling: enable the Netlify Next.js runtime when implementing that redirect, preserving prerendered public locale pages. Later auth/admin/API routes must be dynamic and private/no-store; do not carry static-only deployment settings into authentication. Netlify supports [SSR, route handlers and revalidation](https://docs.netlify.com/build/frameworks/framework-setup-guides/nextjs/overview/).
 
-Drafts and collection bookmarks use localStorage only for explicitly requested local functionality; no tracking storage or cookies. Document this and provide a visible footer data notice. A cookie banner is not added for necessary local functionality; any future non-essential integration requires a renewed consent assessment. Legal wording remains visibly a draft requiring human review.
+Recommend Supabase later for relational contributions, transactional review, Auth, RLS and private Storage. No SDK, project, SQL migrations, seeds, buckets or integration during the hold.
 
-Image uploads are decoded and re-encoded locally as PNG before entering a scene; EXIF/GPS and original file bytes are not kept. Share URLs contain user-selected scene state in the fragment, never uploads; warn that recipients can read shared content. No server storage, geolocation, fingerprinting, persistent tracking IDs, remote embeds, or remote design assets. Static-host headers must enforce CSP, no-referrer, nosniff, anti-framing, and disabled camera/microphone/geolocation. Next headers alone do not protect a static deployment, so provide host configuration and a verification server.
+The required httpOnly sessions need browser-to-same-origin server endpoints and server-only provider clients. The normal browser client expects token access; simply copying that pattern would not meet the requirement. See [Supabase's session/cookie guidance](https://supabase.com/docs/guides/auth/server-side/advanced-guide). Plan Secure/SameSite cookies, CSRF protection, revocation checks and no shared caching of session responses. Use user-scoped clients for ordinary RLS operations; isolate service-role privileges.
 
-## Delivery / verification policy
+Serve public graphics and private authorized reviews through the site origin; ordinary visitors should not contact storage/auth/mail providers directly. Sanitize uploads server-side even after local metadata stripping.
 
-Work on `rebuild`, with numbered rounds and small commits. Minimum five rounds, maximum fifteen. Each round records install, typecheck, lint, validation, build, model/browser tests, screenshots reviewed at 390 and 1440, axe and mobile Lighthouse for Home/Collection/Poster. Never record an unmeasured score as PASS. Human-only remaining decisions go in `docs/TODO_HUMAN.md`; technical failures stay visible in CHECKLIST/ITERATIONS until fixed.
-
-## Hosting follow-up: Netlify
-
-The owner selected Netlify after the five rebuild rounds. Keep `output: "export"`: all routes and Studio behaviour work without a Next.js server. `netlify.toml` fixes the build command to `npm run build`, publication to `out`, Node to 24 and `NETLIFY_NEXT_PLUGIN_SKIP=true` to bypass the server adapter. This follows [Netlify's static Next.js guidance](https://docs.netlify.com/build/frameworks/overview/). Existing static security headers remain in `public/_headers`; hashed framework assets get immutable caching. No catch-all SPA rewrite, account integration, submission backend or deployment is added.
-
-Canonical/OG/sitemap origins use explicit `SITE_URL`, then Netlify's contextual URL, then localhost for development. Production uses `URL`; preview/branch contexts use `DEPLOY_PRIME_URL`, following [Netlify's build-variable definitions](https://docs.netlify.com/build/configure-builds/environment-variables/). Blank overrides are ignored and invalid origins fail validation/build. Operators still supply the inbox, domain, legal review and hosting-log policy.
+The application can avoid raw IP storage; hosting/auth/mail providers may log independently. Verify retention/configuration before promising blanket no-IP storage. Future rate limits use daily HMAC keys, short TTL and prompt purge. Region, retention, mail-domain verification and legal review are human decisions before activation.
