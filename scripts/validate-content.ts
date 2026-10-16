@@ -2,6 +2,7 @@ import fs from "node:fs";
 import path from "node:path";
 import { LICENSES, type Artist, type Poster } from "../src/lib/types";
 import { validatePoster } from "../src/lib/validate";
+import { resolveSiteOrigin } from "../src/lib/site-origin";
 if (fs.existsSync(".env.local")) process.loadEnvFile(".env.local");
 
 const read = <T>(dir: string): T[] =>
@@ -64,9 +65,9 @@ if (!process.env.CONTACT_EMAIL)
   );
 else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(process.env.CONTACT_EMAIL))
   throw new Error("CONTACT_EMAIL must be a real, valid mailbox address");
-if (!process.env.SITE_URL || process.env.SITE_URL.includes("localhost"))
+if (new URL(resolveSiteOrigin(process.env)).hostname === "localhost")
   console.warn(
-    "[HUMAN CONFIGURATION] SITE_URL uses localhost. Set the production origin and rebuild before publishing.",
+    "[HUMAN CONFIGURATION] Site origin uses localhost. Set SITE_URL or build on Netlify to use its deployment URL before publishing.",
   );
 console.log(
   `Content valid: ${posters.length} posters, ${artists.length} artists, ${Object.keys(LICENSES).length} supported licence policies.`,

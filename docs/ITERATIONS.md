@@ -1,5 +1,19 @@
 # Numbered rebuild rounds
 
+## RED LARK WORKSHOP: planning checkpoint, 16 October 2026
+
+Step 0 only: audited source/deck text, created redlark branch, wrote AUDIT/PLAN/COPY_QUESTIONS, separated public work from the explicit Supabase hold, and recorded human prerequisites. No application/runtime/provider changes. This is not an implementation round or milestone PASS; no new Lighthouse/axe/build result is claimed.
+
+Ranked findings for the next implementation rounds:
+
+1. Do not begin backend-dependent auth/upload/admin/mail integration before the owner's hold is released. Never replace real end-to-end acceptance with mock success.
+2. Repair mojibake in source generation and every derived asset; enforce production-origin metadata and verify the actual deployment.
+3. Lock Appendix A independently and test rendered copy; rebuild original brand artwork and audit embedded credits/storage migrations.
+4. Plan Indic shaping in exported graphics, not only browser fonts. Establish new multilingual visual/performance evidence.
+5. Move to a Netlify server runtime for language negotiation and eventually private session routes, while keeping public content prerendered. Resolve provider retention/residency and httpOnly server-only auth design before activation.
+
+The numbered rounds below are historical evidence for the previous implementation and do not certify the new brief. The new implementation must run its own five-to-fifteen critique/fix rounds.
+
 Evidence is recorded under `docs/evidence/round-N`. PASS is measured, not inferred from appearance. Scores below are mobile Lighthouse in installed Chromium/Edge. The required score threshold is 95 for all four categories on Home, Collection and Poster.
 
 ## Round 1 critique
