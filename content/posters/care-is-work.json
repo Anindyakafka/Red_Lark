@@ -1,4 +1,11 @@
 {
+  "categories": ["workers"],
+  "tags": ["labor", "may day"],
+  "kind": "poster-placard",
+  "imageCode": "1e",
+  "captionCode": "2g",
+  "aiUse": "generated",
+  "aiDisclosure": "Original AI-assisted vector placeholder created for site testing. This is not a curated human submission or a contribution by a real artist.",
   "slug": "care-is-work",
   "title": "Care is work",
   "languages": ["English"],
@@ -38,7 +45,46 @@
       "format": "PNG",
       "size": "A3",
       "path": "/posters/care-is-work/A3.png",
-      "bytes": 746456
+      "bytes": 746456,
+      "dpi": 300,
+      "pixelWidth": 3508,
+      "pixelHeight": 4961
+    },
+    {
+      "format": "PNG",
+      "size": "A4",
+      "path": "/posters/care-is-work/A4.png",
+      "bytes": 929948,
+      "dpi": 300,
+      "pixelWidth": 2480,
+      "pixelHeight": 3508
+    },
+    {
+      "format": "JPEG",
+      "size": "A4",
+      "path": "/posters/care-is-work/A4.jpg",
+      "bytes": 652772,
+      "dpi": 300,
+      "pixelWidth": 2480,
+      "pixelHeight": 3508
+    },
+    {
+      "format": "PNG",
+      "size": "A2",
+      "path": "/posters/care-is-work/A2.png",
+      "bytes": 2019040,
+      "dpi": 300,
+      "pixelWidth": 4961,
+      "pixelHeight": 7016
+    },
+    {
+      "format": "JPEG",
+      "size": "A2",
+      "path": "/posters/care-is-work/A2.jpg",
+      "bytes": 1480565,
+      "dpi": 300,
+      "pixelWidth": 4961,
+      "pixelHeight": 7016
     },
     {
       "format": "SVG",
@@ -50,7 +96,7 @@
       "format": "ZIP",
       "size": "Bundle",
       "path": "/posters/care-is-work/bundle.zip",
-      "bytes": 88854
+      "bytes": 88856
     }
   ],
   "license": "CC0-1.0",
@@ -141,12 +187,5 @@
         }
       }
     ]
-  },
-  "categories": ["workers"],
-  "tags": ["labor", "may day"],
-  "kind": "poster-placard",
-  "imageCode": "1e",
-  "captionCode": "2g",
-  "aiUse": "generated",
-  "aiDisclosure": "Original AI-assisted vector placeholder created for site testing. This is not a curated human submission or a contribution by a real artist."
+  }
 }

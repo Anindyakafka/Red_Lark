@@ -272,6 +272,83 @@ picture {
 .archive-intro p {
   max-width: 65ch;
 }
+.work-specifications {
+  border: 2px solid var(--line);
+  margin-block: 24px;
+}
+.desktop-download-cta {
+  margin-block: 16px;
+}
+@media (max-width: 800px) {
+  .desktop-download-cta {
+    display: none;
+  }
+}
+.work-specifications > div {
+  display: grid;
+  grid-template-columns: minmax(110px, 1fr) minmax(0, 2fr);
+  border-bottom: 1px solid var(--line);
+  padding: 12px;
+  gap: 12px;
+}
+.work-specifications > div:last-child {
+  border-bottom: 0;
+}
+.work-specifications dd {
+  margin: 0;
+  overflow-wrap: anywhere;
+}
+.ai-disclosure,
+.print-instructions {
+  border: 2px solid var(--line);
+  padding: 20px;
+  margin-block: 24px;
+  overflow-wrap: anywhere;
+}
+.ai-disclosure {
+  box-shadow: 4px 4px 0 var(--accent);
+}
+.print-instructions h2 {
+  font-size: 30px;
+}
+.print-instructions ol {
+  padding-inline-start: 24px;
+}
+.print-instructions li {
+  margin-block: 12px;
+  line-height: 1.7;
+}
+.work-tags a {
+  display: inline-block;
+  margin: 8px 12px 8px 0;
+}
+.more-by-artist {
+  grid-column: 1/-1;
+  padding: 30px 3%;
+  border-top: 3px solid var(--line);
+}
+.more-by-artist > h2 {
+  font-size: clamp(40px, 5vw, 72px);
+  margin-bottom: 20px;
+}
+.more-by-artist .rail-grid {
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  margin-block: 24px;
+}
+.public-upi {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 12px;
+}
+.public-upi code {
+  overflow-wrap: anywhere;
+}
+@media (max-width: 650px) {
+  .more-by-artist .rail-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
 @media (max-width: 650px) {
   .archive-intro {
     flex-wrap: wrap;

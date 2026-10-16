@@ -1,4 +1,11 @@
 {
+  "categories": ["democracy"],
+  "tags": ["solidarity", "mutual aid"],
+  "kind": "sticker",
+  "imageCode": "1j",
+  "captionCode": "2l",
+  "aiUse": "generated",
+  "aiDisclosure": "Original AI-assisted vector placeholder created for site testing. This is not a curated human submission or a contribution by a real artist.",
   "slug": "many-voices",
   "title": "Many voices",
   "languages": ["English"],
@@ -38,7 +45,46 @@
       "format": "PNG",
       "size": "A3",
       "path": "/posters/many-voices/A3.png",
-      "bytes": 741172
+      "bytes": 741172,
+      "dpi": 300,
+      "pixelWidth": 3508,
+      "pixelHeight": 4961
+    },
+    {
+      "format": "PNG",
+      "size": "A4",
+      "path": "/posters/many-voices/A4.png",
+      "bytes": 919428,
+      "dpi": 300,
+      "pixelWidth": 2480,
+      "pixelHeight": 3508
+    },
+    {
+      "format": "JPEG",
+      "size": "A4",
+      "path": "/posters/many-voices/A4.jpg",
+      "bytes": 644089,
+      "dpi": 300,
+      "pixelWidth": 2480,
+      "pixelHeight": 3508
+    },
+    {
+      "format": "PNG",
+      "size": "A2",
+      "path": "/posters/many-voices/A2.png",
+      "bytes": 2000225,
+      "dpi": 300,
+      "pixelWidth": 4961,
+      "pixelHeight": 7016
+    },
+    {
+      "format": "JPEG",
+      "size": "A2",
+      "path": "/posters/many-voices/A2.jpg",
+      "bytes": 1462614,
+      "dpi": 300,
+      "pixelWidth": 4961,
+      "pixelHeight": 7016
     },
     {
       "format": "SVG",
@@ -50,7 +96,7 @@
       "format": "ZIP",
       "size": "Bundle",
       "path": "/posters/many-voices/bundle.zip",
-      "bytes": 89266
+      "bytes": 89270
     }
   ],
   "license": "CC0-1.0",
@@ -141,12 +187,5 @@
         }
       }
     ]
-  },
-  "categories": ["democracy"],
-  "tags": ["solidarity", "mutual aid"],
-  "kind": "sticker",
-  "imageCode": "1j",
-  "captionCode": "2l",
-  "aiUse": "generated",
-  "aiDisclosure": "Original AI-assisted vector placeholder created for site testing. This is not a curated human submission or a contribution by a real artist."
+  }
 }

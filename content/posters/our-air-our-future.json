@@ -1,4 +1,11 @@
 {
+  "categories": ["ecology-environment-land"],
+  "tags": ["climate", "climate justice"],
+  "kind": "poster-placard",
+  "imageCode": "1m",
+  "captionCode": "2o",
+  "aiUse": "generated",
+  "aiDisclosure": "Original AI-assisted vector placeholder created for site testing. This is not a curated human submission or a contribution by a real artist.",
   "slug": "our-air-our-future",
   "title": "Our air, our future",
   "languages": ["English"],
@@ -38,7 +45,46 @@
       "format": "PNG",
       "size": "A3",
       "path": "/posters/our-air-our-future/A3.png",
-      "bytes": 578398
+      "bytes": 578398,
+      "dpi": 300,
+      "pixelWidth": 3508,
+      "pixelHeight": 4961
+    },
+    {
+      "format": "PNG",
+      "size": "A4",
+      "path": "/posters/our-air-our-future/A4.png",
+      "bytes": 496194,
+      "dpi": 300,
+      "pixelWidth": 2480,
+      "pixelHeight": 3508
+    },
+    {
+      "format": "JPEG",
+      "size": "A4",
+      "path": "/posters/our-air-our-future/A4.jpg",
+      "bytes": 439371,
+      "dpi": 300,
+      "pixelWidth": 2480,
+      "pixelHeight": 3508
+    },
+    {
+      "format": "PNG",
+      "size": "A2",
+      "path": "/posters/our-air-our-future/A2.png",
+      "bytes": 1294221,
+      "dpi": 300,
+      "pixelWidth": 4961,
+      "pixelHeight": 7016
+    },
+    {
+      "format": "JPEG",
+      "size": "A2",
+      "path": "/posters/our-air-our-future/A2.jpg",
+      "bytes": 1061677,
+      "dpi": 300,
+      "pixelWidth": 4961,
+      "pixelHeight": 7016
     },
     {
       "format": "SVG",
@@ -50,7 +96,7 @@
       "format": "ZIP",
       "size": "Bundle",
       "path": "/posters/our-air-our-future/bundle.zip",
-      "bytes": 64465
+      "bytes": 64467
     }
   ],
   "license": "CC0-1.0",
@@ -141,12 +187,5 @@
         }
       }
     ]
-  },
-  "categories": ["ecology-environment-land"],
-  "tags": ["climate", "climate justice"],
-  "kind": "poster-placard",
-  "imageCode": "1m",
-  "captionCode": "2o",
-  "aiUse": "generated",
-  "aiDisclosure": "Original AI-assisted vector placeholder created for site testing. This is not a curated human submission or a contribution by a real artist."
+  }
 }

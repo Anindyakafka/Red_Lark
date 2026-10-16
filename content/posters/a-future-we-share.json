@@ -1,4 +1,11 @@
 {
+  "categories": ["ecology-environment-land"],
+  "tags": ["ecology", "climate justice"],
+  "kind": "poster-placard",
+  "imageCode": "1a",
+  "captionCode": "2c",
+  "aiUse": "generated",
+  "aiDisclosure": "Original AI-assisted vector placeholder created for site testing. This is not a curated human submission or a contribution by a real artist.",
   "slug": "a-future-we-share",
   "title": "A future we share",
   "languages": ["English"],
@@ -38,7 +45,46 @@
       "format": "PNG",
       "size": "A3",
       "path": "/posters/a-future-we-share/A3.png",
-      "bytes": 578764
+      "bytes": 578764,
+      "dpi": 300,
+      "pixelWidth": 3508,
+      "pixelHeight": 4961
+    },
+    {
+      "format": "PNG",
+      "size": "A4",
+      "path": "/posters/a-future-we-share/A4.png",
+      "bytes": 504540,
+      "dpi": 300,
+      "pixelWidth": 2480,
+      "pixelHeight": 3508
+    },
+    {
+      "format": "JPEG",
+      "size": "A4",
+      "path": "/posters/a-future-we-share/A4.jpg",
+      "bytes": 434066,
+      "dpi": 300,
+      "pixelWidth": 2480,
+      "pixelHeight": 3508
+    },
+    {
+      "format": "PNG",
+      "size": "A2",
+      "path": "/posters/a-future-we-share/A2.png",
+      "bytes": 1298164,
+      "dpi": 300,
+      "pixelWidth": 4961,
+      "pixelHeight": 7016
+    },
+    {
+      "format": "JPEG",
+      "size": "A2",
+      "path": "/posters/a-future-we-share/A2.jpg",
+      "bytes": 1051550,
+      "dpi": 300,
+      "pixelWidth": 4961,
+      "pixelHeight": 7016
     },
     {
       "format": "SVG",
@@ -50,7 +96,7 @@
       "format": "ZIP",
       "size": "Bundle",
       "path": "/posters/a-future-we-share/bundle.zip",
-      "bytes": 64675
+      "bytes": 64678
     }
   ],
   "license": "CC0-1.0",
@@ -141,12 +187,5 @@
         }
       }
     ]
-  },
-  "categories": ["ecology-environment-land"],
-  "tags": ["ecology", "climate justice"],
-  "kind": "poster-placard",
-  "imageCode": "1a",
-  "captionCode": "2c",
-  "aiUse": "generated",
-  "aiDisclosure": "Original AI-assisted vector placeholder created for site testing. This is not a curated human submission or a contribution by a real artist."
+  }
 }

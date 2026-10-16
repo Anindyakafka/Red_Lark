@@ -50,6 +50,8 @@ export interface Artist {
   links: { label: string; url: string }[];
   supportUrl?: string;
   placeholder: boolean;
+  publicContact?: { value: string; consented: boolean };
+  publicUpi?: { value: string; consented: boolean };
 }
 export interface Credit {
   id: string;
@@ -95,10 +97,13 @@ export interface Scene {
   layers: Layer[];
 }
 export interface PosterFile {
-  format: "PDF" | "PNG" | "SVG" | "ZIP";
+  format: "PDF" | "PNG" | "JPEG" | "SVG" | "ZIP";
   size: "A4" | "A3" | "A2" | "18x24" | "Bundle";
   path: string;
   bytes: number;
+  dpi?: number;
+  pixelWidth?: number;
+  pixelHeight?: number;
 }
 export interface Poster {
   categories: string[];

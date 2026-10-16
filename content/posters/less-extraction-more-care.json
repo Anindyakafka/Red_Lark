@@ -1,4 +1,11 @@
 {
+  "categories": ["ecology-environment-land"],
+  "tags": ["climate", "climate justice"],
+  "kind": "poster-placard",
+  "imageCode": "1g",
+  "captionCode": "2i",
+  "aiUse": "generated",
+  "aiDisclosure": "Original AI-assisted vector placeholder created for site testing. This is not a curated human submission or a contribution by a real artist.",
   "slug": "less-extraction-more-care",
   "title": "Less extraction, more care",
   "languages": ["English"],
@@ -38,7 +45,46 @@
       "format": "PNG",
       "size": "A3",
       "path": "/posters/less-extraction-more-care/A3.png",
-      "bytes": 781386
+      "bytes": 781386,
+      "dpi": 300,
+      "pixelWidth": 3508,
+      "pixelHeight": 4961
+    },
+    {
+      "format": "PNG",
+      "size": "A4",
+      "path": "/posters/less-extraction-more-care/A4.png",
+      "bytes": 909779,
+      "dpi": 300,
+      "pixelWidth": 2480,
+      "pixelHeight": 3508
+    },
+    {
+      "format": "JPEG",
+      "size": "A4",
+      "path": "/posters/less-extraction-more-care/A4.jpg",
+      "bytes": 977826,
+      "dpi": 300,
+      "pixelWidth": 2480,
+      "pixelHeight": 3508
+    },
+    {
+      "format": "PNG",
+      "size": "A2",
+      "path": "/posters/less-extraction-more-care/A2.png",
+      "bytes": 1984754,
+      "dpi": 300,
+      "pixelWidth": 4961,
+      "pixelHeight": 7016
+    },
+    {
+      "format": "JPEG",
+      "size": "A2",
+      "path": "/posters/less-extraction-more-care/A2.jpg",
+      "bytes": 2067782,
+      "dpi": 300,
+      "pixelWidth": 4961,
+      "pixelHeight": 7016
     },
     {
       "format": "SVG",
@@ -50,7 +96,7 @@
       "format": "ZIP",
       "size": "Bundle",
       "path": "/posters/less-extraction-more-care/bundle.zip",
-      "bytes": 102925
+      "bytes": 102926
     }
   ],
   "license": "CC0-1.0",
@@ -141,12 +187,5 @@
         }
       }
     ]
-  },
-  "categories": ["ecology-environment-land"],
-  "tags": ["climate", "climate justice"],
-  "kind": "poster-placard",
-  "imageCode": "1g",
-  "captionCode": "2i",
-  "aiUse": "generated",
-  "aiDisclosure": "Original AI-assisted vector placeholder created for site testing. This is not a curated human submission or a contribution by a real artist."
+  }
 }

@@ -1,4 +1,11 @@
 {
+  "categories": ["democracy"],
+  "tags": ["solidarity", "mutual aid"],
+  "kind": "poster-placard",
+  "imageCode": "1b",
+  "captionCode": "2d",
+  "aiUse": "generated",
+  "aiDisclosure": "Original AI-assisted vector placeholder created for site testing. This is not a curated human submission or a contribution by a real artist.",
   "slug": "a-world-for-everyone",
   "title": "A world for everyone",
   "titleOriginal": "सबके लिए दुनिया",
@@ -22,43 +29,82 @@
       "format": "PDF",
       "size": "A4",
       "path": "/posters/a-world-for-everyone/A4.pdf",
-      "bytes": 41338
+      "bytes": 43275
     },
     {
       "format": "PDF",
       "size": "A3",
       "path": "/posters/a-world-for-everyone/A3.pdf",
-      "bytes": 41288
+      "bytes": 43225
     },
     {
       "format": "PDF",
       "size": "A2",
       "path": "/posters/a-world-for-everyone/A2.pdf",
-      "bytes": 41336
+      "bytes": 43273
     },
     {
       "format": "PDF",
       "size": "18x24",
       "path": "/posters/a-world-for-everyone/18x24.pdf",
-      "bytes": 41252
+      "bytes": 43189
     },
     {
       "format": "PNG",
       "size": "A3",
       "path": "/posters/a-world-for-everyone/A3.png",
-      "bytes": 582135
+      "bytes": 558198,
+      "dpi": 300,
+      "pixelWidth": 3508,
+      "pixelHeight": 4961
+    },
+    {
+      "format": "PNG",
+      "size": "A4",
+      "path": "/posters/a-world-for-everyone/A4.png",
+      "bytes": 499161,
+      "dpi": 300,
+      "pixelWidth": 2480,
+      "pixelHeight": 3508
+    },
+    {
+      "format": "JPEG",
+      "size": "A4",
+      "path": "/posters/a-world-for-everyone/A4.jpg",
+      "bytes": 450155,
+      "dpi": 300,
+      "pixelWidth": 2480,
+      "pixelHeight": 3508
+    },
+    {
+      "format": "PNG",
+      "size": "A2",
+      "path": "/posters/a-world-for-everyone/A2.png",
+      "bytes": 1271864,
+      "dpi": 300,
+      "pixelWidth": 4961,
+      "pixelHeight": 7016
+    },
+    {
+      "format": "JPEG",
+      "size": "A2",
+      "path": "/posters/a-world-for-everyone/A2.jpg",
+      "bytes": 1110902,
+      "dpi": 300,
+      "pixelWidth": 4961,
+      "pixelHeight": 7016
     },
     {
       "format": "SVG",
       "size": "A3",
       "path": "/posters/a-world-for-everyone/source.svg",
-      "bytes": 92243
+      "bytes": 97217
     },
     {
       "format": "ZIP",
       "size": "Bundle",
       "path": "/posters/a-world-for-everyone/bundle.zip",
-      "bytes": 68154
+      "bytes": 71489
     }
   ],
   "license": "CC0-1.0",
@@ -135,7 +181,7 @@
         "height": 45,
         "rotation": 0,
         "color": "#f3f0e6",
-        "text": "PLACEHOLDER / 10 / CC0",
+        "text": "PLACEHOLDER / DRAFT TRANSLATION / 10 / CC0",
         "font": "mono",
         "fontSize": 15,
         "locked": false,
@@ -149,12 +195,5 @@
         }
       }
     ]
-  },
-  "categories": ["democracy"],
-  "tags": ["solidarity", "mutual aid"],
-  "kind": "poster-placard",
-  "imageCode": "1b",
-  "captionCode": "2d",
-  "aiUse": "generated",
-  "aiDisclosure": "Original AI-assisted vector placeholder created for site testing. This is not a curated human submission or a contribution by a real artist."
+  }
 }

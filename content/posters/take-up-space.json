@@ -1,4 +1,11 @@
 {
+  "categories": ["miscellaneous"],
+  "tags": ["accessibility", "disability justice"],
+  "kind": "poster-placard",
+  "imageCode": "1o",
+  "captionCode": "2q",
+  "aiUse": "generated",
+  "aiDisclosure": "Original AI-assisted vector placeholder created for site testing. This is not a curated human submission or a contribution by a real artist.",
   "slug": "take-up-space",
   "title": "Take up space",
   "languages": ["English"],
@@ -38,7 +45,46 @@
       "format": "PNG",
       "size": "A3",
       "path": "/posters/take-up-space/A3.png",
-      "bytes": 734867
+      "bytes": 734867,
+      "dpi": 300,
+      "pixelWidth": 3508,
+      "pixelHeight": 4961
+    },
+    {
+      "format": "PNG",
+      "size": "A4",
+      "path": "/posters/take-up-space/A4.png",
+      "bytes": 849389,
+      "dpi": 300,
+      "pixelWidth": 2480,
+      "pixelHeight": 3508
+    },
+    {
+      "format": "JPEG",
+      "size": "A4",
+      "path": "/posters/take-up-space/A4.jpg",
+      "bytes": 894358,
+      "dpi": 300,
+      "pixelWidth": 2480,
+      "pixelHeight": 3508
+    },
+    {
+      "format": "PNG",
+      "size": "A2",
+      "path": "/posters/take-up-space/A2.png",
+      "bytes": 1863980,
+      "dpi": 300,
+      "pixelWidth": 4961,
+      "pixelHeight": 7016
+    },
+    {
+      "format": "JPEG",
+      "size": "A2",
+      "path": "/posters/take-up-space/A2.jpg",
+      "bytes": 1919954,
+      "dpi": 300,
+      "pixelWidth": 4961,
+      "pixelHeight": 7016
     },
     {
       "format": "SVG",
@@ -141,12 +187,5 @@
         }
       }
     ]
-  },
-  "categories": ["miscellaneous"],
-  "tags": ["accessibility", "disability justice"],
-  "kind": "poster-placard",
-  "imageCode": "1o",
-  "captionCode": "2q",
-  "aiUse": "generated",
-  "aiDisclosure": "Original AI-assisted vector placeholder created for site testing. This is not a curated human submission or a contribution by a real artist."
+  }
 }

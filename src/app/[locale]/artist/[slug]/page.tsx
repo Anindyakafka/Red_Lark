@@ -5,6 +5,7 @@ import { PageIntro } from "@/components/page-intro";
 import { Collection } from "@/components/archive";
 import { artists, posters } from "@/lib/catalog";
 import { pageMeta } from "@/lib/metadata";
+import { ArtistContact } from "@/components/artist-contact";
 export const dynamicParams = false;
 export function generateStaticParams() {
   return artists.map((a) => ({ slug: a.id }));
@@ -45,7 +46,10 @@ export default async function Page({ params }: { params: Promise<{ slug: string 
           </a>
         </p>
       )}
-      <Collection posters={posters.filter((p) => p.artist === a.id)} heading="THEIR PRINTS" />
+      <div className="content-width">
+        <ArtistContact artist={a} />
+      </div>
+      <Collection posters={posters.filter((p) => p.artist === a.id)} heading="More by the artist" />
     </>
   );
 }

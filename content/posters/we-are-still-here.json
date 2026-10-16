@@ -1,4 +1,11 @@
 {
+  "categories": ["democracy"],
+  "tags": ["solidarity", "mutual aid"],
+  "kind": "poster-placard",
+  "imageCode": "1q",
+  "captionCode": "2a",
+  "aiUse": "generated",
+  "aiDisclosure": "Original AI-assisted vector placeholder created for site testing. This is not a curated human submission or a contribution by a real artist.",
   "slug": "we-are-still-here",
   "title": "We are still here",
   "languages": ["English"],
@@ -38,7 +45,46 @@
       "format": "PNG",
       "size": "A3",
       "path": "/posters/we-are-still-here/A3.png",
-      "bytes": 561062
+      "bytes": 561062,
+      "dpi": 300,
+      "pixelWidth": 3508,
+      "pixelHeight": 4961
+    },
+    {
+      "format": "PNG",
+      "size": "A4",
+      "path": "/posters/we-are-still-here/A4.png",
+      "bytes": 472490,
+      "dpi": 300,
+      "pixelWidth": 2480,
+      "pixelHeight": 3508
+    },
+    {
+      "format": "JPEG",
+      "size": "A4",
+      "path": "/posters/we-are-still-here/A4.jpg",
+      "bytes": 410776,
+      "dpi": 300,
+      "pixelWidth": 2480,
+      "pixelHeight": 3508
+    },
+    {
+      "format": "PNG",
+      "size": "A2",
+      "path": "/posters/we-are-still-here/A2.png",
+      "bytes": 1251905,
+      "dpi": 300,
+      "pixelWidth": 4961,
+      "pixelHeight": 7016
+    },
+    {
+      "format": "JPEG",
+      "size": "A2",
+      "path": "/posters/we-are-still-here/A2.jpg",
+      "bytes": 1009094,
+      "dpi": 300,
+      "pixelWidth": 4961,
+      "pixelHeight": 7016
     },
     {
       "format": "SVG",
@@ -50,7 +96,7 @@
       "format": "ZIP",
       "size": "Bundle",
       "path": "/posters/we-are-still-here/bundle.zip",
-      "bytes": 63567
+      "bytes": 63571
     }
   ],
   "license": "CC0-1.0",
@@ -141,12 +187,5 @@
         }
       }
     ]
-  },
-  "categories": ["democracy"],
-  "tags": ["solidarity", "mutual aid"],
-  "kind": "poster-placard",
-  "imageCode": "1q",
-  "captionCode": "2a",
-  "aiUse": "generated",
-  "aiDisclosure": "Original AI-assisted vector placeholder created for site testing. This is not a curated human submission or a contribution by a real artist."
+  }
 }

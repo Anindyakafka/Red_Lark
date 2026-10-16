@@ -114,7 +114,7 @@ for (let i = 0; i < entries.length; i++) {
     y: 740,
     width: 544,
     height: 45,
-    text: `PLACEHOLDER / ${String(i + 1).padStart(2, "0")} / CC0`,
+    text: `PLACEHOLDER${original ? " / DRAFT TRANSLATION" : ""} / ${String(i + 1).padStart(2, "0")} / CC0`,
     font: "mono",
     fontSize: 15,
     color: ink,
@@ -184,7 +184,33 @@ for (let i = 0; i < entries.length; i++) {
     size: "A3",
     path: `/posters/${slug}/A3.png`,
     bytes: (await fs.stat(`${folder}/A3.png`)).size,
+    dpi: 300,
+    pixelWidth: px,
+    pixelHeight: Math.round((px * 420) / 297),
   });
+  for (const size of ["A4", "A2"] as const) {
+    const preset = PRESETS[size];
+    const pixelWidth = Math.round((preset.width / 25.4) * 300);
+    const pixelHeight = Math.round((preset.height / 25.4) * 300);
+    const artwork = Buffer.from(sceneSvg({ ...scene, preset: size }, fonts));
+    for (const format of ["PNG", "JPEG"] as const) {
+      const extension = format === "JPEG" ? "jpg" : "png";
+      const filename = `${size}.${extension}`;
+      const raster = sharp(artwork).resize(pixelWidth, pixelHeight).withMetadata({ density: 300 });
+      await (
+        format === "JPEG" ? raster.jpeg({ quality: 95, chromaSubsampling: "4:4:4" }) : raster.png()
+      ).toFile(`${folder}/${filename}`);
+      formatFiles.push({
+        format,
+        size,
+        path: `/posters/${slug}/${filename}`,
+        bytes: (await fs.stat(`${folder}/${filename}`)).size,
+        dpi: 300,
+        pixelWidth,
+        pixelHeight,
+      });
+    }
+  }
   formatFiles.push({
     format: "SVG",
     size: "A3",

@@ -1,7 +1,7 @@
 import fs from "node:fs";
 import path from "node:path";
 import { LICENSES, type Artist, type Poster } from "../src/lib/types";
-import { validatePoster } from "../src/lib/validate";
+import { validatePoster, validateArtist } from "../src/lib/validate";
 import { resolveSiteOrigin } from "../src/lib/site-origin";
 import { CONTACT_EMAIL } from "../src/config/site";
 if (fs.existsSync(".env.local")) process.loadEnvFile(".env.local");
@@ -16,6 +16,7 @@ const posters = read<Poster>("content/posters");
 const community: unknown = JSON.parse(fs.readFileSync("content/community.json", "utf8"));
 const errors: string[] = [];
 for (const artist of artists) {
+  errors.push(...validateArtist(artist).map((error) => `${artist.id}: ${error}`));
   if (!artist.id || !artist.name || !artist.bio || !Array.isArray(artist.links))
     errors.push(`Invalid artist ${artist.id}`);
   for (const link of artist.links ?? [])

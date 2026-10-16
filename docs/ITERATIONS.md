@@ -1,5 +1,15 @@
 # Numbered rebuild rounds
 
+## Red Lark Round 11 critique — M5 print-first item pages
+
+Added actual Image Code/Caption Code, file formats/sizes/resolution, truthful generated-placeholder AI disclosure, tags/category links, more-by-artist rail and four-language print instructions with native review flags. Generated real A4/A2 PNG and JPEG files at 300 DPI alongside outlined vector PDFs; checked physical metadata and exact raster dimensions. Updated Indic source artwork to say DRAFT TRANSLATION. No real artist work or invented donation details were added.
+
+Public contact and UPI are independently consented fields. Validation rejects a public artist record containing an unconsented value; rendering also omits either field without explicit consent. UPI copy/link UI is available only when a real consented ID is supplied. Test-only values use visibly synthetic reserved examples and are never seeded. The team inbox is not repurposed as an artist contact.
+
+Checks: 34 unit tests, full browser suite 76 passed (1.9m), copy/types/lint/brand/content/build pass. Four-locale item axe zero. Evidence: docs/evidence/redlark-round-11, item top/specifications/print panel at 390/1440 in en/ml. Viewed native print instructions without clipping. Visual critique caught a new desktop regression: added metadata pushed the download action below the fold. Restored a dedicated desktop action near the title and reran affected checks. Lighthouse repeats at M6; prior measurements are not claimed for this expanded page.
+
+Ranked next work: format-first Studio entry, coded image/caption tools and mobile workspace density; localized MDX/editorial and full policy hub; final four-locale click-through. Backend-dependent contributions/mail remain held.
+
 ## Red Lark Round 10 critique — M4 taxonomy and navigation
 
 Wired all 28 canonical categories and ten artwork formats into real collection filters; default remains ALL (Uncategorized). Works have category arrays/free tags and draft-native title/caption/tag search. Filter URLs restore on load, survive language changes, and reset completely. Source placeholders now state their actual 2026 creation year and truthful AI-assisted origin. Category index/counts and sitemap entries are generated. Discover uses categories; old theme paths redirect with locale/query preserved in Netlify Edge and local preview. The header now follows the requested navigation and includes an account control.

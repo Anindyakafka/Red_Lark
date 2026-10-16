@@ -1,4 +1,11 @@
 {
+  "categories": ["ecology-environment-land"],
+  "tags": ["ecology", "climate justice"],
+  "kind": "poster-placard",
+  "imageCode": "1h",
+  "captionCode": "2j",
+  "aiUse": "generated",
+  "aiDisclosure": "Original AI-assisted vector placeholder created for site testing. This is not a curated human submission or a contribution by a real artist.",
   "slug": "listen-to-the-land",
   "title": "Listen to the land",
   "languages": ["English"],
@@ -38,7 +45,46 @@
       "format": "PNG",
       "size": "A3",
       "path": "/posters/listen-to-the-land/A3.png",
-      "bytes": 559002
+      "bytes": 559002,
+      "dpi": 300,
+      "pixelWidth": 3508,
+      "pixelHeight": 4961
+    },
+    {
+      "format": "PNG",
+      "size": "A4",
+      "path": "/posters/listen-to-the-land/A4.png",
+      "bytes": 473365,
+      "dpi": 300,
+      "pixelWidth": 2480,
+      "pixelHeight": 3508
+    },
+    {
+      "format": "JPEG",
+      "size": "A4",
+      "path": "/posters/listen-to-the-land/A4.jpg",
+      "bytes": 324228,
+      "dpi": 300,
+      "pixelWidth": 2480,
+      "pixelHeight": 3508
+    },
+    {
+      "format": "PNG",
+      "size": "A2",
+      "path": "/posters/listen-to-the-land/A2.png",
+      "bytes": 1241833,
+      "dpi": 300,
+      "pixelWidth": 4961,
+      "pixelHeight": 7016
+    },
+    {
+      "format": "JPEG",
+      "size": "A2",
+      "path": "/posters/listen-to-the-land/A2.jpg",
+      "bytes": 845363,
+      "dpi": 300,
+      "pixelWidth": 4961,
+      "pixelHeight": 7016
     },
     {
       "format": "SVG",
@@ -50,7 +96,7 @@
       "format": "ZIP",
       "size": "Bundle",
       "path": "/posters/listen-to-the-land/bundle.zip",
-      "bytes": 63357
+      "bytes": 63360
     }
   ],
   "license": "CC0-1.0",
@@ -141,12 +187,5 @@
         }
       }
     ]
-  },
-  "categories": ["ecology-environment-land"],
-  "tags": ["ecology", "climate justice"],
-  "kind": "poster-placard",
-  "imageCode": "1h",
-  "captionCode": "2j",
-  "aiUse": "generated",
-  "aiDisclosure": "Original AI-assisted vector placeholder created for site testing. This is not a curated human submission or a contribution by a real artist."
+  }
 }

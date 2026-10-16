@@ -2,6 +2,25 @@ import { LICENSES, type Artist, type Poster } from "./types";
 import { validateScene } from "../studio/model";
 import categories from "../../content/categories.json";
 import formats from "../../content/formats.json";
+export function validateArtist(artist: Artist): string[] {
+  const errors: string[] = [];
+  if (!artist.id || !artist.name || !artist.bio || !Array.isArray(artist.links))
+    errors.push("Invalid artist credit");
+  for (const [field, entry] of [
+    ["contact", artist.publicContact],
+    ["UPI", artist.publicUpi],
+  ] as const) {
+    if (entry && (entry.consented !== true || !entry.value?.trim()))
+      errors.push(
+        `Public ${field} requires explicit field consent; do not put private values in public content`,
+      );
+  }
+  if (artist.publicContact && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(artist.publicContact.value))
+    errors.push("Invalid public contact email");
+  if (artist.publicUpi && !/^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+$/.test(artist.publicUpi.value))
+    errors.push("Invalid public UPI ID");
+  return errors;
+}
 export function validatePoster(p: Poster, artists: Artist[]): string[] {
   const errors: string[] = [];
   if (
@@ -72,7 +91,7 @@ export function validatePoster(p: Poster, artists: Artist[]): string[] {
     if (
       !file.path?.startsWith("/") ||
       file.path.includes("..") ||
-      !["PDF", "PNG", "SVG", "ZIP"].includes(file.format) ||
+      !["PDF", "PNG", "JPEG", "SVG", "ZIP"].includes(file.format) ||
       !Number.isInteger(file.bytes) ||
       file.bytes <= 0
     )

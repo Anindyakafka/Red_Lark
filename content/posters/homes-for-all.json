@@ -1,4 +1,11 @@
 {
+  "categories": ["displacement-and-migration"],
+  "tags": ["housing", "housing justice"],
+  "kind": "poster-placard",
+  "imageCode": "1f",
+  "captionCode": "2h",
+  "aiUse": "generated",
+  "aiDisclosure": "Original AI-assisted vector placeholder created for site testing. This is not a curated human submission or a contribution by a real artist.",
   "slug": "homes-for-all",
   "title": "Homes for all",
   "languages": ["English"],
@@ -38,7 +45,46 @@
       "format": "PNG",
       "size": "A3",
       "path": "/posters/homes-for-all/A3.png",
-      "bytes": 552480
+      "bytes": 552480,
+      "dpi": 300,
+      "pixelWidth": 3508,
+      "pixelHeight": 4961
+    },
+    {
+      "format": "PNG",
+      "size": "A4",
+      "path": "/posters/homes-for-all/A4.png",
+      "bytes": 479105,
+      "dpi": 300,
+      "pixelWidth": 2480,
+      "pixelHeight": 3508
+    },
+    {
+      "format": "JPEG",
+      "size": "A4",
+      "path": "/posters/homes-for-all/A4.jpg",
+      "bytes": 393291,
+      "dpi": 300,
+      "pixelWidth": 2480,
+      "pixelHeight": 3508
+    },
+    {
+      "format": "PNG",
+      "size": "A2",
+      "path": "/posters/homes-for-all/A2.png",
+      "bytes": 1244114,
+      "dpi": 300,
+      "pixelWidth": 4961,
+      "pixelHeight": 7016
+    },
+    {
+      "format": "JPEG",
+      "size": "A2",
+      "path": "/posters/homes-for-all/A2.jpg",
+      "bytes": 987484,
+      "dpi": 300,
+      "pixelWidth": 4961,
+      "pixelHeight": 7016
     },
     {
       "format": "SVG",
@@ -50,7 +96,7 @@
       "format": "ZIP",
       "size": "Bundle",
       "path": "/posters/homes-for-all/bundle.zip",
-      "bytes": 61104
+      "bytes": 61103
     }
   ],
   "license": "CC0-1.0",
@@ -141,12 +187,5 @@
         }
       }
     ]
-  },
-  "categories": ["displacement-and-migration"],
-  "tags": ["housing", "housing justice"],
-  "kind": "poster-placard",
-  "imageCode": "1f",
-  "captionCode": "2h",
-  "aiUse": "generated",
-  "aiDisclosure": "Original AI-assisted vector placeholder created for site testing. This is not a curated human submission or a contribution by a real artist."
+  }
 }

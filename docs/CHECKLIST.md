@@ -1,4 +1,4 @@
-﻿# Required checklist
+# Required checklist
 
 ## RED LARK WORKSHOP planning checkpoint — 16 October 2026
 
@@ -10,8 +10,8 @@ The original rows below are preserved as historical evidence. Their PASS entries
 | Complete rebrand and build/CI legacy-name scanner          | PASS   | M1: check:brand; brand.ts; storage/UTF-8 tests; regenerated assets.                                  |
 | Exact English JSON and rendered-copy test                  | PASS   | M3: independent fixture + source hash + server/browser rendered-text checks; tests/copy.test.ts.     |
 | Four locales, review flags and Indic fonts/exports         | PASS   | M2: i18n/indic tests, four-locale browser axe, reviewed:false assets. Native review remains pending. |
-| Categories, formats, codes, AI badges and consent fields   | FAIL   | M4-M6 not implemented.                                                                               |
-| Licence/derivative gate and ShareAlike regression          | FAIL   | Existing gate retained; verify after new model/source changes.                                       |
+| Categories, formats, codes, AI badges and consent fields   | PASS   | M4/M5: taxonomy and items unit/browser tests; actual A4/A2 files; separate consent validation.       |
+| Licence/derivative gate and ShareAlike regression          | PASS   | M5: 34 unit and 76 browser tests include ND rejection and credit rules after model changes.          |
 | Auth, RLS, upload pipeline and admin queue                 | FAIL   | HOLD by owner; no implementation or provider claims.                                                 |
 | Stored contact/takedown and test-mode delivered mail       | FAIL   | HOLD with M7/M8; current flow is email-app handoff.                                                  |
 | Localized blog/RSS/policies and accurate privacy text      | FAIL   | M9 not implemented.                                                                                  |

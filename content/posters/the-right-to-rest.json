@@ -1,4 +1,11 @@
 {
+  "categories": ["workers"],
+  "tags": ["labor", "may day"],
+  "kind": "poster-placard",
+  "imageCode": "1p",
+  "captionCode": "2r",
+  "aiUse": "generated",
+  "aiDisclosure": "Original AI-assisted vector placeholder created for site testing. This is not a curated human submission or a contribution by a real artist.",
   "slug": "the-right-to-rest",
   "title": "The right to rest",
   "titleOriginal": "বিশ্রামের অধিকার",
@@ -22,43 +29,82 @@
       "format": "PDF",
       "size": "A4",
       "path": "/posters/the-right-to-rest/A4.pdf",
-      "bytes": 41170
+      "bytes": 43104
     },
     {
       "format": "PDF",
       "size": "A3",
       "path": "/posters/the-right-to-rest/A3.pdf",
-      "bytes": 41131
+      "bytes": 43065
     },
     {
       "format": "PDF",
       "size": "A2",
       "path": "/posters/the-right-to-rest/A2.pdf",
-      "bytes": 41168
+      "bytes": 43102
     },
     {
       "format": "PDF",
       "size": "18x24",
       "path": "/posters/the-right-to-rest/18x24.pdf",
-      "bytes": 41037
+      "bytes": 42971
     },
     {
       "format": "PNG",
       "size": "A3",
       "path": "/posters/the-right-to-rest/A3.png",
-      "bytes": 605385
+      "bytes": 580490,
+      "dpi": 300,
+      "pixelWidth": 3508,
+      "pixelHeight": 4961
+    },
+    {
+      "format": "PNG",
+      "size": "A4",
+      "path": "/posters/the-right-to-rest/A4.png",
+      "bytes": 561823,
+      "dpi": 300,
+      "pixelWidth": 2480,
+      "pixelHeight": 3508
+    },
+    {
+      "format": "JPEG",
+      "size": "A4",
+      "path": "/posters/the-right-to-rest/A4.jpg",
+      "bytes": 377172,
+      "dpi": 300,
+      "pixelWidth": 2480,
+      "pixelHeight": 3508
+    },
+    {
+      "format": "PNG",
+      "size": "A2",
+      "path": "/posters/the-right-to-rest/A2.png",
+      "bytes": 1370109,
+      "dpi": 300,
+      "pixelWidth": 4961,
+      "pixelHeight": 7016
+    },
+    {
+      "format": "JPEG",
+      "size": "A2",
+      "path": "/posters/the-right-to-rest/A2.jpg",
+      "bytes": 954290,
+      "dpi": 300,
+      "pixelWidth": 4961,
+      "pixelHeight": 7016
     },
     {
       "format": "SVG",
       "size": "A3",
       "path": "/posters/the-right-to-rest/source.svg",
-      "bytes": 91715
+      "bytes": 97007
     },
     {
       "format": "ZIP",
       "size": "Bundle",
       "path": "/posters/the-right-to-rest/bundle.zip",
-      "bytes": 67582
+      "bytes": 70986
     }
   ],
   "license": "CC0-1.0",
@@ -135,7 +181,7 @@
         "height": 45,
         "rotation": 0,
         "color": "#f3f0e6",
-        "text": "PLACEHOLDER / 14 / CC0",
+        "text": "PLACEHOLDER / DRAFT TRANSLATION / 14 / CC0",
         "font": "mono",
         "fontSize": 15,
         "locked": false,
@@ -149,12 +195,5 @@
         }
       }
     ]
-  },
-  "categories": ["workers"],
-  "tags": ["labor", "may day"],
-  "kind": "poster-placard",
-  "imageCode": "1p",
-  "captionCode": "2r",
-  "aiUse": "generated",
-  "aiDisclosure": "Original AI-assisted vector placeholder created for site testing. This is not a curated human submission or a contribution by a real artist."
+  }
 }

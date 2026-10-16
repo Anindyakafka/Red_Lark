@@ -1,4 +1,11 @@
 {
+  "categories": ["democracy"],
+  "tags": ["solidarity", "mutual aid"],
+  "kind": "poster-placard",
+  "imageCode": "1k",
+  "captionCode": "2m",
+  "aiUse": "generated",
+  "aiDisclosure": "Original AI-assisted vector placeholder created for site testing. This is not a curated human submission or a contribution by a real artist.",
   "slug": "no-one-is-disposable",
   "title": "No one is disposable",
   "languages": ["English"],
@@ -38,7 +45,46 @@
       "format": "PNG",
       "size": "A3",
       "path": "/posters/no-one-is-disposable/A3.png",
-      "bytes": 588947
+      "bytes": 588947,
+      "dpi": 300,
+      "pixelWidth": 3508,
+      "pixelHeight": 4961
+    },
+    {
+      "format": "PNG",
+      "size": "A4",
+      "path": "/posters/no-one-is-disposable/A4.png",
+      "bytes": 531213,
+      "dpi": 300,
+      "pixelWidth": 2480,
+      "pixelHeight": 3508
+    },
+    {
+      "format": "JPEG",
+      "size": "A4",
+      "path": "/posters/no-one-is-disposable/A4.jpg",
+      "bytes": 354020,
+      "dpi": 300,
+      "pixelWidth": 2480,
+      "pixelHeight": 3508
+    },
+    {
+      "format": "PNG",
+      "size": "A2",
+      "path": "/posters/no-one-is-disposable/A2.png",
+      "bytes": 1318099,
+      "dpi": 300,
+      "pixelWidth": 4961,
+      "pixelHeight": 7016
+    },
+    {
+      "format": "JPEG",
+      "size": "A2",
+      "path": "/posters/no-one-is-disposable/A2.jpg",
+      "bytes": 900594,
+      "dpi": 300,
+      "pixelWidth": 4961,
+      "pixelHeight": 7016
     },
     {
       "format": "SVG",
@@ -50,7 +96,7 @@
       "format": "ZIP",
       "size": "Bundle",
       "path": "/posters/no-one-is-disposable/bundle.zip",
-      "bytes": 72328
+      "bytes": 72330
     }
   ],
   "license": "CC0-1.0",
@@ -141,12 +187,5 @@
         }
       }
     ]
-  },
-  "categories": ["democracy"],
-  "tags": ["solidarity", "mutual aid"],
-  "kind": "poster-placard",
-  "imageCode": "1k",
-  "captionCode": "2m",
-  "aiUse": "generated",
-  "aiDisclosure": "Original AI-assisted vector placeholder created for site testing. This is not a curated human submission or a contribution by a real artist."
+  }
 }

@@ -1,4 +1,11 @@
 {
+  "categories": ["displacement-and-migration"],
+  "tags": ["migration", "freedom of movement"],
+  "kind": "poster-placard",
+  "imageCode": "1c",
+  "captionCode": "2e",
+  "aiUse": "generated",
+  "aiDisclosure": "Original AI-assisted vector placeholder created for site testing. This is not a curated human submission or a contribution by a real artist.",
   "slug": "borders-are-lines",
   "title": "Borders are lines",
   "languages": ["English"],
@@ -38,7 +45,46 @@
       "format": "PNG",
       "size": "A3",
       "path": "/posters/borders-are-lines/A3.png",
-      "bytes": 765143
+      "bytes": 765143,
+      "dpi": 300,
+      "pixelWidth": 3508,
+      "pixelHeight": 4961
+    },
+    {
+      "format": "PNG",
+      "size": "A4",
+      "path": "/posters/borders-are-lines/A4.png",
+      "bytes": 937461,
+      "dpi": 300,
+      "pixelWidth": 2480,
+      "pixelHeight": 3508
+    },
+    {
+      "format": "JPEG",
+      "size": "A4",
+      "path": "/posters/borders-are-lines/A4.jpg",
+      "bytes": 682670,
+      "dpi": 300,
+      "pixelWidth": 2480,
+      "pixelHeight": 3508
+    },
+    {
+      "format": "PNG",
+      "size": "A2",
+      "path": "/posters/borders-are-lines/A2.png",
+      "bytes": 2047360,
+      "dpi": 300,
+      "pixelWidth": 4961,
+      "pixelHeight": 7016
+    },
+    {
+      "format": "JPEG",
+      "size": "A2",
+      "path": "/posters/borders-are-lines/A2.jpg",
+      "bytes": 1531768,
+      "dpi": 300,
+      "pixelWidth": 4961,
+      "pixelHeight": 7016
     },
     {
       "format": "SVG",
@@ -50,7 +96,7 @@
       "format": "ZIP",
       "size": "Bundle",
       "path": "/posters/borders-are-lines/bundle.zip",
-      "bytes": 96094
+      "bytes": 96099
     }
   ],
   "license": "CC0-1.0",
@@ -141,12 +187,5 @@
         }
       }
     ]
-  },
-  "categories": ["displacement-and-migration"],
-  "tags": ["migration", "freedom of movement"],
-  "kind": "poster-placard",
-  "imageCode": "1c",
-  "captionCode": "2e",
-  "aiUse": "generated",
-  "aiDisclosure": "Original AI-assisted vector placeholder created for site testing. This is not a curated human submission or a contribution by a real artist."
+  }
 }

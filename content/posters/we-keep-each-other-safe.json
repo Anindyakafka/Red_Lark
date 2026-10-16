@@ -1,4 +1,11 @@
 {
+  "categories": ["democracy"],
+  "tags": ["solidarity", "mutual aid"],
+  "kind": "poster-placard",
+  "imageCode": "1r",
+  "captionCode": "2b",
+  "aiUse": "generated",
+  "aiDisclosure": "Original AI-assisted vector placeholder created for site testing. This is not a curated human submission or a contribution by a real artist.",
   "slug": "we-keep-each-other-safe",
   "title": "We keep each other safe",
   "languages": ["English"],
@@ -38,7 +45,46 @@
       "format": "PNG",
       "size": "A3",
       "path": "/posters/we-keep-each-other-safe/A3.png",
-      "bytes": 571659
+      "bytes": 571659,
+      "dpi": 300,
+      "pixelWidth": 3508,
+      "pixelHeight": 4961
+    },
+    {
+      "format": "PNG",
+      "size": "A4",
+      "path": "/posters/we-keep-each-other-safe/A4.png",
+      "bytes": 487065,
+      "dpi": 300,
+      "pixelWidth": 2480,
+      "pixelHeight": 3508
+    },
+    {
+      "format": "JPEG",
+      "size": "A4",
+      "path": "/posters/we-keep-each-other-safe/A4.jpg",
+      "bytes": 433999,
+      "dpi": 300,
+      "pixelWidth": 2480,
+      "pixelHeight": 3508
+    },
+    {
+      "format": "PNG",
+      "size": "A2",
+      "path": "/posters/we-keep-each-other-safe/A2.png",
+      "bytes": 1282577,
+      "dpi": 300,
+      "pixelWidth": 4961,
+      "pixelHeight": 7016
+    },
+    {
+      "format": "JPEG",
+      "size": "A2",
+      "path": "/posters/we-keep-each-other-safe/A2.jpg",
+      "bytes": 1054243,
+      "dpi": 300,
+      "pixelWidth": 4961,
+      "pixelHeight": 7016
     },
     {
       "format": "SVG",
@@ -50,7 +96,7 @@
       "format": "ZIP",
       "size": "Bundle",
       "path": "/posters/we-keep-each-other-safe/bundle.zip",
-      "bytes": 72596
+      "bytes": 72599
     }
   ],
   "license": "CC0-1.0",
@@ -141,12 +187,5 @@
         }
       }
     ]
-  },
-  "categories": ["democracy"],
-  "tags": ["solidarity", "mutual aid"],
-  "kind": "poster-placard",
-  "imageCode": "1r",
-  "captionCode": "2b",
-  "aiUse": "generated",
-  "aiDisclosure": "Original AI-assisted vector placeholder created for site testing. This is not a curated human submission or a contribution by a real artist."
+  }
 }

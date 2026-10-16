@@ -432,6 +432,23 @@
     "The team has paused backend setup. Please use Contact to discuss a contribution through your own email app.": "The team has paused backend setup. Please use Contact to discuss a contribution through your own email app.",
     "Notes from the workshop": "Notes from the workshop",
     "Printing, distribution and conversations with artists. Editorial content is being prepared.": "Printing, distribution and conversations with artists. Editorial content is being prepared.",
-    "[EDITORIAL PLACEHOLDERS] Draft posts are being prepared; no artist interview has been published.": "[EDITORIAL PLACEHOLDERS] Draft posts are being prepared; no artist interview has been published."
+    "[EDITORIAL PLACEHOLDERS] Draft posts are being prepared; no artist interview has been published.": "[EDITORIAL PLACEHOLDERS] Draft posts are being prepared; no artist interview has been published.",
+    "Original-language titles sit beside English titles. Explore the Hindi, Bengali and Malayalam placeholder studies in the collection’s language filter. Draft translations need native review.": "Original-language titles sit beside English titles. Explore the Hindi, Bengali and Malayalam placeholder studies in the collection’s language filter. Draft translations need native review.",
+    "[DRAFT TRANSLATION — NEEDS NATIVE REVIEW]": "[DRAFT TRANSLATION — NEEDS NATIVE REVIEW]",
+    "Size": "Size",
+    "Resolution": "Resolution",
+    "where specified; PDF and SVG are vectors": "where specified; PDF and SVG are vectors",
+    "AI-use disclosure": "AI-use disclosure",
+    "Tags": "Tags",
+    "Contribute": "Contribute",
+    "Copy UPI ID": "Copy UPI ID",
+    "Copied UPI ID.": "Copied UPI ID.",
+    "Copy unavailable. Select and copy the displayed ID.": "Copy unavailable. Select and copy the displayed ID.",
+    "By category. By language. By a little curiosity.": "By category. By language. By a little curiosity.",
+    "Sign in": "Sign in",
+    "Create a contributor account": "Create a contributor account",
+    "Password reset request": "Password reset request",
+    "Set a new password": "Set a new password",
+    "Administration service pending": "Administration service pending"
   }
 }
