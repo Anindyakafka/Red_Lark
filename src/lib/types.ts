@@ -101,6 +101,12 @@ export interface PosterFile {
   bytes: number;
 }
 export interface Poster {
+  translations?: Partial<
+    Record<
+      "en" | "hi" | "bn" | "ml",
+      { title: string; caption: string; tags: string[]; reviewed: boolean }
+    >
+  >;
   slug: string;
   title: string;
   titleOriginal?: string;

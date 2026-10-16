@@ -1,22 +1,22 @@
-import { test, expect } from "@playwright/test";
+﻿import { test, expect } from "@playwright/test";
 import { posters, artists, themes, slugify } from "../../src/lib/catalog";
 test("fresh-eyes clickthrough of poster, artist and theme indexes", async ({ page }) => {
   test.setTimeout(120000);
   for (const p of posters) {
     await page.goto("/collection/");
-    await page.locator(`.card-title-row a[href="/poster/${p.slug}/"]`).click();
+    await page.locator(`.card-title-row a[href="/en/poster/${p.slug}/"]`).click();
     await expect(page).toHaveURL(new RegExp(`/poster/${p.slug}/`));
     await expect(page.locator(".downloads")).toBeVisible();
     await expect(page.getByRole("link", { name: /REMIX IN STUDIO/ })).toBeVisible();
   }
   for (const a of artists) {
     await page.goto("/artists/");
-    await page.locator(`.index-card a[href="/artist/${a.id}/"]`).click();
+    await page.locator(`.index-card a[href="/en/artist/${a.id}/"]`).click();
     await expect(page).toHaveURL(new RegExp(`/artist/${a.id}/`));
   }
   for (const t of themes) {
     await page.goto("/themes/");
-    await page.locator(`a[href="/theme/${slugify(t)}/"]`).click();
+    await page.locator(`a[href="/en/theme/${slugify(t)}/"]`).click();
     await expect(page).toHaveURL(new RegExp(`/theme/${slugify(t)}/`));
     await expect(page.locator(".poster-card").first()).toBeVisible();
   }

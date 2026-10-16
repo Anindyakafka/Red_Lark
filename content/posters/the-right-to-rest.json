@@ -1,8 +1,16 @@
 {
   "slug": "the-right-to-rest",
   "title": "The right to rest",
-  "titleOriginal": "Le droit au repos",
-  "languages": ["French"],
+  "titleOriginal": "বিশ্রামের অধিকার",
+  "languages": ["Bengali"],
+  "translations": {
+    "bn": {
+      "title": "বিশ্রামের অধিকার",
+      "caption": "Draft translation / original CC0 placeholder study",
+      "tags": ["Labor"],
+      "reviewed": false
+    }
+  },
   "artist": "wet-ink-workshop",
   "year": 2025,
   "themes": ["Labor"],
@@ -14,43 +22,43 @@
       "format": "PDF",
       "size": "A4",
       "path": "/posters/the-right-to-rest/A4.pdf",
-      "bytes": 39129
+      "bytes": 41170
     },
     {
       "format": "PDF",
       "size": "A3",
       "path": "/posters/the-right-to-rest/A3.pdf",
-      "bytes": 39090
+      "bytes": 41131
     },
     {
       "format": "PDF",
       "size": "A2",
       "path": "/posters/the-right-to-rest/A2.pdf",
-      "bytes": 39127
+      "bytes": 41168
     },
     {
       "format": "PDF",
       "size": "18x24",
       "path": "/posters/the-right-to-rest/18x24.pdf",
-      "bytes": 38996
+      "bytes": 41037
     },
     {
       "format": "PNG",
       "size": "A3",
       "path": "/posters/the-right-to-rest/A3.png",
-      "bytes": 566010
+      "bytes": 605385
     },
     {
       "format": "SVG",
       "size": "A3",
       "path": "/posters/the-right-to-rest/source.svg",
-      "bytes": 88792
+      "bytes": 91715
     },
     {
       "format": "ZIP",
       "size": "Bundle",
       "path": "/posters/the-right-to-rest/bundle.zip",
-      "bytes": 64249
+      "bytes": 67582
     }
   ],
   "license": "CC0-1.0",
@@ -59,7 +67,7 @@
   "commercialUseAllowed": true,
   "source": "/poster/the-right-to-rest/",
   "artistUrl": "/artist/wet-ink-workshop/",
-  "alt": "Black typographic print reading “LE DROIT AU REPOS”, with an arrow and a clearly marked placeholder credit.",
+  "alt": "Black typographic print reading “বিশ্রামের অধিকার”, with an arrow and a clearly marked placeholder credit.",
   "caption": "Original vector study authored for the Red Lark Workshop rebuild. Placeholder artwork, free under CC0; not a contribution by a real artist.",
   "remixable": true,
   "placeholder": true,
@@ -81,7 +89,7 @@
         "height": 340,
         "rotation": 0,
         "color": "#f3f0e6",
-        "text": "LE DROIT\nAU REPOS",
+        "text": "বিশ্রামের\nঅধিকার",
         "font": "display",
         "fontSize": 145,
         "locked": false,

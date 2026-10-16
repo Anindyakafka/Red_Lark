@@ -2,6 +2,7 @@
   "slug": "borders-are-lines",
   "title": "Borders are lines",
   "languages": ["English"],
+  "translations": {},
   "artist": "wet-ink-workshop",
   "year": 2024,
   "themes": ["Migration"],
@@ -49,7 +50,7 @@
       "format": "ZIP",
       "size": "Bundle",
       "path": "/posters/borders-are-lines/bundle.zip",
-      "bytes": 96095
+      "bytes": 96094
     }
   ],
   "license": "CC0-1.0",

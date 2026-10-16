@@ -1,6 +1,8 @@
 "use client";
+import { UiText } from "@/i18n/client";
+
 import { useEffect, useMemo, useState } from "react";
-import Link from "next/link";
+import { Link } from "@/i18n/client";
 import { artists, emptyFilters, filterPosters, fileSize, type Filters } from "@/lib/query";
 import type { Poster } from "@/lib/types";
 import { PosterImage } from "./poster-image";
@@ -120,18 +122,23 @@ export function Collection({
     <section id="collection" className="collection" aria-label="Poster collection">
       <div className="collection-heading">
         <h2>{heading}</h2>
-        <a href="/search/image/" className="label">
-          IMAGE SEARCH [COMING SOON]
-        </a>
+        <Link href="/search/image/" className="label">
+          <UiText id={"IMAGE SEARCH [COMING SOON]"} />
+        </Link>
       </div>
       <p className="license-note">
-        <strong>[PLEASE READ BEFORE USING]</strong> Free to download does not mean free to change.
-        Check the licence and credit on every poster. Original placeholders are CC0; contributions
-        keep their own licences.
+        <strong>
+          <UiText id={"[PLEASE READ BEFORE USING]"} />
+        </strong>
+        <UiText
+          id={
+            "Free to download does not mean free to change. Check the licence and credit on every poster. Original placeholders are CC0; contributions keep their own licences."
+          }
+        />
       </p>
       <form onSubmit={search} className="search-form" role="search" noValidate>
         <label htmlFor="archive-search" className="label">
-          SEARCH THE ARCHIVE
+          <UiText id={"SEARCH THE ARCHIVE"} />
         </label>
         <div>
           <input
@@ -146,7 +153,9 @@ export function Collection({
             aria-invalid={!!error}
             aria-describedby={error ? "search-error" : undefined}
           />
-          <button type="submit">[SEARCH] ↗</button>
+          <button type="submit">
+            <UiText id={"[SEARCH] ↗"} />
+          </button>
         </div>
         {error && (
           <p id="search-error" role="alert">
@@ -167,43 +176,58 @@ export function Collection({
             history.replaceState(null, "", url);
           }}
         >
-          All [↺]
+          <UiText id={"All [↺]"} />
         </button>
         {facets.map((f) => (
           <label className="facet" key={f.key}>
-            <span className="sr-only">{f.label}</span>
+            <span className="sr-only">
+              <UiText id={f.label} />
+            </span>
             <select
               aria-label={f.label}
               value={String(filters[f.key])}
               onChange={(e) => set(f.key, e.target.value)}
             >
-              <option value="">{f.label}</option>
+              <option value="">
+                <UiText id={f.label} />
+              </option>
               {f.values.map((v) => (
                 <option value={v.value} key={v.value}>
-                  {v.label}
+                  <UiText id={v.label} />
                 </option>
               ))}
             </select>
           </label>
         ))}
         <label className="facet">
-          <span className="sr-only">Sort</span>
+          <span className="sr-only">
+            <UiText id={"Sort"} />
+          </span>
           <select
             aria-label="Sort"
             value={filters.sort}
             onChange={(e) => set("sort", e.target.value)}
           >
-            <option value="newest">Newest</option>
-            <option value="oldest">Oldest</option>
-            <option value="az">A–Z</option>
-            <option value="za">Z–A</option>
+            <option value="newest">
+              <UiText id={"Newest"} />
+            </option>
+            <option value="oldest">
+              <UiText id={"Oldest"} />
+            </option>
+            <option value="az">
+              <UiText id={"A–Z"} />
+            </option>
+            <option value="za">
+              <UiText id={"Z–A"} />
+            </option>
           </select>
         </label>
         <button aria-pressed={filters.saved} onClick={() => set("saved", !filters.saved)}>
           [{filters.saved ? "SAVED ONLY" : "SAVED"}]
         </button>
         <strong className="result-count" aria-live="polite">
-          {results.length} POSTERS
+          {results.length}
+          <UiText id={"POSTERS"} />
         </strong>
       </div>
       <p className="hydration-status" role="status">
@@ -222,7 +246,9 @@ export function Collection({
               }
             }}
           >
-            [CLEAR {saved.length} LOCAL BOOKMARKS]
+            <UiText id={"[CLEAR"} />
+            {saved.length}
+            <UiText id={"LOCAL BOOKMARKS]"} />
           </button>
         )}
         {hydrated
@@ -269,28 +295,40 @@ export function Collection({
                 <p className="card-meta">
                   {p.formats[0].format} · {fileSize(p.formats[0].bytes)} · {p.license}
                 </p>
-                {p.placeholder && <span className="placeholder-label">[PLACEHOLDER]</span>}
+                {p.placeholder && (
+                  <span className="placeholder-label">
+                    <UiText id={"[PLACEHOLDER]"} />
+                  </span>
+                )}
               </div>
             </article>
           ))}
         </div>
       ) : (
         <div className="empty-state">
-          <h3>NO MATCH. KEEP LOOKING.</h3>
-          <p>Try a different word or clear the filters.</p>
+          <h3>
+            <UiText id={"NO MATCH. KEEP LOOKING."} />
+          </h3>
+          <p>
+            <UiText id={"Try a different word or clear the filters."} />
+          </p>
           <button
             onClick={() => {
               setFilters(emptyFilters);
               setDraft("");
             }}
           >
-            Clear filters
+            <UiText id={"Clear filters"} />
           </button>
         </div>
       )}
       <noscript>
         <p>
-          Search and filters need JavaScript. The archive and download pages are still available.
+          <UiText
+            id={
+              "Search and filters need JavaScript. The archive and download pages are still available."
+            }
+          />
         </p>
       </noscript>
     </section>

@@ -2,6 +2,7 @@
   "slug": "homes-for-all",
   "title": "Homes for all",
   "languages": ["English"],
+  "translations": {},
   "artist": "wet-ink-workshop",
   "year": 2025,
   "themes": ["Housing"],
@@ -49,7 +50,7 @@
       "format": "ZIP",
       "size": "Bundle",
       "path": "/posters/homes-for-all/bundle.zip",
-      "bytes": 61105
+      "bytes": 61104
     }
   ],
   "license": "CC0-1.0",

@@ -1671,3 +1671,96 @@ html {
     width: 55px;
   }
 }
+@font-face {
+  font-family: "Noto Devanagari";
+  src: url("/fonts/indic/noto-sans-devanagari-regular.woff2") format("woff2");
+  font-weight: 400;
+  font-display: swap;
+  unicode-range: U+0900-097F, U+1CD0-1CFF, U+200C-200D;
+}
+@font-face {
+  font-family: "Noto Bengali";
+  src: url("/fonts/indic/noto-sans-bengali-regular.woff2") format("woff2");
+  font-weight: 400;
+  font-display: swap;
+  unicode-range: U+0980-09FF, U+200C-200D;
+}
+@font-face {
+  font-family: "Noto Malayalam";
+  src: url("/fonts/indic/noto-sans-malayalam-regular.woff2") format("woff2");
+  font-weight: 400;
+  font-display: swap;
+  unicode-range: U+0D00-0D7F, U+200C-200D;
+}
+:root {
+  --font-indic: "Noto Devanagari", "Noto Bengali", "Noto Malayalam", sans-serif;
+}
+body {
+  font-family: var(--font-mono), "Courier New", var(--font-indic);
+}
+h1,
+h2,
+h3,
+.wordmark {
+  font-family: var(--font-display), Impact, var(--font-indic);
+}
+html:not([lang="en"]) h1,
+html:not([lang="en"]) h2,
+html:not([lang="en"]) h3 {
+  line-height: 1.35;
+}
+.translation-notice {
+  background: var(--ink);
+  color: var(--paper);
+  padding: 10px 3%;
+  font-size: 11px;
+}
+.header-controls {
+  display: flex;
+  align-items: center;
+  gap: 18px;
+}
+.site-header .language-switcher {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  border: 0;
+  padding: 0;
+}
+.site-header .language-switcher a {
+  border: 0;
+  padding: 5px 0;
+  font-family: var(--font-indic);
+}
+.language-switcher [aria-current="page"],
+.language-choice [aria-current="page"] {
+  text-decoration: underline;
+  text-decoration-thickness: 3px;
+  text-underline-offset: 5px;
+}
+.language-choice {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 14px;
+  align-items: center;
+}
+.language-choice a {
+  padding: 8px;
+  border: 2px solid var(--line);
+  font-family: var(--font-indic);
+}
+@media (max-width: 650px) {
+  .masthead {
+    flex-wrap: wrap;
+  }
+  .header-controls {
+    width: 100%;
+    justify-content: space-between;
+  }
+  .site-header .language-switcher a {
+    min-height: 38px;
+    display: inline-flex;
+    align-items: center;
+    font-size: 12px;
+  }
+}

@@ -1,9 +1,10 @@
-import type { Font } from "opentype.js";
+﻿import type { Font } from "opentype.js";
+import type { ShapedFont } from "./shaping";
 import { LICENSES } from "@/lib/types";
 import { PRESETS, type FontId, type Layer, type Scene } from "@/lib/types";
 import { creditLines, sceneCredits } from "@/lib/licenses";
 import { assertExportable, dimensions } from "./model";
-export type Fonts = Record<FontId, Font>;
+export type Fonts = Record<FontId, Font> & { indic?: Record<"hi" | "bn" | "ml", ShapedFont> };
 export const xml = (s: string) =>
   s.replace(
     /[&<>"']/g,
@@ -17,10 +18,42 @@ export function textPaths(
   size: number,
   width: number,
   color: string,
+  indic?: Fonts["indic"],
 ) {
   return text
     .split("\n")
     .map((line, i) => {
+      if (indic && /[\u0900-\u097f\u0980-\u09ff\u0d00-\u0d7f]/.test(line)) {
+        const language = /[\u0d00-\u0d7f]/.test(line)
+          ? "ml"
+          : /[\u0980-\u09ff]/.test(line)
+            ? "bn"
+            : "hi";
+        const shaped = indic[language];
+        const run = shaped.layout(line);
+        if (run.glyphs.some((g) => g.id === 0))
+          throw new Error(
+            "This text includes a glyph unavailable in the selected Indic font. Use separate text layers for different scripts.",
+          );
+        const actualSize = Math.min(
+          size,
+          (width * shaped.unitsPerEm) /
+            Math.max(
+              1,
+              run.positions.reduce((n, p) => n + p.xAdvance, 0),
+            ),
+        );
+        const scale = actualSize / shaped.unitsPerEm;
+        let pen = 0;
+        return run.glyphs
+          .map((g, j) => {
+            const p = run.positions[j];
+            const transform = `translate(${x + (pen + p.xOffset) * scale} ${y + size * (1 + i * 1.5) - p.yOffset * scale}) scale(${scale} ${-scale})`;
+            pen += p.xAdvance;
+            return `<g fill="${color}" transform="${transform}"><path d="${g.path.toSVG()}"/></g>`;
+          })
+          .join("");
+      }
       const actualSize = Math.min(
         size,
         (size * width) / Math.max(1, font.getAdvanceWidth(line, size)),
@@ -40,9 +73,15 @@ export function layerMarkup(l: Layer, fonts: Fonts) {
         fonts[l.font],
         0,
         0,
-        Math.min(l.fontSize, h / Math.max(1, l.text.split("\n").length) / 1.05),
+        Math.min(
+          l.fontSize,
+          h /
+            Math.max(1, l.text.split("\n").length) /
+            (/[\u0900-\u0d7f]/.test(l.text) ? 1.5 : 1.05),
+        ),
         w,
         l.color,
+        fonts.indic,
       );
       break;
     case "rectangle":

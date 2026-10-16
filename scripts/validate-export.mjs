@@ -34,7 +34,11 @@ for (const file of html) {
     const url = m[1];
     if (url.startsWith("//") || url === "/") continue;
     const target = path.join("out", decodeURIComponent(url));
-    if (!fs.existsSync(target) && !fs.existsSync(path.join(target, "index.html")))
+    if (
+      !fs.existsSync(target) &&
+      !fs.existsSync(path.join(target, "index.html")) &&
+      !fs.existsSync(path.join("out/en", decodeURIComponent(url), "index.html"))
+    )
       errors.push(`${file}: broken internal URL ${url}`);
   }
   for (const m of source.matchAll(/<img\b[^>]*>/g))

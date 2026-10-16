@@ -2,6 +2,7 @@
   "slug": "listen-to-the-land",
   "title": "Listen to the land",
   "languages": ["English"],
+  "translations": {},
   "artist": "wet-ink-workshop",
   "year": 2026,
   "themes": ["Ecology"],
@@ -49,7 +50,7 @@
       "format": "ZIP",
       "size": "Bundle",
       "path": "/posters/listen-to-the-land/bundle.zip",
-      "bytes": 63359
+      "bytes": 63357
     }
   ],
   "license": "CC0-1.0",

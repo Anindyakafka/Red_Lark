@@ -1,0 +1,21 @@
+{
+  "locale": "en",
+  "reviewed": true,
+  "aboutHeading": "About: RED LARK WORKSHOP",
+  "about": "We are a network of leftist artists and designers in India committed to the principles of the creative commons and the copyleft movement. This non-commercial website is an archive and workshop of creativity for diverse political campaigns—ranging from the fight against fascism and corporate capitalism to the celebration of minority identities and revolutionary histories. The graphics, texts, and images housed here are produced by us, commissioned through our collaborative network, or thoughtfully compiled and adapted from outside sources. We also work as an “advertising” or “design agency” for different social and political movements in India. We strive to credit and promote the original creators, providing their contact details wherever possible. While all the features of this website including the artworks are free to use, visitors are welcome to financially support their favourite artists or donate to the website.",
+  "policyLink": "Learn more about us and the website policies.",
+  "objectivesHeading": "Our objectives:",
+  "objectives": [
+    "Fuel and partake in political and social campaigns for an equitable world.",
+    "Promote open access and copyleft principles by freely disseminating image and text.",
+    "Amplify and archive voices from the margins and forgotten histories.",
+    "Champion and support creative activism and non-mainstream artists and writers.",
+    "Build a collaborative network and organization of like-minded artists, writers and cultural activists.",
+    "Propagate the principles of Marxism-Leninism and work towards bridging and unifying the South Asian left."
+  ],
+  "aiHeading": "Our policy on Generative AI:",
+  "ai": "The Red Lark Workshop was born amidst the recent Gen-Z protests challenging India’s right-wing BJP government and the surge of AI-generated visuals created both for and against the cause. We recognize the inevitability and significance of mass creativity enabled by generative AI, despite the social and ecological harms perpetrated by the Big Tech corporations behind these tools. Because large AI models are trained on massive data averages—often ignoring rare or exceptional samples—we are alarmed by the resulting flood of generic, stereotypical visuals. However well-intentioned, these images frequently border on majoritarian forms of racism, sexism, and ableism. Realizing that human creativity and reflection remain unsurpassed and essential for imagining a better world, we advocate for a thoughtful, minimal use of generative AI rather than a complete boycott. The creative works featured in our archive proudly reflect this principle.",
+  "searchLabel": "SEARCH BOX",
+  "languageLabel": "CHOOSE LANGUAGE:",
+  "languages": ["English", "Hindi", "Bengali", "Malayalam"]
+}

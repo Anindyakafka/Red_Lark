@@ -1,8 +1,15 @@
 "use client";
+import { Link } from "@/i18n/client";
+
+import { UiText } from "@/i18n/client";
+
 import { useState, useRef } from "react";
 import { useRouter } from "next/navigation";
+import { useI18n } from "@/i18n/client";
+import { localePath } from "@/i18n/config";
 export function HandoffForm({ kind, email }: { kind: "contact" | "submit"; email: string }) {
   const router = useRouter();
+  const { locale } = useI18n();
   const form = useRef<HTMLFormElement>(null);
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [failure, setFailure] = useState("");
@@ -61,7 +68,7 @@ export function HandoffForm({ kind, email }: { kind: "contact" | "submit"; email
       const link = document.createElement("a");
       link.href = url;
       link.click();
-      router.push(`/thank-you/?for=${kind}`);
+      router.push(localePath(locale, `/thank-you/?for=${kind}`));
     } catch {
       setFailure(
         "[NOT SENT] Your browser could not open an email app. Use the displayed contact address in your own mail app. Your message was not saved.",
@@ -72,28 +79,35 @@ export function HandoffForm({ kind, email }: { kind: "contact" | "submit"; email
   const fieldError = (name: string) =>
     errors[name] ? (
       <p id={`${name}-error`} className="field-error">
-        [ERROR] {errors[name]}
+        <UiText id={"[ERROR]"} />
+        {errors[name]}
       </p>
     ) : null;
   return (
     <form ref={form} className="handoff-form" onSubmit={onSubmit} noValidate>
       <p className="notice">
-        [EMAIL HANDOFF] This form prepares an email in your own mail app. It does not upload, store,
-        or automatically send your message.{" "}
+        <UiText
+          id={
+            "[EMAIL HANDOFF] This form prepares an email in your own mail app. It does not upload, store, or automatically send your message."
+          }
+        />{" "}
         {email
           ? "Review and send the email yourself."
           : "Delivery is unavailable until the project supplies a real inbox."}
       </p>
       <div className="honeypot" aria-hidden="true">
         <label>
-          Leave this empty
+          <UiText id={"Leave this empty"} />
           <input name="website" tabIndex={-1} autoComplete="off" />
         </label>
       </div>
       {kind === "submit" && (
         <>
           <label className="form-field" htmlFor="source">
-            ARTWORK / SOURCE LINK <span>(required)</span>
+            <UiText id={"ARTWORK / SOURCE LINK"} />
+            <span>
+              <UiText id={"(required)"} />
+            </span>
             <input
               id="source"
               name="source"
@@ -104,7 +118,10 @@ export function HandoffForm({ kind, email }: { kind: "contact" | "submit"; email
             {fieldError("source")}
           </label>
           <label className="form-field" htmlFor="license">
-            LICENCE + ARTIST CREDIT <span>(required)</span>
+            <UiText id={"LICENCE + ARTIST CREDIT"} />
+            <span>
+              <UiText id={"(required)"} />
+            </span>
             <input
               id="license"
               name="license"
@@ -117,7 +134,9 @@ export function HandoffForm({ kind, email }: { kind: "contact" | "submit"; email
       )}
       <label className="form-field" htmlFor="message">
         {kind === "submit" ? "TELL US ABOUT THE WORK" : "YOUR MESSAGE"}{" "}
-        <span>(required, 10–3,000 characters)</span>
+        <span>
+          <UiText id={"(required, 10–3,000 characters)"} />
+        </span>
         <textarea
           id="message"
           name="message"
@@ -128,11 +147,18 @@ export function HandoffForm({ kind, email }: { kind: "contact" | "submit"; email
         />
         {fieldError("message")}
         <span id="message-help" className="small">
-          Share only what is needed. Do not include private locations or identifying details.
+          <UiText
+            id={
+              "Share only what is needed. Do not include private locations or identifying details."
+            }
+          />
         </span>
       </label>
       <label className="form-field" htmlFor="reply">
-        REPLY EMAIL <span>(optional)</span>
+        <UiText id={"REPLY EMAIL"} />
+        <span>
+          <UiText id={"(optional)"} />
+        </span>
         <input
           id="reply"
           name="reply"
@@ -152,16 +178,22 @@ export function HandoffForm({ kind, email }: { kind: "contact" | "submit"; email
             aria-describedby={errors.permission ? "permission-error" : undefined}
           />
           <span>
-            I created this work or have explicit permission to share it. Publication requires
-            review.{fieldError("permission")}
+            <UiText
+              id={
+                "I created this work or have explicit permission to share it. Publication requires review."
+              }
+            />
+            {fieldError("permission")}
           </span>
         </label>
       )}
       {Object.keys(errors).length > 0 && (
         <p role="alert" className="notice">
-          [CHECK THE FORM] {Object.keys(errors).length} field
-          {Object.keys(errors).length === 1 ? "" : "s"} need attention. Errors are written beside
-          each field.
+          <UiText id={"[CHECK THE FORM]"} />
+          {Object.keys(errors).length}
+          <UiText id={"field"} />
+          {Object.keys(errors).length === 1 ? "" : "s"}
+          <UiText id={"need attention. Errors are written beside each field."} />
         </p>
       )}
       {failure && (
@@ -173,10 +205,10 @@ export function HandoffForm({ kind, email }: { kind: "contact" | "submit"; email
         {sending ? "[OPENING EMAIL APP…]" : "[PREPARE EMAIL] ↗"}
       </button>
       <p className="small">
-        No attachments are collected. Share an artwork link instead. Read{" "}
-        <a href="/privacy/" className="underlined">
-          how we handle data
-        </a>
+        <UiText id={"No attachments are collected. Share an artwork link instead. Read"} />{" "}
+        <Link href="/privacy/" className="underlined">
+          <UiText id={"how we handle data"} />
+        </Link>
         .
       </p>
     </form>

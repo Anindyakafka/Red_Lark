@@ -2,6 +2,7 @@
   "slug": "our-air-our-future",
   "title": "Our air, our future",
   "languages": ["English"],
+  "translations": {},
   "artist": "wet-ink-workshop",
   "year": 2025,
   "themes": ["Climate"],
@@ -49,7 +50,7 @@
       "format": "ZIP",
       "size": "Bundle",
       "path": "/posters/our-air-our-future/bundle.zip",
-      "bytes": 64466
+      "bytes": 64465
     }
   ],
   "license": "CC0-1.0",

@@ -1,5 +1,15 @@
 # Numbered rebuild rounds
 
+## Red Lark Round 2 critique — M2 locales and shaping
+
+Added four prerendered locale trees, locale document roots, URL-based switches, canonical/hreflang/OG metadata and locale sitemap entries. A small Netlify Edge function negotiates Accept-Language without cookies and preserves localized 404 status; the preview server mirrors routing. This revises the original full-runtime M2 suggestion: static public pages plus a narrow Edge function are sufficient during the backend hold. The future account/API phase still needs a server runtime. Global-not-found uses the documented experimental Next flag because locale routes have separate root layouts.
+
+English messages contain 422 entries; Hindi/Bengali/Malayalam each include 122 drafted translations and explicit English fallbacks, all reviewed:false. Draft landing assets are complete, with a locked independent English fixture and server-rendered copy tests ready for M3. Self-hosted Noto script subsets serve UI; full fonts and a pinned HarfBuzz runtime serve only the lazy Studio. Actual Malayalam text crashed fontkit even with full fonts; HarfBuzz was verified in Node/Edge for all three scripts, conjuncts and chillus. No runtime external requests were needed. French/Spanish studies are replaced with three original Indic placeholder studies.
+
+Checks: 29 unit/copy/shaping tests passed; typecheck/lint/build green; 168 exported HTML files validated. Full browser run found one translated-fragment spacing defect (68 passed, one failed); fixed the actual spacing and reran all eight affected interaction/locale tests successfully. All four locale core-page axe checks passed. The next full run is at M3. Malayalam home/contact screenshots at 390/1440 were viewed; scripts remain legible without clipping. English fallback is deliberately visible rather than pretending translations are reviewed.
+
+Ranked remaining issues: (1) replace the previous landing with the exact-copy narrative; (2) finish categories/item models and UI; (3) measure the larger multilingual bundle with Lighthouse and reduce it if needed. Native review remains a human task. No Supabase implementation or deployment.
+
 ## Red Lark Round 1 critique — M1 foundations
 
 Replaced source/content/package branding, authored original geometric lark/splatter/flame/cursor SVGs, regenerated icons/OG/print bundles, fixed corrupt quote strings in source JSON and generator, consolidated placeholder credits under The Wet Ink Workshop, added a single allow-listed repository constant and a build/CI legacy-name scan. Old branded evidence/assets were retired from the working tree; Git history retains prior evidence. New M1 captures are under docs/evidence/redlark-m1.

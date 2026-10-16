@@ -2,6 +2,7 @@
   "slug": "public-space",
   "title": "Public space",
   "languages": ["English"],
+  "translations": {},
   "artist": "wet-ink-workshop",
   "year": 2025,
   "themes": ["Housing"],
@@ -49,7 +50,7 @@
       "format": "ZIP",
       "size": "Bundle",
       "path": "/posters/public-space/bundle.zip",
-      "bytes": 64072
+      "bytes": 64073
     }
   ],
   "license": "CC0-1.0",

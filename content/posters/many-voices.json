@@ -2,6 +2,7 @@
   "slug": "many-voices",
   "title": "Many voices",
   "languages": ["English"],
+  "translations": {},
   "artist": "wet-ink-workshop",
   "year": 2024,
   "themes": ["Solidarity"],
@@ -49,7 +50,7 @@
       "format": "ZIP",
       "size": "Bundle",
       "path": "/posters/many-voices/bundle.zip",
-      "bytes": 89267
+      "bytes": 89266
     }
   ],
   "license": "CC0-1.0",

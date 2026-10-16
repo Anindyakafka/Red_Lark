@@ -2,6 +2,7 @@
   "slug": "we-are-still-here",
   "title": "We are still here",
   "languages": ["English"],
+  "translations": {},
   "artist": "wet-ink-workshop",
   "year": 2026,
   "themes": ["Solidarity"],
@@ -49,7 +50,7 @@
       "format": "ZIP",
       "size": "Bundle",
       "path": "/posters/we-are-still-here/bundle.zip",
-      "bytes": 63566
+      "bytes": 63567
     }
   ],
   "license": "CC0-1.0",

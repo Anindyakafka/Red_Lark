@@ -9,3 +9,7 @@
   NETLIFY_NEXT_PLUGIN_SKIP = "true"
 
 # Security and cache headers live in public/_headers, copied into out/ at build.
+
+[[edge_functions]]
+  function = "language"
+  path = "/*"

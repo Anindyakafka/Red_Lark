@@ -2,6 +2,7 @@
   "slug": "make-room",
   "title": "Make room",
   "languages": ["English"],
+  "translations": {},
   "artist": "wet-ink-workshop",
   "year": 2024,
   "themes": ["Migration"],
@@ -49,7 +50,7 @@
       "format": "ZIP",
       "size": "Bundle",
       "path": "/posters/make-room/bundle.zip",
-      "bytes": 86153
+      "bytes": 86155
     }
   ],
   "license": "CC0-1.0",

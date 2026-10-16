@@ -2,6 +2,7 @@
   "slug": "no-one-is-disposable",
   "title": "No one is disposable",
   "languages": ["English"],
+  "translations": {},
   "artist": "wet-ink-workshop",
   "year": 2026,
   "themes": ["Solidarity"],
@@ -49,7 +50,7 @@
       "format": "ZIP",
       "size": "Bundle",
       "path": "/posters/no-one-is-disposable/bundle.zip",
-      "bytes": 72327
+      "bytes": 72328
     }
   ],
   "license": "CC0-1.0",

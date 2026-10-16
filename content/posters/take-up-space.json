@@ -2,6 +2,7 @@
   "slug": "take-up-space",
   "title": "Take up space",
   "languages": ["English"],
+  "translations": {},
   "artist": "wet-ink-workshop",
   "year": 2024,
   "themes": ["Accessibility"],
@@ -49,7 +50,7 @@
       "format": "ZIP",
       "size": "Bundle",
       "path": "/posters/take-up-space/bundle.zip",
-      "bytes": 90869
+      "bytes": 90870
     }
   ],
   "license": "CC0-1.0",

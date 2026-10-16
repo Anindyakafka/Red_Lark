@@ -14,6 +14,8 @@ import {
 } from "../src/lib/types";
 import { freshScene, newLayer } from "../src/studio/model";
 import { sceneSvg, type Fonts } from "../src/studio/render";
+import * as hb from "harfbuzzjs";
+import { createShapedFont } from "../src/studio/shaping";
 
 await Promise.all(
   ["content/posters", "content/artists", "public/posters", "src/generated", "public/icons"].map(
@@ -23,6 +25,11 @@ await Promise.all(
 const fonts: Fonts = {
   display: opentype.loadSync("public/fonts/bebas-neue.ttf"),
   mono: opentype.loadSync("public/fonts/ibm-plex-mono.ttf"),
+  indic: {
+    hi: createShapedFont(hb, await fs.readFile("public/fonts/indic/noto-sans-devanagari-full.ttf")),
+    bn: createShapedFont(hb, await fs.readFile("public/fonts/indic/noto-sans-bengali-full.ttf")),
+    ml: createShapedFont(hb, await fs.readFile("public/fonts/indic/noto-sans-malayalam-full.ttf")),
+  },
 };
 const artists: Artist[] = [
   {
@@ -45,13 +52,7 @@ const entries = [
   ["LISTEN\nTO THE LAND", "Listen to the land", "Ecology", "Climate justice", ""],
   ["PUBLIC\nSPACE", "Public space", "Housing", "Right to the city", ""],
   ["MANY\nVOICES", "Many voices", "Solidarity", "Mutual aid", ""],
-  [
-    "UN MUNDO\nPARA TODAS",
-    "A world for everyone",
-    "Solidarity",
-    "Mutual aid",
-    "Un mundo para todas",
-  ],
+  ["सबके लिए\nदुनिया", "A world for everyone", "Solidarity", "Mutual aid", "सबके लिए दुनिया"],
   [
     "NOTHING\nABOUT US\nWITHOUT US",
     "Nothing about us without us",
@@ -61,10 +62,10 @@ const entries = [
   ],
   ["LESS\nEXTRACTION\nMORE CARE", "Less extraction, more care", "Climate", "Climate justice", ""],
   ["WE KEEP\nEACH OTHER\nSAFE", "We keep each other safe", "Solidarity", "Mutual aid", ""],
-  ["LE DROIT\nAU REPOS", "The right to rest", "Labor", "May Day", "Le droit au repos"],
+  ["বিশ্রামের\nঅধিকার", "The right to rest", "Labor", "May Day", "বিশ্রামের অধিকার"],
   ["BORDERS\nARE LINES", "Borders are lines", "Migration", "Freedom of movement", ""],
   ["A FUTURE\nWE SHARE", "A future we share", "Ecology", "Climate justice", ""],
-  ["BUILD\nTOGETHER", "Build together", "Housing", "Right to the city", ""],
+  ["ഒരുമിച്ച്\nപണിയാം", "Build together", "Housing", "Right to the city", "ഒരുമിച്ച് പണിയാം"],
   ["TAKE\nUP SPACE", "Take up space", "Accessibility", "Disability justice", ""],
 ];
 const posters: Poster[] = [];
@@ -207,7 +208,17 @@ for (let i = 0; i < entries.length; i++) {
     slug,
     title,
     ...(original ? { titleOriginal: original } : {}),
-    languages: [i === 9 ? "Spanish" : i === 13 ? "French" : "English"],
+    languages: [i === 9 ? "Hindi" : i === 13 ? "Bengali" : i === 16 ? "Malayalam" : "English"],
+    translations: original
+      ? {
+          [i === 9 ? "hi" : i === 13 ? "bn" : "ml"]: {
+            title: original,
+            caption: "Draft translation / original CC0 placeholder study",
+            tags: [theme],
+            reviewed: false,
+          },
+        }
+      : {},
     artist: artist.id,
     year: 2026 - (i % 3),
     themes: [theme],

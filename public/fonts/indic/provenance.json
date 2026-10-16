@@ -1,0 +1,83 @@
+[
+  {
+    "file": "noto-sans-devanagari-OFL.txt",
+    "package": "@fontsource/noto-sans-devanagari",
+    "version": "5.3.0",
+    "source": "https://registry.npmjs.org/@fontsource/noto-sans-devanagari/-/noto-sans-devanagari-5.3.0.tgz",
+    "sha256": "79c44862256af9a67fc23df7c45ae289e730c7f6d4f8fb8ef593bd3c314b6d6d"
+  },
+  {
+    "file": "noto-sans-devanagari-regular.woff2",
+    "package": "@fontsource/noto-sans-devanagari",
+    "version": "5.3.0",
+    "source": "https://registry.npmjs.org/@fontsource/noto-sans-devanagari/-/noto-sans-devanagari-5.3.0.tgz",
+    "sha256": "f86f14cbd1004f5795689ee9cc70d5d87d915f5135b30283525c1c7b8f0eb192"
+  },
+  {
+    "file": "noto-sans-bengali-OFL.txt",
+    "package": "@fontsource/noto-sans-bengali",
+    "version": "5.3.0",
+    "source": "https://registry.npmjs.org/@fontsource/noto-sans-bengali/-/noto-sans-bengali-5.3.0.tgz",
+    "sha256": "c0d17a4a6f928d78749dbebfa9d2953b6086c2a1f64cdd1e450cc77fb8199b32"
+  },
+  {
+    "file": "noto-sans-bengali-regular.woff2",
+    "package": "@fontsource/noto-sans-bengali",
+    "version": "5.3.0",
+    "source": "https://registry.npmjs.org/@fontsource/noto-sans-bengali/-/noto-sans-bengali-5.3.0.tgz",
+    "sha256": "adb805ae2eb639cc5d7276ee0e3798a8092fbfe02a6e5a0e19d82587680b528c"
+  },
+  {
+    "file": "noto-sans-malayalam-OFL.txt",
+    "package": "@fontsource/noto-sans-malayalam",
+    "version": "5.3.0",
+    "source": "https://registry.npmjs.org/@fontsource/noto-sans-malayalam/-/noto-sans-malayalam-5.3.0.tgz",
+    "sha256": "29b7a0d250007948e23d1d2c734fdcf0bf6c3e278c98d6ad2c7c6bb9fedbd11c"
+  },
+  {
+    "file": "noto-sans-malayalam-regular.woff2",
+    "package": "@fontsource/noto-sans-malayalam",
+    "version": "5.3.0",
+    "source": "https://registry.npmjs.org/@fontsource/noto-sans-malayalam/-/noto-sans-malayalam-5.3.0.tgz",
+    "sha256": "4b0f383b9ebf2e7ecc82a06dc5e40efec4bd6d7a4f1a090652028ab856412dfe"
+  },
+  {
+    "file": "noto-sans-devanagari-full.ttf",
+    "source": "https://raw.githubusercontent.com/google/fonts/1d0e46c7933245c8180fe83e47917961c913bbdb/ofl/notosansdevanagari/NotoSansDevanagari%5Bwdth%2Cwght%5D.ttf",
+    "sourceCommit": "1d0e46c7933245c8180fe83e47917961c913bbdb",
+    "sha256": "14ec4af41f27482216d1c2229f417ff9b1425e1babb014e57d1d40d03229853e",
+    "format": "Full variable TTF (width/weight); used at default regular weight for HarfBuzz shaping"
+  },
+  {
+    "file": "noto-sans-devanagari-full-OFL.txt",
+    "source": "https://raw.githubusercontent.com/google/fonts/1d0e46c7933245c8180fe83e47917961c913bbdb/ofl/notosansdevanagari/OFL.txt",
+    "sourceCommit": "1d0e46c7933245c8180fe83e47917961c913bbdb",
+    "sha256": "a216f6f8d85c7228093e0ee5e258d9d377e6671f68acb4db1930b29583d0f331"
+  },
+  {
+    "file": "noto-sans-bengali-full.ttf",
+    "source": "https://raw.githubusercontent.com/google/fonts/1d0e46c7933245c8180fe83e47917961c913bbdb/ofl/notosansbengali/NotoSansBengali%5Bwdth%2Cwght%5D.ttf",
+    "sourceCommit": "1d0e46c7933245c8180fe83e47917961c913bbdb",
+    "sha256": "dcd42978094e584a849c84a51450eeac40c8826057d566ea6d4b9627a403a05a",
+    "format": "Full variable TTF (width/weight); used at default regular weight for HarfBuzz shaping"
+  },
+  {
+    "file": "noto-sans-bengali-full-OFL.txt",
+    "source": "https://raw.githubusercontent.com/google/fonts/1d0e46c7933245c8180fe83e47917961c913bbdb/ofl/notosansbengali/OFL.txt",
+    "sourceCommit": "1d0e46c7933245c8180fe83e47917961c913bbdb",
+    "sha256": "754f0e221aa7d5a915489f3bf1f20fe53ddc35ab2834a4d91656d78f9622de70"
+  },
+  {
+    "file": "noto-sans-malayalam-full.ttf",
+    "source": "https://raw.githubusercontent.com/google/fonts/1d0e46c7933245c8180fe83e47917961c913bbdb/ofl/notosansmalayalam/NotoSansMalayalam%5Bwdth%2Cwght%5D.ttf",
+    "sourceCommit": "1d0e46c7933245c8180fe83e47917961c913bbdb",
+    "sha256": "312e0e7c3cc15fa09eb42a8f749eeb246b593ed420e3c81aafe8d910c3a6fb56",
+    "format": "Full variable TTF (width/weight); used at default regular weight for HarfBuzz shaping"
+  },
+  {
+    "file": "noto-sans-malayalam-full-OFL.txt",
+    "source": "https://raw.githubusercontent.com/google/fonts/1d0e46c7933245c8180fe83e47917961c913bbdb/ofl/notosansmalayalam/OFL.txt",
+    "sourceCommit": "1d0e46c7933245c8180fe83e47917961c913bbdb",
+    "sha256": "1df18163a0bf60f02131401ba1609df90051f40c4047684dda1c8a2e9586f7f2"
+  }
+]

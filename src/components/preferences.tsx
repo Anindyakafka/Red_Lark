@@ -1,7 +1,9 @@
 "use client";
+import { UiText } from "@/i18n/client";
+
 import { useEffect, useState } from "react";
 import { usePathname } from "next/navigation";
-import Link from "next/link";
+import { Link } from "@/i18n/client";
 import { track } from "@/lib/analytics";
 export function Preferences() {
   const [dark, setDark] = useState(false);
@@ -30,7 +32,7 @@ export function Preferences() {
   );
 }
 export function BrowseCTA() {
-  const path = usePathname();
+  const path = usePathname().replace(/^\/(en|hi|bn|ml)(?=\/|$)/, "") || "/";
   useEffect(() => {
     track("pageview");
     const onFocus = (event: FocusEvent) => {
@@ -64,7 +66,7 @@ export function BrowseCTA() {
   return browse ? (
     <div className="mobile-cta">
       <Link href="/studio" prefetch={false}>
-        [OPEN STUDIO] ↗
+        <UiText id={"[OPEN STUDIO] ↗"} />
       </Link>
     </div>
   ) : null;
