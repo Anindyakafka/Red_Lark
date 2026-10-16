@@ -1,5 +1,21 @@
 # Numbered rebuild rounds
 
+## Red Lark Round 13 critique — M6 font-loading correction
+
+Added tiny name-only navigation fonts (5,232 bytes combined), verified pixel/width-identical for all three native names. The active locale reuses its UI font in controls and titles, avoiding duplicate archive-font transfer. Full language fonts remain fallback; archive subsets still serve actual original-script titles. Sixteen affected browser tests pass after the font changes; the prior full suite has 78 passes.
+
+The initial round exposed a new failure from content-visibility on the artist rail: item CLS jumped to 0.44-0.49 and performance fell to 75/77, despite faster loading. Removed that optimization completely. Failed evidence is retained in docs/evidence/redlark-round-13; the corrected cold-cache item follow-up is separate in redlark-round-13-fixed. Corrected item medians: en 95, hi 97; CLS about 0.000032; other categories 100. Unaffected landing/collection medians from the full checkpoint: en 97/98 and hi 97/97. Axe zero throughout; no external requests or page errors.
+
+M6 CREATE passes its public checkpoint. Source checks, copy lock, content/export validation and 316-page build pass. No accounts/uploads/database/admin/mail were implemented. Remaining scope: M9 public editorial/policies and final four-locale route review. Do not reopen performance experiments after the targets pass without a new regression.
+
+## Red Lark Round 12 critique — M6 CREATE and recovery
+
+Added format-first entry, deferred editor font loading, separate coded image/caption libraries, code search, source-preserving image groups/captions and the exact Download for Free action. Existing transforms/layers/palettes/print modes/paper/export/share/privacy tools remain. Build validation checks codes, source eligibility and image layer IDs. The local font bundle now includes licensed Noto fonts. Mobile editing hides the full browse navigation while retaining the wordmark/language/account controls and browser access to the Collection.
+
+Two meaningful recovery issues were fixed: malformed shared scenes no longer replace an existing local draft, and unsupported mixed Indic text stays a recoverable editor error. The first full run found an initial autosave race during empty-canvas recovery (77 passed, one failed). Fixed the application: opening the editor alone never overwrites a draft; edits or an explicit fresh start enable autosave. A separate availability probe preserves storage-unavailable feedback. The unchanged recovery test then passed; final full suite 78 passed (2.3m). Unit suite 34 passed; copy/types/lint/format/content/build green.
+
+Full screenshots and axe: docs/evidence/redlark-round-12, English/Malayalam at 390/1440, zero violations/external requests/page errors. Viewed mobile/desktop Studio: the canvas is now usable after selection, native controls remain within bounds. Performance en 97/98/95 and hi 96/96/94; other categories all 100. Hindi item misses target by one point after the richer M5 page. Ranked next fix: avoid duplicate active-script/archive fonts and preload tiny verified language-name fonts rather than full title subsets; defer rendering the below-fold artist rail. Round 13 measures those concrete changes. M6 UPLOAD and M7/M8 remain held.
+
 ## Red Lark Round 11 critique — M5 print-first item pages
 
 Added actual Image Code/Caption Code, file formats/sizes/resolution, truthful generated-placeholder AI disclosure, tags/category links, more-by-artist rail and four-language print instructions with native review flags. Generated real A4/A2 PNG and JPEG files at 300 DPI alongside outlined vector PDFs; checked physical metadata and exact raster dimensions. Updated Indic source artwork to say DRAFT TRANSLATION. No real artist work or invented donation details were added.

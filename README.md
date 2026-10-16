@@ -28,21 +28,21 @@ The export is in out/. The build also emits physical Next segment-file aliases f
 
 ## Scripts
 
-| Command                       | Purpose                                                                        |
-| ----------------------------- | ------------------------------------------------------------------------------ |
-| npm run dev                   | Next.js development server                                                     |
-| npm run typecheck             | Strict TypeScript                                                              |
-| npm run lint                  | ESLint, zero warnings                                                          |
-| npm run format / format:check | Prettier                                                                       |
-| npm run validate:content      | Licence/credit/alt/file validation and generated catalogue                     |
-| npm run build                 | Content validation, Next static export, internal-link/metadata/alt checks      |
-| npm test                      | Scene, licence, search, sharing, history and resolution tests                  |
-| npm run test:e2e              | Playwright every-route smoke/axe + Studio, forms, licence gate and breakpoints |
-| npm run qa:round -- 1         | Screenshot, dark-mode axe and mobile Lighthouse evidence for round 1           |
-| npm run seed                  | Re-author original placeholder assets; not a future-content ingest command     |
-| npm run brand:build           | Regenerate original lark, wordmark, favicon set and OG image                   |
-| npm run test:copy             | Independent verbatim Appendix A source and rendered-text tests                 |
-| npm run check:brand           | Reject retired branding except the one repository URL constant                 |
+| Command                       | Purpose                                                                           |
+| ----------------------------- | --------------------------------------------------------------------------------- |
+| npm run dev                   | Next.js development server                                                        |
+| npm run typecheck             | Strict TypeScript                                                                 |
+| npm run lint                  | ESLint, zero warnings                                                             |
+| npm run format / format:check | Prettier                                                                          |
+| npm run validate:content      | Licence/credit/alt/file validation and generated catalogue                        |
+| npm run build                 | Content validation, Next static export, internal-link/metadata/alt checks         |
+| npm test                      | Scene, licence, search, sharing, history and resolution tests                     |
+| npm run test:e2e              | Playwright every-route smoke/axe + Studio, forms, licence gate and breakpoints    |
+| npm run qa:round -- 12        | English/Malayalam screenshots, axe and en/hi mobile Lighthouse; numbered evidence |
+| npm run seed                  | Re-author original placeholder assets; not a future-content ingest command        |
+| npm run brand:build           | Regenerate original lark, wordmark, favicon set and OG image                      |
+| npm run test:copy             | Independent verbatim Appendix A source and rendered-text tests                    |
+| npm run check:brand           | Reject retired branding except the one repository URL constant                    |
 
 For browser QA on Windows, the config uses installed Microsoft Edge. Set BROWSER_PATH for another Chromium executable. On Linux/macOS run npx playwright install chromium. The ND browser fixture is isolated to the local verification server: run npx tsx scripts/qa-fixture.tsx after building. It is not included in out/ and is not public catalogue content.
 
@@ -67,7 +67,7 @@ Image search is honestly labelled coming soon; no photo is collected. Community 
 
 ## Content and licensing
 
-The 18 current posters are **original CC0 placeholder studies**, with clearly invented lab credits. No real artist's work is embedded. Each has editable layers, meaningful alt text, lightweight WebP/AVIF previews, poster-specific OG, SVG source, PDF variants (A4/A3/A2/18x24), an A3 300-PPI PNG and a graphics bundle. Typography in vector files is outlined. PDFs are RGB and no-bleed, not promises of calibrated professional press colour.
+The 18 current posters are **original CC0, AI-assisted vector placeholder studies**, credited to The Wet Ink Workshop and visibly marked. No real artist's work is embedded. Each has editable layers, meaningful alt text, responsive WebP/AVIF previews, poster-specific OG, SVG source, PDF variants (A4/A3/A2/18x24), real A4/A2 300-DPI PNG/JPEG files, an A3 PNG and a graphics bundle. Typography in vector files is outlined. PDFs are RGB and no-bleed, not promises of calibrated professional press colour. Indic studies and translations remain drafts.
 
 Add reviewed content under content/posters/_.json and content/artists/_.json; put files under public/posters/<slug>/. See [content/README](content/README.md). Run validation after changes. The generated index under src/generated is derived, not edited by hand.
 
@@ -75,11 +75,11 @@ Explicit artist credit, source, licence and alt are mandatory. Licence flags are
 
 ## Studio
 
-The hand-rolled SVG scene is independent of the UI and stored as schema version 2. Add/remove/reorder/lock/hide text, shapes, stamps, halftone, grain and local images. Eligible poster detail links load that poster's real source layers. Shelf additions retain source credits. Drag/resize/rotate, labelled numeric controls, self-hosted typefaces, ink swatches, one/two/three-ink previews, paper presets, snapping, keyboard shortcuts, zoom/pan and mobile tool tabs are provided.
+Choose one of the ten artwork formats, then open the editor. Heavy editor fonts load only after selection; remix/share links open the editor directly. Artwork format describes the material; paper preset controls physical dimensions. The hand-rolled SVG scene uses schema version 2. Add/remove/reorder/lock/hide text, shapes, stamps, halftone, grain and local images. Separate coded image/caption libraries retain source credits and admit only remix-eligible sources. Drag/resize/rotate, labelled numeric controls, self-hosted typefaces, ink swatches, one/two/three-ink previews, paper presets, snapping, keyboard shortcuts, zoom/pan and mobile tool tabs are provided. Native text is shaped with self-hosted HarfBuzz/Noto and outlined; unsupported mixed scripts produce a recoverable error and can use separate layers.
 
 SVG/PDF exports preserve shapes and outlined type. PNG exports use true preset pixels and a 300-PPI physical-resolution chunk for paper presets; Social stays 1080x1350 px. A4 tiled PDF uses 10mm margins and tile labels for home assembly. Ink separation ZIPs are uncalibrated composition previews, not press-ready plates. An automatic small credit strip and licence metadata travels with exports. Source rights are distinguished from user additions: original additions are not automatically dedicated to CC0. ShareAlike adaptations must use the required source licence.
 
-Drafts autosave to localStorage. Start fresh clears the previous draft/history; Restore recovers the draft present when the session opened. No server stores designs. Share links encode compact scene state in the URL fragment; recipients can read it. Links reject uploaded images and oversized state. Local uploads accept JPEG/PNG/WebP/AVIF, discard EXIF/GPS by decoding and re-encoding as PNG and downsample to a maximum dimension of 1800px. This avoids oversized drafts; use original vectors for large prints. Visible image content can still identify people.
+Edits autosave to localStorage. Merely opening the editor or a broken share link does not replace an existing draft. Start fresh explicitly clears the previous draft/history; Restore recovers the draft present when the session opened. No server stores designs. Share links encode compact scene state in the URL fragment; recipients can read it. Links reject uploaded images and oversized state. Local imports accept JPEG/PNG/WebP/AVIF, discard EXIF/GPS by decoding and re-encoding as PNG and downsample to 1800px. Use original vectors for large prints. Visible image content can still identify people.
 
 Keyboard: Ctrl/Cmd+Z undo, Shift+Z redo, Ctrl/Cmd+D duplicate, arrows nudge, Shift+arrows larger nudge, Delete remove, Escape deselect. Locked layers ignore edit/transform/remove commands. Numeric controls and the layer list provide an alternative to pointer precision. Studio code and PDF rendering dependencies are lazy-loaded off the catalogue routes.
 

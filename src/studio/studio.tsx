@@ -21,6 +21,8 @@ import { decodeScene, encodeScene } from "./share";
 import { exportFile, importImage } from "./exports";
 import { migrateLocalDrafts } from "@/lib/storage";
 import { createShapedFont } from "./shaping";
+import imageLibrary from "../../content/studio/images.json";
+import captionLibrary from "../../content/studio/captions.json";
 
 const KEY = "redlark.studio.v2";
 const PALETTE = ["#151515", "#e32219", "#f3f0e6"];
@@ -41,6 +43,7 @@ export default function Studio() {
   const scene = history.present;
   const [fonts, setFonts] = useState<Fonts | null>(null);
   const [ready, setReady] = useState(false);
+  const [autosaveEnabled, setAutosaveEnabled] = useState(false);
   const [selected, setSelected] = useState<string | null>("headline");
   const [status, setStatus] = useState("[LOADING] Preparing same-origin fonts and assets…");
   const [failure, setFailure] = useState("");
@@ -71,6 +74,7 @@ export default function Studio() {
   const selectedLayer = scene.layers.find((l) => l.id === selected);
   const dim = dimensions(scene);
   const commit = useCallback((next: Scene) => {
+    setAutosaveEnabled(true);
     dispatch({ type: "commit", scene: next });
     setShareLink("");
   }, []);
@@ -123,6 +127,10 @@ export default function Studio() {
                 "[DRAFT NOT RESTORED] The saved version is unsupported. Start fresh or use a saved export.",
               );
           }
+          // Read existing designs even when writes are unavailable. Opening
+          // the editor alone must never overwrite a saved composition.
+          localStorage.setItem("redlark.storage-probe", "1");
+          localStorage.removeItem("redlark.storage-probe");
         } catch {
           setStorageAvailable(false);
         }
@@ -150,6 +158,7 @@ export default function Studio() {
               : "[READY] Your draft autosaves in this browser. Nothing is uploaded.",
           );
         if (chosen) {
+          sceneSvg(chosen, { display, mono, indic });
           dispatch({ type: "reset", scene: chosen });
           setSelected(chosen.layers[0]?.id ?? null);
         }
@@ -157,6 +166,9 @@ export default function Studio() {
       } catch (error) {
         if (!cancelled) {
           setFailure(error instanceof Error ? error.message : "The Studio could not load.");
+          setStatus(
+            "[LOAD FAILED] Your existing local draft is preserved. Restore it or choose Start fresh.",
+          );
           setReady(true);
         }
       }
@@ -167,7 +179,7 @@ export default function Studio() {
     };
   }, []);
   useEffect(() => {
-    if (!ready || !fonts) return;
+    if (!ready || !fonts || !autosaveEnabled) return;
     const timer = setTimeout(() => {
       try {
         localStorage.setItem(KEY, JSON.stringify(scene));
@@ -177,10 +189,27 @@ export default function Studio() {
       }
     }, 400);
     return () => clearTimeout(timer);
-  }, [scene, ready, fonts]);
+  }, [scene, ready, fonts, autosaveEnabled]);
   const patch = useCallback(
     (update: Partial<Layer>) => {
       if (!selectedLayer || selectedLayer.locked) return;
+      if (fonts && (update.text !== undefined || update.font !== undefined)) {
+        try {
+          sceneSvg(
+            {
+              ...scene,
+              layers: scene.layers.map((layer) =>
+                layer.id === selected ? { ...layer, ...update } : layer,
+              ),
+            },
+            fonts,
+          );
+          setFailure("");
+        } catch (error) {
+          setFailure(error instanceof Error ? error.message : "Text could not be rendered.");
+          return;
+        }
+      }
       const inks = [...new Set(scene.layers.filter((l) => l.kind !== "image").map((l) => l.color))];
       if (update.color && !inks.includes(update.color) && inks.length >= scene.colors) {
         commit({
@@ -199,7 +228,7 @@ export default function Studio() {
         layers: scene.layers.map((l) => (l.id === selected ? { ...l, ...update } : l)),
       });
     },
-    [selectedLayer, scene, selected, commit],
+    [selectedLayer, scene, selected, commit, fonts],
   );
   const remove = useCallback(() => {
     if (!selectedLayer || selectedLayer.locked) return;
@@ -268,24 +297,63 @@ export default function Studio() {
     setMobileTab("controls");
   }
   function addSource(slug: string) {
+    if (scene.layers.length >= 80) {
+      setFailure("[LIMIT] This Studio supports up to 80 layers.");
+      return;
+    }
     const p = posters.find((p) => p.slug === slug);
     if (!p || !canRemix(p) || !p.studioLayers) return;
-    const source = p.studioLayers.layers.find((l) => l.kind !== "text") ?? p.studioLayers.layers[0];
-    const layer = {
+    const asset = imageLibrary.find((asset) => asset.workSlug === slug);
+    const sources = p.studioLayers.layers.filter(
+      (layer) => asset?.layerIds.includes(layer.id) && layer.kind !== "text",
+    );
+    if (!sources.length || scene.layers.length + sources.length > 80) return;
+    const left = Math.min(...sources.map((layer) => layer.x)),
+      top = Math.min(...sources.map((layer) => layer.y));
+    const width = Math.max(...sources.map((layer) => layer.x + layer.width)) - left;
+    const height = Math.max(...sources.map((layer) => layer.y + layer.height)) - top;
+    const scale = Math.min(260 / width, 200 / height);
+    const inks = [...new Set(scene.layers.filter((l) => l.kind !== "image").map((l) => l.color))];
+    const layers = sources.map((source) => ({
       ...structuredClone(source),
       id: crypto.randomUUID(),
-      x: 80,
-      y: 300,
-      width: 260,
-      height: 200,
+      name: `Image ${p.imageCode}`,
+      x: 80 + (source.x - left) * scale,
+      y: 300 + (source.y - top) * scale,
+      width: source.width * scale,
+      height: source.height * scale,
       credit: sourceCredit(p, artistFor(p.artist).name),
-    };
-    const inks = [...new Set(scene.layers.filter((l) => l.kind !== "image").map((l) => l.color))];
-    if (!inks.includes(layer.color) && inks.length >= scene.colors) layer.color = inks[0];
+      color: !inks.includes(source.color) && inks.length >= scene.colors ? inks[0] : source.color,
+    }));
     try {
-      assertExportable({ ...scene, layers: [...scene.layers, layer] });
-      commit({ ...scene, layers: [...scene.layers, layer] });
+      assertExportable({ ...scene, layers: [...scene.layers, ...layers] });
+      commit({ ...scene, layers: [...scene.layers, ...layers] });
+      setSelected(layers[0].id);
+    } catch (error) {
+      setFailure(String(error));
+    }
+  }
+  function addCaption(code: string) {
+    const caption = captionLibrary.find((item) => item.code === code);
+    const poster = posters.find((item) => item.slug === caption?.workSlug);
+    if (!caption || !poster || !canRemix(poster) || scene.layers.length >= 80) return;
+    const layer = {
+      ...newLayer("text"),
+      name: `Caption ${code}`,
+      text: caption.text,
+      credit: sourceCredit(poster, artistFor(poster.artist).name),
+    };
+    const inks = [
+      ...new Set(scene.layers.filter((item) => item.kind !== "image").map((item) => item.color)),
+    ];
+    if (inks.length >= scene.colors && !inks.includes(layer.color)) layer.color = inks[0];
+    const next = { ...scene, layers: [...scene.layers, layer] };
+    try {
+      assertExportable(next);
+      if (fonts) sceneSvg(next, fonts);
+      commit(next);
       setSelected(layer.id);
+      setMobileTab("controls");
     } catch (error) {
       setFailure(String(error));
     }
@@ -470,6 +538,7 @@ export default function Studio() {
     }
   }
   function fresh() {
+    setAutosaveEnabled(true);
     dispatch({ type: "reset", scene: freshScene() });
     setSelected("headline");
     restoreRef.current = null;
@@ -545,6 +614,9 @@ export default function Studio() {
           <button className="accent" onClick={() => void exportNow("PDF")} disabled={busy}>
             <UiText id={"[EXPORT PDF] ↓"} />
           </button>
+          <button className="accent" onClick={() => void exportNow("PNG")} disabled={busy}>
+            <UiText id="Download for Free" /> ↓
+          </button>
         </div>
       </div>
       {failure && (
@@ -615,7 +687,7 @@ export default function Studio() {
             />
           </p>
           <h3>
-            <UiText id={"REMIX-ELIGIBLE SHELF"} />
+            <UiText id={"Image Code"} />
           </h3>
           <label className="control">
             <UiText id={"Find an element"} />
@@ -626,15 +698,41 @@ export default function Studio() {
             />
           </label>
           <div className="source-shelf">
-            {posters
+            {imageLibrary
+              .map((asset) => posters.find((p) => p.slug === asset.workSlug))
+              .filter((p): p is NonNullable<typeof p> => Boolean(p))
               .filter(
-                (p) => canRemix(p) && p.title.toLowerCase().includes(shelfQuery.toLowerCase()),
+                (p) =>
+                  canRemix(p) &&
+                  `${p.imageCode} ${p.title} ${p.titleOriginal ?? ""}`
+                    .normalize("NFC")
+                    .toLowerCase()
+                    .includes(shelfQuery.normalize("NFC").toLowerCase()),
               )
               .slice(0, 8)
               .map((p) => (
                 <button key={p.slug} onClick={() => addSource(p.slug)}>
-                  + {p.title}
+                  + {p.imageCode} / {p.title}
                   <span>{p.license}</span>
+                </button>
+              ))}
+          </div>
+          <h3>
+            <UiText id="Caption Code" />
+          </h3>
+          <div className="caption-shelf">
+            {captionLibrary
+              .filter((caption) => {
+                const poster = posters.find((work) => work.slug === caption.workSlug);
+                return (
+                  poster &&
+                  canRemix(poster) &&
+                  `${caption.code} ${caption.text}`.toLowerCase().includes(shelfQuery.toLowerCase())
+                );
+              })
+              .map((caption) => (
+                <button key={caption.code} onClick={() => addCaption(caption.code)}>
+                  + {caption.code} / {caption.text.replaceAll("\n", " ")}
                 </button>
               ))}
           </div>

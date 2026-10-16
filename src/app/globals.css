@@ -344,6 +344,72 @@ picture {
 .public-upi code {
   overflow-wrap: anywhere;
 }
+.studio-format-picker {
+  padding: 24px 3%;
+}
+.studio-format-picker > h2 {
+  font-size: clamp(48px, 6vw, 88px);
+}
+.studio-format-picker .format-grid {
+  padding-block: 24px;
+}
+.studio-format-picker .format-grid button {
+  font-family: var(--font-display), Impact, sans-serif;
+  font-size: 32px;
+  min-height: 100px;
+  overflow-wrap: anywhere;
+}
+.studio-format-label {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+  padding: 8px 3%;
+  border-bottom: 2px solid var(--line);
+  font-size: 11px;
+}
+.studio-format-label button {
+  margin-left: auto;
+  min-height: 44px;
+}
+.caption-shelf {
+  display: grid;
+  gap: 8px;
+  margin-bottom: 24px;
+}
+.caption-shelf button {
+  text-align: left;
+  font-size: 11px;
+  overflow-wrap: anywhere;
+}
+@media (max-width: 800px) {
+  body:has(.studio-workspace) .site-header > nav {
+    display: none;
+  }
+  body:has(.studio-workspace) .studio-intro {
+    padding: 10px 3%;
+  }
+  body:has(.studio-workspace) .studio-intro h1 {
+    font-size: 40px;
+    line-height: 1.2;
+  }
+  body:has(.studio-workspace) .studio-intro > p {
+    font-size: 10px;
+  }
+  .studio-toolbar {
+    padding: 8px;
+    gap: 8px;
+  }
+  .studio-toolbar button {
+    font-size: 10px;
+    min-height: 44px;
+    padding: 8px;
+  }
+  .studio-notice {
+    padding: 8px 12px;
+    font-size: 10px;
+  }
+}
 @media (max-width: 650px) {
   .more-by-artist .rail-grid {
     grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -2314,9 +2380,51 @@ html:not([lang="en"]) .landing-objectives li {
 :root {
   --font-archive: "Noto Archive Devanagari", "Noto Archive Bengali", "Noto Archive Malayalam";
 }
+html[lang="hi"] {
+  --font-archive: "Noto UI Devanagari", "Noto Archive Bengali", "Noto Archive Malayalam";
+}
+html[lang="bn"] {
+  --font-archive: "Noto Archive Devanagari", "Noto UI Bengali", "Noto Archive Malayalam";
+}
+html[lang="ml"] {
+  --font-archive: "Noto Archive Devanagari", "Noto Archive Bengali", "Noto UI Malayalam";
+}
 .site-header .language-switcher a,
 .language-choice a {
-  font-family: var(--font-mono), var(--font-archive), var(--font-indic);
+  font-family: var(--font-mono), var(--font-nav), var(--font-indic);
+}
+@font-face {
+  font-family: "Noto Nav Devanagari";
+  src: url("/fonts/indic/noto-sans-devanagari-nav.woff2") format("woff2");
+  font-display: swap;
+  font-weight: 400;
+  unicode-range: U+0900-097F;
+}
+@font-face {
+  font-family: "Noto Nav Bengali";
+  src: url("/fonts/indic/noto-sans-bengali-nav.woff2") format("woff2");
+  font-display: swap;
+  font-weight: 400;
+  unicode-range: U+0980-09FF;
+}
+@font-face {
+  font-family: "Noto Nav Malayalam";
+  src: url("/fonts/indic/noto-sans-malayalam-nav.woff2") format("woff2");
+  font-display: swap;
+  font-weight: 400;
+  unicode-range: U+0D00-0D7F;
+}
+:root {
+  --font-nav: "Noto Nav Devanagari", "Noto Nav Bengali", "Noto Nav Malayalam";
+}
+html[lang="hi"] {
+  --font-nav: "Noto UI Devanagari", "Noto Nav Bengali", "Noto Nav Malayalam";
+}
+html[lang="bn"] {
+  --font-nav: "Noto Nav Devanagari", "Noto UI Bengali", "Noto Nav Malayalam";
+}
+html[lang="ml"] {
+  --font-nav: "Noto Nav Devanagari", "Noto Nav Bengali", "Noto UI Malayalam";
 }
 .card-title-row h3,
 .desktop-poster-title,

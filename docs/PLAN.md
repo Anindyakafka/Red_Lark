@@ -1,6 +1,6 @@
 # RED LARK WORKSHOP: staged implementation plan
 
-Execution started 16 October 2026 on redlark. Step 0 is complete; the owner authorized public-site implementation and supplied redlarkworkshop@gmail.com. The Supabase hold continues. M1 foundations are implemented; later milestones remain outstanding.
+Execution started 16 October 2026 on redlark. Step 0, M1-M5 and M6 CREATE are complete. The owner authorized public-site implementation and supplied redlarkworkshop@gmail.com. M6 retains PARTIAL status because UPLOAD is held with M7/M8. Public M9 is next.
 
 READY means technically independent of Supabase; PARTIAL means public/browser work can proceed later but backend work is held. HOLD is an explicit scope boundary, not a completed feature or justified N-A.
 
@@ -62,4 +62,4 @@ Minimum five critique/fix rounds, maximum fifteen, with measured evidence. Final
 
 ## Current execution boundary
 
-Execution is authorized for M1-M5, M6 CREATE and public M9. The real contact inbox is configured. M3 is undergoing its full screenshot/accessibility/performance checkpoint. Continue public work without asking again; before backend implementation the owner must release the explicit hold and settle project/region, retention and mail delivery. No backend credentials are needed for public visual/content work.
+Execution is authorized for M1-M5, M6 CREATE and public M9. The real contact inbox is configured. Continue public work without asking again; before backend implementation the owner must release the explicit hold and settle project/region, retention and mail delivery. No backend credentials are needed for public visual/content work. No live deployment or provider configuration is claimed.

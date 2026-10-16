@@ -4,7 +4,7 @@ import { posters } from "../../src/lib/catalog";
 
 test("PDF, 300-PPI PNG, A4 tiles and ink preview ZIP are real files", async ({ page }) => {
   test.setTimeout(120000);
-  await page.goto("/studio/");
+  await page.goto("/studio/?format=poster-placard");
   await expect(page.locator(".studio-paper")).toBeVisible();
   await page.getByLabel("Paper preset").selectOption("A4");
   for (const [name, extension, signature] of [
@@ -40,7 +40,7 @@ test("uploads are locally re-encoded, metadata discarded, and cannot enter share
   page.on("request", (r) => {
     if (r.method() === "POST") network.push(r.url());
   });
-  await page.goto("/studio/");
+  await page.goto("/studio/?format=poster-placard");
   await expect(page.locator(".studio-paper")).toBeVisible();
   await page
     .getByLabel("Import a local image")
@@ -62,7 +62,7 @@ test("uploads are locally re-encoded, metadata discarded, and cannot enter share
 });
 
 test("keyboard edit, lock, hide, reorder, remove and undo work", async ({ page }) => {
-  await page.goto("/studio/");
+  await page.goto("/studio/?format=poster-placard");
   await expect(page.locator(".studio-paper")).toBeVisible();
   await page.getByRole("button", { name: "+ RECTANGLE", exact: true }).click();
   const x = page.getByLabel("x", { exact: true });
@@ -105,7 +105,9 @@ test("storage failure, font/network failure, unsupported browser and bad shared 
         Object.defineProperty(window, "PointerEvent", { value: undefined }),
       );
     if (state === "font") await page.route("**/fonts/*.ttf", (route) => route.abort());
-    await page.goto(`http://localhost:3000/studio/${state === "hash" ? "#design=broken" : ""}`);
+    await page.goto(
+      `http://localhost:3000/studio/?format=poster-placard${state === "hash" ? "#design=broken" : ""}`,
+    );
     if (state === "storage") {
       await expect(page.locator(".studio-paper")).toBeVisible();
       await expect(page.getByText("[STORAGE UNAVAILABLE]", { exact: false })).toBeVisible();

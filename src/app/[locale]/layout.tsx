@@ -59,16 +59,24 @@ export default async function Layout({
   return (
     <html lang={locale} className={`${display.variable} ${mono.variable}`}>
       <head>
-        {["devanagari", "bengali", "malayalam"].map((script) => (
-          <link
-            key={script}
-            rel="preload"
-            as="font"
-            type="font/woff2"
-            crossOrigin="anonymous"
-            href={`/fonts/indic/noto-sans-${script}-archive.woff2`}
-          />
-        ))}
+        {["devanagari", "bengali", "malayalam"]
+          .filter(
+            (script) =>
+              script !==
+              ({ hi: "devanagari", bn: "bengali", ml: "malayalam" } as Record<string, string>)[
+                locale
+              ],
+          )
+          .map((script) => (
+            <link
+              key={script}
+              rel="preload"
+              as="font"
+              type="font/woff2"
+              crossOrigin="anonymous"
+              href={`/fonts/indic/noto-sans-${script}-nav.woff2`}
+            />
+          ))}
         {locale !== "en" && (
           <link
             rel="preload"

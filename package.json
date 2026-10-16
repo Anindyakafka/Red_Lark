@@ -20,7 +20,7 @@
     "format": "prettier --write .",
     "format:check": "prettier --check .",
     "test:e2e": "playwright test",
-    "qa:round": "node scripts/review-round.mjs",
+    "qa:round": "node scripts/review-public.mjs",
     "check:brand": "node scripts/check-no-legacy-name.mjs",
     "test:copy": "tsx --test tests/copy.test.ts"
   },

@@ -19,6 +19,20 @@ The original rows below are preserved as historical evidence. Their PASS entries
 
 ## Historical baseline
 
+M6 public performance acceptance: Round 13 full measurements plus the isolated corrected item follow-up. Landing/collection/item medians en 97/98/95 and hi 97/97/97; Accessibility/Best Practices/SEO 100, axe zero, corrected CLS approximately 0.000032. The discarded content-visibility experiment and its failed scores remain recorded. Backend end-to-end acceptance is still held.
+
+| M6 CREATE acceptance                                     | Status | Evidence                                                                | Note                                                                           |
+| -------------------------------------------------------- | ------ | ----------------------------------------------------------------------- | ------------------------------------------------------------------------------ |
+| Choose format before loading the editor                  | PASS   | tests/browser/workshop.spec.ts                                          | Ten canonical formats; fonts deferred until selection.                         |
+| Coded images/captions and licence-gated shelf            | PASS   | content/studio; validate-content.ts; workshop browser flow              | Source codes/layer IDs validated; source credits retained.                     |
+| Layers, transforms, type, ink palettes and print modes   | PASS   | 78-test full browser suite; exports/interaction/completion tests        | Native text is shaped and unsupported mixed scripts give recoverable feedback. |
+| Paper presets, 300-DPI PNG, vector PDF/SVG and A4 tiles  | PASS   | export tests; items.test.ts; actual file metadata                       | Print guidance is localized and flagged for review.                            |
+| Undo/redo, snap, shortcuts, zoom/pan and mobile controls | PASS   | browser exports/interaction/completion tests; Round 12 captures         | No browsing mobile CTA inside editor.                                          |
+| Autosave, restore, fresh and bounded private share links | PASS   | fresh/workshop/privacy tests                                            | Opening a broken share link cannot overwrite the existing draft.               |
+| Local image import/EXIF-GPS removal and honest failures  | PASS   | exports/privacy tests                                                   | No server design storage; imports stay in browser.                             |
+| Lazy editor and self-hosted fonts/runtime                | PASS   | Studio dynamic import; deferred-font browser assertion; font provenance | Full type kit includes font licences.                                          |
+| Account uploads and admin review                         | FAIL   | M6 UPLOAD/M7 explicit HOLD                                              | No account or upload success is fabricated.                                    |
+
 | M4 acceptance                                                  | Status | Evidence                                                              | Note                                              |
 | -------------------------------------------------------------- | ------ | --------------------------------------------------------------------- | ------------------------------------------------- |
 | Exact 28 categories and 10 artwork formats                     | PASS   | content/categories.json; content/formats.json; tests/taxonomy.test.ts | File formats are a separate concept.              |

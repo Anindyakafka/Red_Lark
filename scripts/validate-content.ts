@@ -4,6 +4,9 @@ import { LICENSES, type Artist, type Poster } from "../src/lib/types";
 import { validatePoster, validateArtist } from "../src/lib/validate";
 import { resolveSiteOrigin } from "../src/lib/site-origin";
 import { CONTACT_EMAIL } from "../src/config/site";
+import images from "../content/studio/images.json";
+import captions from "../content/studio/captions.json";
+import { canRemix } from "../src/lib/licenses";
 if (fs.existsSync(".env.local")) process.loadEnvFile(".env.local");
 
 const read = <T>(dir: string): T[] =>
@@ -47,6 +50,27 @@ for (const [label, ids] of [
 ] as const)
   if (new Set(ids).size !== ids.length) errors.push(`Duplicate ${label} identifiers`);
 if (!posters.length) errors.push("Archive has no posters");
+for (const assets of [images, captions]) {
+  if (new Set(assets.map((asset) => asset.code)).size !== assets.length)
+    errors.push("Duplicate Studio library code");
+  for (const asset of assets) {
+    const poster = posters.find((poster) => poster.slug === asset.workSlug);
+    if (!poster || !canRemix(poster))
+      errors.push(`Studio asset ${asset.code} lacks a remix-eligible source`);
+    else if ("layerIds" in asset) {
+      if (
+        asset.code !== poster.imageCode ||
+        !asset.layerIds.length ||
+        asset.layerIds.some(
+          (id) =>
+            !poster.studioLayers?.layers.some((layer) => layer.id === id && layer.kind !== "text"),
+        )
+      )
+        errors.push(`Invalid image library entry ${asset.code}`);
+    } else if (asset.code !== poster.captionCode || !asset.text.trim())
+      errors.push(`Invalid caption library entry ${asset.code}`);
+  }
+}
 if (
   !Array.isArray(community) ||
   !community.every(

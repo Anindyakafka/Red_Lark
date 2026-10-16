@@ -449,6 +449,10 @@
     "Create a contributor account": "Create a contributor account",
     "Password reset request": "Password reset request",
     "Set a new password": "Set a new password",
-    "Administration service pending": "Administration service pending"
+    "Administration service pending": "Administration service pending",
+    "The editor needs JavaScript to keep your design in this browser. Print files in the Collection work without JavaScript.": "The editor needs JavaScript to keep your design in this browser. Print files in the Collection work without JavaScript.",
+    "Checking local Studio options…": "Checking local Studio options…",
+    "All formats use the same private editor. Choose paper or social dimensions inside the Studio.": "All formats use the same private editor. Choose paper or social dimensions inside the Studio.",
+    "(Featured tools: Rotate and adjust size and colour of text and image.)": "(Featured tools: Rotate and adjust size and colour of text and image.)"
   }
 }

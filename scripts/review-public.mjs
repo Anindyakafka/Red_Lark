@@ -5,7 +5,11 @@ import AxeBuilder from "@axe-core/playwright";
 import { launch } from "chrome-launcher";
 import { measurePage } from "./lighthouse-series.mjs";
 const round = Number(process.argv[2] ?? 3);
-const dir = `docs/evidence/redlark-round-${round}`;
+if (!Number.isInteger(round) || round < 1 || round > 15)
+  throw new Error("Use npm run qa:round -- N (1–15)");
+const suffix = process.env.QA_EVIDENCE_SUFFIX ?? "";
+if (!/^[a-z0-9-]*$/.test(suffix)) throw new Error("Invalid QA evidence suffix");
+const dir = `docs/evidence/redlark-round-${round}${suffix}`;
 await fs.mkdir(dir, { recursive: true });
 const executable =
   process.env.BROWSER_PATH ??
@@ -59,7 +63,10 @@ try {
       for (const [name, route] of routes) {
         await page.goto(`http://localhost:3000/${locale}${route}`, { waitUntil: "networkidle" });
         await page.evaluate(() => document.fonts.ready);
-        if (name === "studio") await page.locator(".studio-paper").waitFor();
+        if (name === "studio") {
+          await page.getByRole("button", { name: "Poster/Placard", exact: true }).click();
+          await page.locator(".studio-paper").waitFor();
+        }
         if (name === "collection") {
           const select = page.locator('select[aria-label="Category"]');
           if (await select.count()) await select.selectOption("workers");

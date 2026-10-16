@@ -1,6 +1,6 @@
 import { test, expect } from "@playwright/test";
 test("pointer move/resize/rotate, zoom/pan and paper presets operate", async ({ page }) => {
-  await page.goto("/studio/");
+  await page.goto("/studio/?format=poster-placard");
   await expect(page.locator(".studio-paper")).toBeVisible();
   await page.getByRole("button", { name: "+ RECTANGLE", exact: true }).click();
   const overlay = page.locator(".studio-paper > g[transform]").last();
@@ -57,7 +57,7 @@ test("honeypot and export failure show honest recoverable errors", async ({ page
   });
   await page.getByRole("button", { name: "[PREPARE EMAIL]" }).click();
   await expect(page.locator("main [role=alert]")).toContainText("spam check");
-  await page.goto("/studio/");
+  await page.goto("/studio/?format=poster-placard");
   await expect(page.locator(".studio-paper")).toBeVisible();
   await page.evaluate(() => {
     HTMLCanvasElement.prototype.toBlob = function (callback) {
