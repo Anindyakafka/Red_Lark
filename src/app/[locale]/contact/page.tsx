@@ -23,8 +23,8 @@ export default function Page() {
       />
       <div className="content-width form-layout">
         <HandoffForm kind="contact" email={email} />
-        <aside>
-          <h2>
+        <aside aria-labelledby="contact-address-heading">
+          <h2 id="contact-address-heading">
             <UiText id={"[CONTACT ADDRESS]"} />
           </h2>
           <ContactAddress email={email} />

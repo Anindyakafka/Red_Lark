@@ -133,8 +133,8 @@ test("client navigation has no missing static segment files and focused controls
   await expect(page.locator(".poster-grid")).toBeVisible();
   expect(failures).toEqual([]);
   await page.setViewportSize({ width: 390, height: 844 });
-  await page.getByLabel("SEARCH THE ARCHIVE").focus();
-  const rect = await page.getByLabel("SEARCH THE ARCHIVE").boundingBox();
+  await page.getByRole("searchbox", { name: "SEARCH THE ARCHIVE" }).focus();
+  const rect = await page.getByRole("searchbox", { name: "SEARCH THE ARCHIVE" }).boundingBox();
   const bar = await page.locator(".mobile-cta").boundingBox();
   expect(rect!.y + rect!.height).toBeLessThanOrEqual(bar!.y);
 });

@@ -90,9 +90,7 @@ try {
           await page.screenshot({ path: `${dir}/${file}` });
           summary.screenshots.push(file);
         }
-        const audit = await new AxeBuilder({ page })
-          .withTags(["wcag2a", "wcag2aa", "wcag21aa", "wcag22aa"])
-          .analyze();
+        const audit = await new AxeBuilder({ page }).analyze();
         summary.axe.push({
           page: `${locale}${route}`,
           width,
@@ -110,9 +108,7 @@ try {
   const hindi = await hindiContext.newPage();
   for (const route of ["/", "/collection/", "/poster/a-future-we-share/"]) {
     await hindi.goto(`http://localhost:3000/hi${route}`);
-    const audit = await new AxeBuilder({ page: hindi })
-      .withTags(["wcag2a", "wcag2aa", "wcag21aa"])
-      .analyze();
+    const audit = await new AxeBuilder({ page: hindi }).analyze();
     summary.axe.push({
       page: `hi${route}`,
       width: 1440,

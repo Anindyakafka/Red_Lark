@@ -66,10 +66,10 @@ export function BrowseCTA() {
       "/community",
     ].some((p) => path.startsWith(p));
   return browse ? (
-    <div className="mobile-cta">
+    <aside className="mobile-cta">
       <Link href="/studio" prefetch={false}>
         <UiText id={"[OPEN STUDIO] ↗"} />
       </Link>
-    </div>
+    </aside>
   ) : null;
 }

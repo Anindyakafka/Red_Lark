@@ -1,0 +1,15 @@
+RED LARK WORKSHOP public checkpoint, 16 October 2026
+Clean lockfile install: PASS (Round 14; unchanged lockfile in Round 15)
+npm test: PASS, 37 tests (including independent source/rendered copy lock)
+npm run typecheck: PASS
+npm run lint: PASS, zero warnings
+npm run format:check: PASS
+npm run check:brand: PASS (also mandatory in build)
+npm run validate:content: PASS, 18 posters, 1 artist, 7 licence policies
+npm run build: PASS, 340 HTML pages validated, 345 framework prerenders
+npm run test:e2e: PASS, 88 tests, 4.9 minutes
+Fresh route matrix: 84 pages x 4 locales = 336 locale pages; broad axe zero
+Dark native mobile and no-JS localized editorial: PASS
+Production dependency audit: zero vulnerabilities; development-only advisory documented
+Supabase/auth/RLS/upload/admin/persisted-mail acceptance: NOT RUN, explicitly held
+Visual/Lighthouse evidence: summary.json and retained raw reports in this directory

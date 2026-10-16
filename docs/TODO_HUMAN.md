@@ -24,3 +24,9 @@ Native review includes the drafted blog and print guidance. Non-AI legal article
 Before publishing, rename/configure the Netlify site/domain as intended and verify SITE_URL, real localized 404 responses, sitemap/OG URLs, security headers and device mail-app handoff on the live CDN. No deployment, DNS change or provider setup has been performed here. The team inbox is already supplied; it is not an outstanding request for an address.
 
 Engineering status and held backend requirements remain in PLAN/CHECKLIST/ITERATIONS; they are not converted into human tasks or PASS entries. The development-only upstream dependency limitation is documented separately in DEPENDENCIES.md. Public implementation is not full account/upload/admin/mail acceptance.
+
+## Round 15 acceptance boundary
+
+The explicit backend hold prevents the remaining required acceptance flows: email/password sessions and verification/reset; account export/deletion; relational schema/roles/RLS tests; server-sanitized pending uploads and private storage; contributor status/dashboard; admin approval/takedown/audit/publishing; persisted contact/takedown with daily-hash limits, retries and provider-delivered acknowledgements. These are future engineering work after authorization, not completed features or requests to supply keys now. Consequently signup -> upload -> approval -> collection and contact -> database -> delivered test email cannot be run in this phase.
+
+Human prerequisites before that work are release of the hold, project/region/retention ownership, approved administrator, verified mail sender/provider and legal decisions. Native review, real artwork permissions, physical print approval and live Netlify configuration remain separate launch prerequisites. The supplied inbox is already configured. This repository has not been pushed or deployed.

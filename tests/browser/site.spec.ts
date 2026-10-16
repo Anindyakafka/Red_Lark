@@ -73,14 +73,14 @@ test("filters/search/count/save are real and search errors are accessible", asyn
   await page.goto("/collection/");
   await page.getByLabel("Category", { exact: true }).selectOption("displacement-and-migration");
   await expect(page.locator(".poster-card")).toHaveCount(5);
-  await page.getByLabel("SEARCH THE ARCHIVE").fill("homes");
+  await page.getByRole("searchbox", { name: "SEARCH THE ARCHIVE" }).fill("homes");
   await page.getByRole("button", { name: "[SEARCH]" }).click();
   await expect(page.locator(".poster-card")).toHaveCount(1);
   await page.getByRole("button", { name: "Save Homes for all", exact: true }).click();
   await expect(
     page.getByRole("button", { name: "Unsave Homes for all", exact: true }),
   ).toHaveAttribute("aria-pressed", "true");
-  await page.getByLabel("SEARCH THE ARCHIVE").fill("a".repeat(151));
+  await page.getByRole("searchbox", { name: "SEARCH THE ARCHIVE" }).fill("a".repeat(151));
   await page.getByRole("button", { name: "[SEARCH]" }).click();
   await expect(page.locator("main [role=alert]")).toContainText("150");
 });

@@ -43,7 +43,10 @@ export function LanguageSwitcher({ landing = false }: { landing?: boolean }) {
   const { locale, t } = useI18n();
   const rest = path.replace(/^\/(en|hi|bn|ml)(?=\/|$)/, "") || "/";
   return (
-    <nav className={landing ? "language-choice" : "language-switcher"} aria-label="Choose language">
+    <nav
+      className={landing ? "language-choice" : "language-switcher"}
+      aria-label={t(landing ? "Choose landing language" : "Choose header language")}
+    >
       {landing && <strong>{t("CHOOSE LANGUAGE:")}</strong>}
       {locales.map((l, i) => (
         <NextLink

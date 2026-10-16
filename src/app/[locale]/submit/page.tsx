@@ -23,8 +23,8 @@ export default function Page() {
       />
       <div className="content-width form-layout">
         <HandoffForm kind="submit" email={email} />
-        <aside>
-          <h2>
+        <aside aria-labelledby="submission-guidance-heading">
+          <h2 id="submission-guidance-heading">
             <UiText id={"[BEFORE YOU SUBMIT]"} />
           </h2>
           <p>

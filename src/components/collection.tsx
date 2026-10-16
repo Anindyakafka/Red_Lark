@@ -145,8 +145,14 @@ export function Collection({
           }
         />
       </p>
-      <form onSubmit={search} className="search-form" role="search" noValidate>
-        <label htmlFor="archive-search" className="label">
+      <form
+        onSubmit={search}
+        className="search-form"
+        role="search"
+        aria-labelledby="archive-search-label"
+        noValidate
+      >
+        <label htmlFor="archive-search" id="archive-search-label" className="label">
           <UiText id={"SEARCH THE ARCHIVE"} />
         </label>
         <div>

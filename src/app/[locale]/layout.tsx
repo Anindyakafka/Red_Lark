@@ -17,7 +17,9 @@ const display = localFont({
 const mono = localFont({
   src: "../../../public/fonts/mono.woff2",
   variable: "--font-mono",
-  display: "swap",
+  // Read controls immediately with the full fallback stack on slow first visits;
+  // avoid a late body-font swap repainting the collection's licensing note.
+  display: "optional",
   fallback: ["Courier New", "Courier", "monospace"],
 });
 export const metadata: Metadata = {
@@ -100,7 +102,14 @@ export default async function Layout({
           </a>
           <Header />
           {locale !== "en" && (
-            <aside className="translation-notice" lang="en">
+            <aside
+              className="translation-notice"
+              lang="en"
+              aria-labelledby="translation-notice-label"
+            >
+              <span id="translation-notice-label" className="sr-only">
+                <UiText id="Translation review notice" />
+              </span>
               <UiText
                 id={
                   "[DRAFT TRANSLATION — NEEDS NATIVE REVIEW] Untranslated interface text falls back to English."

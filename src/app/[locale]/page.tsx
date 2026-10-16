@@ -66,8 +66,14 @@ export default async function Home({ params }: { params: Promise<{ locale: strin
       </section>
       <LandingBlocks copy={copy} locale={locale} />
       <section className="landing-controls" id="archive-search">
-        <form role="search" action={`/${locale}/collection/`}>
-          <label htmlFor="landing-search">{copy.searchLabel}</label>
+        <form
+          role="search"
+          aria-labelledby="landing-search-label"
+          action={`/${locale}/collection/`}
+        >
+          <label htmlFor="landing-search" id="landing-search-label">
+            {copy.searchLabel}
+          </label>
           <div className="landing-search-row">
             <input
               type="search"

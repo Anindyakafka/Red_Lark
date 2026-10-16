@@ -4,6 +4,8 @@ The `redlark` branch contains the public-site rebuild: original identity, four l
 
 See [AUDIT](docs/AUDIT.md), [PLAN](docs/PLAN.md), [COPY_QUESTIONS](docs/COPY_QUESTIONS.md) and [human prerequisites](docs/TODO_HUMAN.md) for milestone status. No provider resources or live deployment have been changed.
 
+Final public checkpoint: 37 unit tests and 88 browser tests pass, including 336 locale-page accessibility checks. English/Hindi key-route Lighthouse performance medians are 96–98, with 100 in Accessibility, Best Practices and SEO. See [iterations and retained evidence](docs/ITERATIONS.md). Backend account/upload/admin/mail acceptance remains held, not completed.
+
 ## Application setup
 
 A free, open protest-poster archive and a private, browser-only poster-making Studio. Built with Next.js App Router, strict TypeScript, Tailwind 4, self-hosted fonts and file-based content. Public pages are statically exported; a small Netlify Edge function handles language negotiation and localized missing pages.

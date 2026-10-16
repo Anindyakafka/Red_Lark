@@ -1,5 +1,28 @@
 # Numbered rebuild rounds
 
+## Red Lark Round 15 critique — final public fresh eyes
+
+Re-read the expanded brief against the implemented public phase and the explicit backend hold. Added an exported-route matrix (84 pages per locale, 336 locale pages), desktop axe including best-practice rules, dark native mobile checks and a no-JS localized article check. Existing full flows still cover forms, derivative gating, actual exports, local image privacy, recovery and real index navigation.
+
+Corrected the visibly oversized native editorial headings with a smaller Indic scale and generous leading. The Latin body font now uses optional loading with a complete fallback stack, preventing late body-font swaps on slow first visits; Indic fonts retain swap and verified glyph coverage. Registered page introduction copy in message catalogs without changing the English wording or resolved fallback text.
+
+The first pass had 87/88 tests green: broader dark axe found duplicate language/search landmarks and an uncontained mobile CTA. The next pass exposed unnamed translated notice/form asides, plus search tests that ambiguously selected the newly named form as well as its input (81/88 green). Fixed the actual landmark semantics, named Studio panels, and changed those assertions to target searchbox roles. Neither failure was dismissed as polish or hidden by narrowing axe tags. Final full-suite and measured results follow below.
+
+Final corrected checks: **37 unit tests and 88 browser tests pass**, including all 336 locale pages with broad axe rules. Types, lint, formatting, independent copy lock, legacy-name scan, content validation and 340-page HTML validation/build pass. Evidence: docs/evidence/redlark-round-15/checks.log and summary.json. Captured/viewed the English/Malayalam 390/1440 screenshot sets; native policy headings now remain readable, controls fit, and the brutalist grid/type/borders remain consistent. Zero screenshot axe violations, external requests or page errors. Dark native mobile and no-JS editorial pass.
+
+| Mobile route       | Performance median | Accessibility | Best Practices | SEO |
+| ------------------ | ------------------ | ------------- | -------------- | --- |
+| English landing    | 96                 | 100           | 100            | 100 |
+| English collection | 97                 | 100           | 100            | 100 |
+| English item       | 98                 | 100           | 100            | 100 |
+| Hindi landing      | 97                 | 100           | 100            | 100 |
+| Hindi collection   | 97                 | 100           | 100            | 100 |
+| Hindi item         | 96                 | 100           | 100            | 100 |
+
+All medians use three consecutive cold-cache runs; raw reports retain individual low samples (including English landing/collection 94). Maximum CLS approximately 0.000032. The prior Hindi Collection failure remains in Round 14 rather than being overwritten.
+
+Public fresh-eyes acceptance: PASS. Remaining priorities are held backend engineering and its unexecutable auth/upload/admin/mail acceptance; native/legal/physical-print review; live domain/provider/CDN verification. These prevent full-project release acceptance and are explicitly recorded in TODO_HUMAN/PLAN/CHECKLIST. No remaining public functional defect above minor polish was found; no real artist content or final translation approval is claimed. Development-only dependency advisory remains documented, with production audit zero. This is the final numbered round (15); no backend work, push or deployment was performed.
+
 ## Red Lark Round 14 critique — M9 public editorial and policies
 
 Implemented trusted build-time localized MDX, two marked placeholder posts, four RSS feeds, policy hub/articles, the verbatim AI policy, expanded About, accurate privacy/terms and five contact topics. Current contact remains an email-app handoff. Legal translations explicitly fall back to English; no invented legal sources, artist interview, donation destination or delivered-mail claims. Dependency updates remove production audit findings; the remaining development-only upstream advisory is documented in DEPENDENCIES.md.

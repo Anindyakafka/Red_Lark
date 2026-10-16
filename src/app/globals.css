@@ -2431,3 +2431,9 @@ html[lang="ml"] {
 .mobile-poster-title {
   font-family: var(--font-display), Impact, var(--font-archive), var(--font-indic);
 }
+/* Indic words need a smaller measure than the deliberately condensed Latin face. */
+html:not([lang="en"]) .prose h1 {
+  font-size: clamp(32px, 5.5vw, 64px);
+  line-height: 1.5;
+  overflow-wrap: anywhere;
+}

@@ -31,7 +31,7 @@ test("landing renders the canonical blocks in order, controls and exact inventor
   ]);
   await expect(page.locator(".category-grid a")).toHaveCount(28);
   await expect(page.locator(".format-grid a")).toHaveCount(10);
-  await expect(page.getByLabel("SEARCH BOX", { exact: true })).toBeVisible();
+  await expect(page.getByRole("searchbox", { name: "SEARCH BOX", exact: true })).toBeVisible();
   await expect(page.locator(".language-choice a")).toHaveCount(4);
 });
 test("English landing remains complete without JavaScript", async ({ browser }) => {

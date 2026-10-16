@@ -13,7 +13,7 @@
       "sources": [
         {
           "file": "messages/hi.json",
-          "sha256": "4b3ce31523b6aebab350d3aa31aeec95756320e3a1358d7cc8c68da157da7ebd"
+          "sha256": "034dadb5a94b3f11f72980666027027fa5c797dccaee3406540a7597524826e6"
         },
         {
           "file": "content/copy/landing.hi.json",
@@ -117,7 +117,7 @@
       "sources": [
         {
           "file": "messages/bn.json",
-          "sha256": "1a14cdfd4851deb6ba90ff22da3c43bfe86e7720cb3d3c3474da722648336292"
+          "sha256": "58d42734758958eef5b4e4cb074c57e1345906b5bf8d4bbd14abe70c3e4ef397"
         },
         {
           "file": "content/copy/landing.bn.json",
@@ -221,7 +221,7 @@
       "sources": [
         {
           "file": "messages/ml.json",
-          "sha256": "b562da028ac7d340cd3fa83392a46e002685689a34e387696e858b5dda0f0b3f"
+          "sha256": "818c799a76d5060e868cccafc7861d7b7922c49a5d1c961127bfd93e0e841082"
         },
         {
           "file": "content/copy/landing.ml.json",

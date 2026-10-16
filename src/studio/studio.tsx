@@ -647,8 +647,11 @@ export default function Studio() {
         </label>
       )}
       <div className="studio-grid">
-        <aside className={`studio-panel shelf ${mobileTab === "elements" ? "mobile-open" : ""}`}>
-          <h2>
+        <aside
+          className={`studio-panel shelf ${mobileTab === "elements" ? "mobile-open" : ""}`}
+          aria-labelledby="studio-elements-heading"
+        >
+          <h2 id="studio-elements-heading">
             <UiText id={"[01] ELEMENTS"} />
           </h2>
           <div className="element-buttons">
@@ -980,8 +983,9 @@ export default function Studio() {
         </div>
         <aside
           className={`studio-panel properties ${mobileTab === "controls" ? "mobile-open" : ""}`}
+          aria-labelledby="studio-controls-heading"
         >
-          <h2>
+          <h2 id="studio-controls-heading">
             <UiText id={"[02] CONTROLS"} />
           </h2>
           <label className="control">
