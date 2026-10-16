@@ -1,6 +1,6 @@
 ﻿# Human prerequisites for RED LARK WORKSHOP
 
-Planning checkpoint: 16 October 2026. Supabase implementation is explicitly on hold. No keys are needed for the public branding/content work; enter eventual secrets in scoped hosting settings, not chat or Git.
+Implementation checkpoint: 16 October 2026. Supabase implementation remains explicitly on hold. The public branding/archive/Studio/editorial work needs no backend keys; enter eventual secrets in scoped hosting settings, not chat or Git.
 
 | Decision                    | Required human action                                                                                                                                                                                                        |
 | --------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
@@ -19,4 +19,8 @@ Planning checkpoint: 16 October 2026. Supabase implementation is explicitly on h
 | Physical printing           | Approve sample print quality, Indic shaping, sizes, colours, trimming and distribution guidance on actual printers.                                                                                                          |
 | Deck provenance             | Decide whether to track or retain the supplied PPTX outside the shipping repo. It is currently untracked and contains unknown-licence media; do not deploy or copy those assets.                                             |
 
-Engineering gaps remain in PLAN/CHECKLIST/ITERATIONS; they are not converted into human tasks or PASS entries. The site is not yet rebuilt to the new brief.
+Native review includes the drafted blog and print guidance. Non-AI legal articles currently use explicitly flagged English fallback: native legal translations still need to be supplied and reviewed. Approve an actual takedown response schedule; the public draft visibly marks its SLA as pending.
+
+Before publishing, rename/configure the Netlify site/domain as intended and verify SITE_URL, real localized 404 responses, sitemap/OG URLs, security headers and device mail-app handoff on the live CDN. No deployment, DNS change or provider setup has been performed here. The team inbox is already supplied; it is not an outstanding request for an address.
+
+Engineering status and held backend requirements remain in PLAN/CHECKLIST/ITERATIONS; they are not converted into human tasks or PASS entries. The development-only upstream dependency limitation is documented separately in DEPENDENCIES.md. Public implementation is not full account/upload/admin/mail acceptance.

@@ -7,6 +7,13 @@ import { useState, useRef } from "react";
 import { useRouter } from "next/navigation";
 import { useI18n } from "@/i18n/client";
 import { localePath } from "@/i18n/config";
+const TOPICS = [
+  "General",
+  "Contribute/Join the network",
+  "Commission a design",
+  "Takedown",
+  "Report a problem",
+];
 export function HandoffForm({ kind, email }: { kind: "contact" | "submit"; email: string }) {
   const router = useRouter();
   const { locale } = useI18n();
@@ -22,6 +29,8 @@ export function HandoffForm({ kind, email }: { kind: "contact" | "submit"; email
     const message = String(data.get("message") ?? "").trim();
     const reply = String(data.get("reply") ?? "").trim();
     const source = String(data.get("source") ?? "").trim();
+    const topic = String(data.get("topic") ?? "General");
+    if (kind === "contact" && !TOPICS.includes(topic)) next.topic = "Choose a listed topic.";
     if (String(data.get("website") ?? "")) {
       setFailure(
         "[NOT SENT] The spam check rejected this request. Please leave the hidden field empty.",
@@ -56,6 +65,7 @@ export function HandoffForm({ kind, email }: { kind: "contact" | "submit"; email
     setSending(true);
     try {
       const body = [
+        kind === "contact" ? `Topic: ${topic}` : "Artwork proposal",
         message,
         reply ? `Reply to: ${reply}` : "No reply address supplied.",
         kind === "submit"
@@ -80,7 +90,7 @@ export function HandoffForm({ kind, email }: { kind: "contact" | "submit"; email
     errors[name] ? (
       <p id={`${name}-error`} className="field-error">
         <UiText id={"[ERROR]"} />
-        {errors[name]}
+        <UiText id={errors[name]} />
       </p>
     ) : null;
   return (
@@ -101,6 +111,27 @@ export function HandoffForm({ kind, email }: { kind: "contact" | "submit"; email
           <input name="website" tabIndex={-1} autoComplete="off" />
         </label>
       </div>
+      {kind === "contact" && (
+        <label className="form-field" htmlFor="topic">
+          <UiText id="Topic" />
+          <select
+            id="topic"
+            name="topic"
+            aria-invalid={!!errors.topic}
+            aria-describedby={errors.topic ? "topic-error" : undefined}
+          >
+            {TOPICS.map((topic) => (
+              <option key={topic} value={topic}>
+                <UiText id={topic} />
+              </option>
+            ))}
+          </select>
+          {fieldError("topic")}
+          <span>
+            <UiText id="Contributors can include artists, writers, designers and legal volunteers. Commission enquiries are welcome from movements." />
+          </span>
+        </label>
+      )}
       {kind === "submit" && (
         <>
           <label className="form-field" htmlFor="source">
@@ -133,7 +164,7 @@ export function HandoffForm({ kind, email }: { kind: "contact" | "submit"; email
         </>
       )}
       <label className="form-field" htmlFor="message">
-        {kind === "submit" ? "TELL US ABOUT THE WORK" : "YOUR MESSAGE"}{" "}
+        <UiText id={kind === "submit" ? "TELL US ABOUT THE WORK" : "YOUR MESSAGE"} />{" "}
         <span>
           <UiText id={"(required, 10–3,000 characters)"} />
         </span>
@@ -198,11 +229,11 @@ export function HandoffForm({ kind, email }: { kind: "contact" | "submit"; email
       )}
       {failure && (
         <p role="alert" className="notice failure">
-          {failure}
+          <UiText id={failure} />
         </p>
       )}
       <button className="button accent" type="submit" disabled={sending}>
-        {sending ? "[OPENING EMAIL APP…]" : "[PREPARE EMAIL] ↗"}
+        <UiText id={sending ? "[OPENING EMAIL APP…]" : "[PREPARE EMAIL] ↗"} />
       </button>
       <p className="small">
         <UiText id={"No attachments are collected. Share an artwork link instead. Read"} />{" "}

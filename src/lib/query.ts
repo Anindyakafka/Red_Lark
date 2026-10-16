@@ -1,5 +1,6 @@
 import artistData from "@/generated/artists.json" with { type: "json" };
 import type { Artist, Poster } from "./types";
+import categories from "../../content/categories.json" with { type: "json" };
 export const artists = artistData as Artist[];
 const artistFor = (id: string) => artists.find((a) => a.id === id);
 export function fileSize(bytes: number) {
@@ -46,6 +47,9 @@ export function filterPosters(items: Poster[], f: Filters, saved: string[] = [])
         ...p.movements,
         ...p.languages,
         ...(p.categories ?? []),
+        ...(p.categories ?? []).map(
+          (slug) => categories.find((category) => category.slug === slug)?.label ?? slug,
+        ),
         ...(p.tags ?? []),
         ...Object.values(p.translations ?? {}).flatMap((v) => [v.title, v.caption, ...v.tags]),
       ]

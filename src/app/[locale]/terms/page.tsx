@@ -11,7 +11,7 @@ export default function Page() {
   return (
     <article className="prose">
       <p className="legal-draft">
-        <UiText id={"DRAFT, NEEDS LEGAL REVIEW"} />
+        <UiText id={"Draft - needs legal review"} />
       </p>
       <h1>
         <UiText id={"READ THE SMALL PRINT."} />
@@ -35,7 +35,7 @@ export default function Page() {
       <p>
         <UiText
           id={
-            "A NoDerivatives licence, including CC BY-NC-ND, forbids remixing under that licence. Such posters can appear as approved downloads but never as Studio bases or elements. “Free” is not a substitute for permission. Non-commercial restrictions and attribution requirements remain attached to sources."
+            "The Studio excludes NoDerivatives works, including CC BY-NC-ND, from bases and elements. ND licences restrict distribution of adapted material; ask the artist about additional permissions. Such works may be offered as downloads under their stated terms. Non-commercial restrictions and attribution requirements remain attached to sources."
           }
         />
       </p>
@@ -62,6 +62,9 @@ export default function Page() {
       <h2>
         <UiText id={"ACCEPTABLE USE."} />
       </h2>
+      <p>
+        <UiText id="Account uploads and the database review queue are not enabled. Public contact and UPI fields require separate explicit consent, and AI-use disclosure does not establish permission. Future account export/deletion, anonymisation/removal and review rules must be published before that service starts." />
+      </p>
       <p>
         <UiText
           id={

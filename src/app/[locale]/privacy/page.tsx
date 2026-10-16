@@ -2,18 +2,18 @@ import { UiText } from "@/i18n/client";
 import { localizeMetadata } from "@/i18n/metadata";
 import { Link } from "@/i18n/client";
 import { pageMeta } from "@/lib/metadata";
+import { analyticsConfiguration } from "@/lib/analytics";
 const baseMetadata = pageMeta(
   "Privacy draft",
   "Plain-language draft explaining local Studio storage, image metadata removal, share links, email handoffs and optional cookieless analytics.",
   "/privacy",
 );
 export default function Page() {
-  const analytics =
-    !!process.env.NEXT_PUBLIC_ANALYTICS_DOMAIN && !!process.env.NEXT_PUBLIC_ANALYTICS_ENDPOINT;
+  const analytics = !!analyticsConfiguration();
   return (
     <article className="prose">
       <p className="legal-draft">
-        <UiText id={"DRAFT, NEEDS LEGAL REVIEW"} />
+        <UiText id={"Draft - needs legal review"} />
       </p>
       <h1>
         <UiText id={"HOW WE HANDLE DATA."} />
@@ -24,7 +24,7 @@ export default function Page() {
       <p>
         <UiText
           id={
-            "Last revised: 14 October 2026. This describes the current build, not a future service."
+            "Last revised: 16 October 2026. This describes the current build, not a future service."
           }
         />
       </p>
@@ -41,6 +41,9 @@ export default function Page() {
       <h2>
         <UiText id={"LOCAL STORAGE."} />
       </h2>
+      <p>
+        <UiText id="Contributor accounts, login cookies, database uploads and the server mail service are not enabled. Account/admin pages are unavailable notices, not sign-in forms. Before activation, privacy and retention rules must be reviewed and updated; necessary authentication cookies would be used only for the account service." />
+      </p>
       <p>
         <UiText
           id={
@@ -97,12 +100,18 @@ export default function Page() {
         <UiText id={"CONTACT / REMOVAL."} />
       </h2>
       <p>
+        <UiText id="Artist public contact email and UPI ID are optional and require separate consent for each field. Public details can be copied by visitors. Ask the team to change or remove them; website removal cannot recall other people’s copies or automatically erase repository history. Opening a UPI link uses your chosen payment app; this website does not process a payment." />
+      </p>
+      <p>
+        <UiText id="Messages you choose to send reach the team’s email provider, outside this website. The team must settle mailbox retention and access rules. No database case or automatic acknowledgement is created here. There is no account data export or deletion service while accounts are disabled; Studio files can be exported locally and browser drafts/bookmarks can be cleared." />
+      </p>
+      <p>
         <Link className="underlined" href="/contact">
           <UiText id={"Contact the project"} />
         </Link>{" "}
         <UiText
           id={
-            "for questions or an artwork removal request. The real inbox and production hosting details require human configuration."
+            "for questions or an artwork removal request. The team supplied its contact inbox; production hosting logs, retention and legal review still need human confirmation."
           }
         />
       </p>

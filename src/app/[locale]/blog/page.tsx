@@ -1,20 +1,43 @@
 import { PageIntro } from "@/components/page-intro";
 import { UiText } from "@/i18n/client";
+import { Link } from "@/i18n/client";
+import { blogPosts } from "@/lib/blog.server";
+import { isLocale } from "@/i18n/config";
 import { pageMeta } from "@/lib/metadata";
 import { localizeMetadata } from "@/i18n/metadata";
-export default function Blog() {
+export default async function Blog({ params }: { params: Promise<{ locale: string }> }) {
+  const language = (await params).locale;
+  const posts = blogPosts(isLocale(language) ? language : "en");
   return (
     <>
       <PageIntro
         index="BLOG"
         title="Notes from the workshop"
-        description="Printing, distribution and conversations with artists. Editorial content is being prepared."
+        description="Printing, distribution and conversations with artists. All current posts are editorial placeholders."
       />
-      <section className="prose">
-        <p>
-          <UiText id="[EDITORIAL PLACEHOLDERS] Draft posts are being prepared; no artist interview has been published." />
+      <div className="content-width">
+        <p className="notice">
+          <UiText id="[EDITORIAL PLACEHOLDERS] These are draft guides and interview questions, not reports or attributed artist interviews." />
         </p>
-      </section>
+        <div className="index-grid">
+          {posts.map((post) => (
+            <article className="index-card" key={post.slug} lang={post.language}>
+              <p className="label">
+                [PLACEHOLDER] / {post.date}
+                {!post.reviewed ? " / DRAFT TRANSLATION" : ""}
+              </p>
+              <h2>
+                <Link href={`/blog/${post.slug}/`}>{post.title} ↗</Link>
+              </h2>
+              <p>{post.description}</p>
+              <p className="small">{post.tags.join(" / ")}</p>
+            </article>
+          ))}
+        </div>
+        <Link className="button" href="/feed.xml">
+          <UiText id="RSS feed" /> ↗
+        </Link>
+      </div>
     </>
   );
 }

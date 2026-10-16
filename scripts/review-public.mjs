@@ -4,7 +4,7 @@ import { chromium } from "@playwright/test";
 import AxeBuilder from "@axe-core/playwright";
 import { launch } from "chrome-launcher";
 import { measurePage } from "./lighthouse-series.mjs";
-const round = Number(process.argv[2] ?? 3);
+const round = Number(process.argv[2]);
 if (!Number.isInteger(round) || round < 1 || round > 15)
   throw new Error("Use npm run qa:round -- N (1–15)");
 const suffix = process.env.QA_EVIDENCE_SUFFIX ?? "";
@@ -27,7 +27,9 @@ const summary = {
   lighthouse: [],
   externalRequests: [],
   errors: [],
-  held: ["login/admin: backend implementation explicitly held; no fake screenshots"],
+  held: [
+    "Login/admin captures show service-pending notices; real auth, queue and mail acceptance remain held.",
+  ],
 };
 let browser, chrome;
 try {
@@ -47,6 +49,11 @@ try {
     ["contact-errors", "/contact/"],
     ["submit-errors", "/submit/"],
     ["404", "/404/"],
+    ["blog", "/blog/"],
+    ["ai-policy", "/policies/ai-policy/"],
+    ["about", "/about/"],
+    ["login-pending", "/login/"],
+    ["admin-pending", "/admin/"],
   ];
   for (const locale of process.env.QA_SCREENSHOTS === "0" ? [] : ["en", "ml"])
     for (const width of [390, 1440]) {

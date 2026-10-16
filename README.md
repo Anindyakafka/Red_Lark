@@ -1,10 +1,10 @@
 # RED LARK WORKSHOP
 
-The `redlark` branch contains the public-site rebuild: original identity, four locale routes, draft Indic translations and a landing narrative rendered from the exact supplied English copy. The archive and private browser-only Studio remain usable without accounts. Supabase-dependent accounts, uploads, review/database and server mail are explicitly on hold.
+The `redlark` branch contains the public-site rebuild: original identity, four locale routes, a verbatim landing narrative, category/format archive, print-first item pages, a private coded-source Studio, localized placeholder blog/RSS and draft policies. The archive, downloads and Studio work without accounts. Supabase-dependent accounts, uploads, review/database and server mail remain explicitly on hold; account routes show honest unavailable notices.
 
 See [AUDIT](docs/AUDIT.md), [PLAN](docs/PLAN.md), [COPY_QUESTIONS](docs/COPY_QUESTIONS.md) and [human prerequisites](docs/TODO_HUMAN.md) for milestone status. No provider resources or live deployment have been changed.
 
-## Existing application setup
+## Application setup
 
 A free, open protest-poster archive and a private, browser-only poster-making Studio. Built with Next.js App Router, strict TypeScript, Tailwind 4, self-hosted fonts and file-based content. Public pages are statically exported; a small Netlify Edge function handles language negotiation and localized missing pages.
 
@@ -59,9 +59,20 @@ Copy .env.example to .env.local for Next builds. Values are baked into the stati
 
 No contact address or donation destination is invented. Domain, inbox, legal review, permissions, hosting, print approval and optional analytics operation are listed in [TODO_HUMAN](docs/TODO_HUMAN.md).
 
+| Additional variable                          | Purpose/scope                                                                                                               |
+| -------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------- |
+| ANALYTICS_DOMAIN                             | Preferred analytics-domain variable; mapped to the public value at build. Disabled without a valid same-origin endpoint.    |
+| NEXT_TELEMETRY_DISABLED                      | Set to 1; Netlify configuration disables framework build telemetry.                                                         |
+| REPO_URL                                     | Reserved contract; src/config/site.ts's single constant remains authoritative until repository rename.                      |
+| SUPABASE_URL / SUPABASE_ANON_KEY             | Reserved for the held account service; no SDK/connection exists.                                                            |
+| SUPABASE_SERVICE_ROLE_KEY                    | Future server-only secret; never expose through NEXT_PUBLIC/client configuration.                                           |
+| MAIL_PROVIDER_KEY / MAIL_FROM / MAIL_TO_TEAM | Future server-only delivery configuration; requires provider and sender/domain verification. Unused by today's mailto flow. |
+
 ## Routes
 
-/ · /collection · /poster/[slug] · /discover · /artists · /artist/[slug] · /themes · /theme/[slug] · /studio · /community · /submit · /about · /contact · /privacy · /terms · /thank-you · /404 · /search/image · /sitemap.xml · /robots.txt · /site.webmanifest
+Public pages use /en, /hi, /bn or /ml: landing, collection, categories/category/[slug], poster/[slug], discover, artists/artist/[slug], studio, community, submit, blog/blog/[slug], about, policies and policy articles, contact, privacy, terms, thank-you, 404 and search/image. Each locale has feed.xml. Root sitemap.xml, robots.txt and site.webmanifest stay unprefixed. Old themes/theme URLs redirect to categories while preserving locale/query.
+
+Localized /login, /signup, /account, /forgot-password, /reset-password and /admin show noindex service-pending notices. They do not collect credentials or implement account/admin functionality.
 
 Image search is honestly labelled coming soon; no photo is collected. Community is an empty curated gallery until human-reviewed submissions exist. No fabricated posts, artists, support URLs or download counts.
 
@@ -130,6 +141,37 @@ Recorded browser checks are Chromium/Edge evidence, not a promise that every phy
 Current rebuild evidence is under docs/evidence/redlark-*. All failures and fixes remain recorded. Full account/upload/admin/mail acceptance cannot run while the backend is held; this is not a claim of complete release acceptance.
 
 The Community list is `content/community.json` (empty until approved contributions exist). Collection hydration deliberately omits Studio scenes; the Studio loads them only on its own route. Run `node scripts/font-pack.mjs` to regenerate the local type-kit ZIP if font files change.
+
+## Editorial content and languages
+
+English landing copy is content/copy/landing.en.json, locked against an independent fixture and rendered-text tests. Log wording questions in docs/COPY_QUESTIONS.md; do not silently edit the supplied copy. Hindi/Bengali/Malayalam drafts are reviewed:false. Untranslated UI and legal material visibly falls back to English. Native review and legal review are separate prerequisites.
+
+Blog posts are trusted repository files under content/blog/{locale}/*.mdx. Reuse the English filename/slug in each locale. Frontmatter values are JSON (quoted strings/dates, arrays and booleans), for example:
+
+```mdx
+---
+title: "Clearly marked draft title"
+description: "An honest description."
+date: "2026-10-16"
+tags: ["printing"]
+placeholder: true
+reviewed: false
+---
+
+## Draft body
+```
+
+MDX compiles during the static build only. Never compile uploads, messages or remote content. Active embeds/external media are rejected. Both current posts are explicit placeholders; no interview or quote is invented. Locale RSS feeds and sitemap entries derive from content. Missing locale posts fall back visibly to English. Non-AI policy articles currently use flagged English fallback pending native translation/review.
+
+To add a language: extend src/i18n/config.ts, matching message catalogs/review flags, copy/content registries, metadata mappings, root static params, Edge/preview routing, sitemap and tests. Add licensed local fonts; verify conjuncts/marks in the UI and outlined exports. Regenerate safe subsets/provenance when native vocabulary changes. Never mark translations reviewed before native approval.
+
+## Held backend work
+
+No Supabase project, SDK, migration, database seed, bucket, role bootstrap or mail adapter is included. Migration/admin commands do not exist yet. The seed script authors file-based CC0 placeholders only. After the owner releases the hold, implement M7's server-only sessions/RLS/review before M6 UPLOAD and M8 persisted mail. PLAN.md records the schema/role/testing contract; TODO_HUMAN.md lists region, retention, verified sender and initial-admin decisions. Update policies and pass real end-to-end tests before activation.
+
+Use ANALYTICS_DOMAIN (or NEXT_PUBLIC_ANALYTICS_DOMAIN) with a same-origin NEXT_PUBLIC_ANALYTICS_ENDPOINT without query/fragment. Off-origin or malformed endpoints are disabled; DNT is respected. Only real pageview/download/export events exist today. Upload-submitted belongs to the future actual upload flow and is never simulated. Default analytics remains disabled.
+
+Dependency details: [DEPENDENCIES](docs/DEPENDENCIES.md). Production audit is clean after PDF/image updates; the full audit retains an unpatched development-only braces advisory chain. Do not force-downgrade the framework tooling.
 
 ## Licence
 

@@ -59,6 +59,12 @@ export default async function Layout({
   return (
     <html lang={locale} className={`${display.variable} ${mono.variable}`}>
       <head>
+        <link
+          rel="alternate"
+          type="application/rss+xml"
+          title="RED LARK WORKSHOP notes"
+          href={`/${locale}/feed.xml`}
+        />
         {["devanagari", "bengali", "malayalam"]
           .filter(
             (script) =>

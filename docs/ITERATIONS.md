@@ -1,5 +1,15 @@
 # Numbered rebuild rounds
 
+## Red Lark Round 14 critique — M9 public editorial and policies
+
+Implemented trusted build-time localized MDX, two marked placeholder posts, four RSS feeds, policy hub/articles, the verbatim AI policy, expanded About, accurate privacy/terms and five contact topics. Current contact remains an email-app handoff. Legal translations explicitly fall back to English; no invented legal sources, artist interview, donation destination or delivered-mail claims. Dependency updates remove production audit findings; the remaining development-only upstream advisory is documented in DEPENDENCIES.md.
+
+Clean lockfile install, 37 unit tests, copy/brand/types/lint/format/content/build checks pass; 340 HTML pages validate. Full browser suite: 83 passed. Evidence: docs/evidence/redlark-round-14, 60 English/Malayalam 390/1440 captures, zero axe violations, external requests or page errors. Login/admin captures are unavailable-service notices, not backend acceptance.
+
+Three-run mobile Lighthouse medians (landing/collection/item): English 96/98/95; Hindi 97/93/96. Accessibility/Best Practices/SEO all 100; maximum CLS approximately 0.000032. Hindi Collection remains a real performance failure. Raw runs retained, including its 93/93/97 samples; no best-run substitution.
+
+Viewed landing narrative/format picker, active collection, item, Studio, About, policy, errors and 404 captures. Brutalist borders/type/palette remain consistent. Ranked remaining issues: (1) Malayalam editorial h1 is technically within bounds but breaks into too many oversized lines; give native editorial headings a considered smaller scale. (2) Hindi Collection text LCP is sensitive to font loading, despite low blocking time and stable layout; reduce late Latin body-font swaps rather than adding unstable layout deferral. (3) Final every-exported-route review in all four languages, dark native pages and no-JS editorial. Round 15 addresses these. Required Supabase/auth/upload/admin/mail work stays held and cannot pass end-to-end acceptance.
+
 ## Red Lark Round 13 critique — M6 font-loading correction
 
 Added tiny name-only navigation fonts (5,232 bytes combined), verified pixel/width-identical for all three native names. The active locale reuses its UI font in controls and titles, avoiding duplicate archive-font transfer. Full language fonts remain fallback; archive subsets still serve actual original-script titles. Sixteen affected browser tests pass after the font changes; the prior full suite has 78 passes.

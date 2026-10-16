@@ -168,7 +168,7 @@ export function Collection({
         </div>
         {error && (
           <p id="search-error" role="alert">
-            {error}
+            <UiText id={error} />
           </p>
         )}
       </form>
@@ -277,7 +277,7 @@ export function Collection({
       </p>
       {storageNotice && (
         <p role="status" className="notice">
-          {storageNotice}
+          <UiText id={storageNotice} />
         </p>
       )}
       {results.length ? (

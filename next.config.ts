@@ -7,5 +7,11 @@ const config: NextConfig = {
   experimental: { globalNotFound: true },
   turbopack: { root: process.cwd() },
   images: { unoptimized: true },
+  env: {
+    NEXT_PUBLIC_ANALYTICS_DOMAIN:
+      process.env.ANALYTICS_DOMAIN?.trim() ||
+      process.env.NEXT_PUBLIC_ANALYTICS_DOMAIN?.trim() ||
+      "",
+  },
 };
 export default config;

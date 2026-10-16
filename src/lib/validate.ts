@@ -33,7 +33,7 @@ export function validatePoster(p: Poster, artists: Artist[]): string[] {
   if (!formats.some((format) => format.slug === p.kind)) errors.push("Unknown artwork format");
   if (!["none", "minimal-assisted", "generated"].includes(p.aiUse) || !p.aiDisclosure?.trim())
     errors.push("AI use and disclosure are required");
-  if (!/^1[a-z]+$/.test(p.imageCode ?? "") || !/^2[a-z]+$/.test(p.captionCode ?? ""))
+  if (!/^\d+[a-z]+$/i.test(p.imageCode ?? "") || !/^\d+[a-z]+$/i.test(p.captionCode ?? ""))
     errors.push("Image and caption codes are required");
   if (!Number.isInteger(p.year) || p.year < 1900 || p.year > 2100)
     errors.push("Missing or invalid year");

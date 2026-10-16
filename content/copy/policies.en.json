@@ -1,0 +1,41 @@
+{
+  "locale": "en",
+  "reviewed": true,
+  "legalReview": false,
+  "articles": {
+    "licensing": {
+      "title": "Licensing & credit",
+      "description": "Read the work’s own licence, preserve artist credit and check permission before remixing.",
+      "paragraphs": [
+        "Each work lists its artist, source and licence. A free download is not a general permission to change or sell every work. The website is non-commercial; individual works retain their own commercial-use terms.",
+        "CC0 placeholders are original AI-assisted vector studies for testing, not real artist contributions. Fonts and brand assets have separate terms. The software licence does not replace an artwork licence.",
+        "The Studio excludes NoDerivatives works, including CC BY-NC-ND, from bases and element libraries. Such works may be offered as downloads under their stated licence. Ask the artist directly about permissions beyond that licence.",
+        "Keep required artist credits, sources and licence notices. ShareAlike sources require the applicable licence on shared adaptations. Studio exports compose source credits automatically and reject incompatible source combinations. User additions are not automatically dedicated to CC0.",
+        "Read the linked licence itself before reuse. If a credit or permission is wrong, contact the team with the work URL. Removal from this archive cannot recall copies that other people already downloaded."
+      ]
+    },
+    "contributor-guidelines": {
+      "title": "Contributor guidelines",
+      "description": "Prepare a rights-cleared contribution with credit, source, language, alt text and an honest AI-use declaration.",
+      "paragraphs": [
+        "Share only work you made or have explicit permission to publish. Supply the source and licence, an approved artist credit, meaningful alt text, language, categories and tags. Pseudonymous artist names are welcome.",
+        "Public contact email and UPI ID are optional. Each field needs separate explicit consent before publication. An account email, when accounts become available, must never automatically become public artist contact.",
+        "The planned upload flow will recommend CC BY-SA 4.0, with CC0, CC BY, CC BY-NC-SA and CC BY-NC-ND alternatives. The actual licence and permission must be reviewed; ND works never enter the Studio.",
+        "Declare AI use honestly: none, minimal-assisted or generated, with an explanation where helpful. A disclosure is not proof of copyright permission. Current in-house placeholder studies are marked generated and are not presented as curated human submissions.",
+        "Check print dimensions, credit strips and one sample print. A 300 DPI label alone does not establish adequate image detail. Avoid unnecessary identifying information in the artwork or proposal.",
+        "Account uploads and the database review queue are not enabled during the backend hold. The current Submit page prepares an email proposal in your own mail app; no file is uploaded or automatically published."
+      ]
+    },
+    "takedown": {
+      "title": "Takedown & artist removal",
+      "description": "Request a credit correction or removal with the work URL and a short explanation of the concern.",
+      "paragraphs": [
+        "Use Contact and include the work URL, the credit or permission concern, and the correction or removal you are requesting. Share only what the team needs to understand the issue. Do not send unnecessary identity documents or private addresses.",
+        "The current form opens your own email app. Review and send the message yourself. The website does not store a case, send an acknowledgement or provide a tracking number. Your email provider handles delivery.",
+        "[SLA PLACEHOLDER] A monitored response schedule and escalation process have not yet been agreed. The team must publish the real process after legal and operational review; no response deadline is promised by this draft.",
+        "The team can review attribution, permission and removal from current public pages through its publishing process. Cached pages, repository history and copies already downloaded may remain elsewhere; do not assume a request erases every copy.",
+        "Account deletion, database case tracking and administrative review tools are planned but not active. Their retention, anonymisation and removal rules need India-specific legal review before activation."
+      ]
+    }
+  }
+}

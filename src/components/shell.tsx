@@ -68,6 +68,9 @@ export function Footer() {
         <Link prefetch={false} href="/terms">
           <UiText id={"Terms & licences"} />
         </Link>
+        <Link href="/policies">
+          <UiText id="Policies & guidelines" />
+        </Link>
         <Link prefetch={false} href="/categories">
           <UiText id={"Categories"} />
         </Link>

@@ -13,6 +13,7 @@ export default defineConfig([
   },
   globalIgnores([
     ".next/**",
+    ".qa/**",
     "out/**",
     "node_modules/**",
     ".npm-cache/**",

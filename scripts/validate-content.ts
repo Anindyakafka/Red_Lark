@@ -7,6 +7,7 @@ import { CONTACT_EMAIL } from "../src/config/site";
 import images from "../content/studio/images.json";
 import captions from "../content/studio/captions.json";
 import { canRemix } from "../src/lib/licenses";
+import { validateBlog } from "../src/lib/blog.server";
 if (fs.existsSync(".env.local")) process.loadEnvFile(".env.local");
 
 const read = <T>(dir: string): T[] =>
@@ -82,14 +83,16 @@ if (errors.length) {
   console.error(errors.join("\n"));
   process.exit(1);
 }
+await validateBlog();
 fs.mkdirSync("src/generated", { recursive: true });
 fs.writeFileSync("src/generated/catalog.json", JSON.stringify({ posters, artists }));
 fs.writeFileSync("src/generated/artists.json", JSON.stringify(artists));
-if (!CONTACT_EMAIL)
+const effectiveContact = process.env.CONTACT_EMAIL ?? CONTACT_EMAIL;
+if (!effectiveContact)
   console.warn(
     "[HUMAN CONFIGURATION] CONTACT_EMAIL is unset. Contact and submission delivery are unavailable; see docs/TODO_HUMAN.md.",
   );
-else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(CONTACT_EMAIL))
+else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(effectiveContact))
   throw new Error("CONTACT_EMAIL must be a real, valid mailbox address");
 if (new URL(resolveSiteOrigin(process.env)).hostname === "localhost")
   console.warn(

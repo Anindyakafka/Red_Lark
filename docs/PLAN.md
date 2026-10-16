@@ -1,13 +1,13 @@
 # RED LARK WORKSHOP: staged implementation plan
 
-Execution started 16 October 2026 on redlark. Step 0, M1-M5 and M6 CREATE are complete. The owner authorized public-site implementation and supplied redlarkworkshop@gmail.com. M6 retains PARTIAL status because UPLOAD is held with M7/M8. Public M9 is next.
+Execution started 16 October 2026 on redlark. Step 0, M1-M5, M6 CREATE and public M9 are implemented. The owner authorized public-site implementation and supplied redlarkworkshop@gmail.com. M6 retains PARTIAL status because UPLOAD is held with M7/M8. M9's public editorial work is complete; final account/mail policies and end-to-end acceptance await the backend hold being lifted.
 
 READY means technically independent of Supabase; PARTIAL means public/browser work can proceed later but backend work is held. HOLD is an explicit scope boundary, not a completed feature or justified N-A.
 
 ## Recommended sequence
 
 1. M1-M5: brand, exact copy, languages, landing, categories and item pages.
-2. M6 CREATE and public M9 content: extend the working Studio and editorial/policy pages. Upload forms may have field contracts and clearly labelled unavailable states; never pretend to authenticate, save or submit.
+2. M6 CREATE and public M9 content are implemented. Account/upload/admin destinations are clearly labelled unavailable states; they never pretend to authenticate, save or submit.
 3. Stop at the backend boundary. Do not install Supabase packages, create SQL/migrations/seeds/buckets, connect a project or add database adapters during the hold.
 4. Once the owner releases the hold: M7, then M6 UPLOAD and M8, then final M9 policy/acceptance work.
 
@@ -50,7 +50,7 @@ READY means technically independent of Supabase; PARTIAL means public/browser wo
 | ANALYTICS_DOMAIN                             | Optional self-hosted cookieless analytics, disabled by default; DNT; page view/download/Studio export/upload submitted only, no content/IDs. |
 | REPO_URL                                     | Source URL mapped to the single validated constant in src/config/site.ts.                                                                    |
 
-Future handlers also need a rate-limit HMAC secret and a protected revalidation/build-hook secret if that publishing path is chosen. Document additions when the hold is lifted. Keep secrets in scoped hosting settings, not Git or chat. This checkpoint does not modify .env.example or ask for keys.
+Future handlers also need a rate-limit HMAC secret and a protected revalidation/build-hook secret if that publishing path is chosen. Document additions when the hold is lifted. Keep secrets in scoped hosting settings, not Git or chat. The public env contract is in .env.example; no backend keys are needed during this hold.
 
 ## Verification protocol
 
