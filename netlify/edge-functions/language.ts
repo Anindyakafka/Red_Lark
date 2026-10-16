@@ -1,8 +1,9 @@
 import { chooseLocale, isLocale } from "../../src/i18n/config";
+import { SECURITY_HEADERS } from "../../src/config/security";
 interface EdgeContext {
   next: () => Promise<Response>;
 }
-export default async function language(request: Request, context: EdgeContext) {
+async function route(request: Request, context: EdgeContext) {
   const url = new URL(request.url);
   const first = url.pathname.split("/")[1];
   if (
@@ -22,5 +23,18 @@ export default async function language(request: Request, context: EdgeContext) {
   const response = await context.next();
   if (response.status !== 404) return response;
   const fallback = await fetch(new URL(`/${first}/404/`, url));
-  return new Response(fallback.body, { status: 404, headers: fallback.headers });
+  const headers = new Headers(fallback.headers);
+  headers.delete("content-encoding");
+  headers.delete("content-length");
+  return new Response(fallback.body, { status: 404, headers });
+}
+export default async function language(request: Request, context: EdgeContext) {
+  const response = await route(request, context);
+  const headers = new Headers(response.headers);
+  for (const [key, value] of Object.entries(SECURITY_HEADERS)) headers.set(key, value);
+  return new Response(response.body, {
+    status: response.status,
+    statusText: response.statusText,
+    headers,
+  });
 }

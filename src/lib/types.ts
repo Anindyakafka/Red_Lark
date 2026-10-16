@@ -101,6 +101,7 @@ export interface PosterFile {
   bytes: number;
 }
 export interface Poster {
+  categories?: string[];
   translations?: Partial<
     Record<
       "en" | "hi" | "bn" | "ml",

@@ -21,7 +21,8 @@
     "format:check": "prettier --check .",
     "test:e2e": "playwright test",
     "qa:round": "node scripts/review-round.mjs",
-    "check:brand": "node scripts/check-no-legacy-name.mjs"
+    "check:brand": "node scripts/check-no-legacy-name.mjs",
+    "test:copy": "tsx --test tests/copy.test.ts"
   },
   "dependencies": {
     "fflate": "^0.8.2",

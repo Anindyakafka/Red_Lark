@@ -1,12 +1,12 @@
-# RED LARK WORKSHOP — planning branch
+# RED LARK WORKSHOP
 
-The `redlark` branch currently contains the audit and staged plan for the new brief. Application branding and behaviour are still the previous implementation. Supabase-dependent implementation is explicitly on hold; this is not a completed account/upload/admin/mail release.
+The `redlark` branch contains the public-site rebuild: original identity, four locale routes, draft Indic translations and a landing narrative rendered from the exact supplied English copy. The archive and private browser-only Studio remain usable without accounts. Supabase-dependent accounts, uploads, review/database and server mail are explicitly on hold.
 
-Start with [AUDIT](docs/AUDIT.md), [PLAN](docs/PLAN.md), [COPY_QUESTIONS](docs/COPY_QUESTIONS.md) and [human prerequisites](docs/TODO_HUMAN.md). Recommended independent work: M1-M5, M6 CREATE and public M9 content. This checkpoint stops after planning; it does not configure provider resources or change the live deployment.
+See [AUDIT](docs/AUDIT.md), [PLAN](docs/PLAN.md), [COPY_QUESTIONS](docs/COPY_QUESTIONS.md) and [human prerequisites](docs/TODO_HUMAN.md) for milestone status. No provider resources or live deployment have been changed.
 
 ## Existing application setup
 
-A free, open protest-poster archive and a private, browser-only poster-making Studio. Built on the **rebuild** branch with Next.js App Router, strict TypeScript, Tailwind 4, self-hosted fonts and file-based content. No accounts or database.
+A free, open protest-poster archive and a private, browser-only poster-making Studio. Built with Next.js App Router, strict TypeScript, Tailwind 4, self-hosted fonts and file-based content. Public pages are statically exported; a small Netlify Edge function handles language negotiation and localized missing pages.
 
 ## Run locally
 
@@ -17,7 +17,7 @@ npm ci
 npm run dev
 ```
 
-Open http://localhost:3000. For the deployable static build:
+Open http://localhost:3000/en/ (or /hi/, /bn/, /ml/). Development root shows a language chooser; Netlify and the static preview negotiate Accept-Language without cookies. For the deployable static build:
 
 ```sh
 npm run build
@@ -40,7 +40,9 @@ The export is in out/. The build also emits physical Next segment-file aliases f
 | npm run test:e2e              | Playwright every-route smoke/axe + Studio, forms, licence gate and breakpoints |
 | npm run qa:round -- 1         | Screenshot, dark-mode axe and mobile Lighthouse evidence for round 1           |
 | npm run seed                  | Re-author original placeholder assets; not a future-content ingest command     |
-| npm run brand:build           | Historical supplied-logo tracing utility                                       |
+| npm run brand:build           | Regenerate original lark, wordmark, favicon set and OG image                   |
+| npm run test:copy             | Independent verbatim Appendix A source and rendered-text tests                 |
+| npm run check:brand           | Reject retired branding except the one repository URL constant                 |
 
 For browser QA on Windows, the config uses installed Microsoft Edge. Set BROWSER_PATH for another Chromium executable. On Linux/macOS run npx playwright install chromium. The ND browser fixture is isolated to the local verification server: run npx tsx scripts/qa-fixture.tsx after building. It is not included in out/ and is not public catalogue content.
 
@@ -48,12 +50,12 @@ For browser QA on Windows, the config uses installed Microsoft Edge. Set BROWSER
 
 Copy .env.example to .env.local for Next builds. Values are baked into the static output; rebuild when they change. Standalone validation/QA commands use shell environment values if configured. Never commit real private credentials.
 
-| Variable                       | Purpose                                                                                            |
-| ------------------------------ | -------------------------------------------------------------------------------------------------- |
-| SITE_URL                       | Optional canonical/OG/sitemap origin override; otherwise uses Netlify deployment URL or localhost  |
-| CONTACT_EMAIL                  | Real monitored contact/takedown inbox. Unset produces a build warning and a visibly unavailable UI |
-| NEXT_PUBLIC_ANALYTICS_DOMAIN   | Optional self-hosted Plausible site identifier                                                     |
-| NEXT_PUBLIC_ANALYTICS_ENDPOINT | Optional same-origin event proxy path; e.g. /analytics/event. No remote script URL                 |
+| Variable                       | Purpose                                                                                           |
+| ------------------------------ | ------------------------------------------------------------------------------------------------- |
+| SITE_URL                       | Optional canonical/OG/sitemap origin override; otherwise uses Netlify deployment URL or localhost |
+| CONTACT_EMAIL                  | Contact/takedown inbox; defaults to the owner-supplied redlarkworkshop@gmail.com                  |
+| NEXT_PUBLIC_ANALYTICS_DOMAIN   | Optional self-hosted Plausible site identifier                                                    |
+| NEXT_PUBLIC_ANALYTICS_ENDPOINT | Optional same-origin event proxy path; e.g. /analytics/event. No remote script URL                |
 
 No contact address or donation destination is invented. Domain, inbox, legal review, permissions, hosting, print approval and optional analytics operation are listed in [TODO_HUMAN](docs/TODO_HUMAN.md).
 
@@ -93,7 +95,7 @@ Analytics is disabled by default. Optional analytics uses a self-hosted Plausibl
 
 ### Netlify
 
-Import this GitHub repository into Netlify and choose `rebuild` as the production branch while this work lives there (or your release branch after merging). Leave the base directory at the repository root. The committed `netlify.toml` supplies:
+Import this GitHub repository into Netlify and choose `redlark` as the production branch when ready (or your release branch after merging). Leave the base directory at the repository root. The committed `netlify.toml` supplies:
 
 - Build command: `npm run build`
 - Publish directory: `out`
@@ -102,11 +104,11 @@ Import this GitHub repository into Netlify and choose `rebuild` as the productio
 
 Set `CONTACT_EMAIL` to your real monitored inbox in Netlify's environment variables with **Builds** scope. No `.env.local` needs to be uploaded. Leave `SITE_URL` unset to use Netlify's primary site/custom-domain URL in production and the preview URL for branch deploys/Deploy Previews. An explicit `SITE_URL` takes precedence in every context; set it only for production if previews should keep their own URLs. Changing any build-time value or the domain requires a new deploy.
 
-Netlify serves the exported directory routes and `404.html` directly. Do not add a `/* /index.html 200` rewrite: it would break real missing-page responses. Security headers from `public/_headers` are copied to `out/_headers`; hashed Next.js assets also receive immutable caching. Keep Forms detection, snippet injection, third-party analytics and other optional Netlify integrations disabled unless separately reviewed; the current forms still hand off to the visitor's mail app. No server-rendering adapter or Functions are needed.
+Netlify serves the exported directory routes; the committed language Edge function redirects unprefixed paths and returns localized missing pages with HTTP 404. Do not add a `/* /index.html 200` rewrite. Security headers from `public/_headers` are copied to `out/_headers` and applied explicitly to Edge responses; hashed Next.js assets receive immutable caching. Keep Forms detection, snippet injection and third-party integrations disabled. Current forms hand off to the visitor's mail app. The full Next server adapter is reserved for the future backend phase.
 
 After deployment, open `/collection/`, a poster URL, `/studio/` and an unknown URL directly and refresh each. Verify the unknown URL returns HTTP 404, `/sitemap.xml` uses the intended domain, and responses include the CSP and `Referrer-Policy: no-referrer`. Document Netlify access-log handling in the privacy policy before launch. This configuration prepares deployment; it does not publish the site or configure your Netlify account/domain.
 
-Deployment follow-up checks passed: typecheck, lint, formatting, content/export validation, production build with Netlify-style environment variables, 18 unit tests and all 65 browser tests. Exported canonical/sitemap/robots URLs, `404.html` and copied security/cache headers were checked locally. Live Netlify CDN behaviour still needs the post-deploy checks above.
+Live Netlify Edge/CDN behaviour still requires the post-deploy checks above. Local measurements are recorded per milestone in docs/ITERATIONS.md; historical reports do not certify the new rebuild.
 
 ### Other static hosts
 
@@ -125,7 +127,7 @@ No runtime database, server-side design storage, comments, payments, newsletter 
 
 Recorded browser checks are Chromium/Edge evidence, not a promise that every physical printer or browser behaves identically. Human-only launch decisions remain explicit.
 
-Five numbered rounds are complete. Final checks: 14 model/privacy tests, 65 browser tests, zero axe violations. All nine cold-cache mobile Lighthouse samples meet the targets; performance medians are Home 97, Collection 99, Poster 98, with 100 for Accessibility, Best Practices and SEO. Highest CLS is 0.0231. See the retained raw reports and critiques rather than relying on a single score.
+Current rebuild evidence is under docs/evidence/redlark-*. All failures and fixes remain recorded. Full account/upload/admin/mail acceptance cannot run while the backend is held; this is not a claim of complete release acceptance.
 
 The Community list is `content/community.json` (empty until approved contributions exist). Collection hydration deliberately omits Studio scenes; the Studio loads them only on its own route. Run `node scripts/font-pack.mjs` to regenerate the local type-kit ZIP if font files change.
 

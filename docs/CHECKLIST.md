@@ -8,7 +8,7 @@ The original rows below are preserved as historical evidence. Their PASS entries
 | ---------------------------------------------------------- | ------ | ---------------------------------------------------------------------------------------------------- |
 | Carry-over items 1-19 revalidated for all required locales | FAIL   | PLAN.md M1-M9; previous measurements are historical only.                                            |
 | Complete rebrand and build/CI legacy-name scanner          | PASS   | M1: check:brand; brand.ts; storage/UTF-8 tests; regenerated assets.                                  |
-| Exact English JSON and rendered-copy test                  | FAIL   | M3 not implemented; Appendix A authoritative.                                                        |
+| Exact English JSON and rendered-copy test                  | PASS   | M3: independent fixture + source hash + server/browser rendered-text checks; tests/copy.test.ts.     |
 | Four locales, review flags and Indic fonts/exports         | PASS   | M2: i18n/indic tests, four-locale browser axe, reviewed:false assets. Native review remains pending. |
 | Categories, formats, codes, AI badges and consent fields   | FAIL   | M4-M6 not implemented.                                                                               |
 | Licence/derivative gate and ShareAlike regression          | FAIL   | Existing gate retained; verify after new model/source changes.                                       |
@@ -18,6 +18,8 @@ The original rows below are preserved as historical evidence. Their PASS entries
 | New-site axe=0, Lighthouse>=95 and full end-to-end flow    | FAIL   | Requires new measurements; no inherited PASS.                                                        |
 
 ## Historical baseline
+
+M3 measured checkpoint: `docs/evidence/redlark-round-9/summary.json` records zero axe violations and no external requests/page errors. Mobile Lighthouse medians: en 97/98/97, hi 96/98/97 (landing/collection/item); other categories all 100. Full browser suite: 73 passed. Unit suite: 30 passed. Copy, brand, strict types, lint, content validation and 284-page export validation pass. This measurement covers the current public checkpoint; the combined new-site/end-to-end row above remains FAIL because required backend work is held. Earlier round 3-8 performance failures are retained with critiques.
 
 Last reviewed: previous Round 5. Evidence paths are relative to the repository. No human-only configuration is invented.
 

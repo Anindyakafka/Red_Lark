@@ -1,0 +1,350 @@
+﻿{
+    "purpose":  "All current localized UI/landing/print/blog text with full-font fallback for future additions",
+    "method":  "fontTools static regular400 width100; every actual non-ASCII codepoint supported by full source font plus ZWJ/ZWNJ from localized message/copy/blog sources and probes; all layout features and default GSUB closure retained; ASCII omitted (mono first covers ASCII); GSUB/GPOS retained; WOFF2 Brotli; NFC/NFD canonical decomposition codepoint closure retained (including Bengali vowel-length mark required by HarfBuzz normalization)",
+    "sourceProvenance":  "provenance.json",
+    "licenses":  "Matching noto-sans-{script}-full-OFL.txt",
+    "files":  [
+                  {
+                      "locale":  "hi",
+                      "file":  "noto-sans-devanagari-ui.woff2",
+                      "bytes":  29032,
+                      "sha256":  "1bfeeb44371ab5a812e6017899c56e3143bebe8ffae4667a3e5d5a7383c10b5b",
+                      "sourceFont":  "noto-sans-devanagari-full.ttf",
+                      "sources":  [
+                                      {
+                                          "file":  "messages/hi.json",
+                                          "sha256":  "ae3b3177489c25d423d14a06a3a35ec3326be56bce8c35d663de700a3553154b"
+                                      },
+                                      {
+                                          "file":  "content/copy/landing.hi.json",
+                                          "sha256":  "cf52fb6605f918e1ce58ab13e453c95f4657ae45aea605c20ae93c2bfb685b51"
+                                      },
+                                      {
+                                          "file":  "content/copy/print.hi.json",
+                                          "sha256":  "b820c05889e437a45b33be4023952bd1eb2d800872a0837498c016ef56234a42"
+                                      },
+                                      {
+                                          "file":  "content/blog/hi/artist-interview-outline.mdx",
+                                          "sha256":  "39496a5e519d9e5319e4fe024e3e7cc02a65381822d6d21d05eb598319f2ef35"
+                                      },
+                                      {
+                                          "file":  "content/blog/hi/printing-and-distribution.mdx",
+                                          "sha256":  "c745b1c73a703da839897b35e19b0679efc5b3048f57cb06c61b7b2bcfc77375"
+                                      }
+                                  ],
+                      "probe":  "हिन्दी सबके लिए दुनिया क्ष त्र श्र",
+                      "glyphCount":  482,
+                      "uniqueInputCodepoints":  159,
+                      "includedUnicodeCodepoints":  [
+                                                        "U+00B7",
+                                                        "U+00D7",
+                                                        "U+0901",
+                                                        "U+0902",
+                                                        "U+0905",
+                                                        "U+0906",
+                                                        "U+0907",
+                                                        "U+0908",
+                                                        "U+0909",
+                                                        "U+090F",
+                                                        "U+0910",
+                                                        "U+0913",
+                                                        "U+0914",
+                                                        "U+0915",
+                                                        "U+0916",
+                                                        "U+0917",
+                                                        "U+0918",
+                                                        "U+091A",
+                                                        "U+091B",
+                                                        "U+091C",
+                                                        "U+091D",
+                                                        "U+091E",
+                                                        "U+091F",
+                                                        "U+0920",
+                                                        "U+0921",
+                                                        "U+0922",
+                                                        "U+0923",
+                                                        "U+0924",
+                                                        "U+0925",
+                                                        "U+0926",
+                                                        "U+0927",
+                                                        "U+0928",
+                                                        "U+092A",
+                                                        "U+092B",
+                                                        "U+092C",
+                                                        "U+092D",
+                                                        "U+092E",
+                                                        "U+092F",
+                                                        "U+0930",
+                                                        "U+0932",
+                                                        "U+0935",
+                                                        "U+0936",
+                                                        "U+0937",
+                                                        "U+0938",
+                                                        "U+0939",
+                                                        "U+093C",
+                                                        "U+093E",
+                                                        "U+093F",
+                                                        "U+0940",
+                                                        "U+0941",
+                                                        "U+0942",
+                                                        "U+0943",
+                                                        "U+0947",
+                                                        "U+0948",
+                                                        "U+0949",
+                                                        "U+094B",
+                                                        "U+094C",
+                                                        "U+094D",
+                                                        "U+0964",
+                                                        "U+200C",
+                                                        "U+200D",
+                                                        "U+2013",
+                                                        "U+2014",
+                                                        "U+2019",
+                                                        "U+201C",
+                                                        "U+201D",
+                                                        "U+2026"
+                                                    ],
+                      "layoutFeatures":  [
+                                             "*"
+                                         ]
+                  },
+                  {
+                      "locale":  "bn",
+                      "file":  "noto-sans-bengali-ui.woff2",
+                      "bytes":  36312,
+                      "sha256":  "4107cc92977122a802ef11e12c2dda6f47b5af7a18bb42b9e1b54e5b71df8b0f",
+                      "sourceFont":  "noto-sans-bengali-full.ttf",
+                      "sources":  [
+                                      {
+                                          "file":  "messages/bn.json",
+                                          "sha256":  "68c3c90139e324971c6557060ab2c211afef0bc47d77b099bfe4db569f0e4bc3"
+                                      },
+                                      {
+                                          "file":  "content/copy/landing.bn.json",
+                                          "sha256":  "dc4285ada20b8a7a4edc28fc003e6aa0af0d75e58b5e703df6523a7efc59d1d1"
+                                      },
+                                      {
+                                          "file":  "content/copy/print.bn.json",
+                                          "sha256":  "31408a3d33d335c838ac6ade16e27b3883d787a0769a8ebdd8adb68e29bc6d92"
+                                      },
+                                      {
+                                          "file":  "content/blog/bn/artist-interview-outline.mdx",
+                                          "sha256":  "f0bd05beacea19c3963da0ae18964ba1ba91f6ed30b0dacfa3ad09e9dc0a2863"
+                                      },
+                                      {
+                                          "file":  "content/blog/bn/printing-and-distribution.mdx",
+                                          "sha256":  "fff1ac48e9e0b0f98a8b2b66ade9ea0da7884a3a27a2f46ce2eac069b264c3b2"
+                                      }
+                                  ],
+                      "probe":  "বাংলা বিশ্রামের অধিকার ক্ষ ত্র শ্র",
+                      "glyphCount":  346,
+                      "uniqueInputCodepoints":  161,
+                      "includedUnicodeCodepoints":  [
+                                                        "U+00B7",
+                                                        "U+00D7",
+                                                        "U+0964",
+                                                        "U+0981",
+                                                        "U+0982",
+                                                        "U+0985",
+                                                        "U+0986",
+                                                        "U+0987",
+                                                        "U+0989",
+                                                        "U+098F",
+                                                        "U+0990",
+                                                        "U+0993",
+                                                        "U+0995",
+                                                        "U+0996",
+                                                        "U+0997",
+                                                        "U+0998",
+                                                        "U+0999",
+                                                        "U+099A",
+                                                        "U+099B",
+                                                        "U+099C",
+                                                        "U+099D",
+                                                        "U+099E",
+                                                        "U+099F",
+                                                        "U+09A0",
+                                                        "U+09A1",
+                                                        "U+09A3",
+                                                        "U+09A4",
+                                                        "U+09A5",
+                                                        "U+09A6",
+                                                        "U+09A7",
+                                                        "U+09A8",
+                                                        "U+09AA",
+                                                        "U+09AB",
+                                                        "U+09AC",
+                                                        "U+09AD",
+                                                        "U+09AE",
+                                                        "U+09AF",
+                                                        "U+09B0",
+                                                        "U+09B2",
+                                                        "U+09B6",
+                                                        "U+09B7",
+                                                        "U+09B8",
+                                                        "U+09B9",
+                                                        "U+09BC",
+                                                        "U+09BE",
+                                                        "U+09BF",
+                                                        "U+09C0",
+                                                        "U+09C1",
+                                                        "U+09C2",
+                                                        "U+09C3",
+                                                        "U+09C7",
+                                                        "U+09C8",
+                                                        "U+09CB",
+                                                        "U+09CC",
+                                                        "U+09CD",
+                                                        "U+09CE",
+                                                        "U+09D7",
+                                                        "U+09E6",
+                                                        "U+09E7",
+                                                        "U+200C",
+                                                        "U+200D",
+                                                        "U+2013",
+                                                        "U+2014",
+                                                        "U+2019",
+                                                        "U+201C",
+                                                        "U+201D",
+                                                        "U+2026"
+                                                    ],
+                      "layoutFeatures":  [
+                                             "*"
+                                         ]
+                  },
+                  {
+                      "locale":  "ml",
+                      "file":  "noto-sans-malayalam-ui.woff2",
+                      "bytes":  15348,
+                      "sha256":  "c922c7891d84443d1f3f207592f2bc392c613a1a8db71c7eeb20dbf0600399d3",
+                      "sourceFont":  "noto-sans-malayalam-full.ttf",
+                      "sources":  [
+                                      {
+                                          "file":  "messages/ml.json",
+                                          "sha256":  "c658ff2275fcbfa25e45ebcba37cd909e017cb19c681670b2c72a651be4c050c"
+                                      },
+                                      {
+                                          "file":  "content/copy/landing.ml.json",
+                                          "sha256":  "d003f8f496a1eedaa3b196759ec2ee3856181fc097fd7cddffe5b4e6c097eda6"
+                                      },
+                                      {
+                                          "file":  "content/copy/print.ml.json",
+                                          "sha256":  "5706e57fba6fa093ca17693bd79801f80c7e7fea0c6fe14855091b953efe70e2"
+                                      },
+                                      {
+                                          "file":  "content/blog/ml/artist-interview-outline.mdx",
+                                          "sha256":  "31cadb78ad821103ac493773fa2a7e7c4a48555185e85813c4beb900b468488a"
+                                      },
+                                      {
+                                          "file":  "content/blog/ml/printing-and-distribution.mdx",
+                                          "sha256":  "dc7a4642dcba3b5e648836e332a7176fee1cfb82c63a8c4703c2a7fcb85bff84"
+                                      }
+                                  ],
+                      "probe":  "മലയാളം ഒരുമിച്ച് പണിയാം ൺ ൻ ർ ൽ ൾ ൿ ക്ഷ",
+                      "glyphCount":  196,
+                      "uniqueInputCodepoints":  167,
+                      "includedUnicodeCodepoints":  [
+                                                        "U+00B7",
+                                                        "U+00D7",
+                                                        "U+0D02",
+                                                        "U+0D03",
+                                                        "U+0D05",
+                                                        "U+0D06",
+                                                        "U+0D07",
+                                                        "U+0D08",
+                                                        "U+0D09",
+                                                        "U+0D0A",
+                                                        "U+0D0E",
+                                                        "U+0D0F",
+                                                        "U+0D10",
+                                                        "U+0D12",
+                                                        "U+0D15",
+                                                        "U+0D16",
+                                                        "U+0D17",
+                                                        "U+0D18",
+                                                        "U+0D19",
+                                                        "U+0D1A",
+                                                        "U+0D1C",
+                                                        "U+0D1E",
+                                                        "U+0D1F",
+                                                        "U+0D20",
+                                                        "U+0D21",
+                                                        "U+0D23",
+                                                        "U+0D24",
+                                                        "U+0D25",
+                                                        "U+0D26",
+                                                        "U+0D27",
+                                                        "U+0D28",
+                                                        "U+0D2A",
+                                                        "U+0D2B",
+                                                        "U+0D2C",
+                                                        "U+0D2D",
+                                                        "U+0D2E",
+                                                        "U+0D2F",
+                                                        "U+0D30",
+                                                        "U+0D31",
+                                                        "U+0D32",
+                                                        "U+0D33",
+                                                        "U+0D34",
+                                                        "U+0D35",
+                                                        "U+0D36",
+                                                        "U+0D37",
+                                                        "U+0D38",
+                                                        "U+0D39",
+                                                        "U+0D3E",
+                                                        "U+0D3F",
+                                                        "U+0D40",
+                                                        "U+0D41",
+                                                        "U+0D42",
+                                                        "U+0D43",
+                                                        "U+0D46",
+                                                        "U+0D47",
+                                                        "U+0D48",
+                                                        "U+0D4A",
+                                                        "U+0D4B",
+                                                        "U+0D4D",
+                                                        "U+0D57",
+                                                        "U+0D7A",
+                                                        "U+0D7B",
+                                                        "U+0D7C",
+                                                        "U+0D7D",
+                                                        "U+0D7E",
+                                                        "U+0D7F",
+                                                        "U+200C",
+                                                        "U+200D",
+                                                        "U+2013",
+                                                        "U+2014",
+                                                        "U+2019",
+                                                        "U+201C",
+                                                        "U+201D",
+                                                        "U+2026"
+                                                    ],
+                      "layoutFeatures":  [
+                                             "*"
+                                         ]
+                  }
+              ],
+    "verification":  {
+                         "method":  "Microsoft Edge headless canvas at24px with mono-first fallback; every complete actual string from messages, landing/print copy and blog plus conjunct/chillu probes compared against full source TTF fonts",
+                         "results":  [
+                                         {
+                                             "locale":  "hi",
+                                             "completeStringsVerified":  140,
+                                             "pixelsIdentical":  true,
+                                             "widthsIdentical":  true
+                                         },
+                                         {
+                                             "locale":  "bn",
+                                             "completeStringsVerified":  141,
+                                             "pixelsIdentical":  true,
+                                             "widthsIdentical":  true
+                                         },
+                                         {
+                                             "locale":  "ml",
+                                             "completeStringsVerified":  143,
+                                             "pixelsIdentical":  true,
+                                             "widthsIdentical":  true
+                                         }
+                                     ]
+                     }
+}

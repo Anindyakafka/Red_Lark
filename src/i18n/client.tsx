@@ -3,19 +3,24 @@ import { createContext, useContext, type ComponentProps, type ReactNode } from "
 import NextLink from "next/link";
 import { usePathname } from "next/navigation";
 import { languageNames, locales, localePath, type Locale } from "./config";
-import en from "../../messages/en.json";
-import hi from "../../messages/hi.json";
-import bn from "../../messages/bn.json";
-import ml from "../../messages/ml.json";
-const Context = createContext<Locale>("en");
-const messages = { en, hi, bn, ml };
-export function LocaleProvider({ locale, children }: { locale: Locale; children: ReactNode }) {
-  return <Context.Provider value={locale}>{children}</Context.Provider>;
+const Context = createContext<{ locale: Locale; strings: Record<string, string> }>({
+  locale: "en",
+  strings: {},
+});
+export function LocaleProvider({
+  locale,
+  strings,
+  children,
+}: {
+  locale: Locale;
+  strings: Record<string, string>;
+  children: ReactNode;
+}) {
+  return <Context.Provider value={{ locale, strings }}>{children}</Context.Provider>;
 }
 export function useI18n() {
-  const locale = useContext(Context);
-  const dictionary = messages[locale].strings as Record<string, string>;
-  return { locale, t: (key: string) => dictionary[key] ?? key };
+  const { locale, strings } = useContext(Context);
+  return { locale, t: (key: string) => strings[key] ?? key };
 }
 export function UiText({ id }: { id: string }) {
   const { t } = useI18n();
@@ -24,7 +29,13 @@ export function UiText({ id }: { id: string }) {
 }
 export function Link({ href, ...props }: ComponentProps<typeof NextLink>) {
   const { locale } = useI18n();
-  return <NextLink {...props} href={typeof href === "string" ? localePath(locale, href) : href} />;
+  return (
+    <NextLink
+      {...props}
+      prefetch={props.prefetch ?? false}
+      href={typeof href === "string" ? localePath(locale, href) : href}
+    />
+  );
 }
 export function LanguageSwitcher({ landing = false }: { landing?: boolean }) {
   const path = usePathname();

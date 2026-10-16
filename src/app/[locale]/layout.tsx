@@ -7,6 +7,7 @@ import { siteUrl } from "@/lib/metadata";
 import "../globals.css";
 import { LocaleProvider, UiText } from "@/i18n/client";
 import { isLocale } from "@/i18n/config";
+import { localeMessages } from "@/i18n/messages";
 const display = localFont({
   src: "../../../public/fonts/display.woff2",
   variable: "--font-display",
@@ -57,8 +58,29 @@ export default async function Layout({
   const locale = isLocale(language) ? language : "en";
   return (
     <html lang={locale} className={`${display.variable} ${mono.variable}`}>
+      <head>
+        {["devanagari", "bengali", "malayalam"].map((script) => (
+          <link
+            key={script}
+            rel="preload"
+            as="font"
+            type="font/woff2"
+            crossOrigin="anonymous"
+            href={`/fonts/indic/noto-sans-${script}-archive.woff2`}
+          />
+        ))}
+        {locale !== "en" && (
+          <link
+            rel="preload"
+            as="font"
+            type="font/woff2"
+            crossOrigin="anonymous"
+            href={`/fonts/indic/noto-sans-${{ hi: "devanagari", bn: "bengali", ml: "malayalam" }[locale]}-ui.woff2`}
+          />
+        )}
+      </head>
       <body>
-        <LocaleProvider locale={locale}>
+        <LocaleProvider locale={locale} strings={localeMessages(locale).strings}>
           <a className="skip-link" href="#main">
             <UiText id="Skip to content" />
           </a>
