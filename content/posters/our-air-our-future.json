@@ -2,7 +2,7 @@
   "slug": "our-air-our-future",
   "title": "Our air, our future",
   "languages": ["English"],
-  "artist": "mirafra-type-lab",
+  "artist": "wet-ink-workshop",
   "year": 2025,
   "themes": ["Climate"],
   "movements": ["Climate justice"],
@@ -13,43 +13,43 @@
       "format": "PDF",
       "size": "A4",
       "path": "/posters/our-air-our-future/A4.pdf",
-      "bytes": 28337
+      "bytes": 39209
     },
     {
       "format": "PDF",
       "size": "A3",
       "path": "/posters/our-air-our-future/A3.pdf",
-      "bytes": 28345
+      "bytes": 39171
     },
     {
       "format": "PDF",
       "size": "A2",
       "path": "/posters/our-air-our-future/A2.pdf",
-      "bytes": 28333
+      "bytes": 39206
     },
     {
       "format": "PDF",
       "size": "18x24",
       "path": "/posters/our-air-our-future/18x24.pdf",
-      "bytes": 28280
+      "bytes": 39082
     },
     {
       "format": "PNG",
       "size": "A3",
       "path": "/posters/our-air-our-future/A3.png",
-      "bytes": 559305
+      "bytes": 578398
     },
     {
       "format": "SVG",
       "size": "A3",
       "path": "/posters/our-air-our-future/source.svg",
-      "bytes": 61663
+      "bytes": 89272
     },
     {
       "format": "ZIP",
       "size": "Bundle",
       "path": "/posters/our-air-our-future/bundle.zip",
-      "bytes": 46123
+      "bytes": 64466
     }
   ],
   "license": "CC0-1.0",
@@ -57,9 +57,9 @@
   "allowsDerivatives": true,
   "commercialUseAllowed": true,
   "source": "/poster/our-air-our-future/",
-  "artistUrl": "/artist/mirafra-type-lab/",
-  "alt": "Off-white typographic print reading â€œOUR AIR OUR FUTUREâ€, with an arrow and a clearly marked placeholder credit.",
-  "caption": "Original vector study authored for the Mirafra rebuild. Placeholder artwork, free under CC0; not a contribution by a real artist.",
+  "artistUrl": "/artist/wet-ink-workshop/",
+  "alt": "Off-white typographic print reading “OUR AIR OUR FUTURE”, with an arrow and a clearly marked placeholder credit.",
+  "caption": "Original vector study authored for the Red Lark Workshop rebuild. Placeholder artwork, free under CC0; not a contribution by a real artist.",
   "remixable": true,
   "placeholder": true,
   "preview": "/posters/our-air-our-future/preview.webp",
@@ -88,7 +88,7 @@
         "credit": {
           "id": "our-air-our-future",
           "title": "Our air, our future",
-          "artist": "Mirafra Type Lab",
+          "artist": "The Wet Ink Workshop",
           "license": "CC0-1.0",
           "source": "/poster/our-air-our-future/"
         }
@@ -111,7 +111,7 @@
         "credit": {
           "id": "our-air-our-future",
           "title": "Our air, our future",
-          "artist": "Mirafra Type Lab",
+          "artist": "The Wet Ink Workshop",
           "license": "CC0-1.0",
           "source": "/poster/our-air-our-future/"
         }
@@ -134,7 +134,7 @@
         "credit": {
           "id": "our-air-our-future",
           "title": "Our air, our future",
-          "artist": "Mirafra Type Lab",
+          "artist": "The Wet Ink Workshop",
           "license": "CC0-1.0",
           "source": "/poster/our-air-our-future/"
         }

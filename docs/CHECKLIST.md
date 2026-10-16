@@ -1,21 +1,21 @@
-# Required checklist
+﻿# Required checklist
 
 ## RED LARK WORKSHOP planning checkpoint — 16 October 2026
 
 The original rows below are preserved as historical evidence. Their PASS entries do not establish compliance with the new brief. No milestone acceptance checks ran at this documentation-only checkpoint. Held required features are not N-A.
 
-| New acceptance area                                        | Status | Evidence / next verification                                   |
-| ---------------------------------------------------------- | ------ | -------------------------------------------------------------- |
-| Carry-over items 1-19 revalidated for all required locales | FAIL   | PLAN.md M1-M9; previous measurements are historical only.      |
-| Complete rebrand and build/CI legacy-name scanner          | FAIL   | M1 not implemented.                                            |
-| Exact English JSON and rendered-copy test                  | FAIL   | M3 not implemented; Appendix A authoritative.                  |
-| Four locales, review flags and Indic fonts/exports         | FAIL   | M2/M6 not implemented; native review human-owned.              |
-| Categories, formats, codes, AI badges and consent fields   | FAIL   | M4-M6 not implemented.                                         |
-| Licence/derivative gate and ShareAlike regression          | FAIL   | Existing gate retained; verify after new model/source changes. |
-| Auth, RLS, upload pipeline and admin queue                 | FAIL   | HOLD by owner; no implementation or provider claims.           |
-| Stored contact/takedown and test-mode delivered mail       | FAIL   | HOLD with M7/M8; current flow is email-app handoff.            |
-| Localized blog/RSS/policies and accurate privacy text      | FAIL   | M9 not implemented.                                            |
-| New-site axe=0, Lighthouse>=95 and full end-to-end flow    | FAIL   | Requires new measurements; no inherited PASS.                  |
+| New acceptance area                                        | Status | Evidence / next verification                                        |
+| ---------------------------------------------------------- | ------ | ------------------------------------------------------------------- |
+| Carry-over items 1-19 revalidated for all required locales | FAIL   | PLAN.md M1-M9; previous measurements are historical only.           |
+| Complete rebrand and build/CI legacy-name scanner          | PASS   | M1: check:brand; brand.ts; storage/UTF-8 tests; regenerated assets. |
+| Exact English JSON and rendered-copy test                  | FAIL   | M3 not implemented; Appendix A authoritative.                       |
+| Four locales, review flags and Indic fonts/exports         | FAIL   | M2/M6 not implemented; native review human-owned.                   |
+| Categories, formats, codes, AI badges and consent fields   | FAIL   | M4-M6 not implemented.                                              |
+| Licence/derivative gate and ShareAlike regression          | FAIL   | Existing gate retained; verify after new model/source changes.      |
+| Auth, RLS, upload pipeline and admin queue                 | FAIL   | HOLD by owner; no implementation or provider claims.                |
+| Stored contact/takedown and test-mode delivered mail       | FAIL   | HOLD with M7/M8; current flow is email-app handoff.                 |
+| Localized blog/RSS/policies and accurate privacy text      | FAIL   | M9 not implemented.                                                 |
+| New-site axe=0, Lighthouse>=95 and full end-to-end flow    | FAIL   | Requires new measurements; no inherited PASS.                       |
 
 ## Historical baseline
 

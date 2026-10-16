@@ -78,9 +78,7 @@ test("filters/search/count/save are real and search errors are accessible", asyn
   await page.getByRole("button", { name: "[SEARCH]" }).click();
   await expect(page.locator("main [role=alert]")).toContainText("150");
 });
-test("forms expose required/reply errors, focus and unavailable-delivery state", async ({
-  page,
-}) => {
+test("forms expose required/reply errors and honest email handoff", async ({ page }) => {
   for (const route of ["/contact/", "/submit/"]) {
     await page.goto(route);
     await page.getByRole("button", { name: "[PREPARE EMAIL]" }).click();
@@ -101,8 +99,8 @@ test("forms expose required/reply errors, focus and unavailable-delivery state",
     await expect(page.locator("#reply-error")).toBeVisible();
     await page.getByLabel("REPLY EMAIL").fill("");
     await page.getByRole("button", { name: "[PREPARE EMAIL]" }).click();
-    await expect(page.locator("main [role=alert]")).toContainText("No contact inbox");
-    await expect(page).not.toHaveURL(/thank-you/);
+    await expect(page).toHaveURL(/thank-you/);
+    await expect(page.locator("main")).toContainText("email");
   }
 });
 test("ND gate renders no remix and links to artist", async ({ page }) => {

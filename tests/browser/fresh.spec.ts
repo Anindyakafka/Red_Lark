@@ -32,11 +32,11 @@ test("fresh-eyes form focus and true empty Studio recovery", async ({ page }) =>
   await expect(page.locator(".studio-paper")).toBeVisible();
   await page.evaluate(() => {
     const raw = JSON.parse(
-      localStorage.getItem("mirafra.studio.v2") ??
+      localStorage.getItem("redlark.studio.v2") ??
         '{"version":2,"preset":"A3","background":"#f3f0e6","colors":2,"layers":[]}',
     );
     raw.layers = [];
-    localStorage.setItem("mirafra.studio.v2", JSON.stringify(raw));
+    localStorage.setItem("redlark.studio.v2", JSON.stringify(raw));
   });
   await page.reload();
   await expect(page.getByText("[EMPTY CANVAS]", { exact: false })).toBeVisible();
@@ -49,7 +49,7 @@ test("curation is empty honestly and font bundle is a real download", async ({ p
   await page.goto("/discover/");
   const waiting = page.waitForEvent("download");
   await page.getByRole("link", { name: /DOWNLOAD FONT PACK/ }).click();
-  expect((await waiting).suggestedFilename()).toBe("mirafra-type-kit.zip");
+  expect((await waiting).suggestedFilename()).toBe("redlark-type-kit.zip");
 });
 test("single-ink mode remains single-ink after custom colour and shelf additions", async ({
   page,

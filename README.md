@@ -69,7 +69,7 @@ The 18 current posters are **original CC0 placeholder studies**, with clearly in
 
 Add reviewed content under content/posters/_.json and content/artists/_.json; put files under public/posters/<slug>/. See [content/README](content/README.md). Run validation after changes. The generated index under src/generated is derived, not edited by hand.
 
-Explicit artist credit, source, licence and alt are mandatory. Licence flags are derived from reviewed policy. NoDerivatives works have **no remix button**, cannot enter the Studio shelf and cannot be imported through a shared/remix URL. Remix also needs actual editable layers. ShareAlike source credits survive into outlined credit strips and metadata; incompatible mixtures fail export. Unknown licences fail the build until reviewed. CC0 applies to the placeholder artwork, not the supplied Mirafra logo, branding or fonts.
+Explicit artist credit, source, licence and alt are mandatory. Licence flags are derived from reviewed policy. NoDerivatives works have **no remix button**, cannot enter the Studio shelf and cannot be imported through a shared/remix URL. Remix also needs actual editable layers. ShareAlike source credits survive into outlined credit strips and metadata; incompatible mixtures fail export. Unknown licences fail the build until reviewed. CC0 applies to the placeholder artwork, not the supplied Red Lark Workshop logo, branding or fonts.
 
 ## Studio
 
@@ -131,4 +131,4 @@ The Community list is `content/community.json` (empty until approved contributio
 
 ## Licence
 
-Existing AGPL v3 software licence retained. Original placeholder artwork under content/posters and public/posters is dedicated to CC0-1.0. Self-hosted fonts carry their own OFL licences in public/fonts. Supplied and refined Mirafra brand assets remain separate. A deployed AGPL service must provide corresponding source as required by its licence.
+Existing AGPL v3 software licence retained. Original placeholder artwork under content/posters and public/posters is dedicated to CC0-1.0. Self-hosted fonts carry their own OFL licences in public/fonts. Supplied and refined Red Lark Workshop brand assets remain separate. A deployed AGPL service must provide corresponding source as required by its licence.

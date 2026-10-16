@@ -2,7 +2,7 @@
   "slug": "homes-for-all",
   "title": "Homes for all",
   "languages": ["English"],
-  "artist": "mirafra-print-lab",
+  "artist": "wet-ink-workshop",
   "year": 2025,
   "themes": ["Housing"],
   "movements": ["Housing justice"],
@@ -13,43 +13,43 @@
       "format": "PDF",
       "size": "A4",
       "path": "/posters/homes-for-all/A4.pdf",
-      "bytes": 26277
+      "bytes": 37137
     },
     {
       "format": "PDF",
       "size": "A3",
       "path": "/posters/homes-for-all/A3.pdf",
-      "bytes": 26322
+      "bytes": 37169
     },
     {
       "format": "PDF",
       "size": "A2",
       "path": "/posters/homes-for-all/A2.pdf",
-      "bytes": 26278
+      "bytes": 37134
     },
     {
       "format": "PDF",
       "size": "18x24",
       "path": "/posters/homes-for-all/18x24.pdf",
-      "bytes": 26207
+      "bytes": 37025
     },
     {
       "format": "PNG",
       "size": "A3",
       "path": "/posters/homes-for-all/A3.png",
-      "bytes": 532305
+      "bytes": 552480
     },
     {
       "format": "SVG",
       "size": "A3",
       "path": "/posters/homes-for-all/source.svg",
-      "bytes": 55804
+      "bytes": 83505
     },
     {
       "format": "ZIP",
       "size": "Bundle",
       "path": "/posters/homes-for-all/bundle.zip",
-      "bytes": 42661
+      "bytes": 61105
     }
   ],
   "license": "CC0-1.0",
@@ -57,9 +57,9 @@
   "allowsDerivatives": true,
   "commercialUseAllowed": true,
   "source": "/poster/homes-for-all/",
-  "artistUrl": "/artist/mirafra-print-lab/",
-  "alt": "Off-white typographic print reading â€œHOMES FOR ALLâ€, with an arrow and a clearly marked placeholder credit.",
-  "caption": "Original vector study authored for the Mirafra rebuild. Placeholder artwork, free under CC0; not a contribution by a real artist.",
+  "artistUrl": "/artist/wet-ink-workshop/",
+  "alt": "Off-white typographic print reading “HOMES FOR ALL”, with an arrow and a clearly marked placeholder credit.",
+  "caption": "Original vector study authored for the Red Lark Workshop rebuild. Placeholder artwork, free under CC0; not a contribution by a real artist.",
   "remixable": true,
   "placeholder": true,
   "preview": "/posters/homes-for-all/preview.webp",
@@ -88,7 +88,7 @@
         "credit": {
           "id": "homes-for-all",
           "title": "Homes for all",
-          "artist": "Mirafra Print Lab",
+          "artist": "The Wet Ink Workshop",
           "license": "CC0-1.0",
           "source": "/poster/homes-for-all/"
         }
@@ -111,7 +111,7 @@
         "credit": {
           "id": "homes-for-all",
           "title": "Homes for all",
-          "artist": "Mirafra Print Lab",
+          "artist": "The Wet Ink Workshop",
           "license": "CC0-1.0",
           "source": "/poster/homes-for-all/"
         }
@@ -134,7 +134,7 @@
         "credit": {
           "id": "homes-for-all",
           "title": "Homes for all",
-          "artist": "Mirafra Print Lab",
+          "artist": "The Wet Ink Workshop",
           "license": "CC0-1.0",
           "source": "/poster/homes-for-all/"
         }

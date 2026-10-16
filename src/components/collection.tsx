@@ -4,6 +4,7 @@ import Link from "next/link";
 import { artists, emptyFilters, filterPosters, fileSize, type Filters } from "@/lib/query";
 import type { Poster } from "@/lib/types";
 import { PosterImage } from "./poster-image";
+import { migrateLocalDrafts } from "@/lib/storage";
 
 export function Collection({
   posters,
@@ -23,7 +24,8 @@ export function Collection({
   useEffect(() => {
     setHydrated(true);
     try {
-      const raw = JSON.parse(localStorage.getItem("mirafra.saved.v1") ?? "[]") as unknown;
+      migrateLocalDrafts(localStorage);
+      const raw = JSON.parse(localStorage.getItem("redlark.saved.v1") ?? "[]") as unknown;
       if (Array.isArray(raw) && raw.length > 0 && raw.every((s) => typeof s === "string"))
         setSaved(raw);
     } catch {
@@ -59,7 +61,7 @@ export function Collection({
     const next = saved.includes(slug) ? saved.filter((s) => s !== slug) : [...saved, slug];
     setSaved(next);
     try {
-      localStorage.setItem("mirafra.saved.v1", JSON.stringify(next));
+      localStorage.setItem("redlark.saved.v1", JSON.stringify(next));
     } catch {
       setStorageNotice("Saved for this visit only: browser storage is unavailable.");
     }
@@ -211,7 +213,7 @@ export function Collection({
             onClick={() => {
               setSaved([]);
               try {
-                localStorage.removeItem("mirafra.saved.v1");
+                localStorage.removeItem("redlark.saved.v1");
                 setStorageNotice("All local bookmarks cleared.");
               } catch {
                 setStorageNotice(

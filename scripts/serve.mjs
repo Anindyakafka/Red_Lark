@@ -75,4 +75,6 @@ http
       res.end("Static file unavailable");
     }
   })
-  .listen(port, "127.0.0.1", () => console.log(`Mirafra static preview: http://localhost:${port}`));
+  .listen(port, "127.0.0.1", () =>
+    console.log(`Red Lark Workshop static preview: http://localhost:${port}`),
+  );

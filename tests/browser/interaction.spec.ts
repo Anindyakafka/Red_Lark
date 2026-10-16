@@ -45,7 +45,7 @@ test("clear bookmarks and filter reset clear local and URL state", async ({ page
   await expect(page.locator(".poster-card")).toHaveCount(1);
   await page.getByRole("button", { name: "Save Homes for all", exact: true }).click();
   await page.getByRole("button", { name: /CLEAR 1 LOCAL BOOKMARKS/ }).click();
-  expect(await page.evaluate(() => localStorage.getItem("mirafra.saved.v1"))).toBeNull();
+  expect(await page.evaluate(() => localStorage.getItem("redlark.saved.v1"))).toBeNull();
   await page.locator(".filter-all").click();
   await expect(page).not.toHaveURL(/q=/);
   await expect(page.locator(".poster-card")).toHaveCount(18);

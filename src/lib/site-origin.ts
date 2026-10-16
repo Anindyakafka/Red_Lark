@@ -7,6 +7,8 @@ export function resolveSiteOrigin(env: Record<string, string | undefined>): stri
     env.URL?.trim() ||
     "http://localhost:3000";
   const url = new URL(value);
+  if (env.CONTEXT === "production" && ["localhost", "127.0.0.1", "[::1]"].includes(url.hostname))
+    throw new Error("Production SITE_URL must be a public origin, not localhost.");
   if (
     !["https:", "http:"].includes(url.protocol) ||
     url.username ||

@@ -2,7 +2,7 @@
   "slug": "less-extraction-more-care",
   "title": "Less extraction, more care",
   "languages": ["English"],
-  "artist": "mirafra-print-lab",
+  "artist": "wet-ink-workshop",
   "year": 2024,
   "themes": ["Climate"],
   "movements": ["Climate justice"],
@@ -13,43 +13,43 @@
       "format": "PDF",
       "size": "A4",
       "path": "/posters/less-extraction-more-care/A4.pdf",
-      "bytes": 69332
+      "bytes": 80219
     },
     {
       "format": "PDF",
       "size": "A3",
       "path": "/posters/less-extraction-more-care/A3.pdf",
-      "bytes": 69416
+      "bytes": 80219
     },
     {
       "format": "PDF",
       "size": "A2",
       "path": "/posters/less-extraction-more-care/A2.pdf",
-      "bytes": 69332
+      "bytes": 80217
     },
     {
       "format": "PDF",
       "size": "18x24",
       "path": "/posters/less-extraction-more-care/18x24.pdf",
-      "bytes": 69271
+      "bytes": 80142
     },
     {
       "format": "PNG",
       "size": "A3",
       "path": "/posters/less-extraction-more-care/A3.png",
-      "bytes": 761589
+      "bytes": 781386
     },
     {
       "format": "SVG",
       "size": "A3",
       "path": "/posters/less-extraction-more-care/source.svg",
-      "bytes": 103209
+      "bytes": 130900
     },
     {
       "format": "ZIP",
       "size": "Bundle",
       "path": "/posters/less-extraction-more-care/bundle.zip",
-      "bytes": 84600
+      "bytes": 102925
     }
   ],
   "license": "CC0-1.0",
@@ -57,9 +57,9 @@
   "allowsDerivatives": true,
   "commercialUseAllowed": true,
   "source": "/poster/less-extraction-more-care/",
-  "artistUrl": "/artist/mirafra-print-lab/",
-  "alt": "Off-white typographic print reading â€œLESS EXTRACTION MORE CAREâ€, with an array of halftone dots and a clearly marked placeholder credit.",
-  "caption": "Original vector study authored for the Mirafra rebuild. Placeholder artwork, free under CC0; not a contribution by a real artist.",
+  "artistUrl": "/artist/wet-ink-workshop/",
+  "alt": "Off-white typographic print reading “LESS EXTRACTION MORE CARE”, with an array of halftone dots and a clearly marked placeholder credit.",
+  "caption": "Original vector study authored for the Red Lark Workshop rebuild. Placeholder artwork, free under CC0; not a contribution by a real artist.",
   "remixable": true,
   "placeholder": true,
   "preview": "/posters/less-extraction-more-care/preview.webp",
@@ -88,7 +88,7 @@
         "credit": {
           "id": "less-extraction-more-care",
           "title": "Less extraction, more care",
-          "artist": "Mirafra Print Lab",
+          "artist": "The Wet Ink Workshop",
           "license": "CC0-1.0",
           "source": "/poster/less-extraction-more-care/"
         }
@@ -111,7 +111,7 @@
         "credit": {
           "id": "less-extraction-more-care",
           "title": "Less extraction, more care",
-          "artist": "Mirafra Print Lab",
+          "artist": "The Wet Ink Workshop",
           "license": "CC0-1.0",
           "source": "/poster/less-extraction-more-care/"
         }
@@ -134,7 +134,7 @@
         "credit": {
           "id": "less-extraction-more-care",
           "title": "Less extraction, more care",
-          "artist": "Mirafra Print Lab",
+          "artist": "The Wet Ink Workshop",
           "license": "CC0-1.0",
           "source": "/poster/less-extraction-more-care/"
         }

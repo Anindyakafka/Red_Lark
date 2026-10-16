@@ -3,7 +3,7 @@
   "title": "A world for everyone",
   "titleOriginal": "Un mundo para todas",
   "languages": ["Spanish"],
-  "artist": "mirafra-print-lab",
+  "artist": "wet-ink-workshop",
   "year": 2026,
   "themes": ["Solidarity"],
   "movements": ["Mutual aid"],
@@ -14,43 +14,43 @@
       "format": "PDF",
       "size": "A4",
       "path": "/posters/a-world-for-everyone/A4.pdf",
-      "bytes": 29030
+      "bytes": 39873
     },
     {
       "format": "PDF",
       "size": "A3",
       "path": "/posters/a-world-for-everyone/A3.pdf",
-      "bytes": 29049
+      "bytes": 39823
     },
     {
       "format": "PDF",
       "size": "A2",
       "path": "/posters/a-world-for-everyone/A2.pdf",
-      "bytes": 29030
+      "bytes": 39871
     },
     {
       "format": "PDF",
       "size": "18x24",
       "path": "/posters/a-world-for-everyone/18x24.pdf",
-      "bytes": 28967
+      "bytes": 39787
     },
     {
       "format": "PNG",
       "size": "A3",
       "path": "/posters/a-world-for-everyone/A3.png",
-      "bytes": 600922
+      "bytes": 620776
     },
     {
       "format": "SVG",
       "size": "A3",
       "path": "/posters/a-world-for-everyone/source.svg",
-      "bytes": 63807
+      "bytes": 91498
     },
     {
       "format": "ZIP",
       "size": "Bundle",
       "path": "/posters/a-world-for-everyone/bundle.zip",
-      "bytes": 47647
+      "bytes": 65794
     }
   ],
   "license": "CC0-1.0",
@@ -58,9 +58,9 @@
   "allowsDerivatives": true,
   "commercialUseAllowed": true,
   "source": "/poster/a-world-for-everyone/",
-  "artistUrl": "/artist/mirafra-print-lab/",
-  "alt": "Signal-red typographic print reading â€œUN MUNDO PARA TODASâ€, with an angular starburst and a clearly marked placeholder credit.",
-  "caption": "Original vector study authored for the Mirafra rebuild. Placeholder artwork, free under CC0; not a contribution by a real artist.",
+  "artistUrl": "/artist/wet-ink-workshop/",
+  "alt": "Signal-red typographic print reading “UN MUNDO PARA TODAS”, with an angular starburst and a clearly marked placeholder credit.",
+  "caption": "Original vector study authored for the Red Lark Workshop rebuild. Placeholder artwork, free under CC0; not a contribution by a real artist.",
   "remixable": true,
   "placeholder": true,
   "preview": "/posters/a-world-for-everyone/preview.webp",
@@ -89,7 +89,7 @@
         "credit": {
           "id": "a-world-for-everyone",
           "title": "A world for everyone",
-          "artist": "Mirafra Print Lab",
+          "artist": "The Wet Ink Workshop",
           "license": "CC0-1.0",
           "source": "/poster/a-world-for-everyone/"
         }
@@ -112,7 +112,7 @@
         "credit": {
           "id": "a-world-for-everyone",
           "title": "A world for everyone",
-          "artist": "Mirafra Print Lab",
+          "artist": "The Wet Ink Workshop",
           "license": "CC0-1.0",
           "source": "/poster/a-world-for-everyone/"
         }
@@ -135,7 +135,7 @@
         "credit": {
           "id": "a-world-for-everyone",
           "title": "A world for everyone",
-          "artist": "Mirafra Print Lab",
+          "artist": "The Wet Ink Workshop",
           "license": "CC0-1.0",
           "source": "/poster/a-world-for-everyone/"
         }

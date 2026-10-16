@@ -2,13 +2,14 @@ import { PageIntro } from "@/components/page-intro";
 import { HandoffForm } from "@/components/handoff-form";
 import { ContactAddress } from "@/components/contact-address";
 import { pageMeta } from "@/lib/metadata";
+import { CONTACT_EMAIL } from "@/config/site";
 export const metadata = pageMeta(
   "Contact and artist removal",
-  "Contact Mirafra about credit, permission, takedowns, print problems or collaboration. Messages are handed off to your own email app.",
+  "Contact Red Lark Workshop about credit, permission, takedowns, print problems or collaboration. Messages are handed off to your own email app.",
   "/contact",
 );
 export default function Page() {
-  const email = process.env.CONTACT_EMAIL ?? "";
+  const email = CONTACT_EMAIL;
   return (
     <>
       <PageIntro

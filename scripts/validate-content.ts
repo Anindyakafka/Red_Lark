@@ -3,6 +3,7 @@ import path from "node:path";
 import { LICENSES, type Artist, type Poster } from "../src/lib/types";
 import { validatePoster } from "../src/lib/validate";
 import { resolveSiteOrigin } from "../src/lib/site-origin";
+import { CONTACT_EMAIL } from "../src/config/site";
 if (fs.existsSync(".env.local")) process.loadEnvFile(".env.local");
 
 const read = <T>(dir: string): T[] =>
@@ -59,11 +60,11 @@ if (errors.length) {
 fs.mkdirSync("src/generated", { recursive: true });
 fs.writeFileSync("src/generated/catalog.json", JSON.stringify({ posters, artists }));
 fs.writeFileSync("src/generated/artists.json", JSON.stringify(artists));
-if (!process.env.CONTACT_EMAIL)
+if (!CONTACT_EMAIL)
   console.warn(
     "[HUMAN CONFIGURATION] CONTACT_EMAIL is unset. Contact and submission delivery are unavailable; see docs/TODO_HUMAN.md.",
   );
-else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(process.env.CONTACT_EMAIL))
+else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(CONTACT_EMAIL))
   throw new Error("CONTACT_EMAIL must be a real, valid mailbox address");
 if (new URL(resolveSiteOrigin(process.env)).hostname === "localhost")
   console.warn(

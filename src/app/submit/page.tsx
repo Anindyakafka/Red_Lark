@@ -2,13 +2,14 @@ import { PageIntro } from "@/components/page-intro";
 import { HandoffForm } from "@/components/handoff-form";
 import { ContactAddress } from "@/components/contact-address";
 import { pageMeta } from "@/lib/metadata";
+import { CONTACT_EMAIL } from "@/config/site";
 export const metadata = pageMeta(
   "Submit a poster",
   "Propose an original poster or Studio creation for human review. Provide a source link, explicit licence and artist credit; no automatic uploads.",
   "/submit",
 );
 export default function Page() {
-  const email = process.env.CONTACT_EMAIL ?? "";
+  const email = CONTACT_EMAIL;
   return (
     <>
       <PageIntro

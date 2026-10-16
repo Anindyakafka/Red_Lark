@@ -12,6 +12,6 @@ Preview images should have matching WebP/AVIF versions and a poster-specific OG 
 
 Run `npm run validate:content`, `npm run build`, and the tests before committing. Validation generates `src/generated/catalog.json`; do not edit it by hand. `npm run seed` is a development generator for the original placeholders, not an ingest tool for future artist work.
 
-Publication and community curation happen through reviewed Git commits. There is no user database or automatic publication. To add reviewed community entries, add explicitly licensed records after obtaining permission; never invent submissions. Fonts live in `public/fonts` with their open licences. The user-supplied Mirafra branding is separate from the CC0 seed art.
+Publication and community curation happen through reviewed Git commits. There is no user database or automatic publication. To add reviewed community entries, add explicitly licensed records after obtaining permission; never invent submissions. Fonts live in `public/fonts` with their open licences. The user-supplied Red Lark Workshop branding is separate from the CC0 seed art.
 
 `content/community.json` is an initially empty list of reviewed poster slugs. Add only approved non-placeholder records; validation rejects fictional seed entries in the community gallery. The page displays that list automatically after rebuilding. Preview derivatives must include `preview-240`, `preview-400` and `preview-700` in both WebP and AVIF. The local type kit is downloadable with its original font licences; it is not CC0 artwork.

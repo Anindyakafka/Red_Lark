@@ -26,16 +26,9 @@ const fonts: Fonts = {
 };
 const artists: Artist[] = [
   {
-    id: "mirafra-type-lab",
-    name: "Mirafra Type Lab",
+    id: "wet-ink-workshop",
+    name: "The Wet Ink Workshop",
     bio: "An invented credit for original typographic placeholder studies authored for this build. Not a real artist collective.",
-    links: [],
-    placeholder: true,
-  },
-  {
-    id: "mirafra-print-lab",
-    name: "Mirafra Print Lab",
-    bio: "An invented credit for original geometric placeholder studies authored for this build. No external artist's work is used.",
     links: [],
     placeholder: true,
   },
@@ -78,7 +71,7 @@ const posters: Poster[] = [];
 for (let i = 0; i < entries.length; i++) {
   const [headline, title, theme, movement, original] = entries[i];
   const slug = title.toLowerCase().replace(/[^a-z0-9]+/g, "-");
-  const artist = artists[i % 2];
+  const artist = artists[0];
   const bw = i % 4 === 2;
   const dark = i % 5 === 3;
   const bg = bw ? "#f3f0e6" : dark ? "#151515" : i % 3 === 0 ? "#e32219" : "#f3f0e6";
@@ -228,9 +221,9 @@ for (let i = 0; i < entries.length; i++) {
     commercialUseAllowed: true,
     source: `/poster/${slug}/`,
     artistUrl: `/artist/${artist.id}/`,
-    alt: `${dark ? "Black" : bg === "#e32219" ? "Signal-red" : "Off-white"} typographic print reading â€œ${headline.replaceAll("\n", " ")}â€, with an ${i % 3 === 0 ? "angular starburst" : i % 3 === 1 ? "arrow" : "array of halftone dots"} and a clearly marked placeholder credit.`,
+    alt: `${dark ? "Black" : bg === "#e32219" ? "Signal-red" : "Off-white"} typographic print reading “${headline.replaceAll("\n", " ")}”, with an ${i % 3 === 0 ? "angular starburst" : i % 3 === 1 ? "arrow" : "array of halftone dots"} and a clearly marked placeholder credit.`,
     caption:
-      "Original vector study authored for the Mirafra rebuild. Placeholder artwork, free under CC0; not a contribution by a real artist.",
+      "Original vector study authored for the Red Lark Workshop rebuild. Placeholder artwork, free under CC0; not a contribution by a real artist.",
     remixable: true,
     placeholder: true,
     preview: `/posters/${slug}/preview.webp`,
@@ -241,44 +234,4 @@ for (let i = 0; i < entries.length; i++) {
   posters.push(poster);
 }
 await fs.writeFile("src/generated/catalog.json", JSON.stringify({ posters, artists }));
-const icon =
-  '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><rect width="512" height="512" fill="#f3f0e6"/><path d="M80 420V92H148L256 268 364 92H432V420H352V250L256 398 160 250V420Z" fill="#151515"/><path d="M0 460H512V512H0Z" fill="#e32219"/></svg>';
-await fs.writeFile("public/icons/mark.svg", icon);
-for (const size of [16, 32, 180, 192, 512])
-  await sharp(Buffer.from(icon)).resize(size, size).png().toFile(`public/icons/icon-${size}.png`);
-const png = await fs.readFile("public/icons/icon-32.png");
-const header = Buffer.alloc(22);
-header.writeUInt16LE(1, 2);
-header.writeUInt16LE(1, 4);
-header[6] = 32;
-header[7] = 32;
-header.writeUInt16LE(1, 10);
-header.writeUInt16LE(32, 12);
-header.writeUInt32LE(png.length, 14);
-header.writeUInt32LE(22, 18);
-await fs.writeFile("public/favicon.ico", Buffer.concat([header, png]));
-const og = `<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="630"><rect width="1200" height="630" fill="#f3f0e6"/><path d="M0 20H1200M0 610H1200" stroke="#151515" stroke-width="6"/>${fonts.display.getPath("MIRAFRA", 40, 310, 270).toSVG(2)}${fonts.mono.getPath("FREE POSTERS. YOUR WORDS. PUBLIC WALLS.", 45, 440, 34).toSVG(2)}<rect x="45" y="480" width="1110" height="70" fill="#e32219"/></svg>`;
-await sharp(Buffer.from(og)).png().toFile("public/og-default.png");
-await fs.writeFile(
-  "public/site.webmanifest",
-  JSON.stringify(
-    {
-      name: "Mirafra â€” Free protest poster archive",
-      short_name: "Mirafra",
-      start_url: "/",
-      display: "standalone",
-      background_color: "#f3f0e6",
-      theme_color: "#e32219",
-      icons: [192, 512].map((s) => ({
-        src: `/icons/icon-${s}.png`,
-        sizes: `${s}x${s}`,
-        type: "image/png",
-      })),
-    },
-    null,
-    2,
-  ),
-);
-console.log(
-  `Authored ${posters.length} CC0 placeholders with vector sources, four print PDFs, 300-PPI PNGs, previews, and bundles.`,
-);
+await import("./brand");

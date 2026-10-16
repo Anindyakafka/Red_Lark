@@ -2,7 +2,7 @@
   "slug": "borders-are-lines",
   "title": "Borders are lines",
   "languages": ["English"],
-  "artist": "mirafra-type-lab",
+  "artist": "wet-ink-workshop",
   "year": 2024,
   "themes": ["Migration"],
   "movements": ["Freedom of movement"],
@@ -13,43 +13,43 @@
       "format": "PDF",
       "size": "A4",
       "path": "/posters/borders-are-lines/A4.pdf",
-      "bytes": 65120
+      "bytes": 75782
     },
     {
       "format": "PDF",
       "size": "A3",
       "path": "/posters/borders-are-lines/A3.pdf",
-      "bytes": 65179
+      "bytes": 75816
     },
     {
       "format": "PDF",
       "size": "A2",
       "path": "/posters/borders-are-lines/A2.pdf",
-      "bytes": 65120
+      "bytes": 75780
     },
     {
       "format": "PDF",
       "size": "18x24",
       "path": "/posters/borders-are-lines/18x24.pdf",
-      "bytes": 65076
+      "bytes": 75660
     },
     {
       "format": "PNG",
       "size": "A3",
       "path": "/posters/borders-are-lines/A3.png",
-      "bytes": 745380
+      "bytes": 765143
     },
     {
       "format": "SVG",
       "size": "A3",
       "path": "/posters/borders-are-lines/source.svg",
-      "bytes": 92185
+      "bytes": 119789
     },
     {
       "format": "ZIP",
       "size": "Bundle",
       "path": "/posters/borders-are-lines/bundle.zip",
-      "bytes": 78049
+      "bytes": 96095
     }
   ],
   "license": "CC0-1.0",
@@ -57,9 +57,9 @@
   "allowsDerivatives": true,
   "commercialUseAllowed": true,
   "source": "/poster/borders-are-lines/",
-  "artistUrl": "/artist/mirafra-type-lab/",
-  "alt": "Off-white typographic print reading â€œBORDERS ARE LINESâ€, with an array of halftone dots and a clearly marked placeholder credit.",
-  "caption": "Original vector study authored for the Mirafra rebuild. Placeholder artwork, free under CC0; not a contribution by a real artist.",
+  "artistUrl": "/artist/wet-ink-workshop/",
+  "alt": "Off-white typographic print reading “BORDERS ARE LINES”, with an array of halftone dots and a clearly marked placeholder credit.",
+  "caption": "Original vector study authored for the Red Lark Workshop rebuild. Placeholder artwork, free under CC0; not a contribution by a real artist.",
   "remixable": true,
   "placeholder": true,
   "preview": "/posters/borders-are-lines/preview.webp",
@@ -88,7 +88,7 @@
         "credit": {
           "id": "borders-are-lines",
           "title": "Borders are lines",
-          "artist": "Mirafra Type Lab",
+          "artist": "The Wet Ink Workshop",
           "license": "CC0-1.0",
           "source": "/poster/borders-are-lines/"
         }
@@ -111,7 +111,7 @@
         "credit": {
           "id": "borders-are-lines",
           "title": "Borders are lines",
-          "artist": "Mirafra Type Lab",
+          "artist": "The Wet Ink Workshop",
           "license": "CC0-1.0",
           "source": "/poster/borders-are-lines/"
         }
@@ -134,7 +134,7 @@
         "credit": {
           "id": "borders-are-lines",
           "title": "Borders are lines",
-          "artist": "Mirafra Type Lab",
+          "artist": "The Wet Ink Workshop",
           "license": "CC0-1.0",
           "source": "/poster/borders-are-lines/"
         }

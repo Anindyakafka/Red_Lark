@@ -2,7 +2,7 @@
   "slug": "make-room",
   "title": "Make room",
   "languages": ["English"],
-  "artist": "mirafra-print-lab",
+  "artist": "wet-ink-workshop",
   "year": 2024,
   "themes": ["Migration"],
   "movements": ["Freedom of movement"],
@@ -13,43 +13,43 @@
       "format": "PDF",
       "size": "A4",
       "path": "/posters/make-room/A4.pdf",
-      "bytes": 58804
+      "bytes": 69579
     },
     {
       "format": "PDF",
       "size": "A3",
       "path": "/posters/make-room/A3.pdf",
-      "bytes": 58792
+      "bytes": 69574
     },
     {
       "format": "PDF",
       "size": "A2",
       "path": "/posters/make-room/A2.pdf",
-      "bytes": 58805
+      "bytes": 69577
     },
     {
       "format": "PDF",
       "size": "18x24",
       "path": "/posters/make-room/18x24.pdf",
-      "bytes": 58687
+      "bytes": 69504
     },
     {
       "format": "PNG",
       "size": "A3",
       "path": "/posters/make-room/A3.png",
-      "bytes": 709926
+      "bytes": 729235
     },
     {
       "format": "SVG",
       "size": "A3",
       "path": "/posters/make-room/source.svg",
-      "bytes": 78176
+      "bytes": 105916
     },
     {
       "format": "ZIP",
       "size": "Bundle",
       "path": "/posters/make-room/bundle.zip",
-      "bytes": 67679
+      "bytes": 86153
     }
   ],
   "license": "CC0-1.0",
@@ -57,9 +57,9 @@
   "allowsDerivatives": true,
   "commercialUseAllowed": true,
   "source": "/poster/make-room/",
-  "artistUrl": "/artist/mirafra-print-lab/",
-  "alt": "Off-white typographic print reading â€œMAKE ROOMâ€, with an array of halftone dots and a clearly marked placeholder credit.",
-  "caption": "Original vector study authored for the Mirafra rebuild. Placeholder artwork, free under CC0; not a contribution by a real artist.",
+  "artistUrl": "/artist/wet-ink-workshop/",
+  "alt": "Off-white typographic print reading “MAKE ROOM”, with an array of halftone dots and a clearly marked placeholder credit.",
+  "caption": "Original vector study authored for the Red Lark Workshop rebuild. Placeholder artwork, free under CC0; not a contribution by a real artist.",
   "remixable": true,
   "placeholder": true,
   "preview": "/posters/make-room/preview.webp",
@@ -88,7 +88,7 @@
         "credit": {
           "id": "make-room",
           "title": "Make room",
-          "artist": "Mirafra Print Lab",
+          "artist": "The Wet Ink Workshop",
           "license": "CC0-1.0",
           "source": "/poster/make-room/"
         }
@@ -111,7 +111,7 @@
         "credit": {
           "id": "make-room",
           "title": "Make room",
-          "artist": "Mirafra Print Lab",
+          "artist": "The Wet Ink Workshop",
           "license": "CC0-1.0",
           "source": "/poster/make-room/"
         }
@@ -134,7 +134,7 @@
         "credit": {
           "id": "make-room",
           "title": "Make room",
-          "artist": "Mirafra Print Lab",
+          "artist": "The Wet Ink Workshop",
           "license": "CC0-1.0",
           "source": "/poster/make-room/"
         }

@@ -3,7 +3,7 @@ import { zipSync, strToU8 } from "fflate";
 await fs.mkdir("public/bundles", { recursive: true });
 const files = {
   "README.txt": strToU8(
-    "Mirafra local type kit.\nBebas Neue / IBM Plex Mono. Original upstream fonts, not CC0 artwork.\nBoth retain their SIL Open Font Licence files. Read them before redistribution.\nSources: https://github.com/google/fonts/tree/main/ofl/bebasneue\nhttps://github.com/google/fonts/tree/main/ofl/ibmplexmono\n",
+    "Red Lark Workshop local type kit.\nBebas Neue / IBM Plex Mono. Original upstream fonts, not CC0 artwork.\nBoth retain their SIL Open Font Licence files. Read them before redistribution.\nSources: https://github.com/google/fonts/tree/main/ofl/bebasneue\nhttps://github.com/google/fonts/tree/main/ofl/ibmplexmono\n",
   ),
 };
 for (const name of [
@@ -13,4 +13,4 @@ for (const name of [
   "IBM-Plex-Mono-OFL.txt",
 ])
   files[name] = new Uint8Array(await fs.readFile(`public/fonts/${name}`));
-await fs.writeFile("public/bundles/mirafra-type-kit.zip", zipSync(files));
+await fs.writeFile("public/bundles/redlark-type-kit.zip", zipSync(files));

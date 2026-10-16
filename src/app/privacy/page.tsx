@@ -18,9 +18,9 @@ export default function Page() {
       <p>Last revised: 14 October 2026. This describes the current build, not a future service.</p>
       <h2>NO ACCOUNTS. NO DESIGN SERVER.</h2>
       <p>
-        The Studio works in your browser. Designs and uploaded images are not sent to a Mirafra
-        server. We do not ask for your location, fingerprint your device, or assign a tracking
-        identifier.
+        The Studio works in your browser. Designs and uploaded images are not sent to a Red Lark
+        Workshop server. We do not ask for your location, fingerprint your device, or assign a
+        tracking identifier.
       </p>
       <h2>LOCAL STORAGE.</h2>
       <p>

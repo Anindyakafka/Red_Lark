@@ -48,7 +48,7 @@ test("uploads are locally re-encoded, metadata discarded, and cannot enter share
   await expect(page.locator(".studio-notice[role=status]")).toContainText("EXIF/GPS discarded");
   await page.waitForTimeout(650);
   const image = await page.evaluate(() => {
-    const s = JSON.parse(localStorage.getItem("mirafra.studio.v2")!);
+    const s = JSON.parse(localStorage.getItem("redlark.studio.v2")!);
     return s.layers.find((l: { kind: string }) => l.kind === "image").image as string;
   });
   expect(image).toMatch(/^data:image\/png;base64,/);

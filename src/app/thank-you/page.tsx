@@ -3,7 +3,7 @@ import { pageMeta } from "@/lib/metadata";
 export const metadata = {
   ...pageMeta(
     "Email handoff prepared",
-    "Your email draft is ready to review and send in your own mail app. Mirafra has not received a message automatically.",
+    "Your email draft is ready to review and send in your own mail app. Red Lark Workshop has not received a message automatically.",
     "/thank-you",
   ),
   robots: { index: false, follow: true },

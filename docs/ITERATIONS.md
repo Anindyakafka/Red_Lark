@@ -1,5 +1,15 @@
 # Numbered rebuild rounds
 
+## Red Lark Round 1 critique — M1 foundations
+
+Replaced source/content/package branding, authored original geometric lark/splatter/flame/cursor SVGs, regenerated icons/OG/print bundles, fixed corrupt quote strings in source JSON and generator, consolidated placeholder credits under The Wet Ink Workshop, added a single allow-listed repository constant and a build/CI legacy-name scan. Old branded evidence/assets were retired from the working tree; Git history retains prior evidence. New M1 captures are under docs/evidence/redlark-m1.
+
+The owner supplied redlarkworkshop@gmail.com; it is displayed obfuscated and used for the honest email-app handoff. Backend delivery remains held. One-time validated storage migration retains drafts/bookmarks and does not remove old data on failed writes.
+
+Validation: production build/content/export checks green; 64 Playwright tests including route axe and five-width layout checks passed; model suite corrected after consolidating the two placeholder artist records (a test assumed a second artist). Typecheck, lint and formatting pass. The independent copy test belongs to M3 and is not claimed yet. Production localhost origins now fail; no live deployment is claimed.
+
+Viewed 390/1440 home and contact captures. The longer wordmark fits and the grid remains dense. Ranked next issues: (1) exact deck copy and landing sequencing; (2) locale routes/Indic fonts; (3) taxonomy/item detail extensions. This foundation is not acceptance of M2-M9.
+
 ## RED LARK WORKSHOP: planning checkpoint, 16 October 2026
 
 Step 0 only: audited source/deck text, created redlark branch, wrote AUDIT/PLAN/COPY_QUESTIONS, separated public work from the explicit Supabase hold, and recorded human prerequisites. No application/runtime/provider changes. This is not an implementation round or milestone PASS; no new Lighthouse/axe/build result is claimed.

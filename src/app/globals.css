@@ -229,7 +229,7 @@ picture {
 }
 .wordmark {
   font-family: var(--font-display), Impact, sans-serif;
-  font-size: 38px;
+  font-size: clamp(20px, 3.3vw, 38px);
   line-height: 1;
   display: flex;
   align-items: center;
@@ -1272,7 +1272,7 @@ picture {
     gap: 10px;
   }
   .wordmark {
-    font-size: 34px;
+    font-size: 22px;
     gap: 9px;
   }
   .wordmark img {

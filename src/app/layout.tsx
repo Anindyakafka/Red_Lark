@@ -18,7 +18,10 @@ const mono = localFont({
 });
 export const metadata: Metadata = {
   metadataBase: new URL(siteUrl),
-  title: { default: "Mirafra | Free protest posters", template: "%s | Mirafra" },
+  title: {
+    default: "Red Lark Workshop | Free protest posters",
+    template: "%s | Red Lark Workshop",
+  },
   description:
     "Find an original protest poster, read its licence, download a print file, or make your own in a private browser-only Studio.",
   manifest: "/site.webmanifest",

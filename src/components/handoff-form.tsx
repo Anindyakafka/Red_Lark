@@ -57,7 +57,7 @@ export function HandoffForm({ kind, email }: { kind: "contact" | "submit"; email
       ]
         .filter(Boolean)
         .join("\n\n");
-      const url = `mailto:${email}?subject=${encodeURIComponent(`Mirafra ${kind === "submit" ? "artwork proposal" : "contact"}`)}&body=${encodeURIComponent(body)}`;
+      const url = `mailto:${email}?subject=${encodeURIComponent(`Red Lark Workshop ${kind === "submit" ? "artwork proposal" : "contact"}`)}&body=${encodeURIComponent(body)}`;
       const link = document.createElement("a");
       link.href = url;
       link.click();

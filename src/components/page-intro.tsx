@@ -14,7 +14,7 @@ export function PageIntro({
 }) {
   return (
     <section className="page-intro">
-      <p className="label">[{index}] MIRAFRA / OPEN ARCHIVE</p>
+      <p className="label">[{index}] RED LARK WORKSHOP / OPEN ARCHIVE</p>
       <div className="intro-row">
         <div>
           <h1>{title}</h1>

@@ -7,14 +7,20 @@ test("local builds default to localhost, including a blank SITE_URL", () => {
   assert.equal(resolveSiteOrigin({ SITE_URL: " " }), "http://localhost:3000");
 });
 
+test("production rejects a localhost canonical origin", () => {
+  assert.throws(() =>
+    resolveSiteOrigin({ CONTEXT: "production", SITE_URL: "http://localhost:3000" }),
+  );
+});
+
 test("Netlify production metadata uses its configured primary domain", () => {
   assert.equal(
     resolveSiteOrigin({
       CONTEXT: "production",
-      URL: "https://mirafra.example/",
-      DEPLOY_PRIME_URL: "https://mirafra.netlify.app",
+      URL: "https://redlark.example/",
+      DEPLOY_PRIME_URL: "https://redlark.netlify.app",
     }),
-    "https://mirafra.example",
+    "https://redlark.example",
   );
 });
 
@@ -23,25 +29,25 @@ test("Netlify preview and branch deployments use their own URLs", () => {
     assert.equal(
       resolveSiteOrigin({
         CONTEXT,
-        URL: "https://mirafra.example",
-        DEPLOY_PRIME_URL: "https://preview--mirafra.netlify.app",
+        URL: "https://redlark.example",
+        DEPLOY_PRIME_URL: "https://preview--redlark.netlify.app",
       }),
-      "https://preview--mirafra.netlify.app",
+      "https://preview--redlark.netlify.app",
     );
 });
 
 test("explicit SITE_URL overrides host defaults and rejects invalid origins", () => {
   assert.equal(
-    resolveSiteOrigin({ SITE_URL: " https://mirafra.example/ ", URL: "https://other.example" }),
-    "https://mirafra.example",
+    resolveSiteOrigin({ SITE_URL: " https://redlark.example/ ", URL: "https://other.example" }),
+    "https://redlark.example",
   );
   for (const SITE_URL of [
     "not-a-url",
-    "ftp://mirafra.example",
-    "https://user:password@mirafra.example",
-    "https://mirafra.example/path",
-    "https://mirafra.example?query=value",
-    "https://mirafra.example/#hash",
+    "ftp://redlark.example",
+    "https://user:password@redlark.example",
+    "https://redlark.example/path",
+    "https://redlark.example?query=value",
+    "https://redlark.example/#hash",
   ])
     assert.throws(() => resolveSiteOrigin({ SITE_URL }));
 });

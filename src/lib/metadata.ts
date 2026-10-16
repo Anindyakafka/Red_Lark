@@ -12,7 +12,7 @@ export function pageMeta(
     description,
     alternates: { canonical: `${siteUrl}${path === "/" ? "/" : `${path}/`}` },
     openGraph: {
-      title: `${title} | Mirafra`,
+      title: `${title} | Red Lark Workshop`,
       description,
       url: `${siteUrl}${path === "/" ? "/" : `${path}/`}`,
       type: "website",
@@ -20,7 +20,7 @@ export function pageMeta(
     },
     twitter: {
       card: "summary_large_image",
-      title: `${title} | Mirafra`,
+      title: `${title} | Red Lark Workshop`,
       description,
       images: [image],
     },

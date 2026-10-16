@@ -2,8 +2,8 @@ import Link from "next/link";
 import { PageIntro } from "@/components/page-intro";
 import { pageMeta } from "@/lib/metadata";
 export const metadata = pageMeta(
-  "About Mirafra",
-  "Mirafra is a free open archive for protest posters and a private poster-making Studio. Learn how to print, remix responsibly and support artists.",
+  "About Red Lark Workshop",
+  "Red Lark Workshop is a free open archive for protest posters and a private poster-making Studio. Learn how to print, remix responsibly and support artists.",
   "/about",
 );
 export default function Page() {
@@ -12,7 +12,7 @@ export default function Page() {
       <PageIntro
         index="08"
         title="ART IN PUBLIC."
-        description="Mirafra is a free print archive and a space to make your own poster."
+        description="Red Lark Workshop is a free print archive and a space to make your own poster."
         action="Open Studio"
         href="/studio"
       />

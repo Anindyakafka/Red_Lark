@@ -61,7 +61,7 @@ export default function Page() {
             file. The local type kit contains Bebas Neue and IBM Plex Mono with their original open
             font licences.
           </p>
-          <a className="button accent" href="/bundles/mirafra-type-kit.zip" download>
+          <a className="button accent" href="/bundles/redlark-type-kit.zip" download>
             [DOWNLOAD FONT PACK / OFL] ↓
           </a>
         </section>

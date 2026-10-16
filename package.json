@@ -1,5 +1,5 @@
 {
-  "name": "mirafra",
+  "name": "redlark",
   "version": "1.0.0",
   "private": true,
   "type": "module",
@@ -9,18 +9,19 @@
   },
   "scripts": {
     "dev": "next dev",
-    "build": "npm run validate:content && next build && node scripts/validate-export.mjs",
+    "build": "npm run check:brand && npm run validate:content && next build && node scripts/validate-export.mjs",
     "start": "node scripts/serve.mjs",
     "typecheck": "tsc --noEmit",
     "test": "tsx --test tests/*.test.ts",
-    "brand:build": "node scripts/refine-logo.mjs",
+    "brand:build": "tsx scripts/brand.ts",
     "seed": "tsx scripts/seed.ts && node scripts/preview-derivatives.mjs && tsx scripts/validate-content.ts",
     "validate:content": "tsx scripts/validate-content.ts",
     "lint": "eslint . --max-warnings 0",
     "format": "prettier --write .",
     "format:check": "prettier --check .",
     "test:e2e": "playwright test",
-    "qa:round": "node scripts/review-round.mjs"
+    "qa:round": "node scripts/review-round.mjs",
+    "check:brand": "node scripts/check-no-legacy-name.mjs"
   },
   "dependencies": {
     "fflate": "^0.8.2",

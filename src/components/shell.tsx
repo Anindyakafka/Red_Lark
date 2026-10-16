@@ -1,13 +1,14 @@
 import Link from "next/link";
 import Image from "next/image";
 import { Preferences } from "./preferences";
+import { REPO_URL } from "@/config/site";
 export function Header() {
   return (
     <header className="site-header">
       <div className="masthead">
-        <Link prefetch={false} className="wordmark" href="/" aria-label="Mirafra home">
+        <Link prefetch={false} className="wordmark" href="/" aria-label="Red Lark Workshop home">
           <Image src="/icons/mark.svg" alt="" width={32} height={32} />
-          MIRAFRA<span className="edition">[FREE PRINT ARCHIVE]</span>
+          RED LARK WORKSHOP<span className="edition">[FREE PRINT ARCHIVE]</span>
         </Link>
         <Preferences />
       </div>
@@ -33,7 +34,7 @@ export function Footer() {
     <footer className="site-footer">
       <div>
         <Link className="footer-mark" href="/">
-          MIRAFRA [01]
+          RED LARK WORKSHOP [01]
         </Link>
         <p>FREE TO FIND. YOURS TO PRINT.</p>
         <p>
@@ -66,7 +67,7 @@ export function Footer() {
         An open archive built for public walls.
         <br />
         Software:{" "}
-        <a href="https://github.com/Anindyakafka/mirafra" rel="noreferrer">
+        <a href={REPO_URL} rel="noreferrer">
           AGPL source ↗
         </a>{" "}
         · Artwork: see each licence.

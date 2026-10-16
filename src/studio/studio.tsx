@@ -15,8 +15,9 @@ import {
 import { sceneSvg, type Fonts } from "./render";
 import { decodeScene, encodeScene } from "./share";
 import { exportFile, importImage } from "./exports";
+import { migrateLocalDrafts } from "@/lib/storage";
 
-const KEY = "mirafra.studio.v2";
+const KEY = "redlark.studio.v2";
 const PALETTE = ["#151515", "#e32219", "#f3f0e6"];
 function verifySources(scene: Scene) {
   for (const layer of scene.layers) {
@@ -91,6 +92,7 @@ export default function Studio() {
         setFonts({ display, mono });
         let stored: Scene | null = null;
         try {
+          migrateLocalDrafts(localStorage);
           const raw = localStorage.getItem(KEY);
           if (raw) {
             const v: unknown = JSON.parse(raw);
