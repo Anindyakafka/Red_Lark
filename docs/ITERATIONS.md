@@ -1,5 +1,136 @@
 # Numbered rebuild rounds
 
+## Deployment follow-up — 17 October 2026
+
+The first PR #3 Netlify preview compiled and validated all 340 HTML pages, then failed in Edge bundling: the Deno resolver could not find the extensionless src/i18n/config dependency. Local Next/tsx tests accepted extensionless imports, so the prior checks did not exercise the deployment resolver. Fixed both shared TypeScript imports to use their actual .ts extension and added the required JSON import attribute. TypeScript permits these imports with noEmit and allowImportingTsExtensions.
+
+Added scripts/check-edge.mjs, executed by the normal build through native Node resolution (without Next/tsx) and by Deno in CI. It checks real module loading, cookie-free language negotiation, legacy redirects/query preservation, static pass-through, localized 404 fallback and security headers. CI now also checks the graph with Deno. This is a deployment compatibility correction; public design/content and the Supabase hold are unchanged. A fresh Netlify preview after pushing the fix is the deployment acceptance check, not an assertion based only on the local Next build.
+
+Local verification: native preflight plus Deno 2.9.6 check/run pass; strict types, ESLint, formatting, 37 unit tests, all 340 exported HTML pages and five localized browser smoke/axe tests pass. The Node engine contract now matches the existing Node 24 hosting/CI/README requirement, since native TypeScript loading is used by the preflight. No dependency was added to the application.
+
+## Red Lark Round 15 critique — final public fresh eyes
+
+Re-read the expanded brief against the implemented public phase and the explicit backend hold. Added an exported-route matrix (84 pages per locale, 336 locale pages), desktop axe including best-practice rules, dark native mobile checks and a no-JS localized article check. Existing full flows still cover forms, derivative gating, actual exports, local image privacy, recovery and real index navigation.
+
+Corrected the visibly oversized native editorial headings with a smaller Indic scale and generous leading. The Latin body font now uses optional loading with a complete fallback stack, preventing late body-font swaps on slow first visits; Indic fonts retain swap and verified glyph coverage. Registered page introduction copy in message catalogs without changing the English wording or resolved fallback text.
+
+The first pass had 87/88 tests green: broader dark axe found duplicate language/search landmarks and an uncontained mobile CTA. The next pass exposed unnamed translated notice/form asides, plus search tests that ambiguously selected the newly named form as well as its input (81/88 green). Fixed the actual landmark semantics, named Studio panels, and changed those assertions to target searchbox roles. Neither failure was dismissed as polish or hidden by narrowing axe tags. Final full-suite and measured results follow below.
+
+Final corrected checks: **37 unit tests and 88 browser tests pass**, including all 336 locale pages with broad axe rules. Types, lint, formatting, independent copy lock, legacy-name scan, content validation and 340-page HTML validation/build pass. Evidence: docs/evidence/redlark-round-15/checks.log and summary.json. Captured/viewed the English/Malayalam 390/1440 screenshot sets; native policy headings now remain readable, controls fit, and the brutalist grid/type/borders remain consistent. Zero screenshot axe violations, external requests or page errors. Dark native mobile and no-JS editorial pass.
+
+| Mobile route       | Performance median | Accessibility | Best Practices | SEO |
+| ------------------ | ------------------ | ------------- | -------------- | --- |
+| English landing    | 96                 | 100           | 100            | 100 |
+| English collection | 97                 | 100           | 100            | 100 |
+| English item       | 98                 | 100           | 100            | 100 |
+| Hindi landing      | 97                 | 100           | 100            | 100 |
+| Hindi collection   | 97                 | 100           | 100            | 100 |
+| Hindi item         | 96                 | 100           | 100            | 100 |
+
+All medians use three consecutive cold-cache runs; raw reports retain individual low samples (including English landing/collection 94). Maximum CLS approximately 0.000032. The prior Hindi Collection failure remains in Round 14 rather than being overwritten.
+
+Public fresh-eyes acceptance: PASS. Remaining priorities are held backend engineering and its unexecutable auth/upload/admin/mail acceptance; native/legal/physical-print review; live domain/provider/CDN verification. These prevent full-project release acceptance and are explicitly recorded in TODO_HUMAN/PLAN/CHECKLIST. No remaining public functional defect above minor polish was found; no real artist content or final translation approval is claimed. Development-only dependency advisory remains documented, with production audit zero. This is the final numbered round (15); no backend work, push or deployment was performed.
+
+## Red Lark Round 14 critique — M9 public editorial and policies
+
+Implemented trusted build-time localized MDX, two marked placeholder posts, four RSS feeds, policy hub/articles, the verbatim AI policy, expanded About, accurate privacy/terms and five contact topics. Current contact remains an email-app handoff. Legal translations explicitly fall back to English; no invented legal sources, artist interview, donation destination or delivered-mail claims. Dependency updates remove production audit findings; the remaining development-only upstream advisory is documented in DEPENDENCIES.md.
+
+Clean lockfile install, 37 unit tests, copy/brand/types/lint/format/content/build checks pass; 340 HTML pages validate. Full browser suite: 83 passed. Evidence: docs/evidence/redlark-round-14, 60 English/Malayalam 390/1440 captures, zero axe violations, external requests or page errors. Login/admin captures are unavailable-service notices, not backend acceptance.
+
+Three-run mobile Lighthouse medians (landing/collection/item): English 96/98/95; Hindi 97/93/96. Accessibility/Best Practices/SEO all 100; maximum CLS approximately 0.000032. Hindi Collection remains a real performance failure. Raw runs retained, including its 93/93/97 samples; no best-run substitution.
+
+Viewed landing narrative/format picker, active collection, item, Studio, About, policy, errors and 404 captures. Brutalist borders/type/palette remain consistent. Ranked remaining issues: (1) Malayalam editorial h1 is technically within bounds but breaks into too many oversized lines; give native editorial headings a considered smaller scale. (2) Hindi Collection text LCP is sensitive to font loading, despite low blocking time and stable layout; reduce late Latin body-font swaps rather than adding unstable layout deferral. (3) Final every-exported-route review in all four languages, dark native pages and no-JS editorial. Round 15 addresses these. Required Supabase/auth/upload/admin/mail work stays held and cannot pass end-to-end acceptance.
+
+## Red Lark Round 13 critique — M6 font-loading correction
+
+Added tiny name-only navigation fonts (5,232 bytes combined), verified pixel/width-identical for all three native names. The active locale reuses its UI font in controls and titles, avoiding duplicate archive-font transfer. Full language fonts remain fallback; archive subsets still serve actual original-script titles. Sixteen affected browser tests pass after the font changes; the prior full suite has 78 passes.
+
+The initial round exposed a new failure from content-visibility on the artist rail: item CLS jumped to 0.44-0.49 and performance fell to 75/77, despite faster loading. Removed that optimization completely. Failed evidence is retained in docs/evidence/redlark-round-13; the corrected cold-cache item follow-up is separate in redlark-round-13-fixed. Corrected item medians: en 95, hi 97; CLS about 0.000032; other categories 100. Unaffected landing/collection medians from the full checkpoint: en 97/98 and hi 97/97. Axe zero throughout; no external requests or page errors.
+
+M6 CREATE passes its public checkpoint. Source checks, copy lock, content/export validation and 316-page build pass. No accounts/uploads/database/admin/mail were implemented. Remaining scope: M9 public editorial/policies and final four-locale route review. Do not reopen performance experiments after the targets pass without a new regression.
+
+## Red Lark Round 12 critique — M6 CREATE and recovery
+
+Added format-first entry, deferred editor font loading, separate coded image/caption libraries, code search, source-preserving image groups/captions and the exact Download for Free action. Existing transforms/layers/palettes/print modes/paper/export/share/privacy tools remain. Build validation checks codes, source eligibility and image layer IDs. The local font bundle now includes licensed Noto fonts. Mobile editing hides the full browse navigation while retaining the wordmark/language/account controls and browser access to the Collection.
+
+Two meaningful recovery issues were fixed: malformed shared scenes no longer replace an existing local draft, and unsupported mixed Indic text stays a recoverable editor error. The first full run found an initial autosave race during empty-canvas recovery (77 passed, one failed). Fixed the application: opening the editor alone never overwrites a draft; edits or an explicit fresh start enable autosave. A separate availability probe preserves storage-unavailable feedback. The unchanged recovery test then passed; final full suite 78 passed (2.3m). Unit suite 34 passed; copy/types/lint/format/content/build green.
+
+Full screenshots and axe: docs/evidence/redlark-round-12, English/Malayalam at 390/1440, zero violations/external requests/page errors. Viewed mobile/desktop Studio: the canvas is now usable after selection, native controls remain within bounds. Performance en 97/98/95 and hi 96/96/94; other categories all 100. Hindi item misses target by one point after the richer M5 page. Ranked next fix: avoid duplicate active-script/archive fonts and preload tiny verified language-name fonts rather than full title subsets; defer rendering the below-fold artist rail. Round 13 measures those concrete changes. M6 UPLOAD and M7/M8 remain held.
+
+## Red Lark Round 11 critique — M5 print-first item pages
+
+Added actual Image Code/Caption Code, file formats/sizes/resolution, truthful generated-placeholder AI disclosure, tags/category links, more-by-artist rail and four-language print instructions with native review flags. Generated real A4/A2 PNG and JPEG files at 300 DPI alongside outlined vector PDFs; checked physical metadata and exact raster dimensions. Updated Indic source artwork to say DRAFT TRANSLATION. No real artist work or invented donation details were added.
+
+Public contact and UPI are independently consented fields. Validation rejects a public artist record containing an unconsented value; rendering also omits either field without explicit consent. UPI copy/link UI is available only when a real consented ID is supplied. Test-only values use visibly synthetic reserved examples and are never seeded. The team inbox is not repurposed as an artist contact.
+
+Checks: 34 unit tests, full browser suite 76 passed (1.9m), copy/types/lint/brand/content/build pass. Four-locale item axe zero. Evidence: docs/evidence/redlark-round-11, item top/specifications/print panel at 390/1440 in en/ml. Viewed native print instructions without clipping. Visual critique caught a new desktop regression: added metadata pushed the download action below the fold. Restored a dedicated desktop action near the title and reran affected checks. Lighthouse repeats at M6; prior measurements are not claimed for this expanded page.
+
+Ranked next work: format-first Studio entry, coded image/caption tools and mobile workspace density; localized MDX/editorial and full policy hub; final four-locale click-through. Backend-dependent contributions/mail remain held.
+
+## Red Lark Round 10 critique — M4 taxonomy and navigation
+
+Wired all 28 canonical categories and ten artwork formats into real collection filters; default remains ALL (Uncategorized). Works have category arrays/free tags and draft-native title/caption/tag search. Filter URLs restore on load, survive language changes, and reset completely. Source placeholders now state their actual 2026 creation year and truthful AI-assisted origin. Category index/counts and sitemap entries are generated. Discover uses categories; old theme paths redirect with locale/query preserved in Netlify Edge and local preview. The header now follows the requested navigation and includes an account control.
+
+Account/login/reset/admin destinations are honest, noindex service-pending notices, collecting no credentials or uploads; they do not satisfy M7. Blog currently explains that editorial placeholders are in preparation; publishing the authored MDX assets remains M9. Explicit backend hold is unchanged.
+
+Checks: 32 unit tests, independent copy test, types/lint/brand/content/build pass; 316 HTML pages validate. Full browser suite: 75 passed, including all category links, combined filters, native search, locale switching, ND gate and axe. Targeted English/Malayalam captures at 390/1440 are under docs/evidence/redlark-round-10. Visual review found the collection introduction unnecessarily tall; compacted it to bring filters/grid closer to the first screen, then reran affected browser checks. No new Lighthouse claim this milestone: the full required checkpoint repeats at M6.
+
+Ranked next work: (1) item codes/AI disclosure, per-field public consent and print guidance; (2) real A4/A2 raster choices; (3) format-first Studio and coded libraries; (4) localized MDX and complete policies. Category emptiness is honestly counted, with no invented contributions.
+
+## Red Lark Round 9 critique — M3 measured checkpoint
+
+Compact browser messages now transmit only translated overrides; keys themselves provide English fallback. Added current-vocabulary Noto UI subsets with full-font fallback. All 424 complete localized strings render pixel-for-pixel and width-identically to full fonts in Edge, including Bengali canonical decomposition and Malayalam chillus. Hindi UI transfer falls from 50,416 to 29,032 bytes. Provenance and source hashes are committed with assets; no remote fonts/scripts are requested.
+
+Full checkpoint evidence: docs/evidence/redlark-round-9. Forty English/Malayalam screenshots captured across 390/1440, including landing top/middle/bottom, filters, item, Studio, privacy, contact/submit errors and 404; viewed representative layouts and native text. Axe reports zero violations, no external requests or page errors. Cold-cache mobile Lighthouse medians (three runs each): en landing 97, collection 98, item 97; hi landing 96, collection 98, item 97. Accessibility/Best Practices/SEO all 100; CLS approximately 0.000032. Raw failures from prior rounds remain in evidence rather than being overwritten.
+
+Canonical English source/rendered copy and all 30 unit tests pass. Build validates 284 exported HTML pages, including category destinations; typecheck and lint pass. Full browser regression: 73 passed, including the 28 category destinations and four accessible policy hubs. Supabase-dependent login/admin screenshots and end-to-end flows remain explicitly held, with no fabricated queue or login success.
+
+Ranked next work: (1) M4 category/format filters still use the previous taxonomy and must consume the new inventories; (2) item codes, AI disclosure, artist consent and print instructions need M5; (3) the mobile Studio header/toolbars consume too much first-screen space and need M6 format-first review. Draft translations require native review. This is M3 acceptance, not full-project completion.
+
+## Red Lark Round 3 critique — M3 first narrative
+
+Rendered Appendix A from the locked files, original poster-wall hero, archive/Studio CTAs, six oversized objective cards, open policy panel, search/language controls and exact category/format inventories. Canonical copy remains unchanged and readable without JavaScript. Full screenshot checkpoint: English/Malayalam at 390/1440; axe zero. Performance medians (landing/collection/item): en 94/95/96; hi 93/95/96; accessibility/best-practices/SEO all 100. Evidence: docs/evidence/redlark-round-3. Ranked defects: Malayalam long words overflow; landing font traffic too large; old collection taxonomy remains for M4.
+
+## Red Lark Round 4 critique — wrapping and archive font subsets
+
+Fixed native paragraph/objective wrapping and 360px category labels. Added small archive-specific Indic subsets for language controls and original-script titles; verified original shaping. Full browser suite: 72 passed. Twenty locale/width combinations have no horizontal overflow. Full screenshots/axe repeated: zero violations. Performance en 98/99/99, hi 96/99/94; other categories 100. Evidence: docs/evidence/redlark-round-4. Ranked remaining defect: Hindi item LCP above target; the narrative and dense poster wall are visually strong, while Studio mobile controls still need M6 review.
+
+## Red Lark Round 5 critique — preload regression
+
+Tested preloading the active full Indic UI font. This regressed Hindi landing performance: 92/97/94 across the three routes, other categories 100. Evidence: docs/evidence/redlark-round-5. Do not treat the prior round as acceptance of this change. Ranked defects: excess font transfer and serialized translations; investigate payload rather than repeatedly measuring unchanged output.
+
+## Red Lark Round 6 critique — active-locale messages
+
+Removed all-locale message imports from the client bundle; only the active locale is supplied by the server. Explicit archive-font preload improves discovery. Performance en 97/98/98, hi 96/96/94, other categories 100; axe zero. Evidence: docs/evidence/redlark-round-6. Hindi item remains below 95. Ranked next changes: stop unnecessary cross-route prefetch and reduce duplicated English fallback data.
+
+## Red Lark Round 7 critique — avoid speculative route fetches
+
+Disabled automatic prefetch in the localized Link wrapper. Network inspection confirms Hindi pages no longer fetch English landing/collection RSC payloads merely because fallback links enter view. Hindi medians 96/96/93, other categories 100, axe zero. Evidence: docs/evidence/redlark-round-7. This privacy/performance cleanup alone does not fix the measured item bottleneck; large native UI font transfer remains the main difference.
+
+## Red Lark Round 8 critique — responsive image discovery
+
+Added an explicit responsive AVIF preload for the priority item image. English item 98; Hindi item 94; other categories 100, axe zero. Evidence: docs/evidence/redlark-round-8. The actual image is already small and promptly fetched; this is not sufficient for acceptance. Next fix is a safely shaped current-vocabulary UI font subset plus omission of redundant key=English-value message pairs. Keep the full fonts as fallback for future text; never remove Indic shaping tables to chase a score.
+
+## Red Lark Round 2 critique — M2 locales and shaping
+
+Added four prerendered locale trees, locale document roots, URL-based switches, canonical/hreflang/OG metadata and locale sitemap entries. A small Netlify Edge function negotiates Accept-Language without cookies and preserves localized 404 status; the preview server mirrors routing. This revises the original full-runtime M2 suggestion: static public pages plus a narrow Edge function are sufficient during the backend hold. The future account/API phase still needs a server runtime. Global-not-found uses the documented experimental Next flag because locale routes have separate root layouts.
+
+English messages contain 422 entries; Hindi/Bengali/Malayalam each include 122 drafted translations and explicit English fallbacks, all reviewed:false. Draft landing assets are complete, with a locked independent English fixture and server-rendered copy tests ready for M3. Self-hosted Noto script subsets serve UI; full fonts and a pinned HarfBuzz runtime serve only the lazy Studio. Actual Malayalam text crashed fontkit even with full fonts; HarfBuzz was verified in Node/Edge for all three scripts, conjuncts and chillus. No runtime external requests were needed. French/Spanish studies are replaced with three original Indic placeholder studies.
+
+Checks: 29 unit/copy/shaping tests passed; typecheck/lint/build green; 168 exported HTML files validated. Full browser run found one translated-fragment spacing defect (68 passed, one failed); fixed the actual spacing and reran all eight affected interaction/locale tests successfully. All four locale core-page axe checks passed. The next full run is at M3. Malayalam home/contact screenshots at 390/1440 were viewed; scripts remain legible without clipping. English fallback is deliberately visible rather than pretending translations are reviewed.
+
+Ranked remaining issues: (1) replace the previous landing with the exact-copy narrative; (2) finish categories/item models and UI; (3) measure the larger multilingual bundle with Lighthouse and reduce it if needed. Native review remains a human task. No Supabase implementation or deployment.
+
+## Red Lark Round 1 critique — M1 foundations
+
+Replaced source/content/package branding, authored original geometric lark/splatter/flame/cursor SVGs, regenerated icons/OG/print bundles, fixed corrupt quote strings in source JSON and generator, consolidated placeholder credits under The Wet Ink Workshop, added a single allow-listed repository constant and a build/CI legacy-name scan. Old branded evidence/assets were retired from the working tree; Git history retains prior evidence. New M1 captures are under docs/evidence/redlark-m1.
+
+The owner supplied redlarkworkshop@gmail.com; it is displayed obfuscated and used for the honest email-app handoff. Backend delivery remains held. One-time validated storage migration retains drafts/bookmarks and does not remove old data on failed writes.
+
+Validation: production build/content/export checks green; 64 Playwright tests including route axe and five-width layout checks passed; model suite corrected after consolidating the two placeholder artist records (a test assumed a second artist). Typecheck, lint and formatting pass. The independent copy test belongs to M3 and is not claimed yet. Production localhost origins now fail; no live deployment is claimed.
+
+Viewed 390/1440 home and contact captures. The longer wordmark fits and the grid remains dense. Ranked next issues: (1) exact deck copy and landing sequencing; (2) locale routes/Indic fonts; (3) taxonomy/item detail extensions. This foundation is not acceptance of M2-M9.
+
 ## RED LARK WORKSHOP: planning checkpoint, 16 October 2026
 
 Step 0 only: audited source/deck text, created redlark branch, wrote AUDIT/PLAN/COPY_QUESTIONS, separated public work from the explicit Supabase hold, and recorded human prerequisites. No application/runtime/provider changes. This is not an implementation round or milestone PASS; no new Lighthouse/axe/build result is claimed.

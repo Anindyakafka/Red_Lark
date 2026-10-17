@@ -1,0 +1,164 @@
+{
+  "a-future-we-share": {
+    "categories": ["ecology-environment-land"],
+    "tags": ["ecology", "climate justice"],
+    "kind": "poster-placard",
+    "imageCode": "1a",
+    "captionCode": "2c",
+    "aiUse": "generated",
+    "aiDisclosure": "Original AI-assisted vector placeholder created for site testing. This is not a curated human submission or a contribution by a real artist."
+  },
+  "a-world-for-everyone": {
+    "categories": ["democracy"],
+    "tags": ["solidarity", "mutual aid"],
+    "kind": "poster-placard",
+    "imageCode": "1b",
+    "captionCode": "2d",
+    "aiUse": "generated",
+    "aiDisclosure": "Original AI-assisted vector placeholder created for site testing. This is not a curated human submission or a contribution by a real artist."
+  },
+  "borders-are-lines": {
+    "categories": ["displacement-and-migration"],
+    "tags": ["migration", "freedom of movement"],
+    "kind": "poster-placard",
+    "imageCode": "1c",
+    "captionCode": "2e",
+    "aiUse": "generated",
+    "aiDisclosure": "Original AI-assisted vector placeholder created for site testing. This is not a curated human submission or a contribution by a real artist."
+  },
+  "build-together": {
+    "categories": ["displacement-and-migration"],
+    "tags": ["housing", "right to the city"],
+    "kind": "poster-placard",
+    "imageCode": "1d",
+    "captionCode": "2f",
+    "aiUse": "generated",
+    "aiDisclosure": "Original AI-assisted vector placeholder created for site testing. This is not a curated human submission or a contribution by a real artist."
+  },
+  "care-is-work": {
+    "categories": ["workers"],
+    "tags": ["labor", "may day"],
+    "kind": "poster-placard",
+    "imageCode": "1e",
+    "captionCode": "2g",
+    "aiUse": "generated",
+    "aiDisclosure": "Original AI-assisted vector placeholder created for site testing. This is not a curated human submission or a contribution by a real artist."
+  },
+  "homes-for-all": {
+    "categories": ["displacement-and-migration"],
+    "tags": ["housing", "housing justice"],
+    "kind": "poster-placard",
+    "imageCode": "1f",
+    "captionCode": "2h",
+    "aiUse": "generated",
+    "aiDisclosure": "Original AI-assisted vector placeholder created for site testing. This is not a curated human submission or a contribution by a real artist."
+  },
+  "less-extraction-more-care": {
+    "categories": ["ecology-environment-land"],
+    "tags": ["climate", "climate justice"],
+    "kind": "poster-placard",
+    "imageCode": "1g",
+    "captionCode": "2i",
+    "aiUse": "generated",
+    "aiDisclosure": "Original AI-assisted vector placeholder created for site testing. This is not a curated human submission or a contribution by a real artist."
+  },
+  "listen-to-the-land": {
+    "categories": ["ecology-environment-land"],
+    "tags": ["ecology", "climate justice"],
+    "kind": "poster-placard",
+    "imageCode": "1h",
+    "captionCode": "2j",
+    "aiUse": "generated",
+    "aiDisclosure": "Original AI-assisted vector placeholder created for site testing. This is not a curated human submission or a contribution by a real artist."
+  },
+  "make-room": {
+    "categories": ["displacement-and-migration"],
+    "tags": ["migration", "freedom of movement"],
+    "kind": "poster-placard",
+    "imageCode": "1i",
+    "captionCode": "2k",
+    "aiUse": "generated",
+    "aiDisclosure": "Original AI-assisted vector placeholder created for site testing. This is not a curated human submission or a contribution by a real artist."
+  },
+  "many-voices": {
+    "categories": ["democracy"],
+    "tags": ["solidarity", "mutual aid"],
+    "kind": "sticker",
+    "imageCode": "1j",
+    "captionCode": "2l",
+    "aiUse": "generated",
+    "aiDisclosure": "Original AI-assisted vector placeholder created for site testing. This is not a curated human submission or a contribution by a real artist."
+  },
+  "no-one-is-disposable": {
+    "categories": ["democracy"],
+    "tags": ["solidarity", "mutual aid"],
+    "kind": "poster-placard",
+    "imageCode": "1k",
+    "captionCode": "2m",
+    "aiUse": "generated",
+    "aiDisclosure": "Original AI-assisted vector placeholder created for site testing. This is not a curated human submission or a contribution by a real artist."
+  },
+  "nothing-about-us-without-us": {
+    "categories": ["miscellaneous"],
+    "tags": ["accessibility", "disability justice"],
+    "kind": "poster-placard",
+    "imageCode": "1l",
+    "captionCode": "2n",
+    "aiUse": "generated",
+    "aiDisclosure": "Original AI-assisted vector placeholder created for site testing. This is not a curated human submission or a contribution by a real artist."
+  },
+  "our-air-our-future": {
+    "categories": ["ecology-environment-land"],
+    "tags": ["climate", "climate justice"],
+    "kind": "poster-placard",
+    "imageCode": "1m",
+    "captionCode": "2o",
+    "aiUse": "generated",
+    "aiDisclosure": "Original AI-assisted vector placeholder created for site testing. This is not a curated human submission or a contribution by a real artist."
+  },
+  "public-space": {
+    "categories": ["displacement-and-migration"],
+    "tags": ["housing", "right to the city"],
+    "kind": "flyer",
+    "imageCode": "1n",
+    "captionCode": "2p",
+    "aiUse": "generated",
+    "aiDisclosure": "Original AI-assisted vector placeholder created for site testing. This is not a curated human submission or a contribution by a real artist."
+  },
+  "take-up-space": {
+    "categories": ["miscellaneous"],
+    "tags": ["accessibility", "disability justice"],
+    "kind": "poster-placard",
+    "imageCode": "1o",
+    "captionCode": "2q",
+    "aiUse": "generated",
+    "aiDisclosure": "Original AI-assisted vector placeholder created for site testing. This is not a curated human submission or a contribution by a real artist."
+  },
+  "the-right-to-rest": {
+    "categories": ["workers"],
+    "tags": ["labor", "may day"],
+    "kind": "poster-placard",
+    "imageCode": "1p",
+    "captionCode": "2r",
+    "aiUse": "generated",
+    "aiDisclosure": "Original AI-assisted vector placeholder created for site testing. This is not a curated human submission or a contribution by a real artist."
+  },
+  "we-are-still-here": {
+    "categories": ["democracy"],
+    "tags": ["solidarity", "mutual aid"],
+    "kind": "poster-placard",
+    "imageCode": "1q",
+    "captionCode": "2a",
+    "aiUse": "generated",
+    "aiDisclosure": "Original AI-assisted vector placeholder created for site testing. This is not a curated human submission or a contribution by a real artist."
+  },
+  "we-keep-each-other-safe": {
+    "categories": ["democracy"],
+    "tags": ["solidarity", "mutual aid"],
+    "kind": "poster-placard",
+    "imageCode": "1r",
+    "captionCode": "2b",
+    "aiUse": "generated",
+    "aiDisclosure": "Original AI-assisted vector placeholder created for site testing. This is not a curated human submission or a contribution by a real artist."
+  }
+}

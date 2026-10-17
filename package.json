@@ -1,30 +1,35 @@
 {
-  "name": "mirafra",
+  "name": "redlark",
   "version": "1.0.0",
   "private": true,
   "type": "module",
   "license": "AGPL-3.0-only",
   "engines": {
-    "node": ">=22.0.0"
+    "node": ">=24.0.0"
   },
   "scripts": {
     "dev": "next dev",
-    "build": "npm run validate:content && next build && node scripts/validate-export.mjs",
+    "build": "npm run check:edge && npm run check:brand && npm run validate:content && next build && node scripts/validate-export.mjs",
     "start": "node scripts/serve.mjs",
     "typecheck": "tsc --noEmit",
     "test": "tsx --test tests/*.test.ts",
-    "brand:build": "node scripts/refine-logo.mjs",
+    "brand:build": "tsx scripts/brand.ts",
     "seed": "tsx scripts/seed.ts && node scripts/preview-derivatives.mjs && tsx scripts/validate-content.ts",
     "validate:content": "tsx scripts/validate-content.ts",
     "lint": "eslint . --max-warnings 0",
     "format": "prettier --write .",
     "format:check": "prettier --check .",
     "test:e2e": "playwright test",
-    "qa:round": "node scripts/review-round.mjs"
+    "qa:round": "node scripts/review-public.mjs",
+    "check:brand": "node scripts/check-no-legacy-name.mjs",
+    "check:edge": "node scripts/check-edge.mjs",
+    "test:copy": "tsx --test tests/copy.test.ts"
   },
   "dependencies": {
+    "@mdx-js/mdx": "^3.1.1",
     "fflate": "^0.8.2",
-    "jspdf": "^3.0.0",
+    "harfbuzzjs": "^1.6.3",
+    "jspdf": "^4.2.1",
     "next": "^16.4.0",
     "opentype.js": "^1.3.4",
     "react": "^19.3.0",
@@ -49,7 +54,7 @@
     "lighthouse": "^13.0.0",
     "pdfkit": "^0.20.2",
     "prettier": "^3.6.0",
-    "sharp": "^0.34.0",
+    "sharp": "^0.35.5",
     "svg-to-pdfkit": "^0.1.8",
     "tailwindcss": "^4.1.0",
     "tsx": "^4.20.0",

@@ -5,7 +5,7 @@ test("all paper presets declare the right PDF boxes; A2 PNG dimensions are high 
   page,
 }) => {
   test.setTimeout(120000);
-  await page.goto("/studio/");
+  await page.goto("/studio/?format=poster-placard");
   await expect(page.locator(".studio-paper")).toBeVisible();
   for (const [preset, width, height] of [
     ["A4", 210, 297],
@@ -38,7 +38,7 @@ test("touch pinch changes zoom and mobile controls stay usable", async ({ browse
     isMobile: true,
   });
   const page = await context.newPage();
-  await page.goto("http://localhost:3000/studio/");
+  await page.goto("http://localhost:3000/studio/?format=poster-placard");
   await expect(page.locator(".studio-paper")).toBeVisible();
   await page.locator(".studio-paper").scrollIntoViewIfNeeded();
   const box = await page.locator(".studio-paper").boundingBox();

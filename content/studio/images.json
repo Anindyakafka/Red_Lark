@@ -1,0 +1,92 @@
+[
+  {
+    "code": "1a",
+    "workSlug": "a-future-we-share",
+    "layerIds": ["a-future-we-share-symbol"]
+  },
+  {
+    "code": "1b",
+    "workSlug": "a-world-for-everyone",
+    "layerIds": ["a-world-for-everyone-symbol"]
+  },
+  {
+    "code": "1c",
+    "workSlug": "borders-are-lines",
+    "layerIds": ["borders-are-lines-symbol"]
+  },
+  {
+    "code": "1d",
+    "workSlug": "build-together",
+    "layerIds": ["build-together-symbol"]
+  },
+  {
+    "code": "1e",
+    "workSlug": "care-is-work",
+    "layerIds": ["care-is-work-symbol"]
+  },
+  {
+    "code": "1f",
+    "workSlug": "homes-for-all",
+    "layerIds": ["homes-for-all-symbol"]
+  },
+  {
+    "code": "1g",
+    "workSlug": "less-extraction-more-care",
+    "layerIds": ["less-extraction-more-care-symbol"]
+  },
+  {
+    "code": "1h",
+    "workSlug": "listen-to-the-land",
+    "layerIds": ["listen-to-the-land-symbol"]
+  },
+  {
+    "code": "1i",
+    "workSlug": "make-room",
+    "layerIds": ["make-room-symbol"]
+  },
+  {
+    "code": "1j",
+    "workSlug": "many-voices",
+    "layerIds": ["many-voices-symbol"]
+  },
+  {
+    "code": "1k",
+    "workSlug": "no-one-is-disposable",
+    "layerIds": ["no-one-is-disposable-symbol"]
+  },
+  {
+    "code": "1l",
+    "workSlug": "nothing-about-us-without-us",
+    "layerIds": ["nothing-about-us-without-us-symbol"]
+  },
+  {
+    "code": "1m",
+    "workSlug": "our-air-our-future",
+    "layerIds": ["our-air-our-future-symbol"]
+  },
+  {
+    "code": "1n",
+    "workSlug": "public-space",
+    "layerIds": ["public-space-symbol"]
+  },
+  {
+    "code": "1o",
+    "workSlug": "take-up-space",
+    "layerIds": ["take-up-space-symbol"]
+  },
+  {
+    "code": "1p",
+    "workSlug": "the-right-to-rest",
+    "layerIds": ["the-right-to-rest-symbol"]
+  },
+  {
+    "code": "1q",
+    "workSlug": "we-are-still-here",
+    "layerIds": ["we-are-still-here-symbol"]
+  },
+  {
+    "code": "1r",
+    "workSlug": "we-keep-each-other-safe",
+    "layerIds": ["we-keep-each-other-safe-symbol"]
+  }
+]

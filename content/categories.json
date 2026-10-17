@@ -1,0 +1,114 @@
+[
+  {
+    "slug": "adivasis",
+    "label": "Adivasis"
+  },
+  {
+    "slug": "anti-imperialism",
+    "label": "Anti-Imperialism"
+  },
+  {
+    "slug": "anti-war",
+    "label": "Anti-War"
+  },
+  {
+    "slug": "bjp-rss-hindutva",
+    "label": "BJP-RSS-Hindutva"
+  },
+  {
+    "slug": "caa-nrc",
+    "label": "CAA-NRC"
+  },
+  {
+    "slug": "caste-and-reservation",
+    "label": "Caste and Reservation"
+  },
+  {
+    "slug": "cockroaches",
+    "label": "Cockroaches"
+  },
+  {
+    "slug": "corporates",
+    "label": "Corporates"
+  },
+  {
+    "slug": "corruption",
+    "label": "Corruption"
+  },
+  {
+    "slug": "democracy",
+    "label": "Democracy"
+  },
+  {
+    "slug": "displacement-and-migration",
+    "label": "Displacement and Migration"
+  },
+  {
+    "slug": "ecology-environment-land",
+    "label": "Ecology/Environment/Land"
+  },
+  {
+    "slug": "farmers",
+    "label": "Farmers"
+  },
+  {
+    "slug": "fascism",
+    "label": "Fascism"
+  },
+  {
+    "slug": "feminism-and-patriarchy",
+    "label": "Feminism and Patriarchy"
+  },
+  {
+    "slug": "freedom-of-speech",
+    "label": "Freedom of Speech"
+  },
+  {
+    "slug": "lgbtqi-plus",
+    "label": "LGBTQI+"
+  },
+  {
+    "slug": "muslim-identity",
+    "label": "Muslim Identity"
+  },
+  {
+    "slug": "nationalism",
+    "label": "Nationalism"
+  },
+  {
+    "slug": "palestine",
+    "label": "Palestine"
+  },
+  {
+    "slug": "political-prisoners",
+    "label": "Political Prisoners"
+  },
+  {
+    "slug": "revolutionaries",
+    "label": "Revolutionaries"
+  },
+  {
+    "slug": "sir-election-commission",
+    "label": "SIR/Election Commission"
+  },
+  {
+    "slug": "student-politics",
+    "label": "Student Politics"
+  },
+  {
+    "slug": "unemployment",
+    "label": "Unemployment"
+  },
+  {
+    "slug": "uniform-civil-code",
+    "label": "Uniform Civil Code"
+  },
+  {
+    "slug": "workers",
+    "label": "Workers"
+  },
+  {
+    "slug": "miscellaneous",
+    "label": "Miscellaneous"
+  }
+]

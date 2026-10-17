@@ -1,8 +1,16 @@
 {
+  "categories": ["democracy"],
+  "tags": ["solidarity", "mutual aid"],
+  "kind": "poster-placard",
+  "imageCode": "1q",
+  "captionCode": "2a",
+  "aiUse": "generated",
+  "aiDisclosure": "Original AI-assisted vector placeholder created for site testing. This is not a curated human submission or a contribution by a real artist.",
   "slug": "we-are-still-here",
   "title": "We are still here",
   "languages": ["English"],
-  "artist": "mirafra-type-lab",
+  "translations": {},
+  "artist": "wet-ink-workshop",
   "year": 2026,
   "themes": ["Solidarity"],
   "movements": ["Mutual aid"],
@@ -13,43 +21,82 @@
       "format": "PDF",
       "size": "A4",
       "path": "/posters/we-are-still-here/A4.pdf",
-      "bytes": 27654
+      "bytes": 38495
     },
     {
       "format": "PDF",
       "size": "A3",
       "path": "/posters/we-are-still-here/A3.pdf",
-      "bytes": 27720
+      "bytes": 38525
     },
     {
       "format": "PDF",
       "size": "A2",
       "path": "/posters/we-are-still-here/A2.pdf",
-      "bytes": 27653
+      "bytes": 38493
     },
     {
       "format": "PDF",
       "size": "18x24",
       "path": "/posters/we-are-still-here/18x24.pdf",
-      "bytes": 27624
+      "bytes": 38388
     },
     {
       "format": "PNG",
       "size": "A3",
       "path": "/posters/we-are-still-here/A3.png",
-      "bytes": 541192
+      "bytes": 561062,
+      "dpi": 300,
+      "pixelWidth": 3508,
+      "pixelHeight": 4961
+    },
+    {
+      "format": "PNG",
+      "size": "A4",
+      "path": "/posters/we-are-still-here/A4.png",
+      "bytes": 472490,
+      "dpi": 300,
+      "pixelWidth": 2480,
+      "pixelHeight": 3508
+    },
+    {
+      "format": "JPEG",
+      "size": "A4",
+      "path": "/posters/we-are-still-here/A4.jpg",
+      "bytes": 410776,
+      "dpi": 300,
+      "pixelWidth": 2480,
+      "pixelHeight": 3508
+    },
+    {
+      "format": "PNG",
+      "size": "A2",
+      "path": "/posters/we-are-still-here/A2.png",
+      "bytes": 1251905,
+      "dpi": 300,
+      "pixelWidth": 4961,
+      "pixelHeight": 7016
+    },
+    {
+      "format": "JPEG",
+      "size": "A2",
+      "path": "/posters/we-are-still-here/A2.jpg",
+      "bytes": 1009094,
+      "dpi": 300,
+      "pixelWidth": 4961,
+      "pixelHeight": 7016
     },
     {
       "format": "SVG",
       "size": "A3",
       "path": "/posters/we-are-still-here/source.svg",
-      "bytes": 60342
+      "bytes": 87946
     },
     {
       "format": "ZIP",
       "size": "Bundle",
       "path": "/posters/we-are-still-here/bundle.zip",
-      "bytes": 45318
+      "bytes": 63571
     }
   ],
   "license": "CC0-1.0",
@@ -57,9 +104,9 @@
   "allowsDerivatives": true,
   "commercialUseAllowed": true,
   "source": "/poster/we-are-still-here/",
-  "artistUrl": "/artist/mirafra-type-lab/",
-  "alt": "Signal-red typographic print reading â€œWE ARE STILL HEREâ€, with an angular starburst and a clearly marked placeholder credit.",
-  "caption": "Original vector study authored for the Mirafra rebuild. Placeholder artwork, free under CC0; not a contribution by a real artist.",
+  "artistUrl": "/artist/wet-ink-workshop/",
+  "alt": "Signal-red typographic print reading “WE ARE STILL HERE”, with an angular starburst and a clearly marked placeholder credit.",
+  "caption": "Original vector study authored for the Red Lark Workshop rebuild. Placeholder artwork, free under CC0; not a contribution by a real artist.",
   "remixable": true,
   "placeholder": true,
   "preview": "/posters/we-are-still-here/preview.webp",
@@ -88,7 +135,7 @@
         "credit": {
           "id": "we-are-still-here",
           "title": "We are still here",
-          "artist": "Mirafra Type Lab",
+          "artist": "The Wet Ink Workshop",
           "license": "CC0-1.0",
           "source": "/poster/we-are-still-here/"
         }
@@ -111,7 +158,7 @@
         "credit": {
           "id": "we-are-still-here",
           "title": "We are still here",
-          "artist": "Mirafra Type Lab",
+          "artist": "The Wet Ink Workshop",
           "license": "CC0-1.0",
           "source": "/poster/we-are-still-here/"
         }
@@ -134,7 +181,7 @@
         "credit": {
           "id": "we-are-still-here",
           "title": "We are still here",
-          "artist": "Mirafra Type Lab",
+          "artist": "The Wet Ink Workshop",
           "license": "CC0-1.0",
           "source": "/poster/we-are-still-here/"
         }

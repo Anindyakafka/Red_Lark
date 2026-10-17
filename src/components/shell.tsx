@@ -1,27 +1,38 @@
-import Link from "next/link";
+import { Link, UiText, LanguageSwitcher } from "@/i18n/client";
 import Image from "next/image";
 import { Preferences } from "./preferences";
+import { REPO_URL } from "@/config/site";
 export function Header() {
   return (
     <header className="site-header">
       <div className="masthead">
-        <Link prefetch={false} className="wordmark" href="/" aria-label="Mirafra home">
+        <Link prefetch={false} className="wordmark" href="/" aria-label="Red Lark Workshop home">
           <Image src="/icons/mark.svg" alt="" width={32} height={32} />
-          MIRAFRA<span className="edition">[FREE PRINT ARCHIVE]</span>
+          <UiText id={"RED LARK WORKSHOP"} />
+          <span className="edition">
+            <UiText id={"[FREE PRINT ARCHIVE]"} />
+          </span>
         </Link>
-        <Preferences />
+        <div className="header-controls">
+          <Link className="account-link" href="/account">
+            <UiText id="Account" />
+          </Link>
+          <LanguageSwitcher />
+          <Preferences />
+        </div>
       </div>
       <nav aria-label="Main navigation">
         {[
           ["Collection", "/collection"],
-          ["Discover", "/discover"],
+          ["Categories", "/categories"],
           ["Artists", "/artists"],
           ["Studio", "/studio"],
           ["Community", "/community"],
+          ["Blog", "/blog"],
           ["About", "/about"],
         ].map(([name, href]) => (
           <Link key={href} href={href} prefetch={false}>
-            {name}
+            <UiText id={name} />
           </Link>
         ))}
       </nav>
@@ -33,43 +44,48 @@ export function Footer() {
     <footer className="site-footer">
       <div>
         <Link className="footer-mark" href="/">
-          MIRAFRA [01]
+          <UiText id={"RED LARK WORKSHOP [01]"} />
         </Link>
-        <p>FREE TO FIND. YOURS TO PRINT.</p>
         <p>
-          Original placeholder studies, 2026.
+          <UiText id={"FREE TO FIND. YOURS TO PRINT."} />
+        </p>
+        <p>
+          <UiText id={"Original placeholder studies, 2026."} />
           <br />
-          Real artist contributions are still to come.
+          <UiText id={"Real artist contributions are still to come."} />
         </p>
       </div>
       <nav aria-label="Footer navigation">
         <Link prefetch={false} href="/submit">
-          Submit a poster
+          <UiText id={"Submit a poster"} />
         </Link>
         <Link prefetch={false} href="/contact">
-          Contact / takedown
+          <UiText id={"Contact / takedown"} />
         </Link>
         <Link prefetch={false} href="/privacy">
-          How we handle data
+          <UiText id={"How we handle data"} />
         </Link>
         <Link prefetch={false} href="/terms">
-          Terms & licences
+          <UiText id={"Terms & licences"} />
         </Link>
-        <Link prefetch={false} href="/themes">
-          Themes & movements
+        <Link href="/policies">
+          <UiText id="Policies & guidelines" />
+        </Link>
+        <Link prefetch={false} href="/categories">
+          <UiText id={"Categories"} />
         </Link>
         <Link prefetch={false} href="/about">
-          About / support artists
+          <UiText id={"About / support artists"} />
         </Link>
       </nav>
       <p className="footer-credit">
-        An open archive built for public walls.
+        <UiText id={"An open archive built for public walls."} />
         <br />
-        Software:{" "}
-        <a href="https://github.com/Anindyakafka/mirafra" rel="noreferrer">
-          AGPL source ↗
+        <UiText id={"Software:"} />{" "}
+        <a href={REPO_URL} rel="noreferrer">
+          <UiText id={"AGPL source ↗"} />
         </a>{" "}
-        · Artwork: see each licence.
+        <UiText id={"· Artwork: see each licence."} />
       </p>
     </footer>
   );

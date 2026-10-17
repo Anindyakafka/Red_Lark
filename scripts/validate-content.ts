@@ -1,8 +1,13 @@
 import fs from "node:fs";
 import path from "node:path";
 import { LICENSES, type Artist, type Poster } from "../src/lib/types";
-import { validatePoster } from "../src/lib/validate";
+import { validatePoster, validateArtist } from "../src/lib/validate";
 import { resolveSiteOrigin } from "../src/lib/site-origin";
+import { CONTACT_EMAIL } from "../src/config/site";
+import images from "../content/studio/images.json";
+import captions from "../content/studio/captions.json";
+import { canRemix } from "../src/lib/licenses";
+import { validateBlog } from "../src/lib/blog.server";
 if (fs.existsSync(".env.local")) process.loadEnvFile(".env.local");
 
 const read = <T>(dir: string): T[] =>
@@ -15,6 +20,7 @@ const posters = read<Poster>("content/posters");
 const community: unknown = JSON.parse(fs.readFileSync("content/community.json", "utf8"));
 const errors: string[] = [];
 for (const artist of artists) {
+  errors.push(...validateArtist(artist).map((error) => `${artist.id}: ${error}`));
   if (!artist.id || !artist.name || !artist.bio || !Array.isArray(artist.links))
     errors.push(`Invalid artist ${artist.id}`);
   for (const link of artist.links ?? [])
@@ -45,6 +51,27 @@ for (const [label, ids] of [
 ] as const)
   if (new Set(ids).size !== ids.length) errors.push(`Duplicate ${label} identifiers`);
 if (!posters.length) errors.push("Archive has no posters");
+for (const assets of [images, captions]) {
+  if (new Set(assets.map((asset) => asset.code)).size !== assets.length)
+    errors.push("Duplicate Studio library code");
+  for (const asset of assets) {
+    const poster = posters.find((poster) => poster.slug === asset.workSlug);
+    if (!poster || !canRemix(poster))
+      errors.push(`Studio asset ${asset.code} lacks a remix-eligible source`);
+    else if ("layerIds" in asset) {
+      if (
+        asset.code !== poster.imageCode ||
+        !asset.layerIds.length ||
+        asset.layerIds.some(
+          (id) =>
+            !poster.studioLayers?.layers.some((layer) => layer.id === id && layer.kind !== "text"),
+        )
+      )
+        errors.push(`Invalid image library entry ${asset.code}`);
+    } else if (asset.code !== poster.captionCode || !asset.text.trim())
+      errors.push(`Invalid caption library entry ${asset.code}`);
+  }
+}
 if (
   !Array.isArray(community) ||
   !community.every(
@@ -56,14 +83,16 @@ if (errors.length) {
   console.error(errors.join("\n"));
   process.exit(1);
 }
+await validateBlog();
 fs.mkdirSync("src/generated", { recursive: true });
 fs.writeFileSync("src/generated/catalog.json", JSON.stringify({ posters, artists }));
 fs.writeFileSync("src/generated/artists.json", JSON.stringify(artists));
-if (!process.env.CONTACT_EMAIL)
+const effectiveContact = process.env.CONTACT_EMAIL ?? CONTACT_EMAIL;
+if (!effectiveContact)
   console.warn(
     "[HUMAN CONFIGURATION] CONTACT_EMAIL is unset. Contact and submission delivery are unavailable; see docs/TODO_HUMAN.md.",
   );
-else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(process.env.CONTACT_EMAIL))
+else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(effectiveContact))
   throw new Error("CONTACT_EMAIL must be a real, valid mailbox address");
 if (new URL(resolveSiteOrigin(process.env)).hostname === "localhost")
   console.warn(

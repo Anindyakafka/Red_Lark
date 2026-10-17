@@ -32,7 +32,7 @@ test("analytics respects DNT, blocks off-origin endpoints and omits design data"
     Object.defineProperty(globalThis, "window", { value: {}, configurable: true });
     Object.defineProperty(globalThis, "location", {
       value: {
-        origin: "https://mirafra.test",
+        origin: "https://redlark.test",
         pathname: "/studio/",
         search: "?private=secret",
         hash: "#design=secret",
@@ -50,7 +50,7 @@ test("analytics respects DNT, blocks off-origin endpoints and omits design data"
       },
       configurable: true,
     });
-    process.env.NEXT_PUBLIC_ANALYTICS_DOMAIN = "mirafra.test";
+    process.env.NEXT_PUBLIC_ANALYTICS_DOMAIN = "redlark.test";
     process.env.NEXT_PUBLIC_ANALYTICS_ENDPOINT = "/analytics/event";
     track("pageview");
     assert.equal(calls.length, 0);
@@ -71,6 +71,16 @@ test("analytics respects DNT, blocks off-origin endpoints and omits design data"
     process.env.NEXT_PUBLIC_ANALYTICS_ENDPOINT = "https://tracker.invalid/api";
     track("pageview");
     assert.equal(calls.length, 3);
+    for (const endpoint of [
+      "//tracker.invalid/api",
+      "/\\tracker.invalid/api",
+      "/analytics/event?identifier=blocked",
+      "/analytics/event#blocked",
+    ]) {
+      process.env.NEXT_PUBLIC_ANALYTICS_ENDPOINT = endpoint;
+      track("pageview");
+      assert.equal(calls.length, 3);
+    }
     delete process.env.NEXT_PUBLIC_ANALYTICS_DOMAIN;
     track("pageview");
     assert.equal(calls.length, 3);

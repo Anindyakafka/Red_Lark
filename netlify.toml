@@ -5,7 +5,12 @@
 
 [build.environment]
   NODE_VERSION = "24"
+  NEXT_TELEMETRY_DISABLED = "1"
   # Serve the static export without the server-rendering adapter/functions.
   NETLIFY_NEXT_PLUGIN_SKIP = "true"
 
 # Security and cache headers live in public/_headers, copied into out/ at build.
+
+[[edge_functions]]
+  function = "language"
+  path = "/*"

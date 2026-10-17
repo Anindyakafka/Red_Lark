@@ -1,15 +1,16 @@
 type EventName = "pageview" | "poster-download" | "studio-export";
-export function track(name: EventName) {
+export function analyticsConfiguration() {
   const endpoint = process.env.NEXT_PUBLIC_ANALYTICS_ENDPOINT;
   const domain = process.env.NEXT_PUBLIC_ANALYTICS_DOMAIN;
-  if (
-    typeof window === "undefined" ||
-    !endpoint ||
-    !domain ||
-    !/^\/(?!\/)/.test(endpoint) ||
-    navigator.doNotTrack === "1"
-  )
-    return;
+  if (!endpoint || !domain || !/^\/(?![\/\\])/.test(endpoint)) return null;
+  const parsed = new URL(endpoint, "https://validation.invalid");
+  if (parsed.origin !== "https://validation.invalid" || parsed.search || parsed.hash) return null;
+  return { endpoint, domain };
+}
+export function track(name: EventName) {
+  const configuration = analyticsConfiguration();
+  if (typeof window === "undefined" || !configuration || navigator.doNotTrack === "1") return;
+  const { endpoint, domain } = configuration;
   const url = `${location.origin}${location.pathname}`; // Never query strings, fragments, content, or designs.
   void fetch(endpoint, {
     method: "POST",

@@ -1,5 +1,6 @@
 import artistData from "@/generated/artists.json" with { type: "json" };
 import type { Artist, Poster } from "./types";
+import categories from "../../content/categories.json" with { type: "json" };
 export const artists = artistData as Artist[];
 const artistFor = (id: string) => artists.find((a) => a.id === id);
 export function fileSize(bytes: number) {
@@ -7,6 +8,8 @@ export function fileSize(bytes: number) {
 }
 export interface Filters {
   query: string;
+  category: string;
+  kind: string;
   format: string;
   theme: string;
   movement: string;
@@ -19,6 +22,8 @@ export interface Filters {
 }
 export const emptyFilters: Filters = {
   query: "",
+  category: "",
+  kind: "",
   format: "",
   theme: "",
   movement: "",
@@ -30,7 +35,7 @@ export const emptyFilters: Filters = {
   saved: false,
 };
 export function filterPosters(items: Poster[], f: Filters, saved: string[] = []) {
-  const terms = f.query.trim().toLocaleLowerCase().split(/\s+/).filter(Boolean);
+  const terms = f.query.normalize("NFC").trim().toLocaleLowerCase().split(/\s+/).filter(Boolean);
   return items
     .filter((p) => {
       const hay = [
@@ -41,11 +46,20 @@ export function filterPosters(items: Poster[], f: Filters, saved: string[] = [])
         ...p.themes,
         ...p.movements,
         ...p.languages,
+        ...(p.categories ?? []),
+        ...(p.categories ?? []).map(
+          (slug) => categories.find((category) => category.slug === slug)?.label ?? slug,
+        ),
+        ...(p.tags ?? []),
+        ...Object.values(p.translations ?? {}).flatMap((v) => [v.title, v.caption, ...v.tags]),
       ]
         .join(" ")
+        .normalize("NFC")
         .toLocaleLowerCase();
       return (
         terms.every((t) => hay.includes(t)) &&
+        (!f.category || p.categories?.includes(f.category)) &&
+        (!f.kind || p.kind === f.kind) &&
         (!f.format || p.formats.some((v) => v.format === f.format)) &&
         (!f.theme || p.themes.includes(f.theme)) &&
         (!f.movement || p.movements.includes(f.movement)) &&

@@ -1,0 +1,50 @@
+{
+  "purpose": "Combined native-language navigation label and exact current placeholder-title subsets; full UI script fonts remain unchanged",
+  "sourceProvenance": "provenance.json",
+  "licenses": "Matching noto-sans-{script}-full-OFL.txt files",
+  "method": "fontTools static instantiation wght=400 wdth=100; exact text subset with all layout_features=* and default GSUB closure; GSUB/GPOS retained; WOFF2 Brotli",
+  "verification": "Microsoft Edge headless canvas render at 48px: each complete phrase is pixel-identical and has identical measured width to full source TTF",
+  "results": [
+    {
+      "script": "devanagari",
+      "text": "हिन्दी सबके लिए दुनिया",
+      "width": 401.183837890625,
+      "pixelsIdentical": true
+    },
+    {
+      "script": "bengali",
+      "text": "বাংলা বিশ্রামের অধিকার",
+      "width": 463.87176513671875,
+      "pixelsIdentical": true
+    },
+    {
+      "script": "malayalam",
+      "text": "മലയാളം ഒരുമിച്ച് പണിയാം",
+      "width": 629.2318115234375,
+      "pixelsIdentical": true
+    }
+  ],
+  "files": [
+    {
+      "file": "noto-sans-devanagari-archive.woff2",
+      "text": "हिन्दी सबके लिए दुनिया",
+      "bytes": 5380,
+      "sourceFont": "noto-sans-devanagari-full.ttf",
+      "sha256": "5873b48d203de0b8f5776e213fc8c23f0ae046cf7ab8d500b953ba3e3fc2afdf"
+    },
+    {
+      "file": "noto-sans-bengali-archive.woff2",
+      "text": "বাংলা বিশ্রামের অধিকার",
+      "bytes": 7616,
+      "sourceFont": "noto-sans-bengali-full.ttf",
+      "sha256": "eae7d39041ccf681c642a6de5ebbc71f1cb316685efb03839918eeb6ea2d788e"
+    },
+    {
+      "file": "noto-sans-malayalam-archive.woff2",
+      "text": "മലയാളം ഒരുമിച്ച് പണിയാം",
+      "bytes": 4552,
+      "sourceFont": "noto-sans-malayalam-full.ttf",
+      "sha256": "2d37f2f3c0b7133e373056ea3ccc275cfb08b179776601c810c59096a65d362a"
+    }
+  ]
+}

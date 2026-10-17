@@ -13,6 +13,7 @@ export default defineConfig([
   },
   globalIgnores([
     ".next/**",
+    ".qa/**",
     "out/**",
     "node_modules/**",
     ".npm-cache/**",
@@ -21,5 +22,7 @@ export default defineConfig([
     "test-results/**",
     "src/generated/**",
     "next-env.d.ts",
+    // Unmodified, pinned upstream runtime with its own licence and provenance.
+    "public/shaping/**",
   ]),
 ]);

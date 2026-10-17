@@ -1,4 +1,5 @@
 import Image from "next/image";
+import { preload } from "react-dom";
 import type { Poster } from "@/lib/types";
 export function PosterImage({
   poster,
@@ -9,6 +10,16 @@ export function PosterImage({
   priority?: boolean;
   large?: boolean;
 }) {
+  if (large && priority)
+    preload(poster.preview.replace("preview.webp", "preview-400.avif"), {
+      as: "image",
+      type: "image/avif",
+      fetchPriority: "high",
+      imageSrcSet: [240, 400, 700]
+        .map((w) => `${poster.preview.replace("preview.webp", `preview-${w}.avif`)} ${w}w`)
+        .join(", "),
+      imageSizes: "(max-width: 768px) 94vw, 48vw",
+    });
   return (
     <picture style={{ backgroundColor: poster.dominantColor }}>
       <source

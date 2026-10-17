@@ -1,9 +1,17 @@
 {
+  "categories": ["miscellaneous"],
+  "tags": ["accessibility", "disability justice"],
+  "kind": "poster-placard",
+  "imageCode": "1o",
+  "captionCode": "2q",
+  "aiUse": "generated",
+  "aiDisclosure": "Original AI-assisted vector placeholder created for site testing. This is not a curated human submission or a contribution by a real artist.",
   "slug": "take-up-space",
   "title": "Take up space",
   "languages": ["English"],
-  "artist": "mirafra-print-lab",
-  "year": 2024,
+  "translations": {},
+  "artist": "wet-ink-workshop",
+  "year": 2026,
   "themes": ["Accessibility"],
   "movements": ["Disability justice"],
   "colorMode": "color",
@@ -13,43 +21,82 @@
       "format": "PDF",
       "size": "A4",
       "path": "/posters/take-up-space/A4.pdf",
-      "bytes": 61786
+      "bytes": 72619
     },
     {
       "format": "PDF",
       "size": "A3",
       "path": "/posters/take-up-space/A3.pdf",
-      "bytes": 61813
+      "bytes": 72661
     },
     {
       "format": "PDF",
       "size": "A2",
       "path": "/posters/take-up-space/A2.pdf",
-      "bytes": 61788
+      "bytes": 72617
     },
     {
       "format": "PDF",
       "size": "18x24",
       "path": "/posters/take-up-space/18x24.pdf",
-      "bytes": 61728
+      "bytes": 72517
     },
     {
       "format": "PNG",
       "size": "A3",
       "path": "/posters/take-up-space/A3.png",
-      "bytes": 715560
+      "bytes": 734867,
+      "dpi": 300,
+      "pixelWidth": 3508,
+      "pixelHeight": 4961
+    },
+    {
+      "format": "PNG",
+      "size": "A4",
+      "path": "/posters/take-up-space/A4.png",
+      "bytes": 849389,
+      "dpi": 300,
+      "pixelWidth": 2480,
+      "pixelHeight": 3508
+    },
+    {
+      "format": "JPEG",
+      "size": "A4",
+      "path": "/posters/take-up-space/A4.jpg",
+      "bytes": 894358,
+      "dpi": 300,
+      "pixelWidth": 2480,
+      "pixelHeight": 3508
+    },
+    {
+      "format": "PNG",
+      "size": "A2",
+      "path": "/posters/take-up-space/A2.png",
+      "bytes": 1863980,
+      "dpi": 300,
+      "pixelWidth": 4961,
+      "pixelHeight": 7016
+    },
+    {
+      "format": "JPEG",
+      "size": "A2",
+      "path": "/posters/take-up-space/A2.jpg",
+      "bytes": 1919954,
+      "dpi": 300,
+      "pixelWidth": 4961,
+      "pixelHeight": 7016
     },
     {
       "format": "SVG",
       "size": "A3",
       "path": "/posters/take-up-space/source.svg",
-      "bytes": 84696
+      "bytes": 112397
     },
     {
       "format": "ZIP",
       "size": "Bundle",
       "path": "/posters/take-up-space/bundle.zip",
-      "bytes": 72470
+      "bytes": 90870
     }
   ],
   "license": "CC0-1.0",
@@ -57,9 +104,9 @@
   "allowsDerivatives": true,
   "commercialUseAllowed": true,
   "source": "/poster/take-up-space/",
-  "artistUrl": "/artist/mirafra-print-lab/",
-  "alt": "Off-white typographic print reading â€œTAKE UP SPACEâ€, with an array of halftone dots and a clearly marked placeholder credit.",
-  "caption": "Original vector study authored for the Mirafra rebuild. Placeholder artwork, free under CC0; not a contribution by a real artist.",
+  "artistUrl": "/artist/wet-ink-workshop/",
+  "alt": "Off-white typographic print reading “TAKE UP SPACE”, with an array of halftone dots and a clearly marked placeholder credit.",
+  "caption": "Original vector study authored for the Red Lark Workshop rebuild. Placeholder artwork, free under CC0; not a contribution by a real artist.",
   "remixable": true,
   "placeholder": true,
   "preview": "/posters/take-up-space/preview.webp",
@@ -88,7 +135,7 @@
         "credit": {
           "id": "take-up-space",
           "title": "Take up space",
-          "artist": "Mirafra Print Lab",
+          "artist": "The Wet Ink Workshop",
           "license": "CC0-1.0",
           "source": "/poster/take-up-space/"
         }
@@ -111,7 +158,7 @@
         "credit": {
           "id": "take-up-space",
           "title": "Take up space",
-          "artist": "Mirafra Print Lab",
+          "artist": "The Wet Ink Workshop",
           "license": "CC0-1.0",
           "source": "/poster/take-up-space/"
         }
@@ -134,7 +181,7 @@
         "credit": {
           "id": "take-up-space",
           "title": "Take up space",
-          "artist": "Mirafra Print Lab",
+          "artist": "The Wet Ink Workshop",
           "license": "CC0-1.0",
           "source": "/poster/take-up-space/"
         }

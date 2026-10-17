@@ -34,11 +34,18 @@ for (const file of html) {
     const url = m[1];
     if (url.startsWith("//") || url === "/") continue;
     const target = path.join("out", decodeURIComponent(url));
-    if (!fs.existsSync(target) && !fs.existsSync(path.join(target, "index.html")))
+    if (
+      !fs.existsSync(target) &&
+      !fs.existsSync(path.join(target, "index.html")) &&
+      !fs.existsSync(path.join("out/en", decodeURIComponent(url), "index.html"))
+    )
       errors.push(`${file}: broken internal URL ${url}`);
   }
   for (const m of source.matchAll(/<img\b[^>]*>/g))
     if (!/\balt="/.test(m[0])) errors.push(`${file}: image without alt`);
+  for (const resource of source.matchAll(/<(?:img|source|script|iframe|object|embed)\b[^>]*>/g))
+    if (/\b(?:src|srcset|data)="(?:https?:|\/\/)/i.test(resource[0]))
+      errors.push(`${file}: active assets must be self-hosted with local paths`);
 }
 if (errors.length) {
   console.error([...new Set(errors)].join("\n"));

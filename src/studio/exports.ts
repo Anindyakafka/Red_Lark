@@ -92,7 +92,7 @@ export async function exportFile(
   format: "SVG" | "PNG" | "PDF" | "TILED" | "SEPARATIONS",
 ) {
   const license = assertExportable(scene);
-  const base = `mirafra-${scene.preset.toLowerCase()}`;
+  const base = `redlark-${scene.preset.toLowerCase()}`;
   const svg = sceneSvg(scene, fonts);
   if (format === "SVG") download(new Blob([svg], { type: "image/svg+xml" }), `${base}.svg`);
   else if (format === "PNG") {
@@ -150,17 +150,17 @@ export async function exportFile(
           pdf.restoreGraphicsState();
           pdf.setFontSize(7);
           pdf.text(
-            `Mirafra / tile ${col + 1},${row + 1} of ${columns},${rows} / print 100% / trim at 10mm`,
+            `Red Lark Workshop / tile ${col + 1},${row + 1} of ${columns},${rows} / print 100% / trim at 10mm`,
             10,
             293,
           );
         }
     } else await pdf.svg(node, { x: 0, y: 0, width, height });
     pdf.setProperties({
-      title: "Mirafra composition",
+      title: "Red Lark Workshop composition",
       subject: `Source permissions: ${license}. See credit strip for adaptation and user-image rights.`,
       author: "See source credit strip",
-      keywords: "Mirafra, browser-only, outlined vector type",
+      keywords: "Red Lark Workshop, browser-only, outlined vector type",
     });
     download(pdf.output("blob"), `${base}${format === "TILED" ? "-a4-tiles" : ""}.pdf`);
   }

@@ -1,6 +1,6 @@
 ﻿# RED LARK WORKSHOP: current audit
 
-Audited 16 October 2026. This checkpoint is documentation only. Supabase implementation is on hold at the owner's request.
+Initial audit: 16 October 2026, before implementation. Findings below preserve that starting point; implementation decisions are updated at the end. Supabase implementation remains on hold at the owner's request.
 
 ## Current system
 
@@ -34,3 +34,19 @@ The required httpOnly sessions need browser-to-same-origin server endpoints and 
 Serve public graphics and private authorized reviews through the site origin; ordinary visitors should not contact storage/auth/mail providers directly. Sanitize uploads server-side even after local metadata stripping.
 
 The application can avoid raw IP storage; hosting/auth/mail providers may log independently. Verify retention/configuration before promising blanket no-IP storage. Future rate limits use daily HMAC keys, short TTL and prompt purge. Region, retention, mail-domain verification and legal review are human decisions before activation.
+
+## Implemented public architecture, M1-M6
+
+The public site remains a Next static export with four locale trees and a small Netlify Edge function. A full SSR adapter is unnecessary for this phase: Edge negotiates Accept-Language without cookies, redirects legacy taxonomy URLs and returns real localized 404 responses. It applies security headers explicitly to its responses. The local preview mirrors this behavior. The future private account/API phase still requires a server runtime and removal of static-only assumptions for those endpoints.
+
+Retained the working, typed SVG scene engine rather than replacing it with a canvas dependency. Shapes and outlined typography give crisp vector PDF/SVG exports; raster exports use real paper dimensions at 300 DPI. Labelled controls/layer lists provide keyboard alternatives. HarfBuzz shapes self-hosted Noto Indic fonts for exports: direct fontkit shaping failed a real Malayalam probe, so it was rejected. Fonts/runtime load only in the lazy editor after format selection. Browser UI uses safely subsetted local fonts; glyph/position and browser-pixel parity evidence is stored with provenance. Unsupported mixed scripts produce a recoverable message and can use separate text layers.
+
+Canonical English is file-based and independently locked; other locales carry reviewed:false. Categories and artwork formats are distinct from download file formats. Source-derived licence flags, ND gates and ShareAlike credit composition remain enforced. Image/caption libraries reference actual eligible source works and layer IDs, with build-time validation. Artist public email and UPI each need explicit consent; unconsented fields are rejected before publication.
+
+The owner supplied the real team inbox. Current contact/submission forms prepare email in the visitor's own app, never claim delivery and have no server database. No Supabase SDK/schema/roles/storage, accounts, auth cookies, review queue or mail provider has been implemented. The site uses only necessary browser-local features, with a visible data notice; no consent banner is needed for the present configuration. Optional cookieless analytics stays disabled unless configured through a same-origin proxy and respects DNT. Provider logging/retention and all legal drafts still require human review.
+
+## Implemented public editorial architecture, M9
+
+Trusted, checked-in MDX is compiled at build time, never from visitor content. Two explicitly fictional/placeholder editorial outlines have four locale versions, review flags, tags, unique metadata and static RSS feeds. Policies use validated JSON and the unchanged canonical AI copy; untranslated legal text visibly falls back to English. About reuses the supplied mission and objectives. Contact topics now cover joining, commissions, takedowns and problem reports, while retaining honest email-app handoff.
+
+Analytics configuration is validated as same-origin and documented accurately in privacy. Public analytics domain configuration is explicitly allow-listed; reserved backend secrets are never exposed. Dependency review upgraded the PDF exporter and image tooling; production audit has zero vulnerabilities. A development-only, currently unpatched upstream glob-parser advisory is documented in DEPENDENCIES.md, without a forced framework downgrade.

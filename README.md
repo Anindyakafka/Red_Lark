@@ -1,12 +1,14 @@
-# RED LARK WORKSHOP — planning branch
+# RED LARK WORKSHOP
 
-The `redlark` branch currently contains the audit and staged plan for the new brief. Application branding and behaviour are still the previous implementation. Supabase-dependent implementation is explicitly on hold; this is not a completed account/upload/admin/mail release.
+The `redlark` branch contains the public-site rebuild: original identity, four locale routes, a verbatim landing narrative, category/format archive, print-first item pages, a private coded-source Studio, localized placeholder blog/RSS and draft policies. The archive, downloads and Studio work without accounts. Supabase-dependent accounts, uploads, review/database and server mail remain explicitly on hold; account routes show honest unavailable notices.
 
-Start with [AUDIT](docs/AUDIT.md), [PLAN](docs/PLAN.md), [COPY_QUESTIONS](docs/COPY_QUESTIONS.md) and [human prerequisites](docs/TODO_HUMAN.md). Recommended independent work: M1-M5, M6 CREATE and public M9 content. This checkpoint stops after planning; it does not configure provider resources or change the live deployment.
+See [AUDIT](docs/AUDIT.md), [PLAN](docs/PLAN.md), [COPY_QUESTIONS](docs/COPY_QUESTIONS.md) and [human prerequisites](docs/TODO_HUMAN.md) for milestone status. No provider resources or live deployment have been changed.
 
-## Existing application setup
+Final public checkpoint: 37 unit tests and 88 browser tests pass, including 336 locale-page accessibility checks. English/Hindi key-route Lighthouse performance medians are 96–98, with 100 in Accessibility, Best Practices and SEO. See [iterations and retained evidence](docs/ITERATIONS.md). Backend account/upload/admin/mail acceptance remains held, not completed.
 
-A free, open protest-poster archive and a private, browser-only poster-making Studio. Built on the **rebuild** branch with Next.js App Router, strict TypeScript, Tailwind 4, self-hosted fonts and file-based content. No accounts or database.
+## Application setup
+
+A free, open protest-poster archive and a private, browser-only poster-making Studio. Built with Next.js App Router, strict TypeScript, Tailwind 4, self-hosted fonts and file-based content. Public pages are statically exported; a small Netlify Edge function handles language negotiation and localized missing pages.
 
 ## Run locally
 
@@ -17,7 +19,7 @@ npm ci
 npm run dev
 ```
 
-Open http://localhost:3000. For the deployable static build:
+Open http://localhost:3000/en/ (or /hi/, /bn/, /ml/). Development root shows a language chooser; Netlify and the static preview negotiate Accept-Language without cookies. For the deployable static build:
 
 ```sh
 npm run build
@@ -28,19 +30,24 @@ The export is in out/. The build also emits physical Next segment-file aliases f
 
 ## Scripts
 
-| Command                       | Purpose                                                                        |
-| ----------------------------- | ------------------------------------------------------------------------------ |
-| npm run dev                   | Next.js development server                                                     |
-| npm run typecheck             | Strict TypeScript                                                              |
-| npm run lint                  | ESLint, zero warnings                                                          |
-| npm run format / format:check | Prettier                                                                       |
-| npm run validate:content      | Licence/credit/alt/file validation and generated catalogue                     |
-| npm run build                 | Content validation, Next static export, internal-link/metadata/alt checks      |
-| npm test                      | Scene, licence, search, sharing, history and resolution tests                  |
-| npm run test:e2e              | Playwright every-route smoke/axe + Studio, forms, licence gate and breakpoints |
-| npm run qa:round -- 1         | Screenshot, dark-mode axe and mobile Lighthouse evidence for round 1           |
-| npm run seed                  | Re-author original placeholder assets; not a future-content ingest command     |
-| npm run brand:build           | Historical supplied-logo tracing utility                                       |
+| Command                       | Purpose                                                                                               |
+| ----------------------------- | ----------------------------------------------------------------------------------------------------- |
+| npm run dev                   | Next.js development server                                                                            |
+| npm run typecheck             | Strict TypeScript                                                                                     |
+| npm run lint                  | ESLint, zero warnings                                                                                 |
+| npm run format / format:check | Prettier                                                                                              |
+| npm run validate:content      | Licence/credit/alt/file validation and generated catalogue                                            |
+| npm run build                 | Content validation, Next static export, internal-link/metadata/alt checks                             |
+| npm test                      | Scene, licence, search, sharing, history and resolution tests                                         |
+| npm run test:e2e              | Playwright every-route smoke/axe + Studio, forms, licence gate and breakpoints                        |
+| npm run qa:round -- 12        | English/Malayalam screenshots, axe and en/hi mobile Lighthouse; numbered evidence                     |
+| npm run seed                  | Re-author original placeholder assets; not a future-content ingest command                            |
+| npm run brand:build           | Regenerate original lark, wordmark, favicon set and OG image                                          |
+| npm run test:copy             | Independent verbatim Appendix A source and rendered-text tests                                        |
+| npm run check:brand           | Reject retired branding except the one repository URL constant                                        |
+| npm run check:edge            | Native Edge module loading, language/legacy redirects, static pass-through, localized 404 and headers |
+
+The build runs the native Edge preflight before Next.js. Edge dependencies must use explicit `.ts` extensions and JSON imports must carry `with { type: "json" }`: Netlify bundles this graph using Deno, independently of Next's resolver. CI additionally runs `deno check --no-config netlify/edge-functions/language.ts` and `deno run --no-config --no-npm scripts/check-edge.mjs`. A successful Next export alone does not establish Edge deployment compatibility.
 
 For browser QA on Windows, the config uses installed Microsoft Edge. Set BROWSER_PATH for another Chromium executable. On Linux/macOS run npx playwright install chromium. The ND browser fixture is isolated to the local verification server: run npx tsx scripts/qa-fixture.tsx after building. It is not included in out/ and is not public catalogue content.
 
@@ -48,36 +55,47 @@ For browser QA on Windows, the config uses installed Microsoft Edge. Set BROWSER
 
 Copy .env.example to .env.local for Next builds. Values are baked into the static output; rebuild when they change. Standalone validation/QA commands use shell environment values if configured. Never commit real private credentials.
 
-| Variable                       | Purpose                                                                                            |
-| ------------------------------ | -------------------------------------------------------------------------------------------------- |
-| SITE_URL                       | Optional canonical/OG/sitemap origin override; otherwise uses Netlify deployment URL or localhost  |
-| CONTACT_EMAIL                  | Real monitored contact/takedown inbox. Unset produces a build warning and a visibly unavailable UI |
-| NEXT_PUBLIC_ANALYTICS_DOMAIN   | Optional self-hosted Plausible site identifier                                                     |
-| NEXT_PUBLIC_ANALYTICS_ENDPOINT | Optional same-origin event proxy path; e.g. /analytics/event. No remote script URL                 |
+| Variable                       | Purpose                                                                                           |
+| ------------------------------ | ------------------------------------------------------------------------------------------------- |
+| SITE_URL                       | Optional canonical/OG/sitemap origin override; otherwise uses Netlify deployment URL or localhost |
+| CONTACT_EMAIL                  | Contact/takedown inbox; defaults to the owner-supplied redlarkworkshop@gmail.com                  |
+| NEXT_PUBLIC_ANALYTICS_DOMAIN   | Optional self-hosted Plausible site identifier                                                    |
+| NEXT_PUBLIC_ANALYTICS_ENDPOINT | Optional same-origin event proxy path; e.g. /analytics/event. No remote script URL                |
 
 No contact address or donation destination is invented. Domain, inbox, legal review, permissions, hosting, print approval and optional analytics operation are listed in [TODO_HUMAN](docs/TODO_HUMAN.md).
 
+| Additional variable                          | Purpose/scope                                                                                                               |
+| -------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------- |
+| ANALYTICS_DOMAIN                             | Preferred analytics-domain variable; mapped to the public value at build. Disabled without a valid same-origin endpoint.    |
+| NEXT_TELEMETRY_DISABLED                      | Set to 1; Netlify configuration disables framework build telemetry.                                                         |
+| REPO_URL                                     | Reserved contract; src/config/site.ts's single constant remains authoritative until repository rename.                      |
+| SUPABASE_URL / SUPABASE_ANON_KEY             | Reserved for the held account service; no SDK/connection exists.                                                            |
+| SUPABASE_SERVICE_ROLE_KEY                    | Future server-only secret; never expose through NEXT_PUBLIC/client configuration.                                           |
+| MAIL_PROVIDER_KEY / MAIL_FROM / MAIL_TO_TEAM | Future server-only delivery configuration; requires provider and sender/domain verification. Unused by today's mailto flow. |
+
 ## Routes
 
-/ · /collection · /poster/[slug] · /discover · /artists · /artist/[slug] · /themes · /theme/[slug] · /studio · /community · /submit · /about · /contact · /privacy · /terms · /thank-you · /404 · /search/image · /sitemap.xml · /robots.txt · /site.webmanifest
+Public pages use /en, /hi, /bn or /ml: landing, collection, categories/category/[slug], poster/[slug], discover, artists/artist/[slug], studio, community, submit, blog/blog/[slug], about, policies and policy articles, contact, privacy, terms, thank-you, 404 and search/image. Each locale has feed.xml. Root sitemap.xml, robots.txt and site.webmanifest stay unprefixed. Old themes/theme URLs redirect to categories while preserving locale/query.
+
+Localized /login, /signup, /account, /forgot-password, /reset-password and /admin show noindex service-pending notices. They do not collect credentials or implement account/admin functionality.
 
 Image search is honestly labelled coming soon; no photo is collected. Community is an empty curated gallery until human-reviewed submissions exist. No fabricated posts, artists, support URLs or download counts.
 
 ## Content and licensing
 
-The 18 current posters are **original CC0 placeholder studies**, with clearly invented lab credits. No real artist's work is embedded. Each has editable layers, meaningful alt text, lightweight WebP/AVIF previews, poster-specific OG, SVG source, PDF variants (A4/A3/A2/18x24), an A3 300-PPI PNG and a graphics bundle. Typography in vector files is outlined. PDFs are RGB and no-bleed, not promises of calibrated professional press colour.
+The 18 current posters are **original CC0, AI-assisted vector placeholder studies**, credited to The Wet Ink Workshop and visibly marked. No real artist's work is embedded. Each has editable layers, meaningful alt text, responsive WebP/AVIF previews, poster-specific OG, SVG source, PDF variants (A4/A3/A2/18x24), real A4/A2 300-DPI PNG/JPEG files, an A3 PNG and a graphics bundle. Typography in vector files is outlined. PDFs are RGB and no-bleed, not promises of calibrated professional press colour. Indic studies and translations remain drafts.
 
 Add reviewed content under content/posters/_.json and content/artists/_.json; put files under public/posters/<slug>/. See [content/README](content/README.md). Run validation after changes. The generated index under src/generated is derived, not edited by hand.
 
-Explicit artist credit, source, licence and alt are mandatory. Licence flags are derived from reviewed policy. NoDerivatives works have **no remix button**, cannot enter the Studio shelf and cannot be imported through a shared/remix URL. Remix also needs actual editable layers. ShareAlike source credits survive into outlined credit strips and metadata; incompatible mixtures fail export. Unknown licences fail the build until reviewed. CC0 applies to the placeholder artwork, not the supplied Mirafra logo, branding or fonts.
+Explicit artist credit, source, licence and alt are mandatory. Licence flags are derived from reviewed policy. NoDerivatives works have **no remix button**, cannot enter the Studio shelf and cannot be imported through a shared/remix URL. Remix also needs actual editable layers. ShareAlike source credits survive into outlined credit strips and metadata; incompatible mixtures fail export. Unknown licences fail the build until reviewed. CC0 applies to the placeholder artwork, not the supplied Red Lark Workshop logo, branding or fonts.
 
 ## Studio
 
-The hand-rolled SVG scene is independent of the UI and stored as schema version 2. Add/remove/reorder/lock/hide text, shapes, stamps, halftone, grain and local images. Eligible poster detail links load that poster's real source layers. Shelf additions retain source credits. Drag/resize/rotate, labelled numeric controls, self-hosted typefaces, ink swatches, one/two/three-ink previews, paper presets, snapping, keyboard shortcuts, zoom/pan and mobile tool tabs are provided.
+Choose one of the ten artwork formats, then open the editor. Heavy editor fonts load only after selection; remix/share links open the editor directly. Artwork format describes the material; paper preset controls physical dimensions. The hand-rolled SVG scene uses schema version 2. Add/remove/reorder/lock/hide text, shapes, stamps, halftone, grain and local images. Separate coded image/caption libraries retain source credits and admit only remix-eligible sources. Drag/resize/rotate, labelled numeric controls, self-hosted typefaces, ink swatches, one/two/three-ink previews, paper presets, snapping, keyboard shortcuts, zoom/pan and mobile tool tabs are provided. Native text is shaped with self-hosted HarfBuzz/Noto and outlined; unsupported mixed scripts produce a recoverable error and can use separate layers.
 
 SVG/PDF exports preserve shapes and outlined type. PNG exports use true preset pixels and a 300-PPI physical-resolution chunk for paper presets; Social stays 1080x1350 px. A4 tiled PDF uses 10mm margins and tile labels for home assembly. Ink separation ZIPs are uncalibrated composition previews, not press-ready plates. An automatic small credit strip and licence metadata travels with exports. Source rights are distinguished from user additions: original additions are not automatically dedicated to CC0. ShareAlike adaptations must use the required source licence.
 
-Drafts autosave to localStorage. Start fresh clears the previous draft/history; Restore recovers the draft present when the session opened. No server stores designs. Share links encode compact scene state in the URL fragment; recipients can read it. Links reject uploaded images and oversized state. Local uploads accept JPEG/PNG/WebP/AVIF, discard EXIF/GPS by decoding and re-encoding as PNG and downsample to a maximum dimension of 1800px. This avoids oversized drafts; use original vectors for large prints. Visible image content can still identify people.
+Edits autosave to localStorage. Merely opening the editor or a broken share link does not replace an existing draft. Start fresh explicitly clears the previous draft/history; Restore recovers the draft present when the session opened. No server stores designs. Share links encode compact scene state in the URL fragment; recipients can read it. Links reject uploaded images and oversized state. Local imports accept JPEG/PNG/WebP/AVIF, discard EXIF/GPS by decoding and re-encoding as PNG and downsample to 1800px. Use original vectors for large prints. Visible image content can still identify people.
 
 Keyboard: Ctrl/Cmd+Z undo, Shift+Z redo, Ctrl/Cmd+D duplicate, arrows nudge, Shift+arrows larger nudge, Delete remove, Escape deselect. Locked layers ignore edit/transform/remove commands. Numeric controls and the layer list provide an alternative to pointer precision. Studio code and PDF rendering dependencies are lazy-loaded off the catalogue routes.
 
@@ -93,7 +111,7 @@ Analytics is disabled by default. Optional analytics uses a self-hosted Plausibl
 
 ### Netlify
 
-Import this GitHub repository into Netlify and choose `rebuild` as the production branch while this work lives there (or your release branch after merging). Leave the base directory at the repository root. The committed `netlify.toml` supplies:
+Import this GitHub repository into Netlify and choose `redlark` as the production branch when ready (or your release branch after merging). Leave the base directory at the repository root. The committed `netlify.toml` supplies:
 
 - Build command: `npm run build`
 - Publish directory: `out`
@@ -102,11 +120,11 @@ Import this GitHub repository into Netlify and choose `rebuild` as the productio
 
 Set `CONTACT_EMAIL` to your real monitored inbox in Netlify's environment variables with **Builds** scope. No `.env.local` needs to be uploaded. Leave `SITE_URL` unset to use Netlify's primary site/custom-domain URL in production and the preview URL for branch deploys/Deploy Previews. An explicit `SITE_URL` takes precedence in every context; set it only for production if previews should keep their own URLs. Changing any build-time value or the domain requires a new deploy.
 
-Netlify serves the exported directory routes and `404.html` directly. Do not add a `/* /index.html 200` rewrite: it would break real missing-page responses. Security headers from `public/_headers` are copied to `out/_headers`; hashed Next.js assets also receive immutable caching. Keep Forms detection, snippet injection, third-party analytics and other optional Netlify integrations disabled unless separately reviewed; the current forms still hand off to the visitor's mail app. No server-rendering adapter or Functions are needed.
+Netlify serves the exported directory routes; the committed language Edge function redirects unprefixed paths and returns localized missing pages with HTTP 404. Do not add a `/* /index.html 200` rewrite. Security headers from `public/_headers` are copied to `out/_headers` and applied explicitly to Edge responses; hashed Next.js assets receive immutable caching. Keep Forms detection, snippet injection and third-party integrations disabled. Current forms hand off to the visitor's mail app. The full Next server adapter is reserved for the future backend phase.
 
 After deployment, open `/collection/`, a poster URL, `/studio/` and an unknown URL directly and refresh each. Verify the unknown URL returns HTTP 404, `/sitemap.xml` uses the intended domain, and responses include the CSP and `Referrer-Policy: no-referrer`. Document Netlify access-log handling in the privacy policy before launch. This configuration prepares deployment; it does not publish the site or configure your Netlify account/domain.
 
-Deployment follow-up checks passed: typecheck, lint, formatting, content/export validation, production build with Netlify-style environment variables, 18 unit tests and all 65 browser tests. Exported canonical/sitemap/robots URLs, `404.html` and copied security/cache headers were checked locally. Live Netlify CDN behaviour still needs the post-deploy checks above.
+Live Netlify Edge/CDN behaviour still requires the post-deploy checks above. Local measurements are recorded per milestone in docs/ITERATIONS.md; historical reports do not certify the new rebuild.
 
 ### Other static hosts
 
@@ -125,10 +143,41 @@ No runtime database, server-side design storage, comments, payments, newsletter 
 
 Recorded browser checks are Chromium/Edge evidence, not a promise that every physical printer or browser behaves identically. Human-only launch decisions remain explicit.
 
-Five numbered rounds are complete. Final checks: 14 model/privacy tests, 65 browser tests, zero axe violations. All nine cold-cache mobile Lighthouse samples meet the targets; performance medians are Home 97, Collection 99, Poster 98, with 100 for Accessibility, Best Practices and SEO. Highest CLS is 0.0231. See the retained raw reports and critiques rather than relying on a single score.
+Current rebuild evidence is under docs/evidence/redlark-*. All failures and fixes remain recorded. Full account/upload/admin/mail acceptance cannot run while the backend is held; this is not a claim of complete release acceptance.
 
 The Community list is `content/community.json` (empty until approved contributions exist). Collection hydration deliberately omits Studio scenes; the Studio loads them only on its own route. Run `node scripts/font-pack.mjs` to regenerate the local type-kit ZIP if font files change.
 
+## Editorial content and languages
+
+English landing copy is content/copy/landing.en.json, locked against an independent fixture and rendered-text tests. Log wording questions in docs/COPY_QUESTIONS.md; do not silently edit the supplied copy. Hindi/Bengali/Malayalam drafts are reviewed:false. Untranslated UI and legal material visibly falls back to English. Native review and legal review are separate prerequisites.
+
+Blog posts are trusted repository files under content/blog/{locale}/*.mdx. Reuse the English filename/slug in each locale. Frontmatter values are JSON (quoted strings/dates, arrays and booleans), for example:
+
+```mdx
+---
+title: "Clearly marked draft title"
+description: "An honest description."
+date: "2026-10-16"
+tags: ["printing"]
+placeholder: true
+reviewed: false
+---
+
+## Draft body
+```
+
+MDX compiles during the static build only. Never compile uploads, messages or remote content. Active embeds/external media are rejected. Both current posts are explicit placeholders; no interview or quote is invented. Locale RSS feeds and sitemap entries derive from content. Missing locale posts fall back visibly to English. Non-AI policy articles currently use flagged English fallback pending native translation/review.
+
+To add a language: extend src/i18n/config.ts, matching message catalogs/review flags, copy/content registries, metadata mappings, root static params, Edge/preview routing, sitemap and tests. Add licensed local fonts; verify conjuncts/marks in the UI and outlined exports. Regenerate safe subsets/provenance when native vocabulary changes. Never mark translations reviewed before native approval.
+
+## Held backend work
+
+No Supabase project, SDK, migration, database seed, bucket, role bootstrap or mail adapter is included. Migration/admin commands do not exist yet. The seed script authors file-based CC0 placeholders only. After the owner releases the hold, implement M7's server-only sessions/RLS/review before M6 UPLOAD and M8 persisted mail. PLAN.md records the schema/role/testing contract; TODO_HUMAN.md lists region, retention, verified sender and initial-admin decisions. Update policies and pass real end-to-end tests before activation.
+
+Use ANALYTICS_DOMAIN (or NEXT_PUBLIC_ANALYTICS_DOMAIN) with a same-origin NEXT_PUBLIC_ANALYTICS_ENDPOINT without query/fragment. Off-origin or malformed endpoints are disabled; DNT is respected. Only real pageview/download/export events exist today. Upload-submitted belongs to the future actual upload flow and is never simulated. Default analytics remains disabled.
+
+Dependency details: [DEPENDENCIES](docs/DEPENDENCIES.md). Production audit is clean after PDF/image updates; the full audit retains an unpatched development-only braces advisory chain. Do not force-downgrade the framework tooling.
+
 ## Licence
 
-Existing AGPL v3 software licence retained. Original placeholder artwork under content/posters and public/posters is dedicated to CC0-1.0. Self-hosted fonts carry their own OFL licences in public/fonts. Supplied and refined Mirafra brand assets remain separate. A deployed AGPL service must provide corresponding source as required by its licence.
+Existing AGPL v3 software licence retained. Original placeholder artwork under content/posters and public/posters is dedicated to CC0-1.0. Self-hosted fonts carry their own OFL licences in public/fonts. Supplied and refined Red Lark Workshop brand assets remain separate. A deployed AGPL service must provide corresponding source as required by its licence.

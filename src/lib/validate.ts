@@ -1,7 +1,40 @@
 import { LICENSES, type Artist, type Poster } from "./types";
 import { validateScene } from "../studio/model";
+import categories from "../../content/categories.json";
+import formats from "../../content/formats.json";
+export function validateArtist(artist: Artist): string[] {
+  const errors: string[] = [];
+  if (!artist.id || !artist.name || !artist.bio || !Array.isArray(artist.links))
+    errors.push("Invalid artist credit");
+  for (const [field, entry] of [
+    ["contact", artist.publicContact],
+    ["UPI", artist.publicUpi],
+  ] as const) {
+    if (entry && (entry.consented !== true || !entry.value?.trim()))
+      errors.push(
+        `Public ${field} requires explicit field consent; do not put private values in public content`,
+      );
+  }
+  if (artist.publicContact && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(artist.publicContact.value))
+    errors.push("Invalid public contact email");
+  if (artist.publicUpi && !/^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+$/.test(artist.publicUpi.value))
+    errors.push("Invalid public UPI ID");
+  return errors;
+}
 export function validatePoster(p: Poster, artists: Artist[]): string[] {
   const errors: string[] = [];
+  if (
+    !Array.isArray(p.categories) ||
+    p.categories.some((slug) => !categories.some((c) => c.slug === slug))
+  )
+    errors.push("Categories must use the approved category slugs");
+  if (!Array.isArray(p.tags) || p.tags.some((tag) => typeof tag !== "string" || !tag.trim()))
+    errors.push("Tags must be non-empty text");
+  if (!formats.some((format) => format.slug === p.kind)) errors.push("Unknown artwork format");
+  if (!["none", "minimal-assisted", "generated"].includes(p.aiUse) || !p.aiDisclosure?.trim())
+    errors.push("AI use and disclosure are required");
+  if (!/^\d+[a-z]+$/i.test(p.imageCode ?? "") || !/^\d+[a-z]+$/i.test(p.captionCode ?? ""))
+    errors.push("Image and caption codes are required");
   if (!Number.isInteger(p.year) || p.year < 1900 || p.year > 2100)
     errors.push("Missing or invalid year");
   if (typeof p.region !== "string" || !p.region.trim()) errors.push("Missing region");
@@ -58,7 +91,7 @@ export function validatePoster(p: Poster, artists: Artist[]): string[] {
     if (
       !file.path?.startsWith("/") ||
       file.path.includes("..") ||
-      !["PDF", "PNG", "SVG", "ZIP"].includes(file.format) ||
+      !["PDF", "PNG", "JPEG", "SVG", "ZIP"].includes(file.format) ||
       !Number.isInteger(file.bytes) ||
       file.bytes <= 0
     )

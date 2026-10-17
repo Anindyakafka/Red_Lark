@@ -1,9 +1,14 @@
 "use client";
+import { UiText } from "@/i18n/client";
+
 import { useEffect, useMemo, useState } from "react";
-import Link from "next/link";
+import { Link } from "@/i18n/client";
 import { artists, emptyFilters, filterPosters, fileSize, type Filters } from "@/lib/query";
 import type { Poster } from "@/lib/types";
 import { PosterImage } from "./poster-image";
+import { migrateLocalDrafts } from "@/lib/storage";
+import categories from "../../content/categories.json";
+import formats from "../../content/formats.json";
 
 export function Collection({
   posters,
@@ -23,7 +28,8 @@ export function Collection({
   useEffect(() => {
     setHydrated(true);
     try {
-      const raw = JSON.parse(localStorage.getItem("mirafra.saved.v1") ?? "[]") as unknown;
+      migrateLocalDrafts(localStorage);
+      const raw = JSON.parse(localStorage.getItem("redlark.saved.v1") ?? "[]") as unknown;
       if (Array.isArray(raw) && raw.length > 0 && raw.every((s) => typeof s === "string"))
         setSaved(raw);
     } catch {
@@ -32,14 +38,30 @@ export function Collection({
       );
     }
     const params = new URLSearchParams(location.search);
-    if (params.has("q")) {
-      setDraft(params.get("q") ?? "");
-      setFilters((f) => ({ ...f, query: params.get("q") ?? "" }));
-    }
+    setDraft(params.get("q") ?? "");
+    setFilters((current) => {
+      const next = { ...current, query: params.get("q") ?? "" };
+      for (const key of [
+        "category",
+        "kind",
+        "language",
+        "artist",
+        "license",
+        "color",
+        "sort",
+      ] as const)
+        if (params.has(key)) next[key] = params.get(key) ?? "";
+      return next;
+    });
   }, []);
   const results = useMemo(() => filterPosters(posters, filters, saved), [posters, filters, saved]);
   function set<K extends keyof Filters>(key: K, value: Filters[K]) {
     setFilters((f) => ({ ...f, [key]: value }));
+    const url = new URL(location.href);
+    const parameter = key === "query" ? "q" : key;
+    if (value && value !== emptyFilters[key]) url.searchParams.set(parameter, String(value));
+    else url.searchParams.delete(parameter);
+    history.replaceState(null, "", url);
   }
   function search(e: React.FormEvent) {
     e.preventDefault();
@@ -59,7 +81,7 @@ export function Collection({
     const next = saved.includes(slug) ? saved.filter((s) => s !== slug) : [...saved, slug];
     setSaved(next);
     try {
-      localStorage.setItem("mirafra.saved.v1", JSON.stringify(next));
+      localStorage.setItem("redlark.saved.v1", JSON.stringify(next));
     } catch {
       setStorageNotice("Saved for this visit only: browser storage is unavailable.");
     }
@@ -70,23 +92,14 @@ export function Collection({
     values: { value: string; label: string }[];
   }[] = [
     {
-      key: "format",
+      key: "kind",
       label: "Format",
-      values: ["PDF", "PNG", "SVG", "ZIP"].map((v) => ({ value: v, label: v })),
+      values: formats.map((f) => ({ value: f.slug, label: f.label })),
     },
     {
-      key: "theme",
-      label: "Theme",
-      values: [...new Set(posters.flatMap((p) => p.themes))]
-        .sort()
-        .map((v) => ({ value: v, label: v })),
-    },
-    {
-      key: "movement",
-      label: "Movement",
-      values: [...new Set(posters.flatMap((p) => p.movements))]
-        .sort()
-        .map((v) => ({ value: v, label: v })),
+      key: "category",
+      label: "Category",
+      values: categories.map((c) => ({ value: c.slug, label: c.label })),
     },
     {
       key: "language",
@@ -102,12 +115,12 @@ export function Collection({
     },
     {
       key: "license",
-      label: "License",
+      label: "Licence",
       values: [...new Set(posters.map((p) => p.license))].map((v) => ({ value: v, label: v })),
     },
     {
       key: "color",
-      label: "Color",
+      label: "Colour",
       values: [
         { value: "bw", label: "Black & white" },
         { value: "color", label: "Color" },
@@ -118,18 +131,29 @@ export function Collection({
     <section id="collection" className="collection" aria-label="Poster collection">
       <div className="collection-heading">
         <h2>{heading}</h2>
-        <a href="/search/image/" className="label">
-          IMAGE SEARCH [COMING SOON]
-        </a>
+        <Link href="/search/image/" className="label">
+          <UiText id={"IMAGE SEARCH [COMING SOON]"} />
+        </Link>
       </div>
       <p className="license-note">
-        <strong>[PLEASE READ BEFORE USING]</strong> Free to download does not mean free to change.
-        Check the licence and credit on every poster. Original placeholders are CC0; contributions
-        keep their own licences.
+        <strong>
+          <UiText id={"[PLEASE READ BEFORE USING]"} />
+        </strong>
+        <UiText
+          id={
+            "Free to download does not mean free to change. Check the licence and credit on every poster. Original placeholders are CC0; contributions keep their own licences."
+          }
+        />
       </p>
-      <form onSubmit={search} className="search-form" role="search" noValidate>
-        <label htmlFor="archive-search" className="label">
-          SEARCH THE ARCHIVE
+      <form
+        onSubmit={search}
+        className="search-form"
+        role="search"
+        aria-labelledby="archive-search-label"
+        noValidate
+      >
+        <label htmlFor="archive-search" id="archive-search-label" className="label">
+          <UiText id={"SEARCH THE ARCHIVE"} />
         </label>
         <div>
           <input
@@ -144,11 +168,13 @@ export function Collection({
             aria-invalid={!!error}
             aria-describedby={error ? "search-error" : undefined}
           />
-          <button type="submit">[SEARCH] ↗</button>
+          <button type="submit">
+            <UiText id={"[SEARCH] ↗"} />
+          </button>
         </div>
         {error && (
           <p id="search-error" role="alert">
-            {error}
+            <UiText id={error} />
           </p>
         )}
       </form>
@@ -161,47 +187,73 @@ export function Collection({
             setDraft("");
             setError("");
             const url = new URL(location.href);
-            url.searchParams.delete("q");
+            for (const key of [
+              "q",
+              "category",
+              "kind",
+              "language",
+              "artist",
+              "license",
+              "color",
+              "sort",
+              "saved",
+            ])
+              url.searchParams.delete(key);
             history.replaceState(null, "", url);
           }}
         >
-          All [↺]
+          <UiText id={"ALL (Uncategorized)"} />
         </button>
         {facets.map((f) => (
           <label className="facet" key={f.key}>
-            <span className="sr-only">{f.label}</span>
+            <span className="sr-only">
+              <UiText id={f.label} />
+            </span>
             <select
               aria-label={f.label}
               value={String(filters[f.key])}
               onChange={(e) => set(f.key, e.target.value)}
             >
-              <option value="">{f.label}</option>
+              <option value="">
+                <UiText id={f.label} />
+              </option>
               {f.values.map((v) => (
                 <option value={v.value} key={v.value}>
-                  {v.label}
+                  <UiText id={v.label} />
                 </option>
               ))}
             </select>
           </label>
         ))}
         <label className="facet">
-          <span className="sr-only">Sort</span>
+          <span className="sr-only">
+            <UiText id={"Sort"} />
+          </span>
           <select
             aria-label="Sort"
             value={filters.sort}
             onChange={(e) => set("sort", e.target.value)}
           >
-            <option value="newest">Newest</option>
-            <option value="oldest">Oldest</option>
-            <option value="az">A–Z</option>
-            <option value="za">Z–A</option>
+            <option value="newest">
+              <UiText id={"Newest"} />
+            </option>
+            <option value="oldest">
+              <UiText id={"Oldest"} />
+            </option>
+            <option value="az">
+              <UiText id={"A–Z"} />
+            </option>
+            <option value="za">
+              <UiText id={"Z–A"} />
+            </option>
           </select>
         </label>
         <button aria-pressed={filters.saved} onClick={() => set("saved", !filters.saved)}>
           [{filters.saved ? "SAVED ONLY" : "SAVED"}]
         </button>
         <strong className="result-count" aria-live="polite">
-          {results.length} POSTERS
+          {results.length}
+          <UiText id={"POSTERS"} />
         </strong>
       </div>
       <p className="hydration-status" role="status">
@@ -211,7 +263,7 @@ export function Collection({
             onClick={() => {
               setSaved([]);
               try {
-                localStorage.removeItem("mirafra.saved.v1");
+                localStorage.removeItem("redlark.saved.v1");
                 setStorageNotice("All local bookmarks cleared.");
               } catch {
                 setStorageNotice(
@@ -220,7 +272,9 @@ export function Collection({
               }
             }}
           >
-            [CLEAR {saved.length} LOCAL BOOKMARKS]
+            <UiText id={"[CLEAR"} />
+            {saved.length}
+            <UiText id={"LOCAL BOOKMARKS]"} />
           </button>
         )}
         {hydrated
@@ -229,7 +283,7 @@ export function Collection({
       </p>
       {storageNotice && (
         <p role="status" className="notice">
-          {storageNotice}
+          <UiText id={storageNotice} />
         </p>
       )}
       {results.length ? (
@@ -267,28 +321,40 @@ export function Collection({
                 <p className="card-meta">
                   {p.formats[0].format} · {fileSize(p.formats[0].bytes)} · {p.license}
                 </p>
-                {p.placeholder && <span className="placeholder-label">[PLACEHOLDER]</span>}
+                {p.placeholder && (
+                  <span className="placeholder-label">
+                    <UiText id={"[PLACEHOLDER]"} />
+                  </span>
+                )}
               </div>
             </article>
           ))}
         </div>
       ) : (
         <div className="empty-state">
-          <h3>NO MATCH. KEEP LOOKING.</h3>
-          <p>Try a different word or clear the filters.</p>
+          <h3>
+            <UiText id={"NO MATCH. KEEP LOOKING."} />
+          </h3>
+          <p>
+            <UiText id={"Try a different word or clear the filters."} />
+          </p>
           <button
             onClick={() => {
               setFilters(emptyFilters);
               setDraft("");
             }}
           >
-            Clear filters
+            <UiText id={"Clear filters"} />
           </button>
         </div>
       )}
       <noscript>
         <p>
-          Search and filters need JavaScript. The archive and download pages are still available.
+          <UiText
+            id={
+              "Search and filters need JavaScript. The archive and download pages are still available."
+            }
+          />
         </p>
       </noscript>
     </section>

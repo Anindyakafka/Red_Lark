@@ -1,12 +1,15 @@
-import http from "node:http";
+﻿import http from "node:http";
 import fs from "node:fs/promises";
 import path from "node:path";
 import { gzipSync, brotliCompressSync, constants } from "node:zlib";
 const root = path.resolve("out");
 const port = Number(process.env.PORT ?? 3000);
+const legacyRoutes = JSON.parse(await fs.readFile("content/legacy-routes.json", "utf8"));
 const types = {
   ".html": "text/html; charset=utf-8",
   ".js": "text/javascript; charset=utf-8",
+  ".mjs": "text/javascript; charset=utf-8",
+  ".wasm": "application/wasm",
   ".css": "text/css; charset=utf-8",
   ".json": "application/json",
   ".txt": "text/plain; charset=utf-8",
@@ -23,12 +26,51 @@ const types = {
   ".zip": "application/zip",
 };
 const csp =
-  "default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; font-src 'self' data:; connect-src 'self'; object-src 'none'; base-uri 'self'; frame-ancestors 'none'; form-action 'self'; worker-src 'self' blob:";
+  "default-src 'self'; script-src 'self' 'unsafe-inline' 'wasm-unsafe-eval'; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; font-src 'self' data:; connect-src 'self'; object-src 'none'; base-uri 'self'; frame-ancestors 'none'; form-action 'self'; worker-src 'self' blob:";
 http
   .createServer(async (req, res) => {
     try {
       const pathname = decodeURIComponent(new URL(req.url, "http://localhost").pathname);
+      if (
+        !/^\/(en|hi|bn|ml)(\/|$)/.test(pathname) &&
+        !pathname.startsWith("/_") &&
+        !/\.[a-z0-9]+$/i.test(pathname)
+      ) {
+        const options = String(req.headers["accept-language"] ?? "")
+          .split(",")
+          .map((part, index) => {
+            const [language, quality] = part.trim().split(";");
+            return {
+              language: language.toLowerCase().split("-")[0],
+              quality: quality ? Number(quality.replace(/^q=/, "")) : 1,
+              index,
+            };
+          })
+          .filter((entry) => Number.isFinite(entry.quality) && entry.quality > 0)
+          .sort((a, b) => b.quality - a.quality || a.index - b.index);
+        const locale =
+          options.find((entry) => ["en", "hi", "bn", "ml"].includes(entry.language))?.language ??
+          "en";
+        res.writeHead(302, {
+          Location: `/${locale}${req.url}`,
+          Vary: "Accept-Language",
+          "Cache-Control": "no-store",
+        });
+        res.end();
+        return;
+      }
       let file = path.resolve(root, "." + pathname);
+      const legacy = pathname.replace(/^\/(en|hi|bn|ml)/, "").replace(/\/$/, "");
+      if (legacyRoutes[legacy]) {
+        const locale = pathname.split("/")[1];
+        res.writeHead(308, {
+          Location: `/${locale}${legacyRoutes[legacy]}${new URL(req.url, "http://localhost").search}`,
+          "Referrer-Policy": "no-referrer",
+          "Content-Security-Policy": csp,
+        });
+        res.end();
+        return;
+      }
       if (file !== root && !file.startsWith(root + path.sep)) {
         res.writeHead(403);
         res.end();
@@ -42,7 +84,11 @@ http
           if ((await fs.stat(file)).isDirectory()) file = path.join(file, "index.html");
           await fs.access(file);
         } catch {
-          file = path.join(root, "404.html");
+          const locale = pathname.split("/")[1];
+          file = path.join(
+            root,
+            ["en", "hi", "bn", "ml"].includes(locale) ? `${locale}/404/index.html` : "404.html",
+          );
           status = 404;
         }
       }
@@ -75,4 +121,6 @@ http
       res.end("Static file unavailable");
     }
   })
-  .listen(port, "127.0.0.1", () => console.log(`Mirafra static preview: http://localhost:${port}`));
+  .listen(port, "127.0.0.1", () =>
+    console.log(`Red Lark Workshop static preview: http://localhost:${port}`),
+  );

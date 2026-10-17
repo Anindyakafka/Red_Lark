@@ -29,7 +29,10 @@ for (const path of paths)
     expect(r?.status()).toBe(200);
     await expect(page.locator("h1")).toHaveCount(1);
     await page.evaluate(() => document.fonts.ready);
-    if (path === "/studio/") await expect(page.locator(".studio-paper")).toBeVisible();
+    if (path === "/studio/") {
+      await page.getByRole("button", { name: "Poster/Placard", exact: true }).click();
+      await expect(page.locator(".studio-paper")).toBeVisible();
+    }
     const a = await new AxeBuilder({ page })
       .withTags(["wcag2a", "wcag2aa", "wcag21aa", "wcag22aa"])
       .analyze();
@@ -55,7 +58,10 @@ test("all specified breakpoints have no horizontal document overflow", async ({ 
       "/404/",
     ]) {
       await page.goto(path);
-      if (path === "/studio/") await expect(page.locator(".studio-paper")).toBeVisible();
+      if (path === "/studio/") {
+        await page.getByRole("button", { name: "Poster/Placard", exact: true }).click();
+        await expect(page.locator(".studio-paper")).toBeVisible();
+      }
       expect(
         await page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth),
         `${path} at ${width}`,
@@ -65,22 +71,20 @@ test("all specified breakpoints have no horizontal document overflow", async ({ 
 });
 test("filters/search/count/save are real and search errors are accessible", async ({ page }) => {
   await page.goto("/collection/");
-  await page.getByLabel("Theme", { exact: true }).selectOption("Housing");
-  await expect(page.locator(".poster-card")).toHaveCount(3);
-  await page.getByLabel("SEARCH THE ARCHIVE").fill("homes");
+  await page.getByLabel("Category", { exact: true }).selectOption("displacement-and-migration");
+  await expect(page.locator(".poster-card")).toHaveCount(5);
+  await page.getByRole("searchbox", { name: "SEARCH THE ARCHIVE" }).fill("homes");
   await page.getByRole("button", { name: "[SEARCH]" }).click();
   await expect(page.locator(".poster-card")).toHaveCount(1);
   await page.getByRole("button", { name: "Save Homes for all", exact: true }).click();
   await expect(
     page.getByRole("button", { name: "Unsave Homes for all", exact: true }),
   ).toHaveAttribute("aria-pressed", "true");
-  await page.getByLabel("SEARCH THE ARCHIVE").fill("a".repeat(151));
+  await page.getByRole("searchbox", { name: "SEARCH THE ARCHIVE" }).fill("a".repeat(151));
   await page.getByRole("button", { name: "[SEARCH]" }).click();
   await expect(page.locator("main [role=alert]")).toContainText("150");
 });
-test("forms expose required/reply errors, focus and unavailable-delivery state", async ({
-  page,
-}) => {
+test("forms expose required/reply errors and honest email handoff", async ({ page }) => {
   for (const route of ["/contact/", "/submit/"]) {
     await page.goto(route);
     await page.getByRole("button", { name: "[PREPARE EMAIL]" }).click();
@@ -101,8 +105,8 @@ test("forms expose required/reply errors, focus and unavailable-delivery state",
     await expect(page.locator("#reply-error")).toBeVisible();
     await page.getByLabel("REPLY EMAIL").fill("");
     await page.getByRole("button", { name: "[PREPARE EMAIL]" }).click();
-    await expect(page.locator("main [role=alert]")).toContainText("No contact inbox");
-    await expect(page).not.toHaveURL(/thank-you/);
+    await expect(page).toHaveURL(/thank-you/);
+    await expect(page.locator("main")).toContainText("email");
   }
 });
 test("ND gate renders no remix and links to artist", async ({ page }) => {
@@ -113,7 +117,7 @@ test("ND gate renders no remix and links to artist", async ({ page }) => {
   await expect(page.getByRole("link", { name: /artist/ })).toBeVisible();
 });
 test("Studio add text, colour, lock, undo, export, share and local restore", async ({ page }) => {
-  await page.goto("/studio/");
+  await page.goto("/studio/?format=poster-placard");
   await expect(page.locator(".studio-paper")).toBeVisible();
   await page.getByRole("button", { name: "+ TEXT", exact: true }).click();
   await page.getByLabel("Words", { exact: true }).fill("TEST THE PRINT");
@@ -141,7 +145,7 @@ test("mobile browse CTA hidden in Studio; tools and exports are reachable", asyn
   await page.setViewportSize({ width: 390, height: 844 });
   await page.goto("/collection/");
   await expect(page.locator(".mobile-cta")).toBeVisible();
-  await page.goto("/studio/");
+  await page.goto("/studio/?format=poster-placard");
   await expect(page.locator(".studio-paper")).toBeVisible();
   await expect(page.locator(".mobile-cta")).toHaveCount(0);
   await page.getByRole("button", { name: "[ELEMENTS]", exact: true }).click();

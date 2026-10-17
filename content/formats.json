@@ -1,0 +1,42 @@
+[
+  {
+    "slug": "badge",
+    "label": "Badge"
+  },
+  {
+    "slug": "caricature",
+    "label": "Caricature"
+  },
+  {
+    "slug": "cartoon",
+    "label": "Cartoon"
+  },
+  {
+    "slug": "flyer",
+    "label": "Flyer"
+  },
+  {
+    "slug": "meme",
+    "label": "Meme"
+  },
+  {
+    "slug": "portrait",
+    "label": "Portrait"
+  },
+  {
+    "slug": "poster-placard",
+    "label": "Poster/Placard"
+  },
+  {
+    "slug": "stencil",
+    "label": "Stencil"
+  },
+  {
+    "slug": "sticker",
+    "label": "Sticker"
+  },
+  {
+    "slug": "zine",
+    "label": "Zine"
+  }
+]

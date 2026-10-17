@@ -1,0 +1,83 @@
+{
+  "purpose": "Name-only native language controls; use separate archive and UI fonts for content",
+  "method": "fontTools static instantiation wght400 wdth100; exact name plus NFC/NFD codepoint closure; all layout features and default GSUB closure retained; WOFF2 Brotli",
+  "sourceProvenance": "provenance.json",
+  "licenses": "Matching noto-sans-{script}-full-OFL.txt",
+  "files": [
+    {
+      "file": "noto-sans-devanagari-nav.woff2",
+      "script": "devanagari",
+      "label": "हिन्दी",
+      "bytes": 2460,
+      "sha256": "526d5dbb1fce91282b5e53e667c354ab84c663c8ab390c98e8d5f34154c67917",
+      "sourceFont": "noto-sans-devanagari-full.ttf",
+      "codepoints": [
+        "U+0926",
+        "U+0928",
+        "U+0939",
+        "U+093F",
+        "U+0940",
+        "U+094D"
+      ],
+      "glyphCount": 22
+    },
+    {
+      "file": "noto-sans-bengali-nav.woff2",
+      "script": "bengali",
+      "label": "বাংলা",
+      "bytes": 1140,
+      "sha256": "db0162b4aceefe27718b438eef1201240ac22eab6b96c441ac74eca94b44b0ee",
+      "sourceFont": "noto-sans-bengali-full.ttf",
+      "codepoints": [
+        "U+0982",
+        "U+09AC",
+        "U+09B2",
+        "U+09BE"
+      ],
+      "glyphCount": 5
+    },
+    {
+      "file": "noto-sans-malayalam-nav.woff2",
+      "script": "malayalam",
+      "label": "മലയാളം",
+      "bytes": 1632,
+      "sha256": "1fa7633734a0bf91abb7167c5f7121b23fe4fa9a9a5bdeddc0c94cabcb25f0b4",
+      "sourceFont": "noto-sans-malayalam-full.ttf",
+      "codepoints": [
+        "U+0D02",
+        "U+0D2E",
+        "U+0D2F",
+        "U+0D32",
+        "U+0D33",
+        "U+0D3E"
+      ],
+      "glyphCount": 7
+    }
+  ],
+  "verification": {
+    "method": "Headless Microsoft Edge: canvas48px, identical pixels and measured widths against full source TTF for each native name",
+    "results": [
+      {
+        "script": "devanagari",
+        "label": "हिन्दी",
+        "pixelsIdentical": true,
+        "widthsIdentical": true,
+        "width": 90.67195129394531
+      },
+      {
+        "script": "bengali",
+        "label": "বাংলা",
+        "pixelsIdentical": true,
+        "widthsIdentical": true,
+        "width": 110.25595092773438
+      },
+      {
+        "script": "malayalam",
+        "label": "മലയാളം",
+        "pixelsIdentical": true,
+        "widthsIdentical": true,
+        "width": 206.303955078125
+      }
+    ]
+  }
+}

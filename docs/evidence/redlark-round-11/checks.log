@@ -1,0 +1,11 @@
+M5 observed verification summary, 16 October 2026.
+Unit suite: 34 passed, including consent omission/rejection and actual A4/A2 PNG/JPEG 300-DPI dimensions
+Full browser suite: 76 passed (1.9m)
+Exact-copy suite: 2 passed
+Build/content/export: 18 valid posters; 316 HTML pages validated
+Types/lint/brand/format: passed
+Screenshots: en/ml item top/specifications/print guidance, 390/1440
+Visual correction: explicit desktop above-fold download CTA restored after review
+Post-correction item regression: 1 passed (four locale item axe, metadata, downloads and above-fold CTA); screenshots refreshed
+Lighthouse: next full checkpoint M6; no inherited score claimed
+Supabase/RLS/upload/mail: held

@@ -1,8 +1,16 @@
 {
+  "categories": ["ecology-environment-land"],
+  "tags": ["ecology", "climate justice"],
+  "kind": "poster-placard",
+  "imageCode": "1h",
+  "captionCode": "2j",
+  "aiUse": "generated",
+  "aiDisclosure": "Original AI-assisted vector placeholder created for site testing. This is not a curated human submission or a contribution by a real artist.",
   "slug": "listen-to-the-land",
   "title": "Listen to the land",
   "languages": ["English"],
-  "artist": "mirafra-type-lab",
+  "translations": {},
+  "artist": "wet-ink-workshop",
   "year": 2026,
   "themes": ["Ecology"],
   "movements": ["Climate justice"],
@@ -13,43 +21,82 @@
       "format": "PDF",
       "size": "A4",
       "path": "/posters/listen-to-the-land/A4.pdf",
-      "bytes": 27661
+      "bytes": 38357
     },
     {
       "format": "PDF",
       "size": "A3",
       "path": "/posters/listen-to-the-land/A3.pdf",
-      "bytes": 27692
+      "bytes": 38331
     },
     {
       "format": "PDF",
       "size": "A2",
       "path": "/posters/listen-to-the-land/A2.pdf",
-      "bytes": 27660
+      "bytes": 38355
     },
     {
       "format": "PDF",
       "size": "18x24",
       "path": "/posters/listen-to-the-land/18x24.pdf",
-      "bytes": 27605
+      "bytes": 38240
     },
     {
       "format": "PNG",
       "size": "A3",
       "path": "/posters/listen-to-the-land/A3.png",
-      "bytes": 539848
+      "bytes": 559002,
+      "dpi": 300,
+      "pixelWidth": 3508,
+      "pixelHeight": 4961
+    },
+    {
+      "format": "PNG",
+      "size": "A4",
+      "path": "/posters/listen-to-the-land/A4.png",
+      "bytes": 473365,
+      "dpi": 300,
+      "pixelWidth": 2480,
+      "pixelHeight": 3508
+    },
+    {
+      "format": "JPEG",
+      "size": "A4",
+      "path": "/posters/listen-to-the-land/A4.jpg",
+      "bytes": 324228,
+      "dpi": 300,
+      "pixelWidth": 2480,
+      "pixelHeight": 3508
+    },
+    {
+      "format": "PNG",
+      "size": "A2",
+      "path": "/posters/listen-to-the-land/A2.png",
+      "bytes": 1241833,
+      "dpi": 300,
+      "pixelWidth": 4961,
+      "pixelHeight": 7016
+    },
+    {
+      "format": "JPEG",
+      "size": "A2",
+      "path": "/posters/listen-to-the-land/A2.jpg",
+      "bytes": 845363,
+      "dpi": 300,
+      "pixelWidth": 4961,
+      "pixelHeight": 7016
     },
     {
       "format": "SVG",
       "size": "A3",
       "path": "/posters/listen-to-the-land/source.svg",
-      "bytes": 60517
+      "bytes": 88131
     },
     {
       "format": "ZIP",
       "size": "Bundle",
       "path": "/posters/listen-to-the-land/bundle.zip",
-      "bytes": 45288
+      "bytes": 63360
     }
   ],
   "license": "CC0-1.0",
@@ -57,9 +104,9 @@
   "allowsDerivatives": true,
   "commercialUseAllowed": true,
   "source": "/poster/listen-to-the-land/",
-  "artistUrl": "/artist/mirafra-type-lab/",
-  "alt": "Off-white typographic print reading â€œLISTEN TO THE LANDâ€, with an angular starburst and a clearly marked placeholder credit.",
-  "caption": "Original vector study authored for the Mirafra rebuild. Placeholder artwork, free under CC0; not a contribution by a real artist.",
+  "artistUrl": "/artist/wet-ink-workshop/",
+  "alt": "Off-white typographic print reading “LISTEN TO THE LAND”, with an angular starburst and a clearly marked placeholder credit.",
+  "caption": "Original vector study authored for the Red Lark Workshop rebuild. Placeholder artwork, free under CC0; not a contribution by a real artist.",
   "remixable": true,
   "placeholder": true,
   "preview": "/posters/listen-to-the-land/preview.webp",
@@ -88,7 +135,7 @@
         "credit": {
           "id": "listen-to-the-land",
           "title": "Listen to the land",
-          "artist": "Mirafra Type Lab",
+          "artist": "The Wet Ink Workshop",
           "license": "CC0-1.0",
           "source": "/poster/listen-to-the-land/"
         }
@@ -111,7 +158,7 @@
         "credit": {
           "id": "listen-to-the-land",
           "title": "Listen to the land",
-          "artist": "Mirafra Type Lab",
+          "artist": "The Wet Ink Workshop",
           "license": "CC0-1.0",
           "source": "/poster/listen-to-the-land/"
         }
@@ -134,7 +181,7 @@
         "credit": {
           "id": "listen-to-the-land",
           "title": "Listen to the land",
-          "artist": "Mirafra Type Lab",
+          "artist": "The Wet Ink Workshop",
           "license": "CC0-1.0",
           "source": "/poster/listen-to-the-land/"
         }

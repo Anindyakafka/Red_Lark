@@ -1,9 +1,17 @@
 {
+  "categories": ["miscellaneous"],
+  "tags": ["accessibility", "disability justice"],
+  "kind": "poster-placard",
+  "imageCode": "1l",
+  "captionCode": "2n",
+  "aiUse": "generated",
+  "aiDisclosure": "Original AI-assisted vector placeholder created for site testing. This is not a curated human submission or a contribution by a real artist.",
   "slug": "nothing-about-us-without-us",
   "title": "Nothing about us without us",
   "languages": ["English"],
-  "artist": "mirafra-type-lab",
-  "year": 2025,
+  "translations": {},
+  "artist": "wet-ink-workshop",
+  "year": 2026,
   "themes": ["Accessibility"],
   "movements": ["Disability justice"],
   "colorMode": "bw",
@@ -13,43 +21,82 @@
       "format": "PDF",
       "size": "A4",
       "path": "/posters/nothing-about-us-without-us/A4.pdf",
-      "bytes": 33958
+      "bytes": 44659
     },
     {
       "format": "PDF",
       "size": "A3",
       "path": "/posters/nothing-about-us-without-us/A3.pdf",
-      "bytes": 33984
+      "bytes": 44639
     },
     {
       "format": "PDF",
       "size": "A2",
       "path": "/posters/nothing-about-us-without-us/A2.pdf",
-      "bytes": 33959
+      "bytes": 44656
     },
     {
       "format": "PDF",
       "size": "18x24",
       "path": "/posters/nothing-about-us-without-us/18x24.pdf",
-      "bytes": 33894
+      "bytes": 44613
     },
     {
       "format": "PNG",
       "size": "A3",
       "path": "/posters/nothing-about-us-without-us/A3.png",
-      "bytes": 587675
+      "bytes": 607286,
+      "dpi": 300,
+      "pixelWidth": 3508,
+      "pixelHeight": 4961
+    },
+    {
+      "format": "PNG",
+      "size": "A4",
+      "path": "/posters/nothing-about-us-without-us/A4.png",
+      "bytes": 568343,
+      "dpi": 300,
+      "pixelWidth": 2480,
+      "pixelHeight": 3508
+    },
+    {
+      "format": "JPEG",
+      "size": "A4",
+      "path": "/posters/nothing-about-us-without-us/A4.jpg",
+      "bytes": 381825,
+      "dpi": 300,
+      "pixelWidth": 2480,
+      "pixelHeight": 3508
+    },
+    {
+      "format": "PNG",
+      "size": "A2",
+      "path": "/posters/nothing-about-us-without-us/A2.png",
+      "bytes": 1408648,
+      "dpi": 300,
+      "pixelWidth": 4961,
+      "pixelHeight": 7016
+    },
+    {
+      "format": "JPEG",
+      "size": "A2",
+      "path": "/posters/nothing-about-us-without-us/A2.jpg",
+      "bytes": 952799,
+      "dpi": 300,
+      "pixelWidth": 4961,
+      "pixelHeight": 7016
     },
     {
       "format": "SVG",
       "size": "A3",
       "path": "/posters/nothing-about-us-without-us/source.svg",
-      "bytes": 75216
+      "bytes": 102825
     },
     {
       "format": "ZIP",
       "size": "Bundle",
       "path": "/posters/nothing-about-us-without-us/bundle.zip",
-      "bytes": 55739
+      "bytes": 73933
     }
   ],
   "license": "CC0-1.0",
@@ -57,9 +104,9 @@
   "allowsDerivatives": true,
   "commercialUseAllowed": true,
   "source": "/poster/nothing-about-us-without-us/",
-  "artistUrl": "/artist/mirafra-type-lab/",
-  "alt": "Off-white typographic print reading â€œNOTHING ABOUT US WITHOUT USâ€, with an arrow and a clearly marked placeholder credit.",
-  "caption": "Original vector study authored for the Mirafra rebuild. Placeholder artwork, free under CC0; not a contribution by a real artist.",
+  "artistUrl": "/artist/wet-ink-workshop/",
+  "alt": "Off-white typographic print reading “NOTHING ABOUT US WITHOUT US”, with an arrow and a clearly marked placeholder credit.",
+  "caption": "Original vector study authored for the Red Lark Workshop rebuild. Placeholder artwork, free under CC0; not a contribution by a real artist.",
   "remixable": true,
   "placeholder": true,
   "preview": "/posters/nothing-about-us-without-us/preview.webp",
@@ -88,7 +135,7 @@
         "credit": {
           "id": "nothing-about-us-without-us",
           "title": "Nothing about us without us",
-          "artist": "Mirafra Type Lab",
+          "artist": "The Wet Ink Workshop",
           "license": "CC0-1.0",
           "source": "/poster/nothing-about-us-without-us/"
         }
@@ -111,7 +158,7 @@
         "credit": {
           "id": "nothing-about-us-without-us",
           "title": "Nothing about us without us",
-          "artist": "Mirafra Type Lab",
+          "artist": "The Wet Ink Workshop",
           "license": "CC0-1.0",
           "source": "/poster/nothing-about-us-without-us/"
         }
@@ -134,7 +181,7 @@
         "credit": {
           "id": "nothing-about-us-without-us",
           "title": "Nothing about us without us",
-          "artist": "Mirafra Type Lab",
+          "artist": "The Wet Ink Workshop",
           "license": "CC0-1.0",
           "source": "/poster/nothing-about-us-without-us/"
         }

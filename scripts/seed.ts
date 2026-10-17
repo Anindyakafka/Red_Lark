@@ -14,6 +14,9 @@ import {
 } from "../src/lib/types";
 import { freshScene, newLayer } from "../src/studio/model";
 import { sceneSvg, type Fonts } from "../src/studio/render";
+import * as hb from "harfbuzzjs";
+import { createShapedFont } from "../src/studio/shaping";
+import workshop from "../content/workshop.json";
 
 await Promise.all(
   ["content/posters", "content/artists", "public/posters", "src/generated", "public/icons"].map(
@@ -23,19 +26,17 @@ await Promise.all(
 const fonts: Fonts = {
   display: opentype.loadSync("public/fonts/bebas-neue.ttf"),
   mono: opentype.loadSync("public/fonts/ibm-plex-mono.ttf"),
+  indic: {
+    hi: createShapedFont(hb, await fs.readFile("public/fonts/indic/noto-sans-devanagari-full.ttf")),
+    bn: createShapedFont(hb, await fs.readFile("public/fonts/indic/noto-sans-bengali-full.ttf")),
+    ml: createShapedFont(hb, await fs.readFile("public/fonts/indic/noto-sans-malayalam-full.ttf")),
+  },
 };
 const artists: Artist[] = [
   {
-    id: "mirafra-type-lab",
-    name: "Mirafra Type Lab",
-    bio: "An invented credit for original typographic placeholder studies authored for this build. Not a real artist collective.",
-    links: [],
-    placeholder: true,
-  },
-  {
-    id: "mirafra-print-lab",
-    name: "Mirafra Print Lab",
-    bio: "An invented credit for original geometric placeholder studies authored for this build. No external artist's work is used.",
+    id: "wet-ink-workshop",
+    name: "The Wet Ink Workshop",
+    bio: "In-house credit for original AI-assisted vector placeholder studies used to test this archive. These are not contributions by a featured artist.",
     links: [],
     placeholder: true,
   },
@@ -52,13 +53,7 @@ const entries = [
   ["LISTEN\nTO THE LAND", "Listen to the land", "Ecology", "Climate justice", ""],
   ["PUBLIC\nSPACE", "Public space", "Housing", "Right to the city", ""],
   ["MANY\nVOICES", "Many voices", "Solidarity", "Mutual aid", ""],
-  [
-    "UN MUNDO\nPARA TODAS",
-    "A world for everyone",
-    "Solidarity",
-    "Mutual aid",
-    "Un mundo para todas",
-  ],
+  ["सबके लिए\nदुनिया", "A world for everyone", "Solidarity", "Mutual aid", "सबके लिए दुनिया"],
   [
     "NOTHING\nABOUT US\nWITHOUT US",
     "Nothing about us without us",
@@ -68,17 +63,17 @@ const entries = [
   ],
   ["LESS\nEXTRACTION\nMORE CARE", "Less extraction, more care", "Climate", "Climate justice", ""],
   ["WE KEEP\nEACH OTHER\nSAFE", "We keep each other safe", "Solidarity", "Mutual aid", ""],
-  ["LE DROIT\nAU REPOS", "The right to rest", "Labor", "May Day", "Le droit au repos"],
+  ["বিশ্রামের\nঅধিকার", "The right to rest", "Labor", "May Day", "বিশ্রামের অধিকার"],
   ["BORDERS\nARE LINES", "Borders are lines", "Migration", "Freedom of movement", ""],
   ["A FUTURE\nWE SHARE", "A future we share", "Ecology", "Climate justice", ""],
-  ["BUILD\nTOGETHER", "Build together", "Housing", "Right to the city", ""],
+  ["ഒരുമിച്ച്\nപണിയാം", "Build together", "Housing", "Right to the city", "ഒരുമിച്ച് പണിയാം"],
   ["TAKE\nUP SPACE", "Take up space", "Accessibility", "Disability justice", ""],
 ];
 const posters: Poster[] = [];
 for (let i = 0; i < entries.length; i++) {
   const [headline, title, theme, movement, original] = entries[i];
   const slug = title.toLowerCase().replace(/[^a-z0-9]+/g, "-");
-  const artist = artists[i % 2];
+  const artist = artists[0];
   const bw = i % 4 === 2;
   const dark = i % 5 === 3;
   const bg = bw ? "#f3f0e6" : dark ? "#151515" : i % 3 === 0 ? "#e32219" : "#f3f0e6";
@@ -119,7 +114,7 @@ for (let i = 0; i < entries.length; i++) {
     y: 740,
     width: 544,
     height: 45,
-    text: `PLACEHOLDER / ${String(i + 1).padStart(2, "0")} / CC0`,
+    text: `PLACEHOLDER${original ? " / DRAFT TRANSLATION" : ""} / ${String(i + 1).padStart(2, "0")} / CC0`,
     font: "mono",
     fontSize: 15,
     color: ink,
@@ -189,7 +184,33 @@ for (let i = 0; i < entries.length; i++) {
     size: "A3",
     path: `/posters/${slug}/A3.png`,
     bytes: (await fs.stat(`${folder}/A3.png`)).size,
+    dpi: 300,
+    pixelWidth: px,
+    pixelHeight: Math.round((px * 420) / 297),
   });
+  for (const size of ["A4", "A2"] as const) {
+    const preset = PRESETS[size];
+    const pixelWidth = Math.round((preset.width / 25.4) * 300);
+    const pixelHeight = Math.round((preset.height / 25.4) * 300);
+    const artwork = Buffer.from(sceneSvg({ ...scene, preset: size }, fonts));
+    for (const format of ["PNG", "JPEG"] as const) {
+      const extension = format === "JPEG" ? "jpg" : "png";
+      const filename = `${size}.${extension}`;
+      const raster = sharp(artwork).resize(pixelWidth, pixelHeight).withMetadata({ density: 300 });
+      await (
+        format === "JPEG" ? raster.jpeg({ quality: 95, chromaSubsampling: "4:4:4" }) : raster.png()
+      ).toFile(`${folder}/${filename}`);
+      formatFiles.push({
+        format,
+        size,
+        path: `/posters/${slug}/${filename}`,
+        bytes: (await fs.stat(`${folder}/${filename}`)).size,
+        dpi: 300,
+        pixelWidth,
+        pixelHeight,
+      });
+    }
+  }
   formatFiles.push({
     format: "SVG",
     size: "A3",
@@ -211,12 +232,24 @@ for (let i = 0; i < entries.length; i++) {
     bytes: bundle.byteLength,
   });
   const poster: Poster = {
+    ...workshop[slug as keyof typeof workshop],
+    aiUse: "generated",
     slug,
     title,
     ...(original ? { titleOriginal: original } : {}),
-    languages: [i === 9 ? "Spanish" : i === 13 ? "French" : "English"],
+    languages: [i === 9 ? "Hindi" : i === 13 ? "Bengali" : i === 16 ? "Malayalam" : "English"],
+    translations: original
+      ? {
+          [i === 9 ? "hi" : i === 13 ? "bn" : "ml"]: {
+            title: original,
+            caption: "Draft translation / original CC0 placeholder study",
+            tags: [theme],
+            reviewed: false,
+          },
+        }
+      : {},
     artist: artist.id,
-    year: 2026 - (i % 3),
+    year: 2026,
     themes: [theme],
     movements: [movement],
     colorMode: bw ? "bw" : "color",
@@ -228,9 +261,9 @@ for (let i = 0; i < entries.length; i++) {
     commercialUseAllowed: true,
     source: `/poster/${slug}/`,
     artistUrl: `/artist/${artist.id}/`,
-    alt: `${dark ? "Black" : bg === "#e32219" ? "Signal-red" : "Off-white"} typographic print reading â€œ${headline.replaceAll("\n", " ")}â€, with an ${i % 3 === 0 ? "angular starburst" : i % 3 === 1 ? "arrow" : "array of halftone dots"} and a clearly marked placeholder credit.`,
+    alt: `${dark ? "Black" : bg === "#e32219" ? "Signal-red" : "Off-white"} typographic print reading “${headline.replaceAll("\n", " ")}”, with an ${i % 3 === 0 ? "angular starburst" : i % 3 === 1 ? "arrow" : "array of halftone dots"} and a clearly marked placeholder credit.`,
     caption:
-      "Original vector study authored for the Mirafra rebuild. Placeholder artwork, free under CC0; not a contribution by a real artist.",
+      "Original vector study authored for the Red Lark Workshop rebuild. Placeholder artwork, free under CC0; not a contribution by a real artist.",
     remixable: true,
     placeholder: true,
     preview: `/posters/${slug}/preview.webp`,
@@ -241,44 +274,4 @@ for (let i = 0; i < entries.length; i++) {
   posters.push(poster);
 }
 await fs.writeFile("src/generated/catalog.json", JSON.stringify({ posters, artists }));
-const icon =
-  '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><rect width="512" height="512" fill="#f3f0e6"/><path d="M80 420V92H148L256 268 364 92H432V420H352V250L256 398 160 250V420Z" fill="#151515"/><path d="M0 460H512V512H0Z" fill="#e32219"/></svg>';
-await fs.writeFile("public/icons/mark.svg", icon);
-for (const size of [16, 32, 180, 192, 512])
-  await sharp(Buffer.from(icon)).resize(size, size).png().toFile(`public/icons/icon-${size}.png`);
-const png = await fs.readFile("public/icons/icon-32.png");
-const header = Buffer.alloc(22);
-header.writeUInt16LE(1, 2);
-header.writeUInt16LE(1, 4);
-header[6] = 32;
-header[7] = 32;
-header.writeUInt16LE(1, 10);
-header.writeUInt16LE(32, 12);
-header.writeUInt32LE(png.length, 14);
-header.writeUInt32LE(22, 18);
-await fs.writeFile("public/favicon.ico", Buffer.concat([header, png]));
-const og = `<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="630"><rect width="1200" height="630" fill="#f3f0e6"/><path d="M0 20H1200M0 610H1200" stroke="#151515" stroke-width="6"/>${fonts.display.getPath("MIRAFRA", 40, 310, 270).toSVG(2)}${fonts.mono.getPath("FREE POSTERS. YOUR WORDS. PUBLIC WALLS.", 45, 440, 34).toSVG(2)}<rect x="45" y="480" width="1110" height="70" fill="#e32219"/></svg>`;
-await sharp(Buffer.from(og)).png().toFile("public/og-default.png");
-await fs.writeFile(
-  "public/site.webmanifest",
-  JSON.stringify(
-    {
-      name: "Mirafra â€” Free protest poster archive",
-      short_name: "Mirafra",
-      start_url: "/",
-      display: "standalone",
-      background_color: "#f3f0e6",
-      theme_color: "#e32219",
-      icons: [192, 512].map((s) => ({
-        src: `/icons/icon-${s}.png`,
-        sizes: `${s}x${s}`,
-        type: "image/png",
-      })),
-    },
-    null,
-    2,
-  ),
-);
-console.log(
-  `Authored ${posters.length} CC0 placeholders with vector sources, four print PDFs, 300-PPI PNGs, previews, and bundles.`,
-);
+await import("./brand");

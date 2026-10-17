@@ -1,13 +1,13 @@
 ﻿# Human prerequisites for RED LARK WORKSHOP
 
-Planning checkpoint: 16 October 2026. Supabase implementation is explicitly on hold. No keys are needed for the public branding/content work; enter eventual secrets in scoped hosting settings, not chat or Git.
+Implementation checkpoint: 16 October 2026. Supabase implementation remains explicitly on hold. The public branding/archive/Studio/editorial work needs no backend keys; enter eventual secrets in scoped hosting settings, not chat or Git.
 
 | Decision                    | Required human action                                                                                                                                                                                                        |
 | --------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | Backend hold                | Release the hold before any Supabase SDK/schema/auth/storage/RLS/admin integration. Choose project owner, region, residency, retention and budget first.                                                                     |
 | Supabase project and keys   | Later create/provide the project and scoped configuration; service-role credentials remain server-only. No project or credentials invented.                                                                                  |
 | Administrator               | Later nominate the initial admin and approve a documented server-side bootstrap; no client-chosen roles.                                                                                                                     |
-| Contact inbox               | Provide a real monitored CONTACT_EMAIL and team recipient. Missing address remains visibly unavailable with build warning.                                                                                                   |
+| Contact inbox               | Owner supplied redlarkworkshop@gmail.com. Verify mail-app workflow on devices; server delivery awaits M8.                                                                                                                    |
 | Mail provider               | Choose transactional provider/SMTP; verify sending domain and MAIL_FROM; approve retention and configure test delivery before real traffic.                                                                                  |
 | Repository and Netlify name | Rename the repository and site/domain when ready; supply the canonical production SITE_URL and configure callback/reset URLs after auth design. The current repository URL remains only in the future allow-listed constant. |
 | Languages                   | Native review of all Hindi, Bengali and Malayalam UI, landing, legal and print guidance. Drafts stay reviewed:false until approved; verify actual-device glyphs/exports.                                                     |
@@ -19,4 +19,14 @@ Planning checkpoint: 16 October 2026. Supabase implementation is explicitly on h
 | Physical printing           | Approve sample print quality, Indic shaping, sizes, colours, trimming and distribution guidance on actual printers.                                                                                                          |
 | Deck provenance             | Decide whether to track or retain the supplied PPTX outside the shipping repo. It is currently untracked and contains unknown-licence media; do not deploy or copy those assets.                                             |
 
-Engineering gaps remain in PLAN/CHECKLIST/ITERATIONS; they are not converted into human tasks or PASS entries. The site is not yet rebuilt to the new brief.
+Native review includes the drafted blog and print guidance. Non-AI legal articles currently use explicitly flagged English fallback: native legal translations still need to be supplied and reviewed. Approve an actual takedown response schedule; the public draft visibly marks its SLA as pending.
+
+Before publishing, rename/configure the Netlify site/domain as intended and verify SITE_URL, real localized 404 responses, sitemap/OG URLs, security headers and device mail-app handoff on the live CDN. No deployment, DNS change or provider setup has been performed here. The team inbox is already supplied; it is not an outstanding request for an address.
+
+Engineering status and held backend requirements remain in PLAN/CHECKLIST/ITERATIONS; they are not converted into human tasks or PASS entries. The development-only upstream dependency limitation is documented separately in DEPENDENCIES.md. Public implementation is not full account/upload/admin/mail acceptance.
+
+## Round 15 acceptance boundary
+
+The explicit backend hold prevents the remaining required acceptance flows: email/password sessions and verification/reset; account export/deletion; relational schema/roles/RLS tests; server-sanitized pending uploads and private storage; contributor status/dashboard; admin approval/takedown/audit/publishing; persisted contact/takedown with daily-hash limits, retries and provider-delivered acknowledgements. These are future engineering work after authorization, not completed features or requests to supply keys now. Consequently signup -> upload -> approval -> collection and contact -> database -> delivered test email cannot be run in this phase.
+
+Human prerequisites before that work are release of the hold, project/region/retention ownership, approved administrator, verified mail sender/provider and legal decisions. Native review, real artwork permissions, physical print approval and live Netlify configuration remain separate launch prerequisites. The supplied inbox is already configured. This repository has not been pushed or deployed.

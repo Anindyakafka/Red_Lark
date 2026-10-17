@@ -1,9 +1,17 @@
 {
+  "categories": ["workers"],
+  "tags": ["labor", "may day"],
+  "kind": "poster-placard",
+  "imageCode": "1e",
+  "captionCode": "2g",
+  "aiUse": "generated",
+  "aiDisclosure": "Original AI-assisted vector placeholder created for site testing. This is not a curated human submission or a contribution by a real artist.",
   "slug": "care-is-work",
   "title": "Care is work",
   "languages": ["English"],
-  "artist": "mirafra-type-lab",
-  "year": 2024,
+  "translations": {},
+  "artist": "wet-ink-workshop",
+  "year": 2026,
   "themes": ["Labor"],
   "movements": ["May Day"],
   "colorMode": "bw",
@@ -13,43 +21,82 @@
       "format": "PDF",
       "size": "A4",
       "path": "/posters/care-is-work/A4.pdf",
-      "bytes": 60713
+      "bytes": 71690
     },
     {
       "format": "PDF",
       "size": "A3",
       "path": "/posters/care-is-work/A3.pdf",
-      "bytes": 60750
+      "bytes": 71738
     },
     {
       "format": "PDF",
       "size": "A2",
       "path": "/posters/care-is-work/A2.pdf",
-      "bytes": 60707
+      "bytes": 71688
     },
     {
       "format": "PDF",
       "size": "18x24",
       "path": "/posters/care-is-work/18x24.pdf",
-      "bytes": 60635
+      "bytes": 71573
     },
     {
       "format": "PNG",
       "size": "A3",
       "path": "/posters/care-is-work/A3.png",
-      "bytes": 727551
+      "bytes": 746456,
+      "dpi": 300,
+      "pixelWidth": 3508,
+      "pixelHeight": 4961
+    },
+    {
+      "format": "PNG",
+      "size": "A4",
+      "path": "/posters/care-is-work/A4.png",
+      "bytes": 929948,
+      "dpi": 300,
+      "pixelWidth": 2480,
+      "pixelHeight": 3508
+    },
+    {
+      "format": "JPEG",
+      "size": "A4",
+      "path": "/posters/care-is-work/A4.jpg",
+      "bytes": 652772,
+      "dpi": 300,
+      "pixelWidth": 2480,
+      "pixelHeight": 3508
+    },
+    {
+      "format": "PNG",
+      "size": "A2",
+      "path": "/posters/care-is-work/A2.png",
+      "bytes": 2019040,
+      "dpi": 300,
+      "pixelWidth": 4961,
+      "pixelHeight": 7016
+    },
+    {
+      "format": "JPEG",
+      "size": "A2",
+      "path": "/posters/care-is-work/A2.jpg",
+      "bytes": 1480565,
+      "dpi": 300,
+      "pixelWidth": 4961,
+      "pixelHeight": 7016
     },
     {
       "format": "SVG",
       "size": "A3",
       "path": "/posters/care-is-work/source.svg",
-      "bytes": 82134
+      "bytes": 109753
     },
     {
       "format": "ZIP",
       "size": "Bundle",
       "path": "/posters/care-is-work/bundle.zip",
-      "bytes": 70224
+      "bytes": 88856
     }
   ],
   "license": "CC0-1.0",
@@ -57,9 +104,9 @@
   "allowsDerivatives": true,
   "commercialUseAllowed": true,
   "source": "/poster/care-is-work/",
-  "artistUrl": "/artist/mirafra-type-lab/",
-  "alt": "Off-white typographic print reading â€œCARE IS WORKâ€, with an array of halftone dots and a clearly marked placeholder credit.",
-  "caption": "Original vector study authored for the Mirafra rebuild. Placeholder artwork, free under CC0; not a contribution by a real artist.",
+  "artistUrl": "/artist/wet-ink-workshop/",
+  "alt": "Off-white typographic print reading “CARE IS WORK”, with an array of halftone dots and a clearly marked placeholder credit.",
+  "caption": "Original vector study authored for the Red Lark Workshop rebuild. Placeholder artwork, free under CC0; not a contribution by a real artist.",
   "remixable": true,
   "placeholder": true,
   "preview": "/posters/care-is-work/preview.webp",
@@ -88,7 +135,7 @@
         "credit": {
           "id": "care-is-work",
           "title": "Care is work",
-          "artist": "Mirafra Type Lab",
+          "artist": "The Wet Ink Workshop",
           "license": "CC0-1.0",
           "source": "/poster/care-is-work/"
         }
@@ -111,7 +158,7 @@
         "credit": {
           "id": "care-is-work",
           "title": "Care is work",
-          "artist": "Mirafra Type Lab",
+          "artist": "The Wet Ink Workshop",
           "license": "CC0-1.0",
           "source": "/poster/care-is-work/"
         }
@@ -134,7 +181,7 @@
         "credit": {
           "id": "care-is-work",
           "title": "Care is work",
-          "artist": "Mirafra Type Lab",
+          "artist": "The Wet Ink Workshop",
           "license": "CC0-1.0",
           "source": "/poster/care-is-work/"
         }

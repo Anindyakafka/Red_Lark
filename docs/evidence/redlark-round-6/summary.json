@@ -1,0 +1,334 @@
+{
+  "round": 6,
+  "screenshots": [],
+  "axe": [
+    {
+      "page": "hi/",
+      "width": 1440,
+      "violations": []
+    },
+    {
+      "page": "hi/collection/",
+      "width": 1440,
+      "violations": []
+    },
+    {
+      "page": "hi/poster/a-future-we-share/",
+      "width": 1440,
+      "violations": []
+    }
+  ],
+  "lighthouse": [
+    {
+      "page": "landing-en",
+      "method": "Median of three consecutive cold-cache mobile Lighthouse runs; all raw runs retained",
+      "scores": {
+        "performance": 97,
+        "accessibility": 100,
+        "best-practices": 100,
+        "seo": 100
+      },
+      "cls": 0.00003158959233585534,
+      "lcp": 2500.9604,
+      "tbt": 39.5,
+      "runs": [
+        {
+          "run": 1,
+          "scores": {
+            "performance": 94,
+            "accessibility": 100,
+            "best-practices": 100,
+            "seo": 100
+          },
+          "cls": 0.00003158959233585534,
+          "lcp": 3100.9546499999997,
+          "tbt": 47
+        },
+        {
+          "run": 2,
+          "scores": {
+            "performance": 98,
+            "accessibility": 100,
+            "best-practices": 100,
+            "seo": 100
+          },
+          "cls": 0.00003158959233585534,
+          "lcp": 2496.537,
+          "tbt": 39.5
+        },
+        {
+          "run": 3,
+          "scores": {
+            "performance": 97,
+            "accessibility": 100,
+            "best-practices": 100,
+            "seo": 100
+          },
+          "cls": 0.00003158959233585534,
+          "lcp": 2500.9604,
+          "tbt": 37.5
+        }
+      ]
+    },
+    {
+      "page": "collection-en",
+      "method": "Median of three consecutive cold-cache mobile Lighthouse runs; all raw runs retained",
+      "scores": {
+        "performance": 98,
+        "accessibility": 100,
+        "best-practices": 100,
+        "seo": 100
+      },
+      "cls": 0.00003158959233585534,
+      "lcp": 2417.6333999999997,
+      "tbt": 38,
+      "runs": [
+        {
+          "run": 1,
+          "scores": {
+            "performance": 98,
+            "accessibility": 100,
+            "best-practices": 100,
+            "seo": 100
+          },
+          "cls": 0.00003158959233585534,
+          "lcp": 2421.4236,
+          "tbt": 34.5
+        },
+        {
+          "run": 2,
+          "scores": {
+            "performance": 98,
+            "accessibility": 100,
+            "best-practices": 100,
+            "seo": 100
+          },
+          "cls": 0.00003158959233585534,
+          "lcp": 2417.6333999999997,
+          "tbt": 46.5
+        },
+        {
+          "run": 3,
+          "scores": {
+            "performance": 98,
+            "accessibility": 100,
+            "best-practices": 100,
+            "seo": 100
+          },
+          "cls": 0.00003158959233585534,
+          "lcp": 2415.5422,
+          "tbt": 38
+        }
+      ]
+    },
+    {
+      "page": "item-en",
+      "method": "Median of three consecutive cold-cache mobile Lighthouse runs; all raw runs retained",
+      "scores": {
+        "performance": 98,
+        "accessibility": 100,
+        "best-practices": 100,
+        "seo": 100
+      },
+      "cls": 0.00003158959233585534,
+      "lcp": 2267.81295,
+      "tbt": 42,
+      "runs": [
+        {
+          "run": 1,
+          "scores": {
+            "performance": 98,
+            "accessibility": 100,
+            "best-practices": 100,
+            "seo": 100
+          },
+          "cls": 0.00003158959233585534,
+          "lcp": 2267.81295,
+          "tbt": 79
+        },
+        {
+          "run": 2,
+          "scores": {
+            "performance": 96,
+            "accessibility": 100,
+            "best-practices": 100,
+            "seo": 100
+          },
+          "cls": 0.00003158959233585534,
+          "lcp": 2702.3066,
+          "tbt": 42
+        },
+        {
+          "run": 3,
+          "scores": {
+            "performance": 99,
+            "accessibility": 100,
+            "best-practices": 100,
+            "seo": 100
+          },
+          "cls": 0.00003158959233585534,
+          "lcp": 2265.8305499999997,
+          "tbt": 35.5
+        }
+      ]
+    },
+    {
+      "page": "landing-hi",
+      "method": "Median of three consecutive cold-cache mobile Lighthouse runs; all raw runs retained",
+      "scores": {
+        "performance": 96,
+        "accessibility": 100,
+        "best-practices": 100,
+        "seo": 100
+      },
+      "cls": 0.00003158959233585534,
+      "lcp": 2713.1612999999998,
+      "tbt": 40.5,
+      "runs": [
+        {
+          "run": 1,
+          "scores": {
+            "performance": 96,
+            "accessibility": 100,
+            "best-practices": 100,
+            "seo": 100
+          },
+          "cls": 0.00003158959233585534,
+          "lcp": 2713.1612999999998,
+          "tbt": 51
+        },
+        {
+          "run": 2,
+          "scores": {
+            "performance": 96,
+            "accessibility": 100,
+            "best-practices": 100,
+            "seo": 100
+          },
+          "cls": 0.00003158959233585534,
+          "lcp": 2712.6061500000005,
+          "tbt": 30
+        },
+        {
+          "run": 3,
+          "scores": {
+            "performance": 96,
+            "accessibility": 100,
+            "best-practices": 100,
+            "seo": 100
+          },
+          "cls": 0.00003158959233585534,
+          "lcp": 2713.85265,
+          "tbt": 40.5
+        }
+      ]
+    },
+    {
+      "page": "collection-hi",
+      "method": "Median of three consecutive cold-cache mobile Lighthouse runs; all raw runs retained",
+      "scores": {
+        "performance": 96,
+        "accessibility": 100,
+        "best-practices": 100,
+        "seo": 100
+      },
+      "cls": 0.00003158959233585534,
+      "lcp": 2714.26815,
+      "tbt": 41.00000000000023,
+      "runs": [
+        {
+          "run": 1,
+          "scores": {
+            "performance": 97,
+            "accessibility": 100,
+            "best-practices": 100,
+            "seo": 100
+          },
+          "cls": 0.00003158959233585534,
+          "lcp": 2636.1465000000003,
+          "tbt": 41.00000000000023
+        },
+        {
+          "run": 2,
+          "scores": {
+            "performance": 96,
+            "accessibility": 100,
+            "best-practices": 100,
+            "seo": 100
+          },
+          "cls": 0.00003158959233585534,
+          "lcp": 2714.26815,
+          "tbt": 44
+        },
+        {
+          "run": 3,
+          "scores": {
+            "performance": 96,
+            "accessibility": 100,
+            "best-practices": 100,
+            "seo": 100
+          },
+          "cls": 0.00003158959233585534,
+          "lcp": 2714.6682,
+          "tbt": 33.61059999999998
+        }
+      ]
+    },
+    {
+      "page": "item-hi",
+      "method": "Median of three consecutive cold-cache mobile Lighthouse runs; all raw runs retained",
+      "scores": {
+        "performance": 94,
+        "accessibility": 100,
+        "best-practices": 100,
+        "seo": 100
+      },
+      "cls": 0.00003158959233585534,
+      "lcp": 3052.0639,
+      "tbt": 59.48934999999983,
+      "runs": [
+        {
+          "run": 1,
+          "scores": {
+            "performance": 94,
+            "accessibility": 100,
+            "best-practices": 100,
+            "seo": 100
+          },
+          "cls": 0.00003158959233585534,
+          "lcp": 3063.2702,
+          "tbt": 72.78830000000016
+        },
+        {
+          "run": 2,
+          "scores": {
+            "performance": 94,
+            "accessibility": 100,
+            "best-practices": 100,
+            "seo": 100
+          },
+          "cls": 0.00003158959233585534,
+          "lcp": 3052.0639,
+          "tbt": 59.48934999999983
+        },
+        {
+          "run": 3,
+          "scores": {
+            "performance": 94,
+            "accessibility": 100,
+            "best-practices": 100,
+            "seo": 100
+          },
+          "cls": 0.00003158959233585534,
+          "lcp": 3049.1142,
+          "tbt": 58.8143
+        }
+      ]
+    }
+  ],
+  "externalRequests": [],
+  "errors": [],
+  "held": [
+    "login/admin: backend implementation explicitly held; no fake screenshots"
+  ]
+}
