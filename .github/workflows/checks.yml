@@ -12,6 +12,11 @@ jobs:
           node-version: "24"
           cache: npm
       - run: npm ci
+      - uses: denoland/setup-deno@v2
+        with:
+          deno-version: v2.x
+      - run: deno check --no-config netlify/edge-functions/language.ts
+      - run: deno run --no-config --no-npm scripts/check-edge.mjs
       - run: npx playwright install --with-deps chromium
       - run: npm run typecheck
       - run: npm run check:brand

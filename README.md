@@ -30,21 +30,24 @@ The export is in out/. The build also emits physical Next segment-file aliases f
 
 ## Scripts
 
-| Command                       | Purpose                                                                           |
-| ----------------------------- | --------------------------------------------------------------------------------- |
-| npm run dev                   | Next.js development server                                                        |
-| npm run typecheck             | Strict TypeScript                                                                 |
-| npm run lint                  | ESLint, zero warnings                                                             |
-| npm run format / format:check | Prettier                                                                          |
-| npm run validate:content      | Licence/credit/alt/file validation and generated catalogue                        |
-| npm run build                 | Content validation, Next static export, internal-link/metadata/alt checks         |
-| npm test                      | Scene, licence, search, sharing, history and resolution tests                     |
-| npm run test:e2e              | Playwright every-route smoke/axe + Studio, forms, licence gate and breakpoints    |
-| npm run qa:round -- 12        | English/Malayalam screenshots, axe and en/hi mobile Lighthouse; numbered evidence |
-| npm run seed                  | Re-author original placeholder assets; not a future-content ingest command        |
-| npm run brand:build           | Regenerate original lark, wordmark, favicon set and OG image                      |
-| npm run test:copy             | Independent verbatim Appendix A source and rendered-text tests                    |
-| npm run check:brand           | Reject retired branding except the one repository URL constant                    |
+| Command                       | Purpose                                                                                               |
+| ----------------------------- | ----------------------------------------------------------------------------------------------------- |
+| npm run dev                   | Next.js development server                                                                            |
+| npm run typecheck             | Strict TypeScript                                                                                     |
+| npm run lint                  | ESLint, zero warnings                                                                                 |
+| npm run format / format:check | Prettier                                                                                              |
+| npm run validate:content      | Licence/credit/alt/file validation and generated catalogue                                            |
+| npm run build                 | Content validation, Next static export, internal-link/metadata/alt checks                             |
+| npm test                      | Scene, licence, search, sharing, history and resolution tests                                         |
+| npm run test:e2e              | Playwright every-route smoke/axe + Studio, forms, licence gate and breakpoints                        |
+| npm run qa:round -- 12        | English/Malayalam screenshots, axe and en/hi mobile Lighthouse; numbered evidence                     |
+| npm run seed                  | Re-author original placeholder assets; not a future-content ingest command                            |
+| npm run brand:build           | Regenerate original lark, wordmark, favicon set and OG image                                          |
+| npm run test:copy             | Independent verbatim Appendix A source and rendered-text tests                                        |
+| npm run check:brand           | Reject retired branding except the one repository URL constant                                        |
+| npm run check:edge            | Native Edge module loading, language/legacy redirects, static pass-through, localized 404 and headers |
+
+The build runs the native Edge preflight before Next.js. Edge dependencies must use explicit `.ts` extensions and JSON imports must carry `with { type: "json" }`: Netlify bundles this graph using Deno, independently of Next's resolver. CI additionally runs `deno check --no-config netlify/edge-functions/language.ts` and `deno run --no-config --no-npm scripts/check-edge.mjs`. A successful Next export alone does not establish Edge deployment compatibility.
 
 For browser QA on Windows, the config uses installed Microsoft Edge. Set BROWSER_PATH for another Chromium executable. On Linux/macOS run npx playwright install chromium. The ND browser fixture is isolated to the local verification server: run npx tsx scripts/qa-fixture.tsx after building. It is not included in out/ and is not public catalogue content.
 

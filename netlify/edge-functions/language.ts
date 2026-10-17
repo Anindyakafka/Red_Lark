@@ -1,6 +1,6 @@
-import { chooseLocale, isLocale } from "../../src/i18n/config";
-import { SECURITY_HEADERS } from "../../src/config/security";
-import legacyRoutes from "../../content/legacy-routes.json";
+import { chooseLocale, isLocale } from "../../src/i18n/config.ts";
+import { SECURITY_HEADERS } from "../../src/config/security.ts";
+import legacyRoutes from "../../content/legacy-routes.json" with { type: "json" };
 interface EdgeContext {
   next: () => Promise<Response>;
 }

@@ -5,11 +5,11 @@
   "type": "module",
   "license": "AGPL-3.0-only",
   "engines": {
-    "node": ">=22.0.0"
+    "node": ">=24.0.0"
   },
   "scripts": {
     "dev": "next dev",
-    "build": "npm run check:brand && npm run validate:content && next build && node scripts/validate-export.mjs",
+    "build": "npm run check:edge && npm run check:brand && npm run validate:content && next build && node scripts/validate-export.mjs",
     "start": "node scripts/serve.mjs",
     "typecheck": "tsc --noEmit",
     "test": "tsx --test tests/*.test.ts",
@@ -22,6 +22,7 @@
     "test:e2e": "playwright test",
     "qa:round": "node scripts/review-public.mjs",
     "check:brand": "node scripts/check-no-legacy-name.mjs",
+    "check:edge": "node scripts/check-edge.mjs",
     "test:copy": "tsx --test tests/copy.test.ts"
   },
   "dependencies": {

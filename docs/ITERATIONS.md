@@ -1,5 +1,13 @@
 # Numbered rebuild rounds
 
+## Deployment follow-up — 17 October 2026
+
+The first PR #3 Netlify preview compiled and validated all 340 HTML pages, then failed in Edge bundling: the Deno resolver could not find the extensionless src/i18n/config dependency. Local Next/tsx tests accepted extensionless imports, so the prior checks did not exercise the deployment resolver. Fixed both shared TypeScript imports to use their actual .ts extension and added the required JSON import attribute. TypeScript permits these imports with noEmit and allowImportingTsExtensions.
+
+Added scripts/check-edge.mjs, executed by the normal build through native Node resolution (without Next/tsx) and by Deno in CI. It checks real module loading, cookie-free language negotiation, legacy redirects/query preservation, static pass-through, localized 404 fallback and security headers. CI now also checks the graph with Deno. This is a deployment compatibility correction; public design/content and the Supabase hold are unchanged. A fresh Netlify preview after pushing the fix is the deployment acceptance check, not an assertion based only on the local Next build.
+
+Local verification: native preflight plus Deno 2.9.6 check/run pass; strict types, ESLint, formatting, 37 unit tests, all 340 exported HTML pages and five localized browser smoke/axe tests pass. The Node engine contract now matches the existing Node 24 hosting/CI/README requirement, since native TypeScript loading is used by the preflight. No dependency was added to the application.
+
 ## Red Lark Round 15 critique — final public fresh eyes
 
 Re-read the expanded brief against the implemented public phase and the explicit backend hold. Added an exported-route matrix (84 pages per locale, 336 locale pages), desktop axe including best-practice rules, dark native mobile checks and a no-JS localized article check. Existing full flows still cover forms, derivative gating, actual exports, local image privacy, recovery and real index navigation.
