@@ -75,6 +75,8 @@ No contact address or donation destination is invented. Domain, inbox, legal rev
 | SUPABASE_SECRET_KEY                          | Current secret key, reserved for server-only administration; never expose through NEXT_PUBLIC or next.config.ts env.        |
 | MAIL_PROVIDER_KEY / MAIL_FROM / MAIL_TO_TEAM | Future server-only delivery configuration; requires provider and sender/domain verification. Unused by today's mailto flow. |
 
+R2 credential preparation uses R2_ACCOUNT_ID, R2_ACCESS_KEY_ID, R2_SECRET_ACCESS_KEY and R2_ENDPOINT (the account-level S3 endpoint, without a bucket path). R2_REGION is auto for S3 signing; it does not select a physical storage location. R2_PENDING_BUCKET and R2_APPROVED_BUCKET name the two private buckets. Store values in ignored .env.local, with bucket-restricted Object Read & Write credentials. These fields do not activate uploads or public downloads; backend integration and controlled delivery remain pending.
+
 ## Routes
 
 Public pages use /en, /hi, /bn or /ml: landing, collection, categories/category/[slug], poster/[slug], discover, artists/artist/[slug], studio, community, submit, blog/blog/[slug], about, policies and policy articles, contact, privacy, terms, thank-you, 404 and search/image. Each locale has feed.xml. Root sitemap.xml, robots.txt and site.webmanifest stay unprefixed. Old themes/theme URLs redirect to categories while preserving locale/query.
