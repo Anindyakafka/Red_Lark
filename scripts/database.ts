@@ -34,7 +34,9 @@ try {
       .readdirSync("supabase/migrations")
       .filter((n) => n.endsWith(".sql"))
       .sort()) {
-      const source = fs.readFileSync(`supabase/migrations/${name}`, "utf8");
+      const source = fs
+        .readFileSync(`supabase/migrations/${name}`, "utf8")
+        .replaceAll("\r\n", "\n");
       const hash = crypto.createHash("sha256").update(source).digest("hex");
       const previous = await sql`select sha256 from redlark_migrations.applied where name=${name}`;
       if (previous.length) {

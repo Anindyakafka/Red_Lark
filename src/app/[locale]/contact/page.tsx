@@ -7,7 +7,7 @@ import { pageMeta } from "@/lib/metadata";
 import { CONTACT_EMAIL } from "@/config/site";
 const baseMetadata = pageMeta(
   "Contact and artist removal",
-  "Contact Red Lark Workshop about credit, permission, takedowns, print problems or collaboration. Messages are handed off to your own email app.",
+  "Contact Red Lark Workshop about credit, permission, takedowns, print problems or collaboration. Messages are stored privately and emailed to the team.",
   "/contact",
 );
 export default function Page() {
@@ -37,9 +37,7 @@ export default function Page() {
           </p>
           <p className="small">
             <UiText
-              id={
-                "Your mail provider handles email delivery. This static website has no inbox or submission database."
-              }
+              id={"Contact messages are stored privately. You can also email the team directly."}
             />
           </p>
         </aside>

@@ -8,8 +8,8 @@
     "node": ">=24.0.0"
   },
   "scripts": {
-    "dev": "next dev",
-    "build": "npm run check:edge && npm run check:brand && npm run validate:content && next build && node scripts/validate-export.mjs && node scripts/check-client-secrets.mjs",
+    "dev": "node scripts/dev.mjs",
+    "build": "node scripts/build-security.mjs --prepare && npm run check:edge && npm run check:brand && npm run validate:content && tsx scripts/fetch-public-catalogue.ts && next build && node scripts/build-security.mjs && node scripts/validate-export.mjs && node scripts/check-client-secrets.mjs",
     "start": "node scripts/serve.mjs",
     "typecheck": "tsc --noEmit",
     "test": "tsx --test tests/*.test.ts",
@@ -27,7 +27,10 @@
     "check:client-secrets": "node scripts/check-client-secrets.mjs",
     "test:rls": "tsx --test tests/rls.test.ts",
     "seed:backend": "tsx scripts/backend-seed.ts",
-    "test:copy": "tsx --test tests/copy.test.ts"
+    "test:copy": "tsx --test tests/copy.test.ts",
+    "db:check": "tsx scripts/database.ts",
+    "db:migrate": "tsx scripts/database.ts --apply",
+    "admin:bootstrap": "tsx scripts/bootstrap-admin.ts"
   },
   "dependencies": {
     "@aws-sdk/client-s3": "^3.1152.0",

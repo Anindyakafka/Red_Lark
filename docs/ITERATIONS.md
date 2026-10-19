@@ -245,3 +245,11 @@ Maximum CLS across all runs is **0.0231**, below 0.05. Round screenshot axe and 
 **Round 5 fresh-eyes: PASS**
 
 No technical checklist failure remains. Image search is N-A by the brief's permitted coming-soon option; cookie banner is N-A because there is no non-essential storage/tracking. Real mailbox, legal review, permissions, domain/hosting, optional analytics operation and physical print approval are explicit human launch actions in TODO_HUMAN. The repository remains local on `rebuild`; no deployment, push or external communication was performed.
+
+## Backend round 2 — account/runtime implementation and visual critique
+
+Implemented server-only Supabase clients, encrypted server-side Auth tokens behind opaque secure HttpOnly/SameSite cookies, PKCE callbacks, password and email-link signup/login, recovery, global logout, data export/deletion choices and TOTP enrollment/fresh verification. Contributor profile fields are private by default; per-field and per-work consent are independent. Separate Netlify Functions preserve the public static export. Local development uses the same handler through a bridge.
+
+Evidence: 45 unit/policy tests pass; 36 four-locale auth/account/admin/upload/takedown browser checks pass with zero axe violations using explicit API fixtures. Viewed English/Malayalam desktop/mobile screenshots in backend-round-2. The blunt type, hard borders and paper/red system remain consistent. Ranked issues found: (1) tightly adjacent login buttons/links; fixed with spacing and 44px targets; (2) the English Administration heading wrapped awkwardly; replaced by a shorter localized Admin review label; (3) desktop profile column stretched for the entire upload form; changed grid alignment; (4) hosted signup/recovery still requires owner SMTP/callback confirmation and a real verified account. Screenshots/fixture tests are not counted as hosted Auth acceptance.
+
+Hosted follow-up: all three migrations and private seeds now apply over verified TLS; anonymous hosted reads hide private drafts. Real R2 scope/isolation and elapsed five-minute expiry pass, and disposable probes were removed. SMTP sender configuration was corrected by the owner; real contact/team/ack acceptance and stored-message failure behavior pass. The owner confirmed Gmail SPF/DKIM/DMARC PASS. Backend deployment remains prohibited.

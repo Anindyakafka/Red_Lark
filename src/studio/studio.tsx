@@ -141,11 +141,36 @@ export default function Studio() {
           setStatus("[SHARED DESIGN] Anyone with this link can read its contents.");
         } else if (remix) {
           const poster = posters.find((p) => p.slug === remix);
-          if (!poster || !canRemix(poster) || !poster.studioLayers)
+          if (!poster || !canRemix(poster) || (!poster.studioLayers && !poster.remixImage))
             throw new Error(
               "[REMIX BLOCKED] This poster is missing or does not permit derivatives.",
             );
-          chosen = structuredClone(poster.studioLayers);
+          if (poster.studioLayers) chosen = structuredClone(poster.studioLayers);
+          else {
+            if (!poster.remixImage?.startsWith("https://files.redlarkworkshop.com/works/"))
+              throw new Error("Unapproved remix image origin.");
+            const response = await fetch(poster.remixImage, {
+              credentials: "omit",
+              referrerPolicy: "no-referrer",
+            });
+            if (!response.ok || Number(response.headers.get("content-length") || 0) > 12000000)
+              throw new Error(
+                "The approved image cannot be loaded. Download it or contact the artist.",
+              );
+            const image = await importImage(
+              new File([await response.blob()], "approved.png", { type: "image/png" }),
+            );
+            chosen = freshScene();
+            chosen.layers = [];
+            const layer = newLayer("image");
+            layer.image = image.data;
+            layer.x = 0;
+            layer.y = 0;
+            layer.width = 210;
+            layer.height = Math.min(297, (210 * image.height) / image.width);
+            layer.name = poster.title;
+            chosen.layers.push(layer);
+          }
           const credit = sourceCredit(poster, artistFor(poster.artist).name);
           chosen.layers = chosen.layers.map((l) => ({ ...l, credit }));
           setStatus(

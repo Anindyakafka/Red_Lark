@@ -15,7 +15,7 @@ export default async function Page({ params }: { params: Promise<{ locale: strin
     <>
       <div className="studio-intro">
         <p className="label">
-          <UiText id={"[10] YOUR BROWSER IS THE WORKSHOP / NO ACCOUNTS"} />
+          <UiText id={"[10] YOUR BROWSER IS THE WORKSHOP / NO LOGIN REQUIRED"} />
         </p>
         <h1>
           <UiText id={"THE STUDIO."} />

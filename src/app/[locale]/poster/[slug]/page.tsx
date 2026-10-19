@@ -112,7 +112,14 @@ export default async function Page({
             </dt>
             <dd>
               {[...new Set(p.formats.flatMap((file) => (file.dpi ? [file.dpi] : [])))].join(" / ")}{" "}
-              DPI <UiText id="where specified; PDF and SVG are vectors" />
+              DPI{" "}
+              <UiText
+                id={
+                  p.preview.startsWith("https://files.redlarkworkshop.com/")
+                    ? "estimated at the stated print size; raster artwork remains raster inside a PDF"
+                    : "where specified; PDF and SVG are vectors"
+                }
+              />
             </dd>
           </div>
           <div>
@@ -130,7 +137,13 @@ export default async function Page({
             <strong>[{p.aiUse.toUpperCase()}]</strong> {p.aiDisclosure}
           </p>
         </section>
-        <ArtistContact artist={artist} />
+        <ArtistContact
+          artist={
+            p.preview.startsWith("https://files.redlarkworkshop.com/")
+              ? { ...artist, publicContact: p.publicContact, publicUpi: p.publicUpi }
+              : artist
+          }
+        />
         <LicenseGate poster={p} />
         <section className="downloads" id="downloads">
           <h2>
@@ -139,7 +152,9 @@ export default async function Page({
           <p className="small">
             <UiText
               id={
-                "RGB print files. Correct physical size, outlined type. No bleed. Choose “actual size” when printing."
+                p.preview.startsWith("https://files.redlarkworkshop.com/")
+                  ? "Uploaded raster artwork; A4/A2 PDFs have fixed paper sizes. Use the stated resolution estimate to judge print quality. Exporting a larger file cannot add image detail."
+                  : "RGB print files. Correct physical size, outlined type. No bleed. Choose “actual size” when printing."
               }
             />
           </p>

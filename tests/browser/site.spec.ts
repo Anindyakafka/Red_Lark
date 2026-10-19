@@ -84,31 +84,37 @@ test("filters/search/count/save are real and search errors are accessible", asyn
   await page.getByRole("button", { name: "[SEARCH]" }).click();
   await expect(page.locator("main [role=alert]")).toContainText("150");
 });
-test("forms expose required/reply errors and honest email handoff", async ({ page }) => {
-  for (const route of ["/contact/", "/submit/"]) {
-    await page.goto(route);
-    await page.getByRole("button", { name: "[PREPARE EMAIL]" }).click();
-    await expect(page.locator("main [role=alert]")).toContainText("field");
-    await expect(page.locator('[aria-invalid="true"]').first()).toBeVisible();
-    await page
-      .getByLabel(route === "/contact/" ? "YOUR MESSAGE" : "TELL US ABOUT THE WORK", {
-        exact: false,
-      })
-      .fill("A meaningful message for the archive.");
-    await page.getByLabel("REPLY EMAIL").fill("wrong");
-    if (route === "/submit/") {
-      await page.getByLabel("ARTWORK / SOURCE LINK").fill("https://example.org/original");
-      await page.getByLabel("LICENCE + ARTIST CREDIT").fill("CC0 / original author");
-      await page.getByRole("checkbox").check();
-    }
-    await page.getByRole("button", { name: "[PREPARE EMAIL]" }).click();
-    await expect(page.locator("#reply-error")).toBeVisible();
-    await page.getByLabel("REPLY EMAIL").fill("");
-    await page.getByRole("button", { name: "[PREPARE EMAIL]" }).click();
-    await expect(page).toHaveURL(/thank-you/);
-    await expect(page.locator("main")).toContainText("email");
-  }
+test("contact required/reply errors, stored provider failure and confirmed receipt", async ({
+  page,
+}) => {
+  await page.route("**/api/session", (route) => route.fulfill({ json: { csrf: "fixture" } }));
+  let fail = true;
+  await page.route("**/api/contact", (route) =>
+    route.fulfill({
+      status: fail ? 503 : 200,
+      json: fail
+        ? { saved: true, receipt: "fixture", error: "mail_delivery_pending" }
+        : { ok: true, saved: true },
+    }),
+  );
+  await page.goto("/contact/");
+  await page.getByRole("button", { name: "Send message", exact: true }).click();
+  await expect(page.locator("#message")).toBeFocused();
+  await page.getByLabel("YOUR MESSAGE").fill("A meaningful test message for the archive.");
+  await page.getByLabel("REPLY EMAIL").fill("wrong");
+  await page.getByRole("button", { name: "Send message", exact: true }).click();
+  await expect(page.locator("#reply-error")).toBeVisible();
+  await page.getByLabel("REPLY EMAIL").fill("");
+  await page.getByRole("button", { name: "Send message", exact: true }).click();
+  await expect(page.locator("main [role=alert]")).toContainText("saved");
+  await expect(page.getByLabel("YOUR MESSAGE")).toHaveValue(
+    "A meaningful test message for the archive.",
+  );
+  fail = false;
+  await page.getByRole("button", { name: "Send message", exact: true }).click();
+  await expect(page.getByRole("heading", { name: "Message received" })).toBeVisible();
 });
+
 test("ND gate renders no remix and links to artist", async ({ page }) => {
   await page.goto("/__qa/license-gate/");
   await expect(page.getByText("This licence forbids derivatives.")).toBeVisible();

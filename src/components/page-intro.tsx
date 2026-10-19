@@ -29,7 +29,7 @@ export function PageIntro({
           </p>
         </div>
         <Link className="button accent" href={href} prefetch={false}>
-          [{action.toUpperCase()}] ↗
+          [<UiText id={action} />] ↗
         </Link>
       </div>
     </section>

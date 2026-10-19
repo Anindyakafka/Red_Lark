@@ -23,7 +23,11 @@ const pages = [
     "/policies/takedown",
     "Corrections, removal requests and the pending response schedule.",
   ],
-  ["Privacy", "/privacy", "What the current site stores locally and how email handoff works."],
+  [
+    "Privacy",
+    "/privacy",
+    "Browser storage, necessary authentication cookies, private uploads, contact messages and public-field consent.",
+  ],
   ["Terms", "/terms", "Use, submissions, printing and limits of this draft."],
 ];
 export default function Policies() {

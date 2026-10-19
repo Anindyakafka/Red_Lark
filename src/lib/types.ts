@@ -143,4 +143,8 @@ export interface Poster {
   preview: string;
   dominantColor: string;
   studioLayers?: Scene;
+  // Approved, owned R2 raster base, fetched and re-encoded locally by the Studio.
+  remixImage?: string;
+  publicContact?: Artist["publicContact"];
+  publicUpi?: Artist["publicUpi"];
 }

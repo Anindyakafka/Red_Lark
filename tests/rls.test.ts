@@ -126,6 +126,24 @@ test("real Postgres RLS: every table, ownership, roles, MFA and bootstrap", asyn
       "update public.works set status='changes_requested',feedback='Please revise' where id=$1",
       [wb],
     );
+    await assert.rejects(
+      db.query("update public.works set status='approved' where id=$1", [wb]),
+      "review cannot approve a work outside the pending state",
+    );
+    await db.query("select public.audit_admin_operation('retry_publish')");
+    await db.query("select public.review_categories($1,array['workers'])", [wb]);
+    assert.equal(
+      (await db.query("select * from public.work_categories where work_id=$1", [wb])).rows.length,
+      1,
+    );
+    await assert.rejects(
+      db.query("select public.review_categories($1,array['not-a-canonical-category'])", [wb]),
+    );
+    assert.equal(
+      (await db.query("select * from public.work_categories where work_id=$1", [wb])).rows.length,
+      1,
+      "invalid category edit is atomic",
+    );
     assert.ok(
       (await db.query("select * from public.audit_log where action='works:UPDATE'")).rows.length,
     );
@@ -140,6 +158,10 @@ test("real Postgres RLS: every table, ownership, roles, MFA and bootstrap", asyn
     await assert.rejects(
       db.query("update public.works set status='rejected' where id=$1", [wb]),
       "stale admin authentication cannot moderate",
+    );
+    await assert.rejects(
+      db.query("select public.audit_admin_operation('retry_publish')"),
+      "retrying publication also requires fresh TOTP",
     );
     await as("service_role");
     await assert.rejects(
@@ -194,6 +216,58 @@ test("real Postgres RLS: every table, ownership, roles, MFA and bootstrap", asyn
     );
     await as("service_role");
     const receipt = "dddddddd-dddd-4ddd-8ddd-dddddddddddd";
+    const ticket = "eeeeeeee-eeee-4eee-8eee-eeeeeeeeeeee";
+    await db.query(
+      "insert into public.uploads(id,user_id,work_id,object_key,mime,bytes,expires_at,state) values($1,$2,$3,'quarantine-test','image/png',100,now()+interval '5 minutes','processing')",
+      [ticket, a, wa],
+    );
+    const updated = (
+      await db.query<{ stamp: string }>(
+        "select updated_at::text stamp from public.works where id=$1",
+        [wa],
+      )
+    ).rows[0].stamp;
+    const files = ["sanitized", "preview", "pdf-a4", "pdf-a2"].map((kind, i) => ({
+      object_key: `sanitized-test-${i}`,
+      kind,
+      mime: kind.startsWith("pdf") ? "application/pdf" : "image/png",
+      bytes: 100,
+      width: 40,
+      height: 60,
+      dpi: 5,
+    }));
+    await assert.rejects(
+      db.query("select public.finish_upload($1,$2,$3,$4)", [
+        ticket,
+        a,
+        "2000-01-01T00:00:00Z",
+        JSON.stringify(files),
+      ]),
+    );
+    assert.equal(
+      (await db.query("select * from public.work_files where work_id=$1", [wa])).rows.length,
+      1,
+      "failed finalization preserves the old metadata",
+    );
+    await db.query("select public.finish_upload($1,$2,$3,$4)", [
+      ticket,
+      a,
+      updated,
+      JSON.stringify(files),
+    ]);
+    assert.equal(
+      (await db.query("select * from public.work_files where work_id=$1", [wa])).rows.length,
+      4,
+    );
+    await assert.rejects(
+      db.query("select public.finish_upload($1,$2,$3,$4)", [
+        ticket,
+        a,
+        updated,
+        JSON.stringify(files),
+      ]),
+      "upload ticket cannot be reused",
+    );
     await db.query(
       "select public.store_message($1,'General','Message with enough detail','owner@example.invalid','en','')",
       [receipt],

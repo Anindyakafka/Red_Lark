@@ -1,4 +1,86 @@
 @import "tailwindcss";
+
+.account-layout {
+  display: grid;
+  grid-template-columns: minmax(0, 2fr) minmax(0, 1fr);
+  gap: 1.5rem;
+}
+.account-layout > *,
+.backend-panel {
+  min-width: 0;
+}
+.account-layout {
+  align-items: start;
+}
+.handoff-form > .button,
+.handoff-form > a {
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
+  margin: 0 0.75rem 0.75rem 0;
+}
+.handoff-form > a:not(.button) {
+  text-decoration: underline;
+  text-underline-offset: 0.2em;
+}
+.backend-panel {
+  border: 3px solid currentColor;
+  padding: clamp(1rem, 3vw, 2rem);
+  margin-block: 1.5rem;
+}
+.backend-panel h2 {
+  font-size: clamp(1.8rem, 4vw, 3rem);
+}
+.button-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  margin-block: 1rem;
+}
+.backend-records {
+  max-height: 36rem;
+  overflow: auto;
+  border: 2px solid currentColor;
+  padding: 1rem;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}
+.break-all {
+  overflow-wrap: anywhere;
+}
+.review-image {
+  float: left;
+  width: min(45%, 380px);
+  height: auto;
+  max-height: 38rem;
+  object-fit: contain;
+  margin: 0 2rem 1rem 0;
+  background: var(--paper);
+}
+.backend-panel:has(.review-image) {
+  display: flow-root;
+}
+@media (max-width: 767px) {
+  .review-image {
+    float: none;
+    width: 100%;
+    margin: 0 0 1rem;
+  }
+}
+.handoff-form select,
+.handoff-form fieldset {
+  max-width: 100%;
+  min-width: 0;
+}
+.handoff-form fieldset {
+  padding: 1rem;
+  border: 2px solid currentColor;
+}
+@media (max-width: 767px) {
+  .account-layout {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
 @theme inline {
   --font-sans: var(--font-mono);
   --font-display: var(--font-display);

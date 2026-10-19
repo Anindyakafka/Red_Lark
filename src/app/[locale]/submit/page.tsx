@@ -1,13 +1,13 @@
 import { UiText } from "@/i18n/client";
 import { localizeMetadata } from "@/i18n/metadata";
 import { PageIntro } from "@/components/page-intro";
-import { HandoffForm } from "@/components/handoff-form";
+import { UploadPanel } from "@/components/account-client";
 import { ContactAddress } from "@/components/contact-address";
 import { pageMeta } from "@/lib/metadata";
 import { CONTACT_EMAIL } from "@/config/site";
 const baseMetadata = pageMeta(
   "Submit a poster",
-  "Propose an original poster or Studio creation for human review. Provide a source link, explicit licence and artist credit; no automatic uploads.",
+  "Upload an original poster or Studio creation privately for human review. Explicit licence and artist credit are required; publication is never automatic.",
   "/submit",
 );
 export default function Page() {
@@ -22,7 +22,7 @@ export default function Page() {
         href="/terms"
       />
       <div className="content-width form-layout">
-        <HandoffForm kind="submit" email={email} />
+        <UploadPanel />
         <aside aria-labelledby="submission-guidance-heading">
           <h2 id="submission-guidance-heading">
             <UiText id={"[BEFORE YOU SUBMIT]"} />
@@ -37,7 +37,7 @@ export default function Page() {
           <p>
             <UiText
               id={
-                "Send a link to your work, not private files or personal details. No accounts. No automatic publication."
+                "Browsing, downloading and the Studio need no account. Uploading requires a verified contributor account."
               }
             />
           </p>

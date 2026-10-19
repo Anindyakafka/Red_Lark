@@ -15,7 +15,13 @@ const names = [
   "DATABASE_URL",
 ];
 for (const [name, value] of Object.entries(env))
-  if (name.startsWith("NEXT_PUBLIC_") && value && names.some((n) => env[n] === value))
+  if (
+    name.startsWith("NEXT_PUBLIC_") &&
+    (/(SECRET|SERVICE_ROLE|PASSWORD|PRIVATE_KEY|DATABASE_URL|R2_ACCESS_KEY|MAIL_PROVIDER_KEY|SESSION_ENCRYPTION|BUILD_HOOK)/.test(
+      name,
+    ) ||
+      (value && names.some((n) => env[n] === value)))
+  )
     throw new Error(`Secret exposed through ${name}; value withheld.`);
 const secrets = names.map((n) => env[n]).filter((v) => v && v.length >= 12);
 const errors = [];

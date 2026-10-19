@@ -40,7 +40,12 @@ export function validatePoster(p: Poster, artists: Artist[]): string[] {
   if (typeof p.region !== "string" || !p.region.trim()) errors.push("Missing region");
   if (typeof p.remixable !== "boolean" || typeof p.placeholder !== "boolean")
     errors.push("Remix/placeholder flags must be explicit booleans");
-  if (!/^\/posters\/[a-z0-9-]+\/preview\.webp$/.test(p.preview ?? ""))
+  if (
+    !/^\/posters\/[a-z0-9-]+\/preview\.webp$/.test(p.preview ?? "") &&
+    !/^https:\/\/files\.redlarkworkshop\.com\/works\/[a-z0-9-]+\/[a-f0-9-]+\.webp$/.test(
+      p.preview ?? "",
+    )
+  )
     errors.push("Preview must be an approved local file");
   if (!/^#[\da-f]{6}$/i.test(p.dominantColor ?? "")) errors.push("Missing dominant colour");
   if (
@@ -76,7 +81,15 @@ export function validatePoster(p: Poster, artists: Artist[]): string[] {
       errors.push("Derivatives forbidden: remixable must be false");
   }
   if (p.remixable && !p.allowsDerivatives) errors.push("Remix cannot bypass the derivative gate");
-  if (p.remixable && !p.studioLayers) errors.push("Remix needs editable source layers");
+  if (
+    p.remixImage &&
+    !/^https:\/\/files\.redlarkworkshop\.com\/works\/[a-z0-9-]+\/[a-f0-9-]+\.png$/.test(
+      p.remixImage,
+    )
+  )
+    errors.push("Unsafe remix image origin");
+  if (p.remixable && !p.studioLayers && !p.remixImage)
+    errors.push("Remix needs editable source layers");
   if (p.studioLayers && !validateScene(p.studioLayers)) errors.push("Editable scene is invalid");
   if (
     !Array.isArray(p.languages) ||
@@ -89,7 +102,10 @@ export function validatePoster(p: Poster, artists: Artist[]): string[] {
   if (!Array.isArray(p.formats) || !p.formats.length) errors.push("Missing downloads");
   for (const file of p.formats ?? [])
     if (
-      !file.path?.startsWith("/") ||
+      (!file.path?.startsWith("/") &&
+        !/^https:\/\/files\.redlarkworkshop\.com\/works\/[a-z0-9-]+\/[a-f0-9-]+\.(png|pdf)$/.test(
+          file.path,
+        )) ||
       file.path.includes("..") ||
       !["PDF", "PNG", "JPEG", "SVG", "ZIP"].includes(file.format) ||
       !Number.isInteger(file.bytes) ||

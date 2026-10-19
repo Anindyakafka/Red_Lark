@@ -55,7 +55,7 @@ export default function Page() {
       <p>
         <UiText
           id={
-            "You must own submitted artwork or have permission to share it, and supply credit, an explicit licence and a source. Email handoff does not promise receipt or publication. A human reviews contributions before adding them to the repository. No user account or automatic public gallery exists."
+            "You must own submitted artwork or have permission to share it, and supply credit, an explicit licence and a source. Private uploads require a verified account. An administrator reviews licence, credit, AI disclosure and consent before approval. Approval requests publication; it does not guarantee a review time or automatic inclusion in a curated gallery."
           }
         />
       </p>
@@ -63,7 +63,7 @@ export default function Page() {
         <UiText id={"ACCEPTABLE USE."} />
       </h2>
       <p>
-        <UiText id="Account uploads and the database review queue are not enabled. Public contact and UPI fields require separate explicit consent, and AI-use disclosure does not establish permission. Future account export/deletion, anonymisation/removal and review rules must be published before that service starts." />
+        <UiText id="Profiles may use pseudonyms. Contact and UPI fields are optional and require independent explicit consent before publication. AI-use disclosure does not establish permission. Account export and deletion are available from the dashboard; at deletion you choose removal or anonymisation of published work. Copies already downloaded by others cannot be recalled." />
       </p>
       <p>
         <UiText
