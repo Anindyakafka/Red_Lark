@@ -1,173 +1,137 @@
 "use client";
-import { Link } from "@/i18n/client";
-
-import { UiText } from "@/i18n/client";
-
-import { useState, useRef } from "react";
-import { useRouter } from "next/navigation";
-import { useI18n } from "@/i18n/client";
-import { localePath } from "@/i18n/config";
-const TOPICS = [
-  "General",
-  "Contribute/Join the network",
-  "Commission a design",
-  "Takedown",
-  "Report a problem",
-];
-export function HandoffForm({ kind, email }: { kind: "contact" | "submit"; email: string }) {
-  const router = useRouter();
-  const { locale } = useI18n();
-  const form = useRef<HTMLFormElement>(null);
-  const [errors, setErrors] = useState<Record<string, string>>({});
-  const [failure, setFailure] = useState("");
-  const [sending, setSending] = useState(false);
-  function onSubmit(event: React.FormEvent<HTMLFormElement>) {
+import { useRef, useState, type FormEvent } from "react";
+import { Link, useI18n } from "@/i18n/client";
+import { api, errorMessage } from "./account-client";
+export function HandoffForm({
+  kind = "contact",
+}: {
+  kind?: "contact" | "takedown";
+  email?: string;
+}) {
+  const { t, locale } = useI18n(),
+    form = useRef<HTMLFormElement>(null);
+  const [errors, setErrors] = useState<Record<string, string>>({}),
+    [failure, setFailure] = useState(""),
+    [sent, setSent] = useState(false),
+    [busy, setBusy] = useState(false);
+  const started = useRef(0),
+    receipt = useRef("");
+  async function submit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
-    setFailure("");
-    const data = new FormData(event.currentTarget);
+    const data = new FormData(event.currentTarget),
+      message = String(data.get("message") || "").trim(),
+      reply = String(data.get("reply") || "").trim();
     const next: Record<string, string> = {};
-    const message = String(data.get("message") ?? "").trim();
-    const reply = String(data.get("reply") ?? "").trim();
-    const source = String(data.get("source") ?? "").trim();
-    const topic = String(data.get("topic") ?? "General");
-    if (kind === "contact" && !TOPICS.includes(topic)) next.topic = "Choose a listed topic.";
-    if (String(data.get("website") ?? "")) {
-      setFailure(
-        "[NOT SENT] The spam check rejected this request. Please leave the hidden field empty.",
-      );
-      return;
-    }
     if (message.length < 10 || message.length > 3000)
-      next.message = "Use between 10 and 3,000 characters.";
+      next.message = t("Use between 10 and 3,000 characters.");
     if (reply && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(reply))
-      next.reply = "Enter a valid reply address, or leave it blank.";
-    if (kind === "submit") {
-      if (!/^https:\/\//.test(source))
-        next.source = "Provide an HTTPS link to your artwork or source.";
-      if (!String(data.get("license") ?? "").trim())
-        next.license = "State the explicit licence and artist credit.";
-      if (!data.get("permission"))
-        next.permission = "Confirm you have permission to share this work.";
-    }
+      next.reply = t("Enter a valid reply address, or leave it blank.");
+    if (kind === "takedown" && !/^https:\/\//.test(String(data.get("work_url") || "")))
+      next.work_url = t("Provide an HTTPS link to the work.");
     setErrors(next);
+    setFailure("");
     if (Object.keys(next).length) {
       requestAnimationFrame(() =>
         form.current?.querySelector<HTMLElement>('[aria-invalid="true"]')?.focus(),
       );
       return;
     }
-    if (!email) {
-      setFailure(
-        "[NOT SENT] No contact inbox is configured. This site cannot deliver your message yet. Nothing was uploaded or stored.",
-      );
+    if (data.get("website")) {
+      setFailure(t("The spam check rejected this request. Leave the hidden field empty."));
       return;
     }
-    setSending(true);
+    if (!receipt.current) receipt.current = crypto.randomUUID();
+    setBusy(true);
     try {
-      const body = [
-        kind === "contact" ? `Topic: ${topic}` : "Artwork proposal",
+      await api(kind === "takedown" ? "takedown" : "contact", {
+        ...Object.fromEntries(data),
         message,
-        reply ? `Reply to: ${reply}` : "No reply address supplied.",
-        kind === "submit"
-          ? `Source: ${source}\nLicence and credit: ${String(data.get("license"))}`
-          : "",
-      ]
-        .filter(Boolean)
-        .join("\n\n");
-      const url = `mailto:${email}?subject=${encodeURIComponent(`Red Lark Workshop ${kind === "submit" ? "artwork proposal" : "contact"}`)}&body=${encodeURIComponent(body)}`;
-      const link = document.createElement("a");
-      link.href = url;
-      link.click();
-      router.push(localePath(locale, `/thank-you/?for=${kind}`));
-    } catch {
-      setFailure(
-        "[NOT SENT] Your browser could not open an email app. Use the displayed contact address in your own mail app. Your message was not saved.",
-      );
-      setSending(false);
+        reply,
+        locale,
+        started: started.current,
+        submission_key: receipt.current,
+      });
+      setSent(true);
+    } catch (error) {
+      setFailure(t(errorMessage(error instanceof Error ? error.message : "network_error")));
+    } finally {
+      setBusy(false);
     }
   }
-  const fieldError = (name: string) =>
-    errors[name] ? (
-      <p id={`${name}-error`} className="field-error">
-        <UiText id={"[ERROR]"} />
-        <UiText id={errors[name]} />
-      </p>
+  if (sent)
+    return (
+      <section className="notice" role="status">
+        <h2>{t("Message received")}</h2>
+        <p>
+          {t(
+            "Your message was saved and email was accepted by the provider. This does not guarantee inbox placement or a review decision.",
+          )}
+        </p>
+        <Link className="button" href="/thank-you">
+          {t("Continue")}
+        </Link>
+      </section>
+    );
+  function fieldError(name: string) {
+    return errors[name] ? (
+      <span id={`${name}-error`} className="field-error">
+        [ERROR] {errors[name]}
+      </span>
     ) : null;
+  }
   return (
-    <form ref={form} className="handoff-form" onSubmit={onSubmit} noValidate>
+    <form
+      ref={form}
+      className="handoff-form"
+      noValidate
+      onSubmit={submit}
+      onFocusCapture={() => {
+        if (!started.current) started.current = Date.now();
+      }}
+    >
       <p className="notice">
-        <UiText
-          id={
-            "[EMAIL HANDOFF] This form prepares an email in your own mail app. It does not upload, store, or automatically send your message."
-          }
-        />{" "}
-        {email
-          ? "Review and send the email yourself."
-          : "Delivery is unavailable until the project supplies a real inbox."}
+        {t(
+          "Messages are stored privately for the team. A reply address is optional; provide one if you want an acknowledgement. Do not include sensitive identifying details.",
+        )}
       </p>
       <div className="honeypot" aria-hidden="true">
         <label>
-          <UiText id={"Leave this empty"} />
+          {t("Leave this empty")}
           <input name="website" tabIndex={-1} autoComplete="off" />
         </label>
       </div>
-      {kind === "contact" && (
+      {kind === "contact" ? (
         <label className="form-field" htmlFor="topic">
-          <UiText id="Topic" />
-          <select
-            id="topic"
-            name="topic"
-            aria-invalid={!!errors.topic}
-            aria-describedby={errors.topic ? "topic-error" : undefined}
-          >
-            {TOPICS.map((topic) => (
+          {t("Topic")}
+          <select id="topic" name="topic">
+            {[
+              "General",
+              "Contribute/Join the network",
+              "Commission a design",
+              "Takedown",
+              "Report a problem",
+            ].map((topic) => (
               <option key={topic} value={topic}>
-                <UiText id={topic} />
+                {t(topic)}
               </option>
             ))}
           </select>
-          {fieldError("topic")}
-          <span>
-            <UiText id="Contributors can include artists, writers, designers and legal volunteers. Commission enquiries are welcome from movements." />
-          </span>
+        </label>
+      ) : (
+        <label className="form-field" htmlFor="work_url">
+          {t("Artwork URL")}
+          <input
+            id="work_url"
+            name="work_url"
+            type="url"
+            aria-invalid={!!errors.work_url}
+            aria-describedby={errors.work_url ? "work_url-error" : undefined}
+          />
+          {fieldError("work_url")}
         </label>
       )}
-      {kind === "submit" && (
-        <>
-          <label className="form-field" htmlFor="source">
-            <UiText id={"ARTWORK / SOURCE LINK"} />
-            <span>
-              <UiText id={"(required)"} />
-            </span>
-            <input
-              id="source"
-              name="source"
-              type="url"
-              aria-invalid={!!errors.source}
-              aria-describedby={errors.source ? "source-error" : undefined}
-            />
-            {fieldError("source")}
-          </label>
-          <label className="form-field" htmlFor="license">
-            <UiText id={"LICENCE + ARTIST CREDIT"} />
-            <span>
-              <UiText id={"(required)"} />
-            </span>
-            <input
-              id="license"
-              name="license"
-              aria-invalid={!!errors.license}
-              aria-describedby={errors.license ? "license-error" : undefined}
-            />
-            {fieldError("license")}
-          </label>
-        </>
-      )}
       <label className="form-field" htmlFor="message">
-        <UiText id={kind === "submit" ? "TELL US ABOUT THE WORK" : "YOUR MESSAGE"} />{" "}
-        <span>
-          <UiText id={"(required, 10–3,000 characters)"} />
-        </span>
+        {t("YOUR MESSAGE")} ({t("required, 10–3,000 characters")})
         <textarea
           id="message"
           name="message"
@@ -177,19 +141,12 @@ export function HandoffForm({ kind, email }: { kind: "contact" | "submit"; email
           aria-describedby={errors.message ? "message-error" : "message-help"}
         />
         {fieldError("message")}
-        <span id="message-help" className="small">
-          <UiText
-            id={
-              "Share only what is needed. Do not include private locations or identifying details."
-            }
-          />
+        <span id="message-help">
+          {t("Share only what is needed. Do not include private locations or identifying details.")}
         </span>
       </label>
       <label className="form-field" htmlFor="reply">
-        <UiText id={"REPLY EMAIL"} />
-        <span>
-          <UiText id={"(optional)"} />
-        </span>
+        {t("REPLY EMAIL")} ({t("optional")})
         <input
           id="reply"
           name="reply"
@@ -200,48 +157,20 @@ export function HandoffForm({ kind, email }: { kind: "contact" | "submit"; email
         />
         {fieldError("reply")}
       </label>
-      {kind === "submit" && (
-        <label className="checkbox-field">
-          <input
-            type="checkbox"
-            name="permission"
-            aria-invalid={!!errors.permission}
-            aria-describedby={errors.permission ? "permission-error" : undefined}
-          />
-          <span>
-            <UiText
-              id={
-                "I created this work or have explicit permission to share it. Publication requires review."
-              }
-            />
-            {fieldError("permission")}
-          </span>
-        </label>
-      )}
-      {Object.keys(errors).length > 0 && (
-        <p role="alert" className="notice">
-          <UiText id={"[CHECK THE FORM]"} />
-          {Object.keys(errors).length}
-          <UiText id={"field"} />
-          {Object.keys(errors).length === 1 ? "" : "s"}
-          <UiText id={"need attention. Errors are written beside each field."} />
+      {!!Object.keys(errors).length && (
+        <p role="alert">
+          {t("Check the highlighted fields. Errors are written beside each field.")}
         </p>
       )}
       {failure && (
         <p role="alert" className="notice failure">
-          <UiText id={failure} />
+          {failure}
         </p>
       )}
-      <button className="button accent" type="submit" disabled={sending}>
-        <UiText id={sending ? "[OPENING EMAIL APP…]" : "[PREPARE EMAIL] ↗"} />
+      <button type="submit" className="button accent" disabled={busy}>
+        {t(busy ? "Sending…" : "Send message")}
       </button>
-      <p className="small">
-        <UiText id={"No attachments are collected. Share an artwork link instead. Read"} />{" "}
-        <Link href="/privacy/" className="underlined">
-          <UiText id={"how we handle data"} />
-        </Link>
-        .
-      </p>
+      <Link href="/privacy">{t("How we handle data")}</Link>
     </form>
   );
 }

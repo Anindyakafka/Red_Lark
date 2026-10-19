@@ -24,6 +24,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
     "/submit",
     "/about",
     "/contact",
+    "/takedown",
     "/privacy",
     "/terms",
     ...posters.map((p) => `/poster/${p.slug}`),

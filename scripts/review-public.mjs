@@ -16,10 +16,18 @@ const executable =
   (process.platform === "win32"
     ? "C:/Program Files (x86)/Microsoft/Edge/Application/msedge.exe"
     : undefined);
-const server = spawn(process.execPath, ["scripts/serve.mjs"], {
-  env: { ...process.env, QA_FIXTURES: "1" },
-  stdio: "ignore",
-});
+let existing = false;
+try {
+  existing = (await fetch("http://localhost:3000/en/")).ok;
+} catch {
+  /* Start an isolated local preview if needed. */
+}
+const server = existing
+  ? null
+  : spawn(process.execPath, ["scripts/serve.mjs"], {
+      env: { ...process.env, QA_FIXTURES: "1" },
+      stdio: "ignore",
+    });
 const summary = {
   round,
   screenshots: [],
@@ -28,7 +36,7 @@ const summary = {
   externalRequests: [],
   errors: [],
   held: [
-    "Login/admin captures show service-pending notices; real auth, queue and mail acceptance remain held.",
+    "Account/admin/upload screenshots use explicit API fixtures. Real signup/recovery/admin approval require owner verification, public R2 hostname and build hook; backend deployment is not authorized.",
   ],
 };
 let browser, chrome;
@@ -52,8 +60,8 @@ try {
     ["blog", "/blog/"],
     ["ai-policy", "/policies/ai-policy/"],
     ["about", "/about/"],
-    ["login-pending", "/login/"],
-    ["admin-pending", "/admin/"],
+    ["login", "/login/"],
+    ["admin", "/admin/"],
   ];
   for (const locale of process.env.QA_SCREENSHOTS === "0" ? [] : ["en", "ml"])
     for (const width of [390, 1440]) {
@@ -62,6 +70,18 @@ try {
         hasTouch: width === 390,
       });
       const page = await context.newPage();
+      await context.route("**/api/**", (route) => {
+        const path = new URL(route.request().url()).pathname;
+        const data =
+          path === "/api/session"
+            ? { csrf: "fixture" }
+            : path === "/api/account"
+              ? { works: [], profile: null }
+              : path === "/api/auth/mfa/factors"
+                ? { factors: [] }
+                : { error: "fresh_mfa_required" };
+        return route.fulfill({ status: "error" in data ? 403 : 200, json: data });
+      });
       page.on("pageerror", (e) => summary.errors.push(e.message));
       page.on("request", (req) => {
         if (!/^(http:\/\/localhost:3000|blob:|data:)/.test(req.url()))
@@ -79,7 +99,11 @@ try {
           if (await select.count()) await select.selectOption("workers");
           else await page.locator('select[aria-label="Category"]').selectOption("workers");
         }
-        if (name.endsWith("errors")) await page.locator('button[type="submit"]').first().click();
+        if (name.endsWith("errors"))
+          await page
+            .locator('main form button[type="submit"], main form button:not([type])')
+            .first()
+            .click();
         const positions = name === "landing" ? ["top", "middle", "bottom"] : ["top"];
         for (const position of positions) {
           if (position === "middle")
@@ -144,7 +168,7 @@ try {
 } finally {
   await browser?.close();
   await chrome?.kill();
-  server.kill();
+  server?.kill();
   summary.externalRequests = [...new Set(summary.externalRequests)];
   await fs.writeFile(`${dir}/summary.json`, JSON.stringify(summary, null, 2));
 }

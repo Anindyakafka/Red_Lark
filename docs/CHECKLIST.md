@@ -1,5 +1,19 @@
 # Current acceptance checklist
 
+## Backend continuation — 19 October 2026 (overrides historical HOLD rows below)
+
+| Requirement                                                       | Status | Evidence                                        | Note                                                                                                                                                                                                 |
+| ----------------------------------------------------------------- | ------ | ----------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Every-table RLS, own-row isolation, protected roles               | PASS   | tests/rls.test.ts; supabase/migrations          | Actual local PostgreSQL permissions; hosted integration still required.                                                                                                                              |
+| Admin bootstrap idempotent; verified real login and TOTP          | PASS   | tests/rls.test.ts; bootstrap_admin SQL          | Local conditions tested. No real admin manufactured.                                                                                                                                                 |
+| Hosted migrations                                                 | PASS   | scripts/database.ts; verify-hosted-database.ts  | Five migrations applied with verified TLS; anonymous private-table denial verified.                                                                                                                  |
+| Repository and history secret scan                                | PASS   | scripts/check-secrets.mjs; Gitleaks 8.30.1      | Redacted scan clean; .env.local ignored/untracked; CI fetches full history.                                                                                                                          |
+| Client output excludes actual private secrets/prefixes            | PASS   | scripts/check-client-secrets.mjs; npm run build | Export scanned; no secret values printed.                                                                                                                                                            |
+| R2 scoped signing, unsigned-read denial and elapsed expiry        | PASS   | scripts/verify-r2.ts --wait-expiry              | Correct-key upload works; changed key rejected; pending absent from approved bucket; unsigned private read denied; actual expiry tested after five minutes. Public-host/CORS acceptance is separate. |
+| Real SPF/DKIM/DMARC, inbox and Reply-To                           | FAIL   | TODO_HUMAN.md                                   | Both authorized addresses are Gmail; non-Gmail inbox/raw-header evidence missing.                                                                                                                    |
+| Netlify variables and deployment confirmation                     | FAIL   | docs/PLAN.md                                    | Backend deployment prohibited until owner confirms runtime configuration.                                                                                                                            |
+| Signup → verify → upload → MFA approval → four locales → takedown | FAIL   | Backend continuation                            | Hosted schema/Auth/public storage must be ready first.                                                                                                                                               |
+
 RED LARK WORKSHOP, 16 October 2026. This table supersedes the previous brand's historical acceptance. Round evidence and failures remain in ITERATIONS.md and docs/evidence. PASS concerns the implemented public phase; required held backend work is FAIL, never N-A. This is not full-project release acceptance.
 
 | Requirement                                                | Status | Evidence                                                           | Note                                                                                                                                   |
@@ -59,3 +73,17 @@ RED LARK WORKSHOP, 16 October 2026. This table supersedes the previous brand's h
 | Final fresh-eyes all-locale public review                  | PASS   | tests/browser/final-review.spec.ts; Round 15                       | 336 locale pages pass broad axe, headings/lang/overflow/errors; dark native and no-JS editorial pass. Backend acceptance remains held. |
 
 Human launch decisions are in TODO_HUMAN.md. No deployment, push, database setup or provider configuration is claimed.
+
+## Backend integration updates
+
+| Requirement                                                  | Status | Evidence                                              | Note                                                                                                                |
+| ------------------------------------------------------------ | ------ | ----------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------- |
+| Secure opaque sessions, CSRF, daily rotated hashes           | PASS   | tests/backend.test.ts; src/server/auth.ts             | Cryptographic/unit checks pass; real account lifecycle still pending owner Auth configuration.                      |
+| Four-locale auth/account/admin/upload/takedown axe           | PASS   | tests/browser/backend.spec.ts                         | 36 browser tests; explicit API fixtures, never counted as hosted authentication.                                    |
+| Stored contact + team/ack acceptance                         | PASS   | real handler integration, 19 October 2026             | Real Postgres message/outbox; Resend accepted team and authorized sender mail; disposable DB records cleaned.       |
+| Provider outage preserves stored message and reports failure | PASS   | real handler + simulated Resend 503                   | saved=true/503 and persisted retry job verified before disposable fixture cleanup.                                  |
+| Gmail SPF/DKIM/DMARC                                         | PASS   | owner confirmed all three PASS in Gmail Show original | Owner also confirmed Inbox placement. Non-Gmail and precise raw-header domains/Reply-To remain separate acceptance. |
+| R2 CORS/lifecycle configuration                              | FAIL   | restricted-token configuration request refused        | Manual bucket Settings instructions in DEPLOY.md; no runtime-token privilege expansion.                             |
+
+| Pending file unreachable from approved PUBLIC hostname | FAIL | R2_DOMAIN_SETUP.md | Credentialed approved-bucket absence passed; actual public hostname is not configured, so that distinct check is not claimed. |
+| Latest public performance regression | FAIL | redlark-round-1backend-round-4/summary.json | Hindi Collection median 93; font-loading fix awaits fresh measurements. All other metric categories 100. |

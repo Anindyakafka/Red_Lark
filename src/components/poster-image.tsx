@@ -10,6 +10,18 @@ export function PosterImage({
   priority?: boolean;
   large?: boolean;
 }) {
+  if (poster.preview.startsWith("https://files.redlarkworkshop.com/"))
+    return (
+      <Image
+        src={poster.preview}
+        alt={poster.alt}
+        width={700}
+        height={990}
+        sizes={large ? "(max-width: 768px) 94vw, 48vw" : "(max-width: 560px) 46vw, 20vw"}
+        loading={priority ? "eager" : "lazy"}
+        style={{ backgroundColor: poster.dominantColor }}
+      />
+    );
   if (large && priority)
     preload(poster.preview.replace("preview.webp", "preview-400.avif"), {
       as: "image",

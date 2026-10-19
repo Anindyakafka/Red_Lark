@@ -1,5 +1,9 @@
 ﻿# RED LARK WORKSHOP: current audit
 
+## Backend continuation decision — 19 October 2026
+
+Keep Next 16 App Router/strict TypeScript/Tailwind and static export for public pages. Add independent Netlify Functions for auth, contributions, review and mail instead of moving the entire archive to SSR. Supabase is Auth/Postgres only; existing Cloudflare R2 buckets hold all contribution files. Opaque HttpOnly/Secure/SameSite=Lax cookies reference encrypted server-side Auth tokens, permitting global invalidation without browser SDK credentials. Protected roles and actual Postgres RLS backstop server checks; administration requires TOTP and recent verification. No accounts are required for the archive or Studio. Necessary auth/CSRF cookies and chosen local Studio storage do not trigger a non-essential-cookie banner. No social login, remote font, tracker or new user database service is introduced. Existing SQL/API/R2 credentials are reused; migrations are applied, no backend deployment is made. SMTP/CORS/public hostname/build-hook and real account acceptance remain prerequisites in DEPLOY.md.
+
 Initial audit: 16 October 2026, before implementation. Findings below preserve that starting point; implementation decisions are updated at the end. Supabase implementation remains on hold at the owner's request.
 
 ## Current system

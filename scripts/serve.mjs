@@ -2,6 +2,11 @@
 import fs from "node:fs/promises";
 import path from "node:path";
 import { gzipSync, brotliCompressSync, constants } from "node:zlib";
+try {
+  process.loadEnvFile(".env.local");
+} catch {
+  /* CI may supply environment. */
+}
 const root = path.resolve("out");
 const port = Number(process.env.PORT ?? 3000);
 const legacyRoutes = JSON.parse(await fs.readFile("content/legacy-routes.json", "utf8"));
@@ -25,11 +30,16 @@ const types = {
   ".pdf": "application/pdf",
   ".zip": "application/zip",
 };
-const csp =
-  "default-src 'self'; script-src 'self' 'unsafe-inline' 'wasm-unsafe-eval'; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; font-src 'self' data:; connect-src 'self'; object-src 'none'; base-uri 'self'; frame-ancestors 'none'; form-action 'self'; worker-src 'self' blob:";
+const { SECURITY_HEADERS } = await import("../src/config/security.ts");
+const csp = SECURITY_HEADERS["Content-Security-Policy"];
 http
   .createServer(async (req, res) => {
     try {
+      if (req.url.startsWith("/api/")) {
+        const { bridge } = await import("./api-bridge.mjs");
+        await bridge(req, res);
+        return;
+      }
       const pathname = decodeURIComponent(new URL(req.url, "http://localhost").pathname);
       if (
         !/^\/(en|hi|bn|ml)(\/|$)/.test(pathname) &&

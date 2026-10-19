@@ -1,4 +1,4 @@
-type EventName = "pageview" | "poster-download" | "studio-export";
+type EventName = "pageview" | "poster-download" | "studio-export" | "upload-submitted";
 export function analyticsConfiguration() {
   const endpoint = process.env.NEXT_PUBLIC_ANALYTICS_ENDPOINT;
   const domain = process.env.NEXT_PUBLIC_ANALYTICS_DOMAIN;

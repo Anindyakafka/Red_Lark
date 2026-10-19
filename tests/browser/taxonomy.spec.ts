@@ -11,7 +11,7 @@ test("format/category query links filter, survive locale switch and reset", asyn
   await expect(page.locator(".poster-card")).toHaveCount(18);
   await expect(page).not.toHaveURL(/kind=/);
 });
-test("new indexes and held account are accessible and truthful", async ({ page }) => {
+test("new indexes and signed-out account are accessible and truthful", async ({ page }) => {
   for (const locale of ["en", "ml"])
     for (const route of ["categories", "blog", "account"]) {
       expect((await page.goto(`/${locale}/${route}/`))?.status()).toBe(200);

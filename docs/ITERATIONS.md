@@ -1,5 +1,11 @@
 # Numbered rebuild rounds
 
+## Backend round 1 — database boundary review, 19 October 2026
+
+Prepared versioned Supabase Auth/Postgres migrations and deterministic private CC0 seed records. Every application table has RLS. Protected roles, approved-only anonymous reads, contributor isolation and fresh MFA moderation run against actual local PostgreSQL. Seeding twice and transactional/idempotent message-outbox creation are tested. Full-history/working-tree Gitleaks and built-client secret exclusion passed. The static public build passes.
+
+Ranked weaknesses: (1) hosted SQL authentication is rejected despite verified TLS; no remote migration applied; (2) sessions/uploads/admin/mail require full integration and accessibility review; (3) public R2 hostname, non-Gmail/header evidence and scoped Netlify variables need owner action. Local SQL tests are not hosted acceptance. Existing services were not re-provisioned and backend was not deployed.
+
 ## Deployment follow-up — 17 October 2026
 
 The first PR #3 Netlify preview compiled and validated all 340 HTML pages, then failed in Edge bundling: the Deno resolver could not find the extensionless src/i18n/config dependency. Local Next/tsx tests accepted extensionless imports, so the prior checks did not exercise the deployment resolver. Fixed both shared TypeScript imports to use their actual .ts extension and added the required JSON import attribute. TypeScript permits these imports with noEmit and allowImportingTsExtensions.
@@ -239,3 +245,19 @@ Maximum CLS across all runs is **0.0231**, below 0.05. Round screenshot axe and 
 **Round 5 fresh-eyes: PASS**
 
 No technical checklist failure remains. Image search is N-A by the brief's permitted coming-soon option; cookie banner is N-A because there is no non-essential storage/tracking. Real mailbox, legal review, permissions, domain/hosting, optional analytics operation and physical print approval are explicit human launch actions in TODO_HUMAN. The repository remains local on `rebuild`; no deployment, push or external communication was performed.
+
+## Backend round 2 — account/runtime implementation and visual critique
+
+Implemented server-only Supabase clients, encrypted server-side Auth tokens behind opaque secure HttpOnly/SameSite cookies, PKCE callbacks, password and email-link signup/login, recovery, global logout, data export/deletion choices and TOTP enrollment/fresh verification. Contributor profile fields are private by default; per-field and per-work consent are independent. Separate Netlify Functions preserve the public static export. Local development uses the same handler through a bridge.
+
+Evidence: 45 unit/policy tests pass; 36 four-locale auth/account/admin/upload/takedown browser checks pass with zero axe violations using explicit API fixtures. Viewed English/Malayalam desktop/mobile screenshots in backend-round-2. The blunt type, hard borders and paper/red system remain consistent. Ranked issues found: (1) tightly adjacent login buttons/links; fixed with spacing and 44px targets; (2) the English Administration heading wrapped awkwardly; replaced by a shorter localized Admin review label; (3) desktop profile column stretched for the entire upload form; changed grid alignment; (4) hosted signup/recovery still requires owner SMTP/callback confirmation and a real verified account. Screenshots/fixture tests are not counted as hosted Auth acceptance.
+
+Hosted follow-up: all three migrations and private seeds now apply over verified TLS; anonymous hosted reads hide private drafts. Real R2 scope/isolation and elapsed five-minute expiry pass, and disposable probes were removed. SMTP sender configuration was corrected by the owner; real contact/team/ack acceptance and stored-message failure behavior pass. The owner confirmed Gmail SPF/DKIM/DMARC PASS. Backend deployment remains prohibited.
+
+## Backend round 3 — upload transaction and private-file review
+
+Applied and tested the atomic upload-finalization, review-transition and category-review migrations. An expired/used ticket or a draft edited during image processing cannot replace the previous file metadata. Images are byte-sniffed, oriented and re-encoded without EXIF/GPS; sanitized PNG, WebP and actual A4/A2 raster PDFs receive randomized keys. A contributor cannot submit while processing. Only sanitized outputs are eligible for publication. Role assignment adds contributor only after verified authentication; it never grants admin. Destructive administrator account deletion also requires fresh TOTP.
+
+Evidence: 47 unit/model/SQL tests pass, including real PostgreSQL transactional replacement and PDF page-box/credit tests; the full baseline 125-browser suite passed, followed by 44 touched-route tests after the native-heading/font changes. Real R2 integration rejected altered keys, unsigned reads and the same signed upload after its actual five-minute lifetime. Discarded probes were removed. Browser CORS, the owned public hostname and real contributor upload still await owner configuration/account verification and are FAIL acceptance rows.
+
+Viewed the refreshed English/Malayalam account captures. The mobile login controls now have separate 44px targets. Native administrative headings were still too large in the broad capture; bounded their font size with a larger line height, and verified the primary CTA fits at 360/390px in all four locales. Desktop profile cards now stop at their content height. A fresh public Lighthouse series found Hindi Collection at 93 performance (all other category medians met 95); retained that failure and removed unnecessary monospace preloading to avoid competing with critical native/display fonts. Re-measurement remains required. New contributions now sort by the complete submission timestamp rather than year/alphabetical order.

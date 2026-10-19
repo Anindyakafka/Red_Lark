@@ -5,7 +5,7 @@ import { pageMeta } from "@/lib/metadata";
 import { analyticsConfiguration } from "@/lib/analytics";
 const baseMetadata = pageMeta(
   "Privacy draft",
-  "Plain-language draft explaining local Studio storage, image metadata removal, share links, email handoffs and optional cookieless analytics.",
+  "Plain-language draft covering browser-local Studio designs, contributor accounts, private uploads, contact mail, necessary cookies and optional cookieless analytics.",
   "/privacy",
 );
 export default function Page() {
@@ -24,17 +24,17 @@ export default function Page() {
       <p>
         <UiText
           id={
-            "Last revised: 16 October 2026. This describes the current build, not a future service."
+            "Last revised: 19 October 2026. Backend functions require deployment configuration; unavailable services show an error rather than pretending to submit."
           }
         />
       </p>
       <h2>
-        <UiText id={"NO ACCOUNTS. NO DESIGN SERVER."} />
+        <UiText id={"OPEN ARCHIVE. PRIVATE STUDIO."} />
       </h2>
       <p>
         <UiText
           id={
-            "The Studio works in your browser. Designs and uploaded images are not sent to a Red Lark Workshop server. We do not ask for your location, fingerprint your device, or assign a tracking identifier."
+            "Studio designs and images imported into the Studio stay in your browser. The separate contribution Upload flow sends an image privately to Cloudflare R2 for sanitization and review; Supabase stores account and contribution metadata, not artwork files. Original quarantine uploads expire after processing or cleanup; sanitized files remain private until approval. We do not request geolocation, fingerprint devices or assign tracking identifiers. Application rate limits store only salted, daily-rotating hashes, removed after expiry; infrastructure-provider logging needs owner review."
           }
         />
       </p>
@@ -42,7 +42,7 @@ export default function Page() {
         <UiText id={"LOCAL STORAGE."} />
       </h2>
       <p>
-        <UiText id="Contributor accounts, login cookies, database uploads and the server mail service are not enabled. Account/admin pages are unavailable notices, not sign-in forms. Before activation, privacy and retention rules must be reviewed and updated; necessary authentication cookies would be used only for the account service." />
+        <UiText id="Browsing, downloading and the Studio need no account. Uploading requires a verified contributor account. Supabase handles email/password and magic-link authentication. Necessary HttpOnly, Secure, SameSite=Lax cookies keep sessions and protect forms; they are not tracking cookies. Server-stored authentication tokens are encrypted. Administration requires TOTP and recent verification." />
       </p>
       <p>
         <UiText
@@ -77,7 +77,7 @@ export default function Page() {
       <p>
         <UiText
           id={
-            "Contact and submission forms validate locally and prepare an email handoff to your own mail app. The site does not send email, upload attachments, or store form messages. Your email provider handles delivery if you choose to send. Do not supply unnecessary personal details. When no contact address is configured, delivery is unavailable and the form says so."
+            "Contact and takedown messages are validated and stored privately in Supabase Postgres. Resend sends the team notification and, if you provide an optional reply address, an acknowledgement. Failed delivery remains in a retry queue. An accepted email request is not proof of inbox delivery. Do not supply unnecessary personal details."
           }
         />
       </p>
@@ -103,7 +103,7 @@ export default function Page() {
         <UiText id="Artist public contact email and UPI ID are optional and require separate consent for each field. Public details can be copied by visitors. Ask the team to change or remove them; website removal cannot recall other people’s copies or automatically erase repository history. Opening a UPI link uses your chosen payment app; this website does not process a payment." />
       </p>
       <p>
-        <UiText id="Messages you choose to send reach the team’s email provider, outside this website. The team must settle mailbox retention and access rules. No database case or automatic acknowledgement is created here. There is no account data export or deletion service while accounts are disabled; Studio files can be exported locally and browser drafts/bookmarks can be cleared." />
+        <UiText id="Account data can be exported and the account deleted from the dashboard. At deletion you choose removal or anonymisation of published works; downloaded copies and embedded credits cannot be recalled. Contact and UPI fields are optional, private by default, and public only with explicit per-field and per-work consent. Message retention, provider logs, data residency and legal obligations need owner review before launch." />
       </p>
       <p>
         <Link className="underlined" href="/contact">

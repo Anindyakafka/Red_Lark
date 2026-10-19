@@ -20,6 +20,7 @@ const mono = localFont({
   // Read controls immediately with the full fallback stack on slow first visits;
   // avoid a late body-font swap repainting the collection's licensing note.
   display: "optional",
+  preload: false,
   fallback: ["Courier New", "Courier", "monospace"],
 });
 export const metadata: Metadata = {

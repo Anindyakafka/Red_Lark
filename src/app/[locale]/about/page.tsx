@@ -95,7 +95,7 @@ export default async function Page({ params }: { params: Promise<{ locale: strin
           <UiText id="Join the network" />
         </h2>
         <p>
-          <UiText id="Artists, writers, designers and legal volunteers can contact the team about contributing, joining or commissioning campaign material. Current forms use your own email app; account uploads and server mail are not enabled." />
+          <UiText id="Artists, writers, designers and legal volunteers can contact the team about contributing, joining or commissioning campaign material. Contributor uploads are private until human review; contact messages are stored privately and emailed to the team." />
         </p>
         <p className="notice">
           <UiText id="[SUPPORT DETAILS PENDING] No site donation address or UPI ID is published. Ask the team before sending support; never infer payment details from placeholder artwork." />

@@ -25,11 +25,11 @@ test("fresh-eyes clickthrough of poster, artist and category indexes", async ({ 
   }
 });
 test("fresh-eyes form focus and true empty Studio recovery", async ({ page }) => {
-  await page.goto("/submit/");
-  await page.getByRole("button", { name: "[PREPARE EMAIL]" }).click();
-  await expect(page.locator("#source")).toBeFocused();
+  await page.goto("/signup/");
+  await page.getByRole("button", { name: "Create account", exact: true }).click();
+  await expect(page.locator("#auth-email")).toBeFocused();
   await page.goto("/contact/");
-  await page.getByRole("button", { name: "[PREPARE EMAIL]" }).click();
+  await page.getByRole("button", { name: "Send message" }).click();
   await expect(page.locator("#message")).toBeFocused();
   await page.goto("/studio/?format=poster-placard");
   await expect(page.locator(".studio-paper")).toBeVisible();

@@ -8,7 +8,7 @@ import { posters } from "@/lib/catalog";
 import { Collection } from "@/components/archive";
 const baseMetadata = pageMeta(
   "Community",
-  "A curated gallery for reviewed Studio-made posters. No submissions are published yet; propose your work through the email handoff.",
+  "A curated gallery for reviewed Studio-made posters. Upload your work privately through a contributor account for human review.",
   "/community",
 );
 export default function Page() {

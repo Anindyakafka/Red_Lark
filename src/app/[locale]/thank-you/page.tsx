@@ -4,8 +4,8 @@ import { Link } from "@/i18n/client";
 import { pageMeta } from "@/lib/metadata";
 const baseMetadata = {
   ...pageMeta(
-    "Email handoff prepared",
-    "Your email draft is ready to review and send in your own mail app. Red Lark Workshop has not received a message automatically.",
+    "Thank you",
+    "Thank you for contacting Red Lark Workshop. Review decisions and replies are handled by the team.",
     "/thank-you",
   ),
   robots: { index: false, follow: true },
@@ -14,7 +14,7 @@ export default function Page() {
   return (
     <section className="prose">
       <p className="label">
-        <UiText id={"[EMAIL HANDOFF / NOT A DELIVERY RECEIPT]"} />
+        <UiText id={"[THANK YOU]"} />
       </p>
       <h1>
         <UiText id={"READY IN YOUR HANDS."} />
@@ -22,14 +22,14 @@ export default function Page() {
       <p>
         <UiText
           id={
-            "Review and send the draft in your email app. This page does not confirm delivery or publication."
+            "The form confirms whether your message was saved. This page alone is not a delivery receipt or publication decision."
           }
         />
       </p>
       <p>
         <UiText
           id={
-            "If your email app did not open, return to the form and use the displayed contact address. Nothing was saved by this site."
+            "If the form reported a delivery error, your stored message will be retried. You can also use the displayed contact address."
           }
         />
       </p>

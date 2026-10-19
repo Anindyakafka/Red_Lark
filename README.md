@@ -1,10 +1,23 @@
 # RED LARK WORKSHOP
 
-The `redlark` branch contains the public-site rebuild: original identity, four locale routes, a verbatim landing narrative, category/format archive, print-first item pages, a private coded-source Studio, localized placeholder blog/RSS and draft policies. The archive, downloads and Studio work without accounts. Supabase-dependent accounts, uploads, review/database and server mail remain explicitly on hold; account routes show honest unavailable notices.
+The `redlark` branch contains the public multilingual archive/Studio and the contributor backend implementation. Browsing, downloads and Studio need no login. Verified accounts, private R2 uploads, fresh-TOTP administration and stored contact mail run through separate Netlify Functions. Supabase stores Auth/Postgres data only; R2 stores artwork. Backend deployment is waiting for the owner’s scoped Netlify configuration and launch acceptance.
 
-See [AUDIT](docs/AUDIT.md), [PLAN](docs/PLAN.md), [COPY_QUESTIONS](docs/COPY_QUESTIONS.md) and [human prerequisites](docs/TODO_HUMAN.md) for milestone status. No provider resources or live deployment have been changed.
+See [AUDIT](docs/AUDIT.md), [PLAN](docs/PLAN.md), [COPY_QUESTIONS](docs/COPY_QUESTIONS.md) and [human prerequisites](docs/TODO_HUMAN.md) for milestone status. The existing Supabase project now has tested migrations/private seed; infrastructure was not re-provisioned and backend has not been deployed.
 
-Final public checkpoint: 37 unit tests and 88 browser tests pass, including 336 locale-page accessibility checks. English/Hindi key-route Lighthouse performance medians are 96–98, with 100 in Accessibility, Best Practices and SEO. See [iterations and retained evidence](docs/ITERATIONS.md). Backend account/upload/admin/mail acceptance remains held, not completed.
+Final public checkpoint: 37 unit tests and 88 browser tests pass, including 336 locale-page accessibility checks. English/Hindi key-route Lighthouse performance medians are 96–98, with 100 in Accessibility, Best Practices and SEO. See [iterations and retained evidence](docs/ITERATIONS.md). The public checkpoint is historical. Current backend acceptance and honest external blockers are recorded at the top of CHECKLIST.md.
+
+## Backend operations
+
+Follow [DEPLOY.md](docs/DEPLOY.md) for Supabase SMTP/callbacks, R2 CORS/lifecycle/custom hostname, migrations, bootstrap and every Netlify variable scope. No backend deployment is authorized until the owner confirms those variables.
+
+- npm run db:check / npm run db:migrate: verified TLS, ordered migration ledger and idempotent private seed; local SQL credentials only.
+- npm run seed:backend: regenerate 28 categories, 10 formats, licence policies and 18 original private CC0 placeholder records.
+- npm run admin:bootstrap: owner-configured email; refuses missing verified real login or TOTP; idempotent and audited.
+- npm run dev: Next dev + local API bridge at localhost:3000. npm start serves the static export and the same handler.
+- npm run test:rls / npm test: actual local PostgreSQL policies plus model/security/upload/mail checks. Hosted Auth is a separate acceptance step.
+- npm run check:secrets: install checksum-verified Gitleaks (CI does this) or set GITLEAKS_PATH; scans working files and all Git history. Build separately checks actual private values and secret prefixes in out/.
+
+Approved works are fetched at build only when PUBLIC_CATALOGUE_ENABLED=1, using a public RPC whitelist and publishable key. Unavailable remote catalogue data fails that build rather than publishing an incomplete archive. Private drafts never enter the static output. Account data export/deletion is in the dashboard; published-work removal/anonymisation is a deliberate choice. Session and rate-limit keys are distinct random server secrets. Scheduled maintenance retries mail and cleans expired sessions/hashes/quarantine tickets; a quarantine-only R2 lifecycle protects abandoned raw uploads.
 
 ## Application setup
 
@@ -13,6 +26,8 @@ A free, open protest-poster archive and a private, browser-only poster-making St
 ## Run locally
 
 Use Node.js 24 and npm. In PowerShell use npm.cmd if script policy blocks npm.ps1.
+
+For local configuration, copy .env.example to .env.local if the local file does not already exist. Paste the project URL into SUPABASE_URL, the current publishable key into SUPABASE_PUBLISHABLE_KEY and the current secret key into SUPABASE_SECRET_KEY. The local file is ignored by Git; never overwrite an existing populated file with the template. Supabase credentials are reserved for the future backend: adding values does not activate accounts or database access. Keep the secret server-only, outside NEXT_PUBLIC_ variables and next.config.ts's env object. Restart the development server after changing environment values. Hosted configuration must be entered separately in Netlify's server-side environment settings when integration is ready.
 
 ```sh
 npm ci
@@ -53,7 +68,7 @@ For browser QA on Windows, the config uses installed Microsoft Edge. Set BROWSER
 
 ## Environment
 
-Copy .env.example to .env.local for Next builds. Values are baked into the static output; rebuild when they change. Standalone validation/QA commands use shell environment values if configured. Never commit real private credentials.
+Copy .env.example to .env.local for Next builds. Only explicitly public build variables are baked into static output. Private credentials are Functions-only; see [DEPLOY](docs/DEPLOY.md) for exact scopes and owner dashboard setup. Standalone validation/QA commands use shell environment values if configured. Never commit real private credentials.
 
 | Variable                       | Purpose                                                                                           |
 | ------------------------------ | ------------------------------------------------------------------------------------------------- |
@@ -64,20 +79,22 @@ Copy .env.example to .env.local for Next builds. Values are baked into the stati
 
 No contact address or donation destination is invented. Domain, inbox, legal review, permissions, hosting, print approval and optional analytics operation are listed in [TODO_HUMAN](docs/TODO_HUMAN.md).
 
-| Additional variable                          | Purpose/scope                                                                                                               |
-| -------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------- |
-| ANALYTICS_DOMAIN                             | Preferred analytics-domain variable; mapped to the public value at build. Disabled without a valid same-origin endpoint.    |
-| NEXT_TELEMETRY_DISABLED                      | Set to 1; Netlify configuration disables framework build telemetry.                                                         |
-| REPO_URL                                     | Reserved contract; src/config/site.ts's single constant remains authoritative until repository rename.                      |
-| SUPABASE_URL / SUPABASE_ANON_KEY             | Reserved for the held account service; no SDK/connection exists.                                                            |
-| SUPABASE_SERVICE_ROLE_KEY                    | Future server-only secret; never expose through NEXT_PUBLIC/client configuration.                                           |
-| MAIL_PROVIDER_KEY / MAIL_FROM / MAIL_TO_TEAM | Future server-only delivery configuration; requires provider and sender/domain verification. Unused by today's mailto flow. |
+| Additional variable                          | Purpose/scope                                                                                                            |
+| -------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------ |
+| ANALYTICS_DOMAIN                             | Preferred analytics-domain variable; mapped to the public value at build. Disabled without a valid same-origin endpoint. |
+| NEXT_TELEMETRY_DISABLED                      | Set to 1; Netlify configuration disables framework build telemetry.                                                      |
+| REPO_URL                                     | Reserved contract; src/config/site.ts's single constant remains authoritative until repository rename.                   |
+| SUPABASE_URL / SUPABASE_PUBLISHABLE_KEY      | Project URL/public key for the Functions auth service and opt-in approved public build.                                  |
+| SUPABASE_SECRET_KEY                          | Current secret key, reserved for server-only administration; never expose through NEXT_PUBLIC or next.config.ts env.     |
+| MAIL_PROVIDER_KEY / MAIL_FROM / MAIL_TO_TEAM | Server-only Resend delivery, full verified sender identity and private team inbox.                                       |
+
+R2 credential preparation uses R2_ACCOUNT_ID, R2_ACCESS_KEY_ID, R2_SECRET_ACCESS_KEY and R2_ENDPOINT (the account-level S3 endpoint, without a bucket path). R2_REGION is auto for S3 signing; it does not select a physical storage location. R2_PENDING_BUCKET and R2_APPROVED_BUCKET name the two private buckets. Store values in ignored .env.local, with bucket-restricted Object Read & Write credentials. R2_PUBLIC_BASE_URL, bucket CORS/lifecycle and a production build hook are also required. See DEPLOY.md.
 
 ## Routes
 
 Public pages use /en, /hi, /bn or /ml: landing, collection, categories/category/[slug], poster/[slug], discover, artists/artist/[slug], studio, community, submit, blog/blog/[slug], about, policies and policy articles, contact, privacy, terms, thank-you, 404 and search/image. Each locale has feed.xml. Root sitemap.xml, robots.txt and site.webmanifest stay unprefixed. Old themes/theme URLs redirect to categories while preserving locale/query.
 
-Localized /login, /signup, /account, /forgot-password, /reset-password and /admin show noindex service-pending notices. They do not collect credentials or implement account/admin functionality.
+Localized /login, /signup, /account, /forgot-password, /reset-password and /admin are noindex account screens. The server verifies sessions and RLS permissions; admin actions additionally require fresh TOTP. /takedown is a separate minimal form.
 
 Image search is honestly labelled coming soon; no photo is collected. Community is an empty curated gallery until human-reviewed submissions exist. No fabricated posts, artists, support URLs or download counts.
 

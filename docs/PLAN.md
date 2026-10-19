@@ -1,5 +1,19 @@
 # RED LARK WORKSHOP: staged implementation plan
 
+## Authorized backend continuation — 19 October 2026
+
+The owner's attached infrastructure request lifts the implementation hold. Existing Supabase Auth/Postgres, R2 buckets and email configuration are reused; no infrastructure is re-provisioned. R2 replaces all prior Supabase Storage plans. Initial admin: redlarkworkshop@gmail.com, granted only after verified real login and TOTP. Backend deployment remains prohibited until the owner confirms scoped Netlify server variables. Historical HOLD text below describes the earlier public checkpoint.
+
+| Step | Implementation and acceptance                                                                                                         | Status                                                                                   |
+| ---- | ------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------- |
+| 1    | Migrations, file-based seed, all-table default-deny RLS, role isolation/MFA/bootstrap and executable policy matrix                    | PASS: local + hosted policy checks                                                       |
+| 2    | Server-only sessions, localized password/magic-link/verification/recovery, global logout, deletion/export, generic errors/rate limits | IMPLEMENTED; real login/verification in progress with owner                              |
+| 3    | Own-work dashboard, scoped/expiring private R2 uploads, sanitization/metadata stripping/previews, abandoned cleanup                   | IMPLEMENTED; hosted R2 scope/expiry pass; browser CORS pending                           |
+| 4    | MFA/fresh-auth admin review, audited state machine, private-to-public copies, static publishing and takedown                          | IMPLEMENTED; public hostname/build hook/admin acceptance pending                         |
+| 5    | Stored contact/takedown, retryable provider mail, actual delivery/DNS/header evidence and complete integration tests                  | Contact/outage integration PASS; Gmail authentication owner-confirmed; non-Gmail pending |
+
+External acceptance prerequisites: no non-Gmail test inbox supplied (both authorized addresses are Gmail); inbox placement/raw authentication headers require recipient inspection; public R2 hostname is not configured (see R2_DOMAIN_SETUP.md); remote migrations and anonymous permission verification now pass over verified TLS. These do not block writing and locally testing the implementation.
+
 Execution started 16 October 2026 on redlark. Step 0, M1-M5, M6 CREATE and public M9 are implemented. The owner authorized public-site implementation and supplied redlarkworkshop@gmail.com. M6 retains PARTIAL status because UPLOAD is held with M7/M8. M9's public editorial work is complete; final account/mail policies and end-to-end acceptance await the backend hold being lifted.
 
 READY means technically independent of Supabase; PARTIAL means public/browser work can proceed later but backend work is held. HOLD is an explicit scope boundary, not a completed feature or justified N-A.

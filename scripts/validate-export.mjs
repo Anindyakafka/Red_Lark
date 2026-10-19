@@ -44,7 +44,15 @@ for (const file of html) {
   for (const m of source.matchAll(/<img\b[^>]*>/g))
     if (!/\balt="/.test(m[0])) errors.push(`${file}: image without alt`);
   for (const resource of source.matchAll(/<(?:img|source|script|iframe|object|embed)\b[^>]*>/g))
-    if (/\b(?:src|srcset|data)="(?:https?:|\/\/)/i.test(resource[0]))
+    if (
+      /\b(?:src|srcset|data)="(?:https?:|\/\/)/i.test(resource[0]) &&
+      !(
+        resource[0].startsWith("<img") &&
+        /\bsrc="https:\/\/files\.redlarkworkshop\.com\/works\/[a-z0-9-]+\/[a-f0-9-]+\.webp"/.test(
+          resource[0],
+        )
+      )
+    )
       errors.push(`${file}: active assets must be self-hosted with local paths`);
 }
 if (errors.length) {
