@@ -2,12 +2,14 @@
 
 ## Active backend prerequisites — 19 October 2026
 
+- Rotate the Resend key that appeared in IDE chat context, then update MAIL_PROVIDER_KEY and Supabase SMTP password. Do not paste the replacement into chat. Restart the local API after .env.local changes.
+
 The implementation hold has been lifted. Older hold notes below describe the public checkpoint.
 
 - RESOLVED: verified TLS SQL access, five hosted migrations, private seed and anonymous permission verification pass. Do not share the database password.
 - Configure the approved R2 hostname using [R2_DOMAIN_SETUP.md](R2_DOMAIN_SETUP.md). Netlify is authoritative DNS; copy all website/mail/verification records before changing nameservers. Keep pending private.
 - Gmail delivery and SPF/DKIM/DMARC PASS were confirmed by the owner. Inbox placement is confirmed; verify actual Reply-To/header domains; a separate authorized non-Gmail inbox is still needed.
-- Complete Supabase custom SMTP and the exact callback allow-list in DEPLOY.md. Initial admin must verify a real login and enroll/verify TOTP before bootstrap. No fabricated account verification.
+- The owner confirms Supabase SMTP and callback URLs are configured; real account verification is in progress. Initial admin must verify a real login and enroll/verify TOTP before bootstrap. No fabricated account verification.
 - Set private/approved bucket CORS and quarantine-only lifecycle in Cloudflare Settings; the restricted Object Read & Write token was refused bucket-configuration access. Do not broaden the runtime token.
 - Create a Netlify production build hook and save NETLIFY_BUILD_HOOK locally/server-side. Public publishing/takedown acceptance needs that hook and the approved-file hostname.
 - Confirm scoped Netlify server variables before backend deployment; local secrets are not automatically uploaded.

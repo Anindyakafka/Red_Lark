@@ -36,10 +36,16 @@ for (const locale of ["en", "hi", "bn", "ml"])
             .analyze()
         ).violations,
       ).toEqual([]);
-      await page.setViewportSize({ width: 390, height: 900 });
-      expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(
-        true,
-      );
+      for (const width of [360, 390]) {
+        await page.setViewportSize({ width, height: 900 });
+        expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(
+          true,
+        );
+        const cta = await page.locator(".page-intro .button").boundingBox();
+        expect(cta && cta.y + cta.height, `${locale}/${route} CTA at ${width}`).toBeLessThanOrEqual(
+          900,
+        );
+      }
     });
   }
 test("password forms focus errors; generic inbox and password reset links work without enumeration", async ({

@@ -16,10 +16,18 @@ const executable =
   (process.platform === "win32"
     ? "C:/Program Files (x86)/Microsoft/Edge/Application/msedge.exe"
     : undefined);
-const server = spawn(process.execPath, ["scripts/serve.mjs"], {
-  env: { ...process.env, QA_FIXTURES: "1" },
-  stdio: "ignore",
-});
+let existing = false;
+try {
+  existing = (await fetch("http://localhost:3000/en/")).ok;
+} catch {
+  /* Start an isolated local preview if needed. */
+}
+const server = existing
+  ? null
+  : spawn(process.execPath, ["scripts/serve.mjs"], {
+      env: { ...process.env, QA_FIXTURES: "1" },
+      stdio: "ignore",
+    });
 const summary = {
   round,
   screenshots: [],
@@ -160,7 +168,7 @@ try {
 } finally {
   await browser?.close();
   await chrome?.kill();
-  server.kill();
+  server?.kill();
   summary.externalRequests = [...new Set(summary.externalRequests)];
   await fs.writeFile(`${dir}/summary.json`, JSON.stringify(summary, null, 2));
 }

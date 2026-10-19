@@ -35,6 +35,8 @@ export const emptyFilters: Filters = {
   saved: false,
 };
 export function filterPosters(items: Poster[], f: Filters, saved: string[] = []) {
+  const timestamp = (poster: Poster) =>
+    poster.createdAt ? Date.parse(poster.createdAt) : Date.UTC(poster.year, 0, 1);
   const terms = f.query.normalize("NFC").trim().toLocaleLowerCase().split(/\s+/).filter(Boolean);
   return items
     .filter((p) => {
@@ -76,7 +78,7 @@ export function filterPosters(items: Poster[], f: Filters, saved: string[] = [])
         : f.sort === "za"
           ? b.title.localeCompare(a.title)
           : f.sort === "oldest"
-            ? a.year - b.year || a.slug.localeCompare(b.slug)
-            : b.year - a.year || a.slug.localeCompare(b.slug),
+            ? timestamp(a) - timestamp(b) || a.slug.localeCompare(b.slug)
+            : timestamp(b) - timestamp(a) || a.slug.localeCompare(b.slug),
     );
 }

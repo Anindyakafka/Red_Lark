@@ -3,6 +3,7 @@ import { ApiError, json, required, text } from "./security.ts";
 import { copyPublic, publicBase, publicUrl, remove, signedRead } from "./storage.ts";
 
 export function buildConfigured() {
+  if (process.env.PUBLIC_CATALOGUE_ENABLED !== "1") throw new ApiError(503, "publishing_not_ready");
   const url = new URL(required("NETLIFY_BUILD_HOOK"));
   if (
     url.protocol !== "https:" ||

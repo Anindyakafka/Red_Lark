@@ -94,6 +94,7 @@ export async function contributions(
     return json({ exported_at: new Date().toISOString(), profile, works });
   }
   if (path === "/api/account/delete") {
+    if (who.admin && !who.fresh) throw new ApiError(403, "fresh_mfa_required");
     if (
       text(data, "confirm", 20) !== "DELETE" ||
       !["remove", "anonymise"].includes(String(data.effect))

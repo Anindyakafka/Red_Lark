@@ -125,6 +125,7 @@ export interface Poster {
   languages: string[];
   artist: string;
   year: number;
+  createdAt?: string;
   themes: string[];
   movements: string[];
   colorMode: "bw" | "color";

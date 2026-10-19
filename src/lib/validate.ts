@@ -37,6 +37,8 @@ export function validatePoster(p: Poster, artists: Artist[]): string[] {
     errors.push("Image and caption codes are required");
   if (!Number.isInteger(p.year) || p.year < 1900 || p.year > 2100)
     errors.push("Missing or invalid year");
+  if (p.createdAt !== undefined && !Number.isFinite(Date.parse(p.createdAt)))
+    errors.push("Invalid submission date");
   if (typeof p.region !== "string" || !p.region.trim()) errors.push("Missing region");
   if (typeof p.remixable !== "boolean" || typeof p.placeholder !== "boolean")
     errors.push("Remix/placeholder flags must be explicit booleans");

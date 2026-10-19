@@ -79,7 +79,7 @@ Set in Project configuration → Environment variables. Use **Production** conte
 | R2_PRIVATE_BUCKET               | Functions only               | No                  | Existing pending bucket; R2_PENDING_BUCKET is supported alias     |
 | R2_PUBLIC_BUCKET                | Functions only               | No                  | Existing approved bucket; R2_APPROVED_BUCKET is supported alias   |
 | R2_PUBLIC_BASE_URL              | Build + Functions            | No                  | `https://files.redlarkworkshop.com`, after setup                  |
-| PUBLIC_CATALOGUE_ENABLED        | Build                        | No                  | `1` after backend acceptance; otherwise leave blank               |
+| PUBLIC_CATALOGUE_ENABLED        | Build + Functions            | No                  | `1` after backend acceptance; otherwise leave blank               |
 | NETLIFY_BUILD_HOOK              | Functions only               | **Yes**             | Build hook for the production branch                              |
 | MAIL_PROVIDER_KEY               | Functions only               | **Yes**             | Domain-restricted Resend sending key                              |
 | MAIL_FROM                       | Functions only               | No                  | Full approved sender identity, not just its domain                |

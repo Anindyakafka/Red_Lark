@@ -89,6 +89,7 @@ for (const work of result.data as PublicWork[]) {
     artist: artist.id,
     artistUrl: `/artist/${artist.id}/`,
     year: new Date(work.created_at).getUTCFullYear(),
+    createdAt: work.created_at,
     categories: work.categories,
     tags: work.tags,
     kind: work.format_slug,

@@ -6,6 +6,19 @@ import { posters, artists } from "../src/lib/catalog";
 import { emptyFilters, filterPosters } from "../src/lib/query";
 import { validatePoster } from "../src/lib/validate";
 import handler from "../netlify/edge-functions/language";
+
+test("newest submissions sort by their full date within the same year, with stable file-content fallback", () => {
+  const older = { ...posters[0], slug: "a-older", createdAt: "2026-01-02T00:00:00Z" };
+  const newer = { ...posters[0], slug: "z-newer", createdAt: "2026-10-19T00:00:00Z" };
+  const rows = [older, newer];
+  assert.equal(filterPosters(rows, emptyFilters)[0].slug, newer.slug);
+  assert.equal(filterPosters(rows, { ...emptyFilters, sort: "oldest" })[0].slug, older.slug);
+  assert.ok(
+    validatePoster({ ...newer, createdAt: "not-a-date" }, artists).includes(
+      "Invalid submission date",
+    ),
+  );
+});
 test("canonical inventories, category membership, artwork format and native search combine", () => {
   assert.equal(categories.length, 28);
   assert.equal(new Set(categories.map((c) => c.slug)).size, 28);
