@@ -14,6 +14,8 @@ A free, open protest-poster archive and a private, browser-only poster-making St
 
 Use Node.js 24 and npm. In PowerShell use npm.cmd if script policy blocks npm.ps1.
 
+For local configuration, copy .env.example to .env.local if the local file does not already exist. Paste the project URL into SUPABASE_URL, the current publishable key into SUPABASE_PUBLISHABLE_KEY and the current secret key into SUPABASE_SECRET_KEY. The local file is ignored by Git; never overwrite an existing populated file with the template. Supabase credentials are reserved for the future backend: adding values does not activate accounts or database access. Keep the secret server-only, outside NEXT_PUBLIC_ variables and next.config.ts's env object. Restart the development server after changing environment values. Hosted configuration must be entered separately in Netlify's server-side environment settings when integration is ready.
+
 ```sh
 npm ci
 npm run dev
@@ -69,8 +71,8 @@ No contact address or donation destination is invented. Domain, inbox, legal rev
 | ANALYTICS_DOMAIN                             | Preferred analytics-domain variable; mapped to the public value at build. Disabled without a valid same-origin endpoint.    |
 | NEXT_TELEMETRY_DISABLED                      | Set to 1; Netlify configuration disables framework build telemetry.                                                         |
 | REPO_URL                                     | Reserved contract; src/config/site.ts's single constant remains authoritative until repository rename.                      |
-| SUPABASE_URL / SUPABASE_ANON_KEY             | Reserved for the held account service; no SDK/connection exists.                                                            |
-| SUPABASE_SERVICE_ROLE_KEY                    | Future server-only secret; never expose through NEXT_PUBLIC/client configuration.                                           |
+| SUPABASE_URL / SUPABASE_PUBLISHABLE_KEY      | Project URL and current publishable key, reserved for the account service; no SDK/connection exists yet.                    |
+| SUPABASE_SECRET_KEY                          | Current secret key, reserved for server-only administration; never expose through NEXT_PUBLIC or next.config.ts env.        |
 | MAIL_PROVIDER_KEY / MAIL_FROM / MAIL_TO_TEAM | Future server-only delivery configuration; requires provider and sender/domain verification. Unused by today's mailto flow. |
 
 ## Routes
