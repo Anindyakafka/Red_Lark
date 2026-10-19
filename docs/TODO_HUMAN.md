@@ -1,5 +1,16 @@
 ﻿# Human prerequisites for RED LARK WORKSHOP
 
+## Active backend prerequisites — 19 October 2026
+
+The implementation hold has been lifted. Older hold notes below describe the public checkpoint.
+
+- Resolve DATABASE_URL authentication in the existing project: TLS now verifies using the supplied CA; the pooler returns 28P01. Never send the password in chat. No hosted migration is applied yet.
+- Configure the approved R2 hostname using [R2_DOMAIN_SETUP.md](R2_DOMAIN_SETUP.md). Netlify is authoritative DNS; copy all website/mail/verification records before changing nameservers. Keep pending private.
+- Supply an authorized non-Gmail test inbox. Both supplied destinations are Gmail. Inspect actual received raw headers for SPF/DKIM/DMARC alignment, Reply-To and inbox/spam placement; provider acceptance is insufficient.
+- Initial admin must verify a real login and enroll/verify TOTP before bootstrap. No fabricated account verification.
+- Confirm scoped Netlify server variables before backend deployment; local secrets are not automatically uploaded.
+- Native review of new Hindi/Bengali/Malayalam account/upload/admin strings remains required; drafts and English fallbacks stay visible.
+
 Implementation checkpoint: 16 October 2026. Supabase implementation remains explicitly on hold. The public branding/archive/Studio/editorial work needs no backend keys; enter eventual secrets in scoped hosting settings, not chat or Git.
 
 | Decision                    | Required human action                                                                                                                                                                                                        |

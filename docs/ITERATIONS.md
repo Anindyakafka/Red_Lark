@@ -1,5 +1,11 @@
 # Numbered rebuild rounds
 
+## Backend round 1 — database boundary review, 19 October 2026
+
+Prepared versioned Supabase Auth/Postgres migrations and deterministic private CC0 seed records. Every application table has RLS. Protected roles, approved-only anonymous reads, contributor isolation and fresh MFA moderation run against actual local PostgreSQL. Seeding twice and transactional/idempotent message-outbox creation are tested. Full-history/working-tree Gitleaks and built-client secret exclusion passed. The static public build passes.
+
+Ranked weaknesses: (1) hosted SQL authentication is rejected despite verified TLS; no remote migration applied; (2) sessions/uploads/admin/mail require full integration and accessibility review; (3) public R2 hostname, non-Gmail/header evidence and scoped Netlify variables need owner action. Local SQL tests are not hosted acceptance. Existing services were not re-provisioned and backend was not deployed.
+
 ## Deployment follow-up — 17 October 2026
 
 The first PR #3 Netlify preview compiled and validated all 340 HTML pages, then failed in Edge bundling: the Deno resolver could not find the extensionless src/i18n/config dependency. Local Next/tsx tests accepted extensionless imports, so the prior checks did not exercise the deployment resolver. Fixed both shared TypeScript imports to use their actual .ts extension and added the required JSON import attribute. TypeScript permits these imports with noEmit and allowImportingTsExtensions.
