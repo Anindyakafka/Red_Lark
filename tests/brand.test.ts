@@ -1,11 +1,11 @@
 import test from "node:test";
 import assert from "node:assert/strict";
 import fs from "node:fs";
-import { REPO_URL, CONTACT_EMAIL } from "../src/config/site";
-import { migrateLocalDrafts } from "../src/lib/storage";
+import { CONTACT_EMAIL } from "../src/config/site";
+import { migrateLocalDrafts, LEGACY_STORAGE_PREFIX } from "../src/lib/storage";
 
 test("legacy bookmarks migrate once without dropping data on a failed write", () => {
-  const previous = new URL(REPO_URL).pathname.split("/").at(-1)!;
+  const previous = LEGACY_STORAGE_PREFIX;
   const values = new Map([[`${previous}.saved.v1`, '["a-future-we-share"]']]);
   let fail = true;
   const storage = {

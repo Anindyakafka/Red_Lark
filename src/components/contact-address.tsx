@@ -1,45 +1,27 @@
+﻿"use client";
+import { useEffect, useState } from "react";
 import { UiText } from "@/i18n/client";
 export function ContactAddress({ email }: { email: string }) {
-  if (!email)
+  const [href, setHref] = useState<string>();
+  const clean = email.trim();
+  useEffect(() => {
+    if (/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(clean)) setHref(["mailto", clean].join(":"));
+  }, [clean]);
+  if (!clean)
     return (
       <p className="contact-placeholder">
         <strong>
-          <UiText id={"[CONTACT ADDRESS NOT SET]"} />
+          <UiText id="[CONTACT ADDRESS NOT SET]" />
         </strong>
-        <br />
-        <UiText
-          id={
-            "The project has not supplied its real contact inbox. This is a visible placeholder, not a working address."
-          }
-        />
       </p>
     );
-  const [name, domain] = email.split("@");
+  const readable = clean.replace("@", " [at] ").replaceAll(".", " [dot] ");
   return (
     <p>
       <span className="sr-only">
-        <UiText id={"Contact email:"} />
+        <UiText id="Contact email:" />{" "}
       </span>
-      <span aria-label={email}>
-        {name}
-        <span aria-hidden="true">
-          <UiText id={"[at]"} />
-        </span>
-        <span className="sr-only">@</span>
-        {domain.split(".").map((part, i) => (
-          <span key={i}>
-            {i > 0 && (
-              <>
-                <span aria-hidden="true">
-                  <UiText id={"[dot]"} />
-                </span>
-                <span className="sr-only">.</span>
-              </>
-            )}
-            {part}
-          </span>
-        ))}
-      </span>
+      {href ? <a href={href}>{clean}</a> : <span>{readable}</span>}
     </p>
   );
 }

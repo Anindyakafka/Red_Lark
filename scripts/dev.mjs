@@ -1,4 +1,5 @@
 import http from "node:http";
+import { privateShellPath } from "../src/lib/private-routes.ts";
 import { spawn } from "node:child_process";
 import { bridge } from "./api-bridge.mjs";
 try {
@@ -16,7 +17,15 @@ const server = http.createServer((req, res) => {
     return;
   }
   const proxy = http.request(
-    { hostname: "localhost", port: 3001, path: req.url, method: req.method, headers: req.headers },
+    {
+      hostname: "localhost",
+      port: 3001,
+      path:
+        privateShellPath(req.url.split("?")[0]) +
+        (req.url.includes("?") ? "?" + req.url.split("?").slice(1).join("?") : ""),
+      method: req.method,
+      headers: req.headers,
+    },
     (upstream) => {
       res.writeHead(upstream.statusCode, upstream.headers);
       upstream.pipe(res);

@@ -1,12 +1,9 @@
 /** Build-time origin shared by metadata and content validation. */
 export function resolveSiteOrigin(env: Record<string, string | undefined>): string {
-  const preview = env.CONTEXT === "deploy-preview" || env.CONTEXT === "branch-deploy";
-  const value =
-    env.SITE_URL?.trim() ||
-    (preview ? env.DEPLOY_PRIME_URL?.trim() : undefined) ||
-    env.URL?.trim() ||
-    "http://localhost:3000";
+  const value = env.SITE_URL?.trim() || "https://redlarkworkshop.com";
   const url = new URL(value);
+  if (url.hostname.endsWith(".netlify.app"))
+    throw new Error("SITE_URL must use the public custom domain, not a deployment hostname.");
   if (env.CONTEXT === "production" && ["localhost", "127.0.0.1", "[::1]"].includes(url.hostname))
     throw new Error("Production SITE_URL must be a public origin, not localhost.");
   if (

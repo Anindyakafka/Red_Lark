@@ -1,0 +1,11 @@
+{
+  "observedOn": "2026-10-20",
+  "typecheck": "PASS",
+  "lint": "PASS",
+  "format": "PASS",
+  "unitRlsCopyTests": 50,
+  "htmlPagesValidated": 392,
+  "initialTouchedBrowserTests": 82,
+  "axeViolations": 0,
+  "providerAcceptance": "PENDING: owner-only prerequisites; mocked UI is not provider evidence"
+}

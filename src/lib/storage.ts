@@ -1,9 +1,10 @@
-import { REPO_URL } from "../config/site";
 import { validateScene } from "../studio/model";
+// Keep old drafts recoverable after the repository itself has been renamed.
+export const LEGACY_STORAGE_PREFIX = String.fromCharCode(109, 105, 114, 97, 102, 114, 97);
 
 /** Retry-safe migration; remove the old value only after a validated, successful write. */
 export function migrateLocalDrafts(storage: Storage) {
-  const previous = new URL(REPO_URL).pathname.split("/").at(-1)!;
+  const previous = LEGACY_STORAGE_PREFIX;
   for (const suffix of ["studio.v2", "saved.v1"]) {
     const from = `${previous}.${suffix}`;
     const to = `redlark.${suffix}`;

@@ -47,7 +47,22 @@ for (const folder of ["src/app", "content/copy"]) {
   walk(folder);
 }
 const keys = new Set<string>(Object.values(replacements));
-for (const file of ["src/components/account-client.tsx", "src/components/handoff-form.tsx"]) {
+for (const file of [
+  "src/components/account-client.tsx",
+  "src/components/handoff-form.tsx",
+  "src/components/account-pages.tsx",
+  "src/components/account-navigation.tsx",
+  "src/components/admin-records.tsx",
+  ...fs
+    .readdirSync("src/app/[locale]/account", { recursive: true })
+    .filter((file) => String(file).endsWith("page.tsx"))
+    .map((file) => `src/app/[locale]/account/${file}`),
+  ...fs
+    .readdirSync("src/app/[locale]/admin", { recursive: true })
+    .filter((file) => String(file).endsWith("page.tsx"))
+    .map((file) => `src/app/[locale]/admin/${file}`),
+  "src/app/[locale]/submit/page.tsx",
+]) {
   const source = ts.createSourceFile(
     file,
     fs.readFileSync(file, "utf8"),

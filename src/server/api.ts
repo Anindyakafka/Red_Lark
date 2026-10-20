@@ -171,7 +171,7 @@ export default async function handler(req: Request): Promise<Response> {
       return json({ ok: true, inbox: true }, 200, headers);
     }
     if (path === "/api/contact" || path === "/api/takedown")
-      return (await import("./mail.ts")).contact(req, data, path.endsWith("takedown"));
+      return await (await import("./mail.ts")).contact(req, data, path.endsWith("takedown"));
     const who = await identity(req);
     await limit(req, "account", 100, who.user.id);
     if (path === "/api/auth/logout") {
@@ -225,9 +225,9 @@ export default async function handler(req: Request): Promise<Response> {
       return json({ ok: true });
     }
     if (path.startsWith("/api/account") || path.startsWith("/api/upload"))
-      return (await import("./contributions.ts")).contributions(req, path, data, who);
+      return await (await import("./contributions.ts")).contributions(req, path, data, who);
     if (path.startsWith("/api/admin"))
-      return (await import("./admin.ts")).admin(req, path, data, who);
+      return await (await import("./admin.ts")).admin(req, path, data, who);
     throw new ApiError(404, "not_found");
   } catch (error) {
     if (req.method === "GET" && new URL(req.url).pathname === "/api/auth/callback") {

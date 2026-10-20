@@ -1,5 +1,11 @@
 # Numbered rebuild rounds
 
+## Account pages P1 critique — 20 October 2026
+
+The live site and local implementation had diverged: existing APIs were not deployed, account tools were consolidated in one panel, the header was permanently an Account link and auth favored passwords. Added separate localized views, magic-link-first forms, an explicit global logout confirmation, UUID route shells and a session-aware menu. Fixes also cover the source link, readable mailto contact, custom-domain canonical checks and visible multilingual printed credit.
+
+49 unit/model/RLS tests pass, including actual PostgreSQL policies, independent verbatim landing copy and native embedded PDF fonts. Initial build validates 392 HTML pages and excludes private client secrets. Remaining high-impact issues: (1) browser review of every new view and mobile menu; (2) real verified website account and owner DNS/deployment prerequisites; (3) public Lighthouse and final regression. No real signup, approval or email acceptance is inferred from fixtures.
+
 ## Backend round 1 — database boundary review, 19 October 2026
 
 Prepared versioned Supabase Auth/Postgres migrations and deterministic private CC0 seed records. Every application table has RLS. Protected roles, approved-only anonymous reads, contributor isolation and fresh MFA moderation run against actual local PostgreSQL. Seeding twice and transactional/idempotent message-outbox creation are tested. Full-history/working-tree Gitleaks and built-client secret exclusion passed. The static public build passes.
@@ -261,3 +267,11 @@ Applied and tested the atomic upload-finalization, review-transition and categor
 Evidence: 47 unit/model/SQL tests pass, including real PostgreSQL transactional replacement and PDF page-box/credit tests; the full baseline 125-browser suite passed, followed by 44 touched-route tests after the native-heading/font changes. Real R2 integration rejected altered keys, unsigned reads and the same signed upload after its actual five-minute lifetime. Discarded probes were removed. Browser CORS, the owned public hostname and real contributor upload still await owner configuration/account verification and are FAIL acceptance rows.
 
 Viewed the refreshed English/Malayalam account captures. The mobile login controls now have separate 44px targets. Native administrative headings were still too large in the broad capture; bounded their font size with a larger line height, and verified the primary CTA fits at 360/390px in all four locales. Desktop profile cards now stop at their content height. A fresh public Lighthouse series found Hindi Collection at 93 performance (all other category medians met 95); retained that failure and removed unnecessary monospace preloading to avoid competing with critical native/display fonts. Re-measurement remains required. New contributions now sort by the complete submission timestamp rather than year/alphabetical order.
+
+## Account pages P2 critique — 20 October 2026
+
+82 initial browser tests passed, including axe checks for every new English/Hindi route, four-locale auth/submit/takedown checks and 360/390 overflow checks. Viewed English desktop dashboard and Malayalam mobile login screenshots: original brutalist typography, strong borders, readable fallback copy and no clipped native heading. The empty dashboard needed an explicit state and admin records needed readable labels; both were corrected. Added inline MFA/profile/deletion/review errors, preserved draft metadata and profile artist names, and expanded upload/export/logout/review tests. Code review also found async service promises escaping the API error boundary; awaiting them now preserves structured errors, with an executable regression test. Full browser regression and performance follow; actual provider acceptance remains separately blocked.
+
+## Account pages P3 critique — privacy and attribution review
+
+The full 175-test browser suite passed after updating one old signup-label assertion. The final code review found two edge cases worth fixing before release: optional analytics could include a private revision pathname, and a single Studio credit line could combine several Indic scripts. Analytics now skips private/auth/admin pageviews and uses a neutral submission URL; credit text is shaped per script instead of producing missing-glyph boxes. Hosted authentication now refuses missing/preview canonical origins. 53 unit/model/RLS/copy tests and typecheck/lint pass. Public performance and final built-bundle regression remain to be measured. The full-history and working-tree secret scan passed after rewording non-secret documentation that triggered its generic heuristic; no allowlist was added.

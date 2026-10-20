@@ -10,6 +10,10 @@ Final public checkpoint: 37 unit tests and 88 browser tests pass, including 336 
 
 Follow [DEPLOY.md](docs/DEPLOY.md) for Supabase SMTP/callbacks, R2 CORS/lifecycle/custom hostname, migrations, bootstrap and every Netlify variable scope. No backend deployment is authorized until the owner confirms those variables.
 
+The localized account flow starts at `/en/signup/` or `/en/login/` (also `hi`, `bn`, `ml`). Email links are primary; passwords and recovery are available. `/account` lists private contributions, `/account/profile` manages separately consented contact/UPI fields, `/account/settings` handles TOTP/export/global logout/deletion, and `/account/works/new` opens the format-first upload wizard. Owned revision links use `/account/works/ID`.
+
+Administrators use `/admin` and `/admin/review/ID`, with separate messages, takedowns, users and audit pages. Each API request independently enforces the protected role and fresh TOTP. Netlify rewrites UUID detail addresses to static, noindex shells; private data is fetched after authentication and never included in the build. Local preview/development implements the same rewrites. Keep the supplied `netlify.toml` rewrite rules when deploying.
+
 - npm run db:check / npm run db:migrate: verified TLS, ordered migration ledger and idempotent private seed; local SQL credentials only.
 - npm run seed:backend: regenerate 28 categories, 10 formats, licence policies and 18 original private CC0 placeholder records.
 - npm run admin:bootstrap: owner-configured email; refuses missing verified real login or TOTP; idempotent and audited.

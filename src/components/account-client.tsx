@@ -6,6 +6,7 @@ import { track } from "@/lib/analytics";
 import Image from "next/image";
 import categories from "../../content/categories.json";
 import formats from "../../content/formats.json";
+import { AdminRecords } from "./admin-records";
 
 const errors: Record<string, string> = {
   sign_in_failed:
@@ -103,10 +104,16 @@ export function AuthForm({
     [inbox, setInbox] = useState(false),
     [reset, setReset] = useState(false);
   const [linkFailure, setLinkFailure] = useState(false);
+  const [passwordMode, setPasswordMode] = useState(
+    mode === "reset-password" || mode === "forgot-password",
+  );
   useEffect(() => {
     if (new URLSearchParams(location.search).get("error") === "link_expired") setLinkFailure(true);
   }, []);
-  async function submit(event: FormEvent<HTMLFormElement>, magic = false) {
+  async function submit(
+    event: FormEvent<HTMLFormElement>,
+    magic = !passwordMode && (mode === "login" || mode === "signup"),
+  ) {
     event.preventDefault();
     const data = new FormData(event.currentTarget);
     const address = String(data.get("email") || "").trim(),
@@ -138,9 +145,16 @@ export function AuthForm({
             ? "reset"
             : mode;
       await api(`auth/${path}`, { email: address, password, locale });
-      if (mode === "reset-password") setReset(true);
-      else if (mode !== "login" || magic) setInbox(true);
-      else router.push(`/${locale}/account/`);
+      if (mode === "reset-password") {
+        setReset(true);
+        window.dispatchEvent(new Event("redlark:session"));
+      } else if (mode !== "login" || magic) {
+        setInbox(true);
+        router.push(`/${locale}/check-your-inbox/`);
+      } else {
+        window.dispatchEvent(new Event("redlark:session"));
+        router.push(`/${locale}/account/`);
+      }
     });
   }
   if (inbox)
@@ -190,7 +204,7 @@ export function AuthForm({
           )}
         </label>
       )}
-      {mode !== "forgot-password" && (
+      {mode !== "forgot-password" && passwordMode && (
         <label className="form-field" htmlFor="auth-password">
           {t("Password")}
           <input
@@ -222,52 +236,34 @@ export function AuthForm({
           action.busy
             ? "Working…"
             : mode === "login"
-              ? "Sign in"
+              ? passwordMode
+                ? "Sign in"
+                : "Email me a sign-in link"
               : mode === "signup"
-                ? "Create account"
+                ? passwordMode
+                  ? "Create account"
+                  : "Create account with email link"
                 : mode === "forgot-password"
                   ? "Send reset link"
                   : "Set new password",
         )}
       </button>
-      {mode === "login" && (
+      {(mode === "login" || mode === "signup") && (
         <>
           <button
             type="button"
             className="button"
             disabled={action.busy}
             onClick={() => {
-              if (form.current)
-                void submit(
-                  {
-                    preventDefault() {},
-                    currentTarget: form.current,
-                  } as FormEvent<HTMLFormElement>,
-                  true,
-                );
+              setPasswordMode((value) => !value);
+              setFieldErrors({});
             }}
           >
-            {t("Email me a sign-in link")}
+            {t(passwordMode ? "Use an email link instead" : "Use a password instead")}
           </button>
           <Link href="/forgot-password">{t("Forgot password?")}</Link>
-          <Link href="/signup">{t("Create a contributor account")}</Link>
+          {mode === "login" && <Link href="/signup">{t("Create a contributor account")}</Link>}
         </>
-      )}
-      {mode === "signup" && (
-        <button
-          type="button"
-          className="button"
-          disabled={action.busy}
-          onClick={() => {
-            if (form.current)
-              void submit(
-                { preventDefault() {}, currentTarget: form.current } as FormEvent<HTMLFormElement>,
-                true,
-              );
-          }}
-        >
-          {t("Create account with email link")}
-        </button>
       )}
       {mode !== "login" && <Link href="/login">{t("Back to sign in")}</Link>}
     </form>
@@ -279,6 +275,7 @@ export function MfaPanel() {
   const [factor, setFactor] = useState(""),
     [secret, setSecret] = useState(""),
     [status, setStatus] = useState("");
+  const [codeError, setCodeError] = useState("");
   useEffect(() => {
     let active = true;
     api<{ factors: { id: string; status: string }[] }>("auth/mfa/factors")
@@ -324,9 +321,16 @@ export function MfaPanel() {
       {factor && (
         <form
           className="handoff-form"
+          noValidate
           onSubmit={(event) => {
             event.preventDefault();
             const code = String(new FormData(event.currentTarget).get("code") || "");
+            setCodeError("");
+            if (!/^\d{6}$/.test(code)) {
+              setCodeError(t("Enter a six-digit authenticator code."));
+              requestAnimationFrame(() => document.getElementById("mfa-code")?.focus());
+              return;
+            }
             void action.run(async () => {
               await api("auth/mfa/verify", { factorId: factor, code });
               setSecret("");
@@ -345,7 +349,14 @@ export function MfaPanel() {
               minLength={6}
               maxLength={6}
               required
+              aria-invalid={!!codeError}
+              aria-describedby={codeError ? "mfa-code-error" : undefined}
             />
+            {codeError && (
+              <span className="field-error" id="mfa-code-error" role="alert">
+                {codeError}
+              </span>
+            )}
           </label>
           <button className="button" disabled={action.busy}>
             {t("Verify code")}
@@ -369,6 +380,12 @@ type Work = {
   consent_contact: string;
   consent_upi: string;
   caption: string;
+  artist_name: string;
+  titleOriginal?: string;
+  source: string;
+  tags: string[];
+  format_slug: string;
+  languages: string[];
   work_categories?: { category_slug: string }[];
   work_files: { id: string; kind: string; mime: string; bytes: number; dpi: number }[];
 };
@@ -393,7 +410,11 @@ function ReviewImage({ work }: { work: Work }) {
     />
   ) : null;
 }
-export function AccountPanel() {
+export function AccountPanel({
+  view = "dashboard",
+}: {
+  view?: "dashboard" | "profile" | "settings";
+}) {
   const router = useRouter();
   const { t, locale } = useI18n(),
     action = useAction();
@@ -403,6 +424,9 @@ export function AccountPanel() {
     [revision, setRevision] = useState(0),
     [deleting, setDeleting] = useState(false);
   const [accessFailure, setAccessFailure] = useState("");
+  const [profileErrors, setProfileErrors] = useState<Record<string, string>>({});
+  const [profileNotice, setProfileNotice] = useState("");
+  const [deleteError, setDeleteError] = useState("");
   useEffect(() => {
     let live = true;
     api<{ works: Work[]; profile: Profile | null }>("account")
@@ -445,202 +469,279 @@ export function AccountPanel() {
     );
   return (
     <div className="content-width account-layout">
-      <section>
-        <h2>{t("My contributions")}</h2>
-        {!loaded && <p role="status">{t("Loading account…")}</p>}
-        <p>
-          {t("Only your contributions appear here. If your session expired, sign in again.")}{" "}
-          <Link href="/login">{t("Sign in")}</Link>
-        </p>
-        {works.map((work) => (
-          <article className="backend-panel" key={work.id}>
-            <h3>{work.title}</h3>
-            <p>
-              <strong>{t(work.status)}</strong> · {work.licence_id}
-            </p>
-            {work.feedback && (
+      {view !== "profile" && (
+        <section>
+          {view === "dashboard" && (
+            <>
+              <h2>{t("My contributions")}</h2>
+              {works.length === 0 && (
+                <p role="status">{t("No contributions yet. Start with your first upload.")}</p>
+              )}
+              <Link className="button accent" href="/account/works/new">
+                {t("Upload")}
+              </Link>
+              {!loaded && <p role="status">{t("Loading account…")}</p>}
               <p>
-                {t("Review feedback")}: {work.feedback}
+                {t("Only your contributions appear here. If your session expired, sign in again.")}{" "}
+                <Link href="/login">{t("Sign in")}</Link>
               </p>
-            )}
-            <div className="button-row">
-              {work.work_files
-                .filter((f) => f.kind === "sanitized")
-                .map((f) => (
-                  <button
-                    className="button"
-                    key={f.id}
-                    onClick={() =>
-                      action.run(async () => {
-                        const file = await api<{ url: string }>("account/file", { id: f.id });
-                        router.push(file.url);
-                      })
-                    }
-                  >
-                    {t("Download private file")}
-                  </button>
-                ))}
-              {["draft", "changes_requested"].includes(work.status) && (
+              {works.map((work) => (
+                <article className="backend-panel" key={work.id}>
+                  <h3>
+                    <a href={`/${locale}/account/works/${work.id}/`}>{work.title}</a>
+                  </h3>
+                  <p>
+                    <strong>{t(work.status)}</strong> · {work.licence_id}
+                  </p>
+                  {work.feedback && (
+                    <p>
+                      {t("Review feedback")}: {work.feedback}
+                    </p>
+                  )}
+                  <div className="button-row">
+                    {work.work_files
+                      .filter((f) => f.kind === "sanitized")
+                      .map((f) => (
+                        <button
+                          className="button"
+                          key={f.id}
+                          onClick={() =>
+                            action.run(async () => {
+                              const file = await api<{ url: string }>("account/file", { id: f.id });
+                              router.push(file.url);
+                            })
+                          }
+                        >
+                          {t("Download private file")}
+                        </button>
+                      ))}
+                    {["draft", "changes_requested"].includes(work.status) && (
+                      <a className="button" href={`/${locale}/account/works/${work.id}/`}>
+                        {t("Prepare a revised submission")}
+                      </a>
+                    )}
+                  </div>
+                </article>
+              ))}
+            </>
+          )}
+          {view === "settings" && (
+            <>
+              <MfaPanel />
+              <Alert text={action.failure} />
+              <div className="button-row">
                 <button
                   className="button"
-                  onClick={() => {
-                    document.getElementById("upload-work")?.scrollIntoView();
-                    setRevision((v) => v + 1);
+                  onClick={() =>
+                    action.run(async () => {
+                      const data = await api("account/export");
+                      const url = URL.createObjectURL(
+                        new Blob([JSON.stringify(data, null, 2)], { type: "application/json" }),
+                      );
+                      const a = document.createElement("a");
+                      a.href = url;
+                      a.download = "redlark-account.json";
+                      a.click();
+                      setTimeout(() => URL.revokeObjectURL(url), 1000);
+                    })
+                  }
+                >
+                  {t("Export account data")}
+                </button>
+                <button
+                  className="button"
+                  onClick={() =>
+                    action.run(async () => {
+                      await api("auth/logout");
+                      window.dispatchEvent(new Event("redlark:session"));
+                      router.push(`/${locale}/login/`);
+                    })
+                  }
+                >
+                  {t("Sign out everywhere")}
+                </button>
+                <button className="button" onClick={() => setDeleting((v) => !v)}>
+                  {t("Delete account")}
+                </button>
+              </div>
+              {deleting && (
+                <form
+                  className="backend-panel handoff-form"
+                  noValidate
+                  onSubmit={(event) => {
+                    event.preventDefault();
+                    const values = Object.fromEntries(new FormData(event.currentTarget));
+                    setDeleteError("");
+                    if (values.confirm !== "DELETE") {
+                      setDeleteError(t("Type DELETE exactly to confirm account deletion."));
+                      requestAnimationFrame(() =>
+                        document.getElementById("delete-confirm")?.focus(),
+                      );
+                      return;
+                    }
+                    void action.run(async () => {
+                      await api("account/delete", values);
+                      window.dispatchEvent(new Event("redlark:session"));
+                      router.push(`/${locale}/`);
+                    });
                   }}
                 >
-                  {t("Prepare a revised submission")}
-                </button>
+                  <h2>{t("Delete account")}</h2>
+                  <p>
+                    {t(
+                      "Choose whether published works are removed or remain anonymously. Downloaded copies and embedded artist credits cannot be recalled. Pending work and private files are removed.",
+                    )}
+                  </p>
+                  <label className="form-field" htmlFor="delete-effect">
+                    {t("Published works")}
+                    <select id="delete-effect" name="effect">
+                      <option value="remove">{t("Remove from the archive")}</option>
+                      <option value="anonymise">{t("Keep anonymously")}</option>
+                    </select>
+                  </label>
+                  <label className="form-field" htmlFor="delete-password">
+                    {t("Current password (or verify TOTP above)")}
+                    <input
+                      id="delete-password"
+                      name="password"
+                      type="password"
+                      autoComplete="current-password"
+                    />
+                  </label>
+                  <label className="form-field" htmlFor="delete-confirm">
+                    {t("Type DELETE to confirm")}
+                    <input
+                      id="delete-confirm"
+                      name="confirm"
+                      required
+                      pattern="DELETE"
+                      aria-invalid={!!deleteError}
+                      aria-describedby={deleteError ? "delete-confirm-error" : undefined}
+                    />
+                    {deleteError && (
+                      <span className="field-error" id="delete-confirm-error" role="alert">
+                        {deleteError}
+                      </span>
+                    )}
+                  </label>
+                  <button className="button accent" disabled={action.busy}>
+                    {t("Permanently delete account")}
+                  </button>
+                </form>
               )}
-            </div>
-          </article>
-        ))}
-        <UploadPanel onSaved={() => setRevision((v) => v + 1)} works={works} />
-        <MfaPanel />
-        <Alert text={action.failure} />
-        <div className="button-row">
-          <button
-            className="button"
-            onClick={() =>
-              action.run(async () => {
-                const data = await api("account/export");
-                const url = URL.createObjectURL(
-                  new Blob([JSON.stringify(data, null, 2)], { type: "application/json" }),
-                );
-                const a = document.createElement("a");
-                a.href = url;
-                a.download = "redlark-account.json";
-                a.click();
-                setTimeout(() => URL.revokeObjectURL(url), 1000);
-              })
-            }
-          >
-            {t("Export account data")}
-          </button>
-          <button
-            className="button"
-            onClick={() =>
-              action.run(async () => {
-                await api("auth/logout");
-                router.push(`/${locale}/login/`);
-              })
-            }
-          >
-            {t("Sign out everywhere")}
-          </button>
-          <button className="button" onClick={() => setDeleting((v) => !v)}>
-            {t("Delete account")}
-          </button>
-        </div>
-        {deleting && (
+            </>
+          )}
+        </section>
+      )}
+      {view === "profile" && (
+        <section className="backend-panel">
+          <h2>{t("Artist profile")}</h2>
+          <p>
+            {t(
+              "Pseudonyms are welcome. Contact and UPI are optional and private unless you explicitly consent to each field being public.",
+            )}
+          </p>
           <form
-            className="backend-panel handoff-form"
+            key={profile?.artist_name || "new"}
+            className="handoff-form"
+            noValidate
             onSubmit={(event) => {
               event.preventDefault();
-              const values = Object.fromEntries(new FormData(event.currentTarget));
+              const data = new FormData(event.currentTarget);
+              const next: Record<string, string> = {};
+              if (
+                data.get("contact") &&
+                !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(String(data.get("contact")))
+              )
+                next.contact = t("Enter a valid email address.");
+              if (
+                data.get("upi") &&
+                !/^[a-zA-Z0-9.\-_]{2,100}@[a-zA-Z]{2,30}$/.test(String(data.get("upi")))
+              )
+                next.upi = t("Enter a valid UPI ID, or leave it blank.");
+              setProfileErrors(next);
+              setProfileNotice("");
+              if (Object.keys(next).length) {
+                requestAnimationFrame(() =>
+                  document.getElementById(`profile-${Object.keys(next)[0]}`)?.focus(),
+                );
+                return;
+              }
               void action.run(async () => {
-                await api("account/delete", values);
-                router.push(`/${locale}/`);
+                await api("account/profile", {
+                  ...Object.fromEntries(data),
+                  contact_public: data.has("contact_public"),
+                  upi_public: data.has("upi_public"),
+                });
+                setRevision((v) => v + 1);
+                setProfileNotice(t("Profile saved."));
               });
             }}
           >
-            <h2>{t("Delete account")}</h2>
-            <p>
-              {t(
-                "Choose whether published works are removed or remain anonymously. Downloaded copies and embedded artist credits cannot be recalled. Pending work and private files are removed.",
-              )}
-            </p>
-            <label className="form-field" htmlFor="delete-effect">
-              {t("Published works")}
-              <select id="delete-effect" name="effect">
-                <option value="remove">{t("Remove from the archive")}</option>
-                <option value="anonymise">{t("Keep anonymously")}</option>
-              </select>
-            </label>
-            <label className="form-field" htmlFor="delete-password">
-              {t("Current password (or verify TOTP above)")}
-              <input
-                id="delete-password"
-                name="password"
-                type="password"
-                autoComplete="current-password"
-              />
-            </label>
-            <label className="form-field" htmlFor="delete-confirm">
-              {t("Type DELETE to confirm")}
-              <input id="delete-confirm" name="confirm" required pattern="DELETE" />
-            </label>
-            <button className="button accent" disabled={action.busy}>
-              {t("Permanently delete account")}
+            {(
+              [
+                ["artist_name", "Artist name"],
+                ["bio", "Bio"],
+                ["contact", "Contact email"],
+                ["upi", "UPI ID"],
+              ] as const
+            ).map(([name, label]) => (
+              <label className="form-field" key={name} htmlFor={`profile-${name}`}>
+                {t(label)}
+                <input
+                  id={`profile-${name}`}
+                  name={name}
+                  type={name === "contact" ? "email" : "text"}
+                  defaultValue={profile?.[name] || ""}
+                  aria-invalid={!!profileErrors[name]}
+                  aria-describedby={profileErrors[name] ? `profile-${name}-error` : undefined}
+                />
+                {profileErrors[name] && (
+                  <span className="field-error" id={`profile-${name}-error`} role="alert">
+                    {profileErrors[name]}
+                  </span>
+                )}
+              </label>
+            ))}
+            {(
+              [
+                ["contact_public", "Allow my contact email to be public"],
+                ["upi_public", "Allow my UPI ID to be public"],
+              ] as const
+            ).map(([name, label]) => (
+              <label className="checkbox-field" key={name}>
+                <input type="checkbox" name={name} defaultChecked={profile?.[name] || false} />
+                {t(label)}
+              </label>
+            ))}
+            <button className="button" disabled={action.busy}>
+              {t("Save profile")}
             </button>
           </form>
-        )}
-      </section>
-      <section className="backend-panel">
-        <h2>{t("Artist profile")}</h2>
-        <p>
-          {t(
-            "Pseudonyms are welcome. Contact and UPI are optional and private unless you explicitly consent to each field being public.",
-          )}
-        </p>
-        <form
-          key={profile?.artist_name || "new"}
-          className="handoff-form"
-          onSubmit={(event) => {
-            event.preventDefault();
-            const data = new FormData(event.currentTarget);
-            void action.run(async () => {
-              await api("account/profile", {
-                ...Object.fromEntries(data),
-                contact_public: data.has("contact_public"),
-                upi_public: data.has("upi_public"),
-              });
-              setRevision((v) => v + 1);
-            });
-          }}
-        >
-          {(
-            [
-              ["artist_name", "Artist name"],
-              ["bio", "Bio"],
-              ["contact", "Contact email"],
-              ["upi", "UPI ID"],
-            ] as const
-          ).map(([name, label]) => (
-            <label className="form-field" key={name} htmlFor={`profile-${name}`}>
-              {t(label)}
-              <input
-                id={`profile-${name}`}
-                name={name}
-                type={name === "contact" ? "email" : "text"}
-                defaultValue={profile?.[name] || ""}
-              />
-            </label>
-          ))}
-          {(
-            [
-              ["contact_public", "Allow my contact email to be public"],
-              ["upi_public", "Allow my UPI ID to be public"],
-            ] as const
-          ).map(([name, label]) => (
-            <label className="checkbox-field" key={name}>
-              <input type="checkbox" name={name} defaultChecked={profile?.[name] || false} />
-              {t(label)}
-            </label>
-          ))}
-          <button className="button" disabled={action.busy}>
-            {t("Save profile")}
-          </button>
-        </form>
-      </section>
+          <Alert text={action.failure} />
+          <p role="status">{profileNotice}</p>
+        </section>
+      )}
     </div>
   );
 }
-export function UploadPanel({ onSaved, works = [] }: { onSaved?: () => void; works?: Work[] }) {
+export function UploadPanel({
+  onSaved,
+  works = [],
+  initialWork,
+}: {
+  onSaved?: () => void;
+  works?: Work[];
+  initialWork?: Work;
+}) {
   const { t } = useI18n(),
     action = useAction();
   const [status, setStatus] = useState("");
   const [access, setAccess] = useState<"loading" | "allowed" | "denied">("loading");
-  const [chosenFormat, setChosenFormat] = useState("poster-placard");
+  const [chosenFormat, setChosenFormat] = useState(initialWork?.format_slug || "poster-placard");
+  const [step, setStep] = useState(0);
+  const [completed, setCompleted] = useState(false);
+  const [uploadProfile, setUploadProfile] = useState<Profile | null>(null);
   const uploadForm = useRef<HTMLFormElement>(null);
   const [fieldErrors, setFieldErrors] = useState<Record<string, string>>({});
   const fieldError = (name: string) =>
@@ -653,9 +754,12 @@ export function UploadPanel({ onSaved, works = [] }: { onSaved?: () => void; wor
     let live = true;
     const supplied = new URLSearchParams(location.search).get("format");
     if (formats.some((f) => f.slug === supplied)) setChosenFormat(supplied!);
-    api("account")
-      .then(() => {
-        if (live) setAccess("allowed");
+    api<{ profile: Profile | null }>("account")
+      .then((result) => {
+        if (live) {
+          setAccess("allowed");
+          setUploadProfile(result.profile);
+        }
       })
       .catch(() => {
         if (live) setAccess("denied");
@@ -679,6 +783,10 @@ export function UploadPanel({ onSaved, works = [] }: { onSaved?: () => void; wor
       !["image/jpeg", "image/png"].includes(file.type)
     )
       next.file = t(errorMessage("invalid_file"));
+    if (data.get("contact") && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(String(data.get("contact"))))
+      next.contact = t("Enter a valid email address.");
+    if (data.get("upi") && !/^[a-zA-Z0-9.\-_]{2,100}@[a-zA-Z]{2,30}$/.test(String(data.get("upi"))))
+      next.upi = t("Enter a valid UPI ID, or leave it blank.");
     if (!data.has("permission"))
       next.permission = t("Confirm you have permission to share this work.");
     if (!data.getAll("languages").length) next.languages = t("Choose at least one language.");
@@ -695,6 +803,16 @@ export function UploadPanel({ onSaved, works = [] }: { onSaved?: () => void; wor
     }
     await action.run(async () => {
       if (!(file instanceof File) || !file.size) throw new Error("invalid_file");
+      if (String(data.get("contact") || "") || String(data.get("upi") || "")) {
+        await api("account/profile", {
+          artist_name: data.get("artist_name") || uploadProfile?.artist_name || "",
+          bio: uploadProfile?.bio || "",
+          contact: data.get("contact") || "",
+          upi: data.get("upi") || "",
+          contact_public: data.has("profile_contact_public"),
+          upi_public: data.has("profile_upi_public"),
+        });
+      }
       const created = await api<{ id: string }>("account/work", {
         ...Object.fromEntries(data),
         id: data.get("id") || undefined,
@@ -716,9 +834,12 @@ export function UploadPanel({ onSaved, works = [] }: { onSaved?: () => void; wor
       });
       if (!sent.ok) throw new Error("network_error");
       setStatus(t("Stripping image metadata and generating print files…"));
-      const processed = await api<{ warning: string | null; dpiA2: number }>("upload/complete", {
-        id: signed.id,
-      });
+      const processed = await api<{ warning: string | null; dpiA4?: number; dpiA2: number }>(
+        "upload/complete",
+        {
+          id: signed.id,
+        },
+      );
       await api("account/submit", {
         id: created.id,
         contact_consent: data.has("contact_consent"),
@@ -726,8 +847,9 @@ export function UploadPanel({ onSaved, works = [] }: { onSaved?: () => void; wor
       });
       track("upload-submitted");
       setStatus(
-        `${t("Submission saved for review.")}${processed.warning ? ` ${t("Resolution warning: the image may look soft at A2. No artificial resolution is promised.")}` : ""}`,
+        `${t("Submission saved for review.")}${processed.dpiA4 ? ` ${t("Estimated full-sheet resolution")}: A4 ${processed.dpiA4} DPI / A2 ${processed.dpiA2} DPI.` : ""}${processed.warning ? ` ${t("Resolution warning: the image may look soft at A2. No artificial resolution is promised.")}` : ""}`,
       );
+      setCompleted(true);
       onSaved?.();
     });
   }
@@ -750,6 +872,17 @@ export function UploadPanel({ onSaved, works = [] }: { onSaved?: () => void; wor
         </Link>
       </section>
     );
+  if (completed)
+    return (
+      <section className="backend-panel" role="status">
+        <h2>{t("Submission saved for review.")}</h2>
+        <p>{status}</p>
+        <p>{t("Note: Your artwork will be featured after the website admin review")}</p>
+        <Link className="button" href="/account">
+          {t("My contributions")}
+        </Link>
+      </section>
+    );
   return (
     <section id="upload-work" className="backend-panel">
       <h2>{t("UPLOAD YOUR OWN ART AND DESIGN")}</h2>
@@ -760,7 +893,39 @@ export function UploadPanel({ onSaved, works = [] }: { onSaved?: () => void; wor
         <Link href="/login">{t("Sign in")}</Link>
       </p>
       <p>{t("Fill the details: (Recommended but not mandatory)")}</p>
-      <form ref={uploadForm} className="handoff-form" noValidate onSubmit={upload}>
+      <ol className="wizard-steps">
+        <li aria-current={step === 0 ? "step" : undefined}>{t("Choose format")}</li>
+        <li aria-current={step === 1 ? "step" : undefined}>{t("Fill the details:")}</li>
+        <li>{t("Upload")}</li>
+      </ol>
+      {step === 0 && (
+        <div className="format-picker">
+          {formats.map((format) => (
+            <button
+              key={format.slug}
+              className="button"
+              onClick={() => {
+                setChosenFormat(format.slug);
+                setStep(1);
+              }}
+            >
+              {t(format.label)}
+            </button>
+          ))}
+        </div>
+      )}
+      <form
+        hidden={step === 0}
+        key={initialWork?.id || chosenFormat}
+        ref={uploadForm}
+        className="handoff-form"
+        noValidate
+        onSubmit={upload}
+      >
+        {initialWork && <input type="hidden" name="id" value={initialWork.id} />}
+        <button type="button" className="button" onClick={() => setStep(0)}>
+          {t("Choose format")}
+        </button>
         {works.some((w) => ["draft", "changes_requested"].includes(w.status)) && (
           <label className="form-field" htmlFor="upload-id">
             {t("Revise an existing draft")}
@@ -793,6 +958,13 @@ export function UploadPanel({ onSaved, works = [] }: { onSaved?: () => void; wor
               id={`upload-${name}`}
               name={name}
               type={name === "source" ? "url" : "text"}
+              defaultValue={
+                name === "tags"
+                  ? initialWork?.tags.join(", ")
+                  : initialWork?.[name] ||
+                    (name === "artist_name" ? uploadProfile?.artist_name : "") ||
+                    ""
+              }
               minLength={name === "alt" ? 15 : undefined}
               aria-invalid={!!fieldErrors[name]}
               aria-describedby={fieldErrors[name] ? "upload-" + name + "-error" : undefined}
@@ -801,6 +973,41 @@ export function UploadPanel({ onSaved, works = [] }: { onSaved?: () => void; wor
             {fieldError(name)}
           </label>
         ))}
+        {(
+          [
+            ["contact", "Contact"],
+            ["upi", "UPI ID"],
+          ] as const
+        ).map(([name, label]) => (
+          <label className="form-field" htmlFor={`upload-${name}`} key={name}>
+            {t(label)} ({t("Recommended but not mandatory")})
+            <input
+              id={`upload-${name}`}
+              name={name}
+              type={name === "contact" ? "email" : "text"}
+              defaultValue={uploadProfile?.[name] || ""}
+              aria-invalid={!!fieldErrors[name]}
+              aria-describedby={fieldErrors[name] ? `upload-${name}-error` : undefined}
+            />
+            {fieldError(name)}
+          </label>
+        ))}
+        <label className="checkbox-field">
+          <input
+            type="checkbox"
+            name="profile_contact_public"
+            defaultChecked={uploadProfile?.contact_public || false}
+          />
+          {t("Allow my contact email to be public")}
+        </label>
+        <label className="checkbox-field">
+          <input
+            type="checkbox"
+            name="profile_upi_public"
+            defaultChecked={uploadProfile?.upi_public || false}
+          />
+          {t("Allow my UPI ID to be public")}
+        </label>
         <label className="form-field" htmlFor="upload-format">
           {t("Choose format")}
           <select id="upload-format" name="format_slug" defaultValue={chosenFormat}>
@@ -813,7 +1020,11 @@ export function UploadPanel({ onSaved, works = [] }: { onSaved?: () => void; wor
         </label>
         <label className="form-field" htmlFor="upload-licence">
           {t("Licence")}
-          <select id="upload-licence" name="licence_id" defaultValue="CC-BY-SA-4.0">
+          <select
+            id="upload-licence"
+            name="licence_id"
+            defaultValue={initialWork?.licence_id || "CC-BY-SA-4.0"}
+          >
             {["CC-BY-SA-4.0", "CC0-1.0", "CC-BY-4.0", "CC-BY-NC-SA-4.0", "CC-BY-NC-ND-4.0"].map(
               (l) => (
                 <option key={l}>{l}</option>
@@ -838,7 +1049,7 @@ export function UploadPanel({ onSaved, works = [] }: { onSaved?: () => void; wor
                 type="checkbox"
                 name="languages"
                 value={l}
-                defaultChecked={l === "English"}
+                defaultChecked={initialWork ? initialWork.languages.includes(l) : l === "English"}
                 aria-invalid={!!fieldErrors.languages}
                 aria-describedby={fieldErrors.languages ? "upload-languages-error" : undefined}
               />
@@ -849,7 +1060,13 @@ export function UploadPanel({ onSaved, works = [] }: { onSaved?: () => void; wor
         </fieldset>
         <label className="form-field" htmlFor="upload-categories">
           {t("Categories (multiple selections allowed)")}
-          <select id="upload-categories" name="categories" multiple size={5}>
+          <select
+            id="upload-categories"
+            name="categories"
+            multiple
+            size={5}
+            defaultValue={(initialWork?.work_categories || []).map((c) => c.category_slug)}
+          >
             {categories.map((c) => (
               <option value={c.slug} key={c.slug}>
                 {t(c.label)}
@@ -859,7 +1076,7 @@ export function UploadPanel({ onSaved, works = [] }: { onSaved?: () => void; wor
         </label>
         <label className="form-field" htmlFor="upload-ai">
           {t("AI-use declaration")}
-          <select id="upload-ai" name="ai_use">
+          <select id="upload-ai" name="ai_use" defaultValue={initialWork?.ai_use || "none"}>
             <option value="none">{t("None")}</option>
             <option value="minimal-assisted">{t("Minimal-assisted")}</option>
             <option value="generated">{t("Generated")}</option>
@@ -867,7 +1084,12 @@ export function UploadPanel({ onSaved, works = [] }: { onSaved?: () => void; wor
         </label>
         <label className="form-field" htmlFor="upload-ai-disclosure">
           {t("Explain any AI use")}
-          <textarea id="upload-ai-disclosure" name="ai_disclosure" maxLength={2000} />
+          <textarea
+            id="upload-ai-disclosure"
+            name="ai_disclosure"
+            maxLength={2000}
+            defaultValue={initialWork?.ai_disclosure || ""}
+          />
         </label>
         <label className="form-field" htmlFor="upload-file">
           {t("JPEG or PNG, maximum 25 MB")}
@@ -925,13 +1147,40 @@ export function UploadPanel({ onSaved, works = [] }: { onSaved?: () => void; wor
     </section>
   );
 }
-export function AdminPanel() {
+export function AdminPanel({
+  view = "queue",
+}: {
+  view?: "queue" | "review" | "messages" | "takedowns" | "users" | "audit";
+}) {
   const router = useRouter();
-  const { t } = useI18n(),
+  const { t, locale } = useI18n(),
     action = useAction();
   const [works, setWorks] = useState<Work[]>([]),
     [notice, setNotice] = useState("");
   const [records, setRecords] = useState<unknown>(null);
+  const [reviewErrors, setReviewErrors] = useState<Record<string, string>>({});
+  const [access, setAccess] = useState<"loading" | "denied" | "mfa" | "allowed">("loading");
+  useEffect(() => {
+    let live = true;
+    fetch("/api/session", { cache: "no-store" })
+      .then(async (response) => (response.ok ? response.json() : null))
+      .then((data) => {
+        if (live)
+          setAccess(
+            !data?.account?.admin
+              ? "denied"
+              : data.account.fresh && data.account.aal2
+                ? "allowed"
+                : "mfa",
+          );
+      })
+      .catch(() => {
+        if (live) setAccess("denied");
+      });
+    return () => {
+      live = false;
+    };
+  }, []);
   async function load() {
     await action.run(async () => {
       const result = await api<{ works: Work[] }>("admin/queue");
@@ -939,14 +1188,62 @@ export function AdminPanel() {
       setNotice(t("Review queue loaded."));
     });
   }
+  const [selectedId, setSelectedId] = useState("");
+  useEffect(() => {
+    if (access !== "allowed") return;
+    if (view === "review") setSelectedId(location.pathname.split("/").filter(Boolean).at(-1) || "");
+    void action.run(async () => {
+      if (view === "queue" || view === "review") {
+        const result = await api<{ works: Work[] }>("admin/queue");
+        setWorks(result.works);
+      } else
+        setRecords(
+          await api(`admin/${view === "messages" || view === "takedowns" ? "inbox" : view}`),
+        );
+    });
+    // The view is fixed by the static route; server authorization is checked for every request.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [view, access]);
+  if (access === "loading")
+    return (
+      <p className="content-width" role="status">
+        {t("Checking your session…")}
+      </p>
+    );
+  if (access === "denied")
+    return (
+      <section className="content-width">
+        <p role="alert">{t("Administrator access is required.")}</p>
+        <Link className="button" href="/login">
+          {t("Sign in")}
+        </Link>
+      </section>
+    );
+  if (access === "mfa")
+    return (
+      <section className="content-width">
+        <MfaPanel />
+        <p>{t("After verifying your code, reload this page to open administration.")}</p>
+        <button className="button" onClick={() => location.reload()}>
+          {t("Load review queue")}
+        </button>
+      </section>
+    );
   return (
     <div className="content-width">
+      <nav className="button-row" aria-label={t("Administration")}>
+        <Link href="/admin">{t("Review queue")}</Link>
+        <Link href="/admin/messages">{t("Messages")}</Link>
+        <Link href="/admin/takedowns">{t("Takedowns")}</Link>
+        <Link href="/admin/users">{t("Contributors")}</Link>
+        <Link href="/admin/audit">{t("Audit log")}</Link>
+      </nav>
       <p>
         {t(
           "Administration requires TOTP and a fresh six-digit authenticator code. Your authenticator secret is shown only during setup.",
         )}
       </p>
-      <Link className="button" href="/account">
+      <Link className="button" href="/account/settings">
         {t("Account security")}
       </Link>
       <MfaPanel />
@@ -988,10 +1285,8 @@ export function AdminPanel() {
       </div>
       <Alert text={action.failure} />
       <p role="status">{notice}</p>
-      {records !== null && (
-        <pre className="backend-records">{JSON.stringify(records, null, 2)}</pre>
-      )}
-      {records !== null && (
+      {records !== null && <AdminRecords records={records} view={view} />}
+      {records !== null && (view === "messages" || view === "takedowns") && (
         <form
           className="handoff-form backend-panel"
           onSubmit={(event) => {
@@ -1021,103 +1316,130 @@ export function AdminPanel() {
           </button>
         </form>
       )}
-      {works.map((work) => (
-        <article key={work.id} className="backend-panel">
-          <h2>{work.title}</h2>
-          <p>
-            {t(work.status)} | {work.licence_id} | {t("AI-use declaration")}: {work.ai_use}
-          </p>
-          <ReviewImage work={work} />
-          <form
-            className="handoff-form"
-            onSubmit={(event) => {
-              event.preventDefault();
-              const data = new FormData(event.currentTarget);
-              void action.run(async () => {
-                await api("admin/work-categories", {
-                  id: work.id,
-                  categories: data.getAll("categories"),
+      {works
+        .filter((work) => view !== "review" || work.id === selectedId)
+        .map((work) => (
+          <article key={work.id} className="backend-panel">
+            <h2>
+              <a href={`/${locale}/admin/review/${work.id}/`}>{work.title}</a>
+            </h2>
+            <p>
+              {t(work.status)} | {work.licence_id} | {t("AI-use declaration")}: {work.ai_use}
+            </p>
+            <ReviewImage work={work} />
+            <form
+              className="handoff-form"
+              onSubmit={(event) => {
+                event.preventDefault();
+                const data = new FormData(event.currentTarget);
+                void action.run(async () => {
+                  await api("admin/work-categories", {
+                    id: work.id,
+                    categories: data.getAll("categories"),
+                  });
+                  setNotice(t("Categories saved."));
                 });
-                setNotice(t("Categories saved."));
-              });
-            }}
-          >
-            <label className="form-field" htmlFor={"review-categories-" + work.id}>
-              {t("Review categories")}
-              <select
-                id={"review-categories-" + work.id}
-                name="categories"
-                multiple
-                size={4}
-                defaultValue={(work.work_categories || []).map((c) => c.category_slug)}
-              >
-                {categories.map((c) => (
-                  <option key={c.slug} value={c.slug}>
-                    {t(c.label)}
-                  </option>
-                ))}
-              </select>
-            </label>
-            <button className="button" disabled={action.busy}>
-              {t("Save categories")}
-            </button>
-          </form>
-          <p>{work.alt}</p>
-          <p>{work.ai_disclosure}</p>
-          <p>
-            {t("Contact consent")}: {work.consent_contact || t("Private")}; {t("UPI consent")}:{" "}
-            {work.consent_upi || t("Private")}
-          </p>
-          <div className="button-row">
-            {work.work_files.map((file) => (
-              <button
-                className="button"
-                key={file.id}
-                onClick={() =>
-                  action.run(async () => {
-                    const result = await api<{ url: string }>("admin/file", { id: file.id });
-                    router.push(result.url);
-                  })
-                }
-              >
-                {t("Review file")}: {file.kind}
+              }}
+            >
+              <label className="form-field" htmlFor={"review-categories-" + work.id}>
+                {t("Review categories")}
+                <select
+                  id={"review-categories-" + work.id}
+                  name="categories"
+                  multiple
+                  size={4}
+                  defaultValue={(work.work_categories || []).map((c) => c.category_slug)}
+                >
+                  {categories.map((c) => (
+                    <option key={c.slug} value={c.slug}>
+                      {t(c.label)}
+                    </option>
+                  ))}
+                </select>
+              </label>
+              <button className="button" disabled={action.busy}>
+                {t("Save categories")}
               </button>
-            ))}
-          </div>
-          <form
-            className="handoff-form"
-            onSubmit={(event) => {
-              event.preventDefault();
-              const data = new FormData(event.currentTarget);
-              void action.run(async () => {
-                await api("admin/review", { id: work.id, ...Object.fromEntries(data) });
-                setNotice(
-                  t("Review saved. Approved publication may take a few minutes to rebuild."),
-                );
-                const result = await api<{ works: Work[] }>("admin/queue");
-                setWorks(result.works);
-              });
-            }}
-          >
-            <label className="form-field" htmlFor={`review-action-${work.id}`}>
-              {t("Decision")}
-              <select id={`review-action-${work.id}`} name="action">
-                <option value="approve">{t("Approve")}</option>
-                <option value="changes_requested">{t("Request changes")}</option>
-                <option value="rejected">{t("Reject")}</option>
-                <option value="taken_down">{t("Take down")}</option>
-              </select>
-            </label>
-            <label className="form-field" htmlFor={`reason-${work.id}`}>
-              {t("Reason (required except for approval)")}
-              <textarea id={`reason-${work.id}`} name="reason" maxLength={3000} />
-            </label>
-            <button className="button accent" disabled={action.busy}>
-              {t("Save decision")}
-            </button>
-          </form>
-        </article>
-      ))}
+            </form>
+            <p>{work.alt}</p>
+            <p>{work.ai_disclosure}</p>
+            <p>
+              {t("Contact consent")}: {work.consent_contact || t("Private")}; {t("UPI consent")}:{" "}
+              {work.consent_upi || t("Private")}
+            </p>
+            <div className="button-row">
+              {work.work_files.map((file) => (
+                <button
+                  className="button"
+                  key={file.id}
+                  onClick={() =>
+                    action.run(async () => {
+                      const result = await api<{ url: string }>("admin/file", { id: file.id });
+                      router.push(result.url);
+                    })
+                  }
+                >
+                  {t("Review file")}: {file.kind}
+                </button>
+              ))}
+            </div>
+            <form
+              className="handoff-form"
+              onSubmit={(event) => {
+                event.preventDefault();
+                const data = new FormData(event.currentTarget);
+                void action.run(async () => {
+                  const reason = String(data.get("reason") || "").trim();
+                  if (data.get("action") !== "approve" && reason.length < 10) {
+                    setReviewErrors((previous) => ({
+                      ...previous,
+                      [work.id]: t("Explain the decision in at least ten characters."),
+                    }));
+                    requestAnimationFrame(() =>
+                      document.getElementById(`reason-${work.id}`)?.focus(),
+                    );
+                    return;
+                  }
+                  setReviewErrors((previous) => ({ ...previous, [work.id]: "" }));
+                  await api("admin/review", { id: work.id, ...Object.fromEntries(data) });
+                  setNotice(
+                    t("Review saved. Approved publication may take a few minutes to rebuild."),
+                  );
+                  const result = await api<{ works: Work[] }>("admin/queue");
+                  setWorks(result.works);
+                });
+              }}
+            >
+              <label className="form-field" htmlFor={`review-action-${work.id}`}>
+                {t("Decision")}
+                <select id={`review-action-${work.id}`} name="action">
+                  <option value="approve">{t("Approve")}</option>
+                  <option value="changes_requested">{t("Request changes")}</option>
+                  <option value="rejected">{t("Reject")}</option>
+                  <option value="taken_down">{t("Take down")}</option>
+                </select>
+              </label>
+              <label className="form-field" htmlFor={`reason-${work.id}`}>
+                {t("Reason (required except for approval)")}
+                <textarea
+                  id={`reason-${work.id}`}
+                  name="reason"
+                  maxLength={3000}
+                  aria-invalid={!!reviewErrors[work.id]}
+                  aria-describedby={reviewErrors[work.id] ? `reason-${work.id}-error` : undefined}
+                />
+                {reviewErrors[work.id] && (
+                  <span className="field-error" id={`reason-${work.id}-error`} role="alert">
+                    {reviewErrors[work.id]}
+                  </span>
+                )}
+              </label>
+              <button className="button accent" disabled={action.busy}>
+                {t("Save decision")}
+              </button>
+            </form>
+          </article>
+        ))}
     </div>
   );
 }

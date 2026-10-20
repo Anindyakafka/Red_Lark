@@ -2,6 +2,8 @@ import { Link, UiText, LanguageSwitcher } from "@/i18n/client";
 import Image from "next/image";
 import { Preferences } from "./preferences";
 import { REPO_URL } from "@/config/site";
+import { AccountNavigation } from "./account-navigation";
+import { posters } from "@/lib/catalog";
 export function Header() {
   return (
     <header className="site-header">
@@ -14,9 +16,7 @@ export function Header() {
           </span>
         </Link>
         <div className="header-controls">
-          <Link className="account-link" href="/account">
-            <UiText id="Account" />
-          </Link>
+          <AccountNavigation />
           <LanguageSwitcher />
           <Preferences />
         </div>
@@ -46,14 +46,13 @@ export function Footer() {
         <Link className="footer-mark" href="/">
           <UiText id={"RED LARK WORKSHOP [01]"} />
         </Link>
-        <p>
-          <UiText id={"FREE TO FIND. YOURS TO PRINT."} />
-        </p>
-        <p>
-          <UiText id={"Original placeholder studies, 2026."} />
-          <br />
-          <UiText id={"Real artist contributions are still to come."} />
-        </p>
+        {posters.every((poster) => poster.placeholder) && (
+          <p>
+            <UiText id={"Original placeholder studies, 2026."} />
+            <br />
+            <UiText id={"Real artist contributions are still to come."} />
+          </p>
+        )}
       </div>
       <nav aria-label="Footer navigation">
         <Link prefetch={false} href="/submit">

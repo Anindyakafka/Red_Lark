@@ -5,6 +5,66 @@ import { PRESETS, type FontId, type Layer, type Scene } from "@/lib/types";
 import { creditLines, sceneCredits } from "@/lib/licenses";
 import { assertExportable, dimensions } from "./model";
 export type Fonts = Record<FontId, Font> & { indic?: Record<"hi" | "bn" | "ml", ShapedFont> };
+/** Credits can combine a title and artist in different scripts on the same line. */
+export function creditPaths(text: string, fonts: Fonts, x: number, y: number, width: number) {
+  if (!/[\u0900-\u097f\u0980-\u09ff\u0d00-\u0d7f]/.test(text))
+    return textPaths(text, fonts.mono, x, y, 7, width, "#151515");
+  if (!fonts.indic)
+    throw new Error("Indic credit fonts are not loaded. Retry after fonts finish loading.");
+  const parts =
+    text.match(
+      /[\u0900-\u097f][\u0900-\u097f\u200c\u200d]*|[\u0980-\u09ff][\u0980-\u09ff\u200c\u200d]*|[\u0d00-\u0d7f][\u0d00-\u0d7f\u200c\u200d]*|[^\u0900-\u097f\u0980-\u09ff\u0d00-\u0d7f]+/gu,
+    ) || [];
+  const runs = parts.map((part) => {
+    const language = /[\u0900-\u097f]/.test(part)
+      ? "hi"
+      : /[\u0980-\u09ff]/.test(part)
+        ? "bn"
+        : /[\u0d00-\u0d7f]/.test(part)
+          ? "ml"
+          : null;
+    if (!language) return { text: part, width: fonts.mono.getAdvanceWidth(part, 1) };
+    const font = fonts.indic![language],
+      run = font.layout(part);
+    if (run.glyphs.some((glyph) => glyph.id === 0))
+      throw new Error(
+        "A credit contains an unsupported glyph. Keep the credit intact and choose a supported font.",
+      );
+    return {
+      text: part,
+      font,
+      run,
+      width: run.positions.reduce((sum, position) => sum + position.xAdvance, 0) / font.unitsPerEm,
+    };
+  });
+  const size = Math.min(
+    7,
+    width /
+      Math.max(
+        1,
+        runs.reduce((sum, run) => sum + run.width, 0),
+      ),
+  );
+  let pen = x;
+  return runs
+    .map((run) => {
+      const left = pen;
+      pen += run.width * size;
+      if (!run.font || !run.run)
+        return `<path fill="#151515" d="${fonts.mono.getPath(run.text, left, y + 7, size).toPathData(2)}"/>`;
+      const scale = size / run.font.unitsPerEm;
+      let advance = 0;
+      return run.run.glyphs
+        .map((glyph, index) => {
+          const position = run.run.positions[index];
+          const transform = `translate(${left + (advance + position.xOffset) * scale} ${y + 7 - position.yOffset * scale}) scale(${scale} ${-scale})`;
+          advance += position.xAdvance;
+          return `<g fill="#151515" transform="${transform}"><path d="${glyph.path.toSVG()}"/></g>`;
+        })
+        .join("");
+    })
+    .join("");
+}
 export const xml = (s: string) =>
   s.replace(
     /[&<>"']/g,
@@ -135,9 +195,7 @@ export function sceneSvg(scene: Scene, fonts: Fonts, separation?: string) {
     .map((l) => layerMarkup(separation ? { ...l, color: "#151515" } : l, fonts))
     .join("");
   const credits = lines
-    .map((line, i) =>
-      textPaths(line, fonts.mono, 10, stripTop + 5 + i * 10, 7, width - 20, "#151515"),
-    )
+    .map((line, i) => creditPaths(line, fonts, 10, stripTop + 5 + i * 10, width - 20))
     .join("");
   return `<svg xmlns="http://www.w3.org/2000/svg" width="${preset.width}${preset.unit}" height="${preset.height}${preset.unit}" viewBox="0 0 ${width} ${height}"><title>Red Lark Workshop composition</title><metadata>${xml(JSON.stringify({ sourceLicense: license, adaptationLicense: sceneCredits(scene).some((c) => LICENSES[c.license].shareAlike) ? license : "User additions: rights retained", credits: creditLines(scene), preset: scene.preset, rasterPpi: preset.unit === "mm" ? 300 : undefined }))}</metadata><defs><clipPath id="artboard"><rect width="${width}" height="${stripTop}"/></clipPath></defs><rect width="${width}" height="${height}" fill="${separation ? "#ffffff" : scene.background}"/><g clip-path="url(#artboard)">${layers}</g><rect y="${stripTop}" width="${width}" height="${stripHeight}" fill="#f3f0e6"/><path d="M0 ${stripTop}H${width}" stroke="#151515"/>${credits}</svg>`;
 }

@@ -23,10 +23,10 @@ export function required(name: string, alias?: string) {
   return value;
 }
 export function origin() {
-  const value =
-    process.env.SITE_URL || (process.env.NETLIFY ? process.env.URL : "http://localhost:3000");
+  const value = process.env.SITE_URL || (process.env.NETLIFY ? undefined : "http://localhost:3000");
   if (!value) throw new ApiError(503, "service_unavailable");
   const url = new URL(value);
+  if (url.hostname.endsWith(".netlify.app")) throw new ApiError(503, "service_unavailable");
   if (url.protocol !== "https:" && !["localhost", "127.0.0.1"].includes(url.hostname))
     throw new ApiError(503, "service_unavailable");
   return url.origin;

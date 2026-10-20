@@ -2524,3 +2524,75 @@ html:not([lang="en"]) .page-intro h1 {
   line-height: 1.5;
   overflow-wrap: break-word;
 }
+
+/* Account controls remain usable without hover or a pointing device. */
+.account-links {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+  align-items: center;
+}
+.account-links a,
+.account-menu summary {
+  min-height: 44px;
+  display: flex;
+  align-items: center;
+  font: inherit;
+  cursor: pointer;
+}
+.account-menu {
+  position: relative;
+}
+.account-menu nav {
+  position: absolute;
+  z-index: 20;
+  right: 0;
+  top: 100%;
+  min-width: 230px;
+  display: grid;
+  background: var(--paper);
+  color: var(--ink);
+  border: 3px solid;
+  box-shadow: 5px 5px 0 var(--ink);
+  padding: 12px;
+}
+.account-menu nav a {
+  min-height: 44px;
+  display: flex;
+  align-items: center;
+}
+.wizard-steps {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  padding-inline-start: 24px;
+}
+.wizard-steps [aria-current="step"] {
+  font-weight: 700;
+  text-decoration: underline;
+  text-underline-offset: 4px;
+}
+.handoff-form[hidden] {
+  display: none;
+}
+.account-layout {
+  grid-template-columns: minmax(0, 1fr);
+}
+
+.content-width.button-row a {
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
+  padding: 8px;
+}
+.admin-record-list dl > div {
+  border-top: 2px solid;
+  padding: 8px 0;
+}
+.admin-record-list dt {
+  font-weight: 700;
+}
+.admin-record-list dd {
+  margin: 4px 0 0;
+  white-space: pre-wrap;
+}

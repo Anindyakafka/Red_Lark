@@ -1,5 +1,17 @@
 # RED LARK WORKSHOP: staged implementation plan
 
+## Account pages continuation — 20 October 2026
+
+This section supersedes older public-phase holds. Existing Supabase/Postgres, R2 and Resend are reused. Public pages remain static; private shells call same-origin protected APIs. UUID detail addresses are rewritten to localized static shells, with ownership/role/MFA checked independently on the server. No private record is embedded at build time.
+
+| Round | Work                                                                                                                                                                            | Acceptance                                                    | Status                                                |
+| ----- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------- | ----------------------------------------------------- |
+| P1    | Dedicated authentication pages, inbox, verification and logout; profile/settings/new/edit; admin review/inbox/users/audit; session-aware header; canonical/source/contact fixes | 53 unit/RLS/copy tests; typecheck/lint/format; 392-page build | PASS; full 175 browser tests green                    |
+| P2    | Exercise every new route in en/hi; mobile/axe and upload/error/revision flows; inspect en/ml screenshots                                                                        | Playwright, screenshots, no horizontal overflow               | PASS: 175 browser tests; native screenshots inspected |
+| P3    | Public performance, full regression, client/history secret scans; deployment handoff                                                                                            | Lighthouse >=95; full suite; exact external blockers recorded | Pending                                               |
+
+Do not push/deploy the backend until owner confirmation of Netlify server environment scopes. Real signup/admin verification must use a website account, independently of signing into the Supabase dashboard with GitHub.
+
 ## Authorized backend continuation — 19 October 2026
 
 The owner's attached infrastructure request lifts the implementation hold. Existing Supabase Auth/Postgres, R2 buckets and email configuration are reused; no infrastructure is re-provisioned. R2 replaces all prior Supabase Storage plans. Initial admin: redlarkworkshop@gmail.com, granted only after verified real login and TOTP. Backend deployment remains prohibited until the owner confirms scoped Netlify server variables. Historical HOLD text below describes the earlier public checkpoint.

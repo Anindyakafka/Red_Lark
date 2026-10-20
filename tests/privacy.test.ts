@@ -1,7 +1,28 @@
 import test from "node:test";
 import assert from "node:assert/strict";
 import { deflateSync, strToU8 } from "fflate";
-import { track } from "../src/lib/analytics";
+import { track, analyticsPath } from "../src/lib/analytics";
+
+test("private account/admin/auth paths are never analytics payloads and upload counts omit revision IDs", () => {
+  for (const locale of ["en", "hi", "bn", "ml"]) {
+    for (const route of [
+      "account/works/private-id/",
+      "account/profile/",
+      "admin/review/private-id/",
+      "login/",
+      "signup/",
+      "verify/",
+      "reset-password/",
+    ])
+      assert.equal(analyticsPath(`/${locale}/${route}`, "pageview"), null);
+    assert.equal(
+      analyticsPath(`/${locale}/account/works/private-id/`, "upload-submitted"),
+      `/${locale}/submit/`,
+    );
+    assert.equal(analyticsPath(`/${locale}/collection/`, "pageview"), `/${locale}/collection/`);
+  }
+  assert.equal(analyticsPath("/admin/messages/", "pageview"), null);
+});
 import { decodeScene } from "../src/studio/share";
 import { freshScene } from "../src/studio/model";
 import { creditLines } from "../src/lib/licenses";

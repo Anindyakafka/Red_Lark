@@ -2,6 +2,7 @@ node_modules
 .next
 out
 .npm-cache
+.qa
 package-lock.json
 public
 src/generated

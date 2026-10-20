@@ -1,5 +1,21 @@
 # Current acceptance checklist
 
+## Account pages checkpoint — 20 October 2026
+
+These rows supersede inherited acceptance for changed features. UI fixtures prove browser behavior only, never real mail delivery or production publication.
+
+| Requirement                                                        | Status | Evidence                                                           | Note                                                                                        |
+| ------------------------------------------------------------------ | ------ | ------------------------------------------------------------------ | ------------------------------------------------------------------------------------------- |
+| Dedicated localized auth/contributor/admin routes                  | PASS   | src/app/[locale]; tests/browser/private-pages.spec.ts              | 82 initial browser tests pass; every new en/hi route axe-clean; full regression in progress |
+| Canonical and OG host safety                                       | PASS   | src/lib/site-origin.ts; scripts/validate-export.mjs; npm run build | Default custom domain; reject preview hosts; scan every built HTML including 404            |
+| New source URL and retired-brand scan                              | PASS   | src/config/site.ts; npm run check:brand                            | New GitHub URL; no source-name exception; old draft keys migrated without retired literal   |
+| Accessible contact link and removed old footer tagline             | PASS   | src/components/contact-address.tsx; shell.tsx; COPY_QUESTIONS.md   | Client mailto verified by Playwright, readable no-JS fallback; old footer tagline removed   |
+| Visible printed licence/credit including Indic                     | PASS   | src/server/print.ts; tests/backend.test.ts                         | Embedded self-hosted fonts and Unicode maps; A4/A2; no metadata-only attribution            |
+| Real website signup, verification and MFA admin bootstrap          | FAIL   | TODO_HUMAN.md                                                      | No verified website admin yet; infrastructure dashboard login is separate                   |
+| Real pending upload, approval, all-locale publication and takedown | FAIL   | TODO_HUMAN.md                                                      | Public R2 hostname/CORS, build hook and configured deployment still needed                  |
+| Real mail end-to-end and independent non-Gmail headers             | FAIL   | Previous Gmail evidence; TODO_HUMAN.md                             | Exposed provider key must be rotated; non-Gmail inbox not supplied                          |
+| Final full regression, axe and performance                         | FAIL   | P2/P3 verification pending                                         | Historical scores are not acceptance for this change                                        |
+
 ## Backend continuation — 19 October 2026 (overrides historical HOLD rows below)
 
 | Requirement                                                       | Status | Evidence                                        | Note                                                                                                                                                                                                 |

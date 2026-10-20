@@ -23,6 +23,8 @@ const errors = [];
 const titles = new Map();
 for (const file of html) {
   const source = fs.readFileSync(file, "utf8");
+  if (/(?:localhost|127\.0\.0\.1|[a-z0-9-]+\.netlify\.app)/i.test(source))
+    errors.push(`${file}: forbidden development or deployment hostname in built HTML`);
   if (file.endsWith("404.html") || file.includes(path.join("out", "404", ""))) continue;
   const title = source.match(/<title>([^<]+)<\/title>/)?.[1];
   if (!title) errors.push(`${file}: missing title`);
