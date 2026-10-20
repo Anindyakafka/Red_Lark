@@ -1,5 +1,21 @@
 # Public artwork hostname setup
 
+## Ready-to-import Netlify export — 20 October 2026
+
+The owner supplied `redlarkworkshop.com (DNS Records).csv`. The converted Cloudflare BIND file is [cloudflare-redlarkworkshop.com.txt](../cloudflare-redlarkworkshop.com.txt). It contains six records: four mail records preserved exactly, plus two website records converted from Netlify's proprietary NETLIFY type. The apex uses Netlify's standard external-DNS load balancer; www retains the exact project hostname from the CSV. All CNAMEs explicitly import as DNS-only.
+
+1. Add/select redlarkworkshop.com in the SAME Cloudflare account as the R2 buckets; choose Free if adding it.
+2. Open DNS -> Records -> Import and Export -> Import DNS records. Select the converted .txt file and uncheck "Proxy imported DNS records". Import once.
+3. Review the six imported records before changing nameservers. Reconcile auto-scanned A/AAAA/CNAME records at @ and www if they conflict with the imported website CNAMEs; retain unrelated records. Existing exact duplicates need not be imported twice.
+4. The CSV contains no standalone MX or SPF TXT records. Its two Resend CNAMEs are preserved without substituting guessed mail records. Check the complete Netlify zone and Resend dashboard for any additional records not included in this export, and copy those if present.
+5. Only after the review, follow the nameserver/DNSSEC steps below. Keep the old Netlify zone as a rollback reference. After activation, verify website HTTPS and Resend verification, then attach files.redlarkworkshop.com through the approved R2 bucket's Custom Domains settings. That hostname is intentionally absent from the import file.
+
+Cloudflare's import format and dashboard steps: https://developers.cloudflare.com/dns/manage-dns-records/how-to/import-and-export/.
+
+The owner has chosen to create the website administrator account after deployment. This is supported: use https://redlarkworkshop.com/en/signup/, verify the email in the same browser, enroll/verify TOTP in /en/account/settings/, then run the guarded bootstrap from a trusted local machine. The initial deployment can precede administrator creation; public contribution acceptance still requires the verified administrator.
+
+## DNS and bucket activation
+
 The configured private buckets and R2 credentials are retained. This is an owner checklist, not permission for an automated DNS change. Proposed approved-files origin: https://files.redlarkworkshop.com. It is not yet configured or verified. Pending uploads must never be attached to a public hostname.
 
 Cloudflare's direct R2 custom-domain integration requires the domain as a zone in the bucket's account. A paid partial/CNAME setup is an alternative; for the free path, move authoritative DNS to Cloudflare while retaining Porkbun as registrar and Netlify as web host. See [R2 public/custom domains](https://developers.cloudflare.com/r2/buckets/public-buckets/).
