@@ -58,6 +58,20 @@ Public copies use Cache-Control `no-store, max-age=0`. Do not add a Cloudflare C
 
 ## Netlify variables and scopes
 
+### Free-plan scope fallback
+
+Netlify's granular environment-variable scopes require Pro or Enterprise. On Free, add the required hosted variables through the project dashboard using the default **All scopes**; an upgrade is not required for the application. The scope table below describes the preferred least-privilege setup when granular scopes are available. All-scopes variables are available to trusted build code as well as Functions; they are not automatically published to browsers. Never use NEXT_PUBLIC_ names for private values or add private values to next.config.ts env. The build's check-client-secrets step fails if configured private values appear in static output.
+
+Keep DATABASE_URL, DATABASE_CA_CERT and ADMIN_BOOTSTRAP_EMAIL local. Leave optional analytics blank. Copy stable session/rate-limit keys from local configuration rather than regenerating them. Use Production-only values if deploy-context controls are available; otherwise disable untrusted automatic Deploy Preview/branch builds before adding production secrets, and review any code/build plugins allowed to run with those variables. Do not import the whole .env.local file blindly. Updated variables take effect in a subsequent deployment; source publication/merge still follows owner confirmation.
+
+Official scope availability: https://docs.netlify.com/build/environment-variables/overview/.
+
+### Secret-scanning classification after importing variables
+
+The owner's 20 October deployment compiled and passed the browser-secret audit, then Netlify blocked eight non-credential values marked as secret. In Project configuration -> Environment variables -> each variable -> Options/Edit, clear **Contains secret values** for SITE_URL, R2_PUBLIC_BASE_URL, R2_REGION, R2_PENDING_BUCKET, R2_APPROVED_BUCKET, R2_ENDPOINT and R2_ACCOUNT_ID. MAIL_TO_TEAM may also be unmarked for this project because it equals the owner-approved public CONTACT_EMAIL already rendered in the site; do not generalize that exception to private recipient addresses. For canonical bucket names, R2_PRIVATE_BUCKET/R2_PUBLIC_BUCKET are also configuration identifiers rather than credentials. Preserve all values while correcting their classification, then deploy again.
+
+Keep SUPABASE_SECRET_KEY/SUPABASE_SERVICE_ROLE_KEY, R2_ACCESS_KEY_ID, R2_SECRET_ACCESS_KEY, MAIL_PROVIDER_KEY, SESSION_ENCRYPTION_KEY, RATE_LIMIT_SECRET and NETLIFY_BUILD_HOOK marked secret. Do not disable secret scanning or omit whole source/output directories. If the UI cannot change classification, the narrowly scoped supported fallback is SECRETS_SCAN_OMIT_KEYS containing only the eight non-credential names reported above; never include actual credential names. See https://docs.netlify.com/manage/security/secret-scanning/.
+
 Set in Project configuration → Environment variables. Use **Production** context; do not make secrets available to untrusted deploy previews or fork builds. Only rows with Build scope are needed by the static build. No private value belongs in `next.config.ts env`, a NEXT_PUBLIC_ variable, a screenshot, a GitHub issue or chat.
 
 | Variable                        | Scope                        | Secret?             | Value/source                                                      |
