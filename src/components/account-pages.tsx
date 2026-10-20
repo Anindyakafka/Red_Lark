@@ -62,7 +62,6 @@ export function InboxNotice() {
   const { t } = useI18n();
   return (
     <section className="content-width notice" role="status">
-      <h2>{t("Check your inbox")}</h2>
       <p>
         {t(
           "If the address can receive this request, an email will arrive. Open the link in this browser. Check spam too. This response does not confirm whether an account exists.",

@@ -4,11 +4,11 @@
 
 This section supersedes older public-phase holds. Existing Supabase/Postgres, R2 and Resend are reused. Public pages remain static; private shells call same-origin protected APIs. UUID detail addresses are rewritten to localized static shells, with ownership/role/MFA checked independently on the server. No private record is embedded at build time.
 
-| Round | Work                                                                                                                                                                            | Acceptance                                                    | Status                                                |
-| ----- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------- | ----------------------------------------------------- |
-| P1    | Dedicated authentication pages, inbox, verification and logout; profile/settings/new/edit; admin review/inbox/users/audit; session-aware header; canonical/source/contact fixes | 53 unit/RLS/copy tests; typecheck/lint/format; 392-page build | PASS; full 175 browser tests green                    |
-| P2    | Exercise every new route in en/hi; mobile/axe and upload/error/revision flows; inspect en/ml screenshots                                                                        | Playwright, screenshots, no horizontal overflow               | PASS: 175 browser tests; native screenshots inspected |
-| P3    | Public performance, full regression, client/history secret scans; deployment handoff                                                                                            | Lighthouse >=95; full suite; exact external blockers recorded | Pending                                               |
+| Round | Work                                                                                                                                                                            | Acceptance                                                                   | Status                                                |
+| ----- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------- | ----------------------------------------------------- |
+| P1    | Dedicated authentication pages, inbox, verification and logout; profile/settings/new/edit; admin review/inbox/users/audit; session-aware header; canonical/source/contact fixes | 54 unit/RLS/copy tests; typecheck/lint/format; 392-page build                | PASS; full 177 browser tests green                    |
+| P2    | Exercise every new route in en/hi; mobile/axe and upload/error/revision flows; inspect en/ml screenshots                                                                        | Playwright, screenshots, no horizontal overflow                              | PASS: 177 browser tests; native screenshots inspected |
+| P3    | Public performance, full regression, client/history scans and launch handoff                                                                                                    | 54 unit/RLS/copy tests; 177 browser tests; Lighthouse/axe; evidence retained | Automated PASS; human-only hosted acceptance pending  |
 
 Do not push/deploy the backend until owner confirmation of Netlify server environment scopes. Real signup/admin verification must use a website account, independently of signing into the Supabase dashboard with GitHub.
 
@@ -37,7 +37,7 @@ READY means technically independent of Supabase; PARTIAL means public/browser wo
 3. Stop at the backend boundary. Do not install Supabase packages, create SQL/migrations/seeds/buckets, connect a project or add database adapters during the hold.
 4. Once the owner releases the hold: M7, then M6 UPLOAD and M8, then final M9 policy/acceptance work.
 
-## Milestones and acceptance
+## Original milestone plan (historical; continuation above is current)
 
 | ID  | Tasks                                                                                                                                                                                                                                                                    | Likely files                                                                                                                                                              | Acceptance tests                                                                                                                                                                                                                    | Status  |
 | --- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------- |
@@ -86,7 +86,7 @@ At M3/M6/M8/M9: full suite, axe on key en/hi routes, mobile Lighthouse >=95 in a
 
 Minimum five critique/fix rounds, maximum fifteen, with measured evidence. Final acceptance needs all checklist rows PASS or genuinely justified N-A, all four locales click-through, signup -> upload -> admin approval -> collection and contact -> database -> test-mode delivered email. Deferred required backend work remains HOLD/FAIL, preventing a false full-project completion. Do not spend fifteen rounds retrying an explicitly held backend.
 
-## Current execution boundary
+## Historical public-phase execution boundary (superseded)
 
 Execution is authorized for M1-M5, M6 CREATE and public M9. The real contact inbox is configured. Continue public work without asking again; before backend implementation the owner must release the explicit hold and settle project/region, retention and mail delivery. No backend credentials are needed for public visual/content work. No live deployment or provider configuration is claimed.
 

@@ -145,6 +145,39 @@ test("language switching preserves a private revision address through the static
   await page.locator(".format-picker button").nth(6).click();
   await expect(page.locator("#upload-title")).toHaveValue(work.title);
 });
+
+test("mobile header keeps its geometry during dark hydration, theme changes and account states", async ({
+  browser,
+}) => {
+  for (const colorScheme of ["light", "dark"] as const)
+    for (const width of [360, 390]) {
+      const context = await browser.newContext({ colorScheme, viewport: { width, height: 844 } });
+      const page = await context.newPage();
+      await page.addInitScript(() => {
+        const state = window as typeof window & { headerCls: number };
+        state.headerCls = 0;
+        new PerformanceObserver((list) => {
+          for (const entry of list.getEntries()) {
+            const shift = entry as PerformanceEntry & { value: number; hadRecentInput: boolean };
+            if (!shift.hadRecentInput) state.headerCls += shift.value;
+          }
+        }).observe({ type: "layout-shift", buffered: true });
+      });
+      await fixtures(page);
+      await page.goto("/en/collection/", { waitUntil: "networkidle" });
+      await page.evaluate(() => document.fonts.ready);
+      expect(
+        await page.evaluate(() => (window as typeof window & { headerCls: number }).headerCls),
+      ).toBeLessThan(0.05);
+      const before = await page.locator(".site-header").boundingBox();
+      await page.locator(".theme-toggle").click();
+      expect((await page.locator(".site-header").boundingBox())?.height).toBe(before?.height);
+      expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(
+        true,
+      );
+      await context.close();
+    }
+});
 test("email link is primary, password is optional and inbox responses remain generic", async ({
   page,
 }) => {

@@ -99,6 +99,7 @@ try {
           if (await select.count()) await select.selectOption("workers");
           else await page.locator('select[aria-label="Category"]').selectOption("workers");
         }
+        if (name === "submit-errors") await page.locator(".format-picker button").nth(6).click();
         if (name.endsWith("errors"))
           await page
             .locator('main form button[type="submit"], main form button:not([type])')

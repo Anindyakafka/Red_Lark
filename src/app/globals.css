@@ -2596,3 +2596,41 @@ html:not([lang="en"]) .page-intro h1 {
   margin: 4px 0 0;
   white-space: pre-wrap;
 }
+/* Reserve stable mobile header rows for both authentication and theme states. */
+@media (max-width: 650px) {
+  .masthead {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    gap: 4px 12px;
+    padding: 10px 3%;
+  }
+  .masthead > .wordmark {
+    grid-column: 1;
+    grid-row: 1;
+    min-width: 0;
+  }
+  .header-controls {
+    display: contents;
+  }
+  .header-controls > .account-links,
+  .header-controls > .account-menu {
+    grid-column: 2;
+    grid-row: 1;
+    flex-wrap: nowrap;
+    gap: 10px;
+  }
+  .header-controls > .language-switcher {
+    grid-column: 1;
+    grid-row: 2;
+    flex-wrap: nowrap;
+    gap: 8px;
+    min-width: 0;
+  }
+  .header-controls > .theme-toggle {
+    grid-column: 2;
+    grid-row: 2;
+    justify-self: end;
+    min-width: 60px;
+    white-space: nowrap;
+  }
+}

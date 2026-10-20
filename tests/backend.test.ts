@@ -69,6 +69,44 @@ test("async service validation is serialized by the API boundary rather than bec
     globalThis.fetch = originalFetch;
   }
 });
+
+test("an auth mail outage shows a generic service failure instead of falsely claiming inbox delivery", async () => {
+  const originalFetch = globalThis.fetch;
+  process.env.SUPABASE_URL = "https://project.example.invalid";
+  process.env.SUPABASE_SECRET_KEY = "test";
+  process.env.SUPABASE_PUBLISHABLE_KEY = "test";
+  globalThis.fetch = async (input) => {
+    const url = String(input instanceof Request ? input.url : input);
+    if (url.endsWith("/rpc/consume_rate_limit"))
+      return new Response("true", { headers: { "Content-Type": "application/json" } });
+    assert.match(url, /\/auth\/v1\/(?:otp|recover)(?:\?|$)/);
+    return new Response(
+      JSON.stringify({ message: "SMTP provider detail withheld", code: "unexpected_failure" }),
+      { status: 503, headers: { "Content-Type": "application/json" } },
+    );
+  };
+  try {
+    for (const path of ["magic", "signup-link", "forgot"]) {
+      const csrf = csrfCookie(new Request("https://site.example.invalid/api/session"));
+      const response = await handler(
+        new Request(`https://site.example.invalid/api/auth/${path}`, {
+          method: "POST",
+          headers: {
+            Origin: "https://site.example.invalid",
+            "Content-Type": "application/json",
+            "X-CSRF-Token": csrf.token,
+            Cookie: csrf.cookie.split(";")[0],
+          },
+          body: JSON.stringify({ email: "fixture@example.invalid", locale: "en" }),
+        }),
+      );
+      assert.equal(response.status, 503);
+      assert.deepEqual(await response.json(), { ok: false, error: "service_unavailable" });
+    }
+  } finally {
+    globalThis.fetch = originalFetch;
+  }
+});
 test("successful minimal PostgREST writes and void RPCs are not mistaken for missing SELECT rows", () => {
   assert.doesNotThrow(() => checked({ data: null, error: null, status: 204 }));
   assert.doesNotThrow(() => checked({ data: null, error: null, status: 201 }));
