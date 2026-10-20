@@ -81,6 +81,7 @@ export function HandoffForm({
   }
   return (
     <form
+      method="post"
       ref={form}
       className="handoff-form"
       noValidate
@@ -89,6 +90,13 @@ export function HandoffForm({
         if (!started.current) started.current = Date.now();
       }}
     >
+      <noscript>
+        <p className="notice">
+          {t(
+            "Enable JavaScript to send this form, or use the displayed contact email. Form fields are never submitted in a URL.",
+          )}
+        </p>
+      </noscript>
       <p className="notice">
         {t(
           "Messages are stored privately for the team. A reply address is optional; provide one if you want an acknowledgement. Do not include sensitive identifying details.",

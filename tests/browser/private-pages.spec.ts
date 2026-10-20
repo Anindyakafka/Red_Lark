@@ -1,6 +1,36 @@
 import { test, expect, type Page } from "@playwright/test";
 import AxeBuilder from "@axe-core/playwright";
 import fs from "node:fs";
+
+test("without JavaScript, private form fields use POST and never enter the address bar", async ({
+  browser,
+}) => {
+  const context = await browser.newContext({ javaScriptEnabled: false });
+  const page = await context.newPage();
+  await page.goto("/en/reset-password/");
+  await expect(page.locator("main form")).toHaveAttribute("method", "post");
+  await expect(
+    page.getByText(
+      "Enable JavaScript to use account forms. Form fields are never submitted in a URL.",
+      { exact: true },
+    ),
+  ).toBeVisible();
+  await page.locator("#auth-password").fill("fixture-only-not-a-password");
+  const request = page.waitForRequest((request) => request.method() === "POST");
+  await page.getByRole("button", { name: "Set new password", exact: true }).click();
+  const posted = await request;
+  expect(posted.url()).not.toContain("fixture");
+  expect(posted.url()).not.toContain("?");
+  await page.goto("/en/contact/");
+  await expect(page.locator("main form")).toHaveAttribute("method", "post");
+  await expect(
+    page.getByText(
+      "Enable JavaScript to send this form, or use the displayed contact email. Form fields are never submitted in a URL.",
+      { exact: true },
+    ),
+  ).toBeVisible();
+  await context.close();
+});
 const id = "12345678-1234-1234-1234-123456789012";
 const work = {
   id,

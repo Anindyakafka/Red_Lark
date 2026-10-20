@@ -2,6 +2,8 @@
 
 The `redlark` branch contains the public multilingual archive/Studio and the contributor backend implementation. Browsing, downloads and Studio need no login. Verified accounts, private R2 uploads, fresh-TOTP administration and stored contact mail run through separate Netlify Functions. Supabase stores Auth/Postgres data only; R2 stores artwork. Backend deployment is waiting for the owner’s scoped Netlify configuration and launch acceptance.
 
+Current account-page checkpoint: **54 unit/RLS/copy tests and 178 browser tests pass**. Key public Lighthouse medians are 95–98, other categories 100, with CLS 0 and axe violations 0. See [current verification](docs/evidence/backend-pages-final/verification.json). Actual signup/publication/takedown/mail acceptance remains blocked by the owner steps in TODO_HUMAN.md.
+
 See [AUDIT](docs/AUDIT.md), [PLAN](docs/PLAN.md), [COPY_QUESTIONS](docs/COPY_QUESTIONS.md) and [human prerequisites](docs/TODO_HUMAN.md) for milestone status. The existing Supabase project now has tested migrations/private seed; infrastructure was not re-provisioned and backend has not been deployed.
 
 Final public checkpoint: 37 unit tests and 88 browser tests pass, including 336 locale-page accessibility checks. English/Hindi key-route Lighthouse performance medians are 96–98, with 100 in Accessibility, Best Practices and SEO. See [iterations and retained evidence](docs/ITERATIONS.md). The public checkpoint is historical. Current backend acceptance and honest external blockers are recorded at the top of CHECKLIST.md.

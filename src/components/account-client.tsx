@@ -179,7 +179,12 @@ export function AuthForm({
       </p>
     );
   return (
-    <form ref={form} className="handoff-form" noValidate onSubmit={submit}>
+    <form method="post" ref={form} className="handoff-form" noValidate onSubmit={submit}>
+      <noscript>
+        <p className="notice">
+          {t("Enable JavaScript to use account forms. Form fields are never submitted in a URL.")}
+        </p>
+      </noscript>
       <p>
         {t(
           "Browsing, downloading and the Studio need no account. Uploading requires a verified contributor account.",
@@ -320,6 +325,7 @@ export function MfaPanel() {
       )}
       {factor && (
         <form
+          method="post"
           className="handoff-form"
           noValidate
           onSubmit={(event) => {
@@ -566,6 +572,7 @@ export function AccountPanel({
               </div>
               {deleting && (
                 <form
+                  method="post"
                   className="backend-panel handoff-form"
                   noValidate
                   onSubmit={(event) => {
@@ -642,6 +649,7 @@ export function AccountPanel({
             )}
           </p>
           <form
+            method="post"
             key={profile?.artist_name || "new"}
             className="handoff-form"
             noValidate
@@ -915,6 +923,7 @@ export function UploadPanel({
         </div>
       )}
       <form
+        method="post"
         hidden={step === 0}
         key={initialWork?.id || chosenFormat}
         ref={uploadForm}
@@ -1288,6 +1297,7 @@ export function AdminPanel({
       {records !== null && <AdminRecords records={records} view={view} />}
       {records !== null && (view === "messages" || view === "takedowns") && (
         <form
+          method="post"
           className="handoff-form backend-panel"
           onSubmit={(event) => {
             event.preventDefault();
@@ -1328,6 +1338,7 @@ export function AdminPanel({
             </p>
             <ReviewImage work={work} />
             <form
+              method="post"
               className="handoff-form"
               onSubmit={(event) => {
                 event.preventDefault();
@@ -1384,6 +1395,7 @@ export function AdminPanel({
               ))}
             </div>
             <form
+              method="post"
               className="handoff-form"
               onSubmit={(event) => {
                 event.preventDefault();

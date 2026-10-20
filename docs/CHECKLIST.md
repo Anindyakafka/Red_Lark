@@ -14,7 +14,7 @@ These rows supersede inherited acceptance for changed features. UI fixtures prov
 | Real website signup, verification and MFA admin bootstrap          | FAIL   | TODO_HUMAN.md                                                      | No verified website admin yet; infrastructure dashboard login is separate                                                            |
 | Real pending upload, approval, all-locale publication and takedown | FAIL   | TODO_HUMAN.md                                                      | Public R2 hostname/CORS, build hook and configured deployment still needed                                                           |
 | Real mail end-to-end and independent non-Gmail headers             | FAIL   | Previous Gmail evidence; TODO_HUMAN.md                             | Exposed provider key must be rotated; non-Gmail inbox not supplied                                                                   |
-| Final full regression, axe and performance                         | PASS   | docs/evidence/redlark-round-1-account-pages-p5/summary.json        | 177 browser tests, 54 unit/RLS/copy tests; all six Lighthouse medians >=95; other categories 100; CLS 0; no external asset requests. |
+| Final full regression, axe and performance                         | PASS   | docs/evidence/redlark-round-1-account-pages-p5/summary.json        | 178 browser tests, 54 unit/RLS/copy tests; all six Lighthouse medians >=95; other categories 100; CLS 0; no external asset requests. |
 
 ## Backend continuation — 19 October 2026 (overrides historical HOLD rows below)
 
@@ -115,6 +115,6 @@ Human launch decisions are in TODO_HUMAN.md. No deployment, push, database setup
 | 5. Public file and page removed after takedown               | FAIL   | server/admin.ts; RLS/state-machine tests                                               | Requires the real approved/public test work and deployed rebuild path.                                                                |
 | 6. Reset, global logout, export and deletion                 | FAIL   | account-client.tsx; backend/private-pages tests                                        | UI/API/unit coverage passes; actual owner-controlled verified account lifecycle must be exercised.                                    |
 | 7. Anonymous/own-row/admin-only RLS                          | PASS   | tests/rls.test.ts; hosted migration verification                                       | Actual local PostgreSQL matrix and hosted anonymous isolation; no fabricated production identity.                                     |
-| 8. Axe, Lighthouse, client and repository secrets            | PASS   | docs/evidence/redlark-round-1-account-pages-p5/summary.json; build and Gitleaks checks | 177 browser tests; all key public medians >=95, other categories 100; CLS 0; no private client credentials.                           |
+| 8. Axe, Lighthouse, client and repository secrets            | PASS   | docs/evidence/redlark-round-1-account-pages-p5/summary.json; build and Gitleaks checks | 178 browser tests; all key public medians >=95, other categories 100; CLS 0; no private client credentials.                           |
 
 These FAIL rows are human prerequisites, not missing page implementations. They prevent a claim of full live-service acceptance. No backend push/deployment was performed.

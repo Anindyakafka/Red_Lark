@@ -3,7 +3,7 @@
   "branch": "redlark",
   "unitRlsCopyTests": 54,
   "browser": {
-    "passed": 177,
+    "passed": 178,
     "unexpected": 0,
     "skipped": 0
   },
@@ -18,7 +18,9 @@
     "fullHistoryAndWorkingTreeSecretScan": "PASS",
     "netlifyApiBundle": "PASS",
     "productionAudit": "0 vulnerabilities",
-    "netlifyApiExecution": "HTTP 200; private no-store"
+    "netlifyApiExecution": "HTTP 200; private no-store",
+    "noJavaScriptFormPrivacy": "PASS: POST, no credential query string",
+    "browserCredentialIdentifierGrep": "PASS"
   },
   "lighthouse": [
     {
