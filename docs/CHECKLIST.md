@@ -2,6 +2,8 @@
 
 ## Authenticator repair — 20 October 2026
 
+21 October update: owner email/sign-in/TOTP verified; guarded admin bootstrap PASS. Existing-session update repair PASS (src/server/auth.ts, tests/backend.test.ts, hosted isolated insert 201/object and update 200/object, cleanup confirmed). Typecheck/lint/build/secret checks and 55 tests PASS. Live fresh-MFA/admin retry remains FAIL/pending deployment. Earlier pending-enrollment notes below are superseded.
+
 | Feature                                                                                | Status | Evidence                                                                                         | Note                                                                                  |
 | -------------------------------------------------------------------------------------- | ------ | ------------------------------------------------------------------------------------------------ | ------------------------------------------------------------------------------------- |
 | QR image, separate selectable setup key, responsive layout, cleanup after verification | PASS   | src/server/api.ts; src/components/account-client.tsx; tests/browser/mfa.spec.ts: 2 passed, axe 0 | Synthetic enrollment only; real provider QR is returned without third-party rendering |

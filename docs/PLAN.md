@@ -2,6 +2,8 @@
 
 ## Authenticator setup repair — 20 October 2026
 
+Superseded by the 21 October checkpoint: real owner TOTP is verified and guarded admin bootstrap succeeded. A hosted probe reproduced a 200/null response for existing session upserts, causing a false 503 after verification. The write now requests token_hash only with single-row confirmation. Hosted repaired insert/update pass and isolated diagnostic rows were cleaned. Typecheck, lint, production build/secret checks and 55 unit/RLS/copy tests pass. Remaining: deploy this session fix and verify fresh MFA/admin access with the existing authenticator.
+
 QR rendering and isolated, selectable manual-key field implemented. Server returns Supabase's enrollment SVG as a data image; no external QR service, logging or storage. Build, lint, typecheck and 54 unit/RLS/copy tests pass; two new English/Hindi browser tests pass with zero axe violations at mobile width. Deployment and the owner's real TOTP verification/admin bootstrap remain pending. New setup labels use explicit English fallback in unreviewed Indic messages.
 
 ## Account pages continuation — 20 October 2026

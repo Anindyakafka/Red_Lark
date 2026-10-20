@@ -95,7 +95,11 @@ export async function saveSession(session: Session, hash?: string) {
           expires_at: session.expires_at || 0,
         }),
         expires_at: new Date(Date.now() + 7 * 86400000).toISOString(),
-      }),
+      })
+      // Existing-session upserts return 200/null with return=minimal. Request
+      // only the row identifier so a successful MFA/refresh update is explicit.
+      .select("token_hash")
+      .single(),
   );
   return { tokenHash, cookie: cookie(sessionName, token, 7 * 86400) };
 }

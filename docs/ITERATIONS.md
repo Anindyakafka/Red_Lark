@@ -2,6 +2,10 @@
 
 ## Account pages P7 critique — 20 October 2026
 
+### Account pages P8 critique — 21 October 2026
+
+Owner TOTP verification succeeded at Supabase, but session persistence reported a false outage. An isolated expired/unusable diagnostic row reproduced PostgREST's existing-upsert response (200/null), which the SELECT checker rejected. The session write now requests only token_hash with single-row confirmation, preserving strict missing-row checks and never returning authentication tokens. Hosted repaired insert/update pass; diagnostic cleanup confirmed. All 55 unit/RLS/copy tests, typecheck, lint and production build/secret checks pass. Guarded admin bootstrap succeeded. Highest remaining issue: deploy and retry fresh MFA/admin access using the existing authenticator. The older P7 text below describes the preceding checkpoint.
+
 Owner-reported setup friction: the UI omitted the provider's QR code and put the manual secret inline with instructions. QR omission was confirmed in source; the reported illegal-character cause was not verified and no real enrollment secret was requested. Added a self-contained data-image QR and a labelled read-only/select-on-focus manual key; both are removed from React state after successful verification. No external QR generator or optimizer sees the secret. New English fallback strings retain reviewed:false in Indic dictionaries.
 
 Validation: typecheck, lint, production build/content/brand/output-secret checks and 54 unit/RLS/copy tests pass. Two targeted English/Hindi browser tests pass, including decoded image display, mobile width, axe zero and clearing setup material. Highest remaining issue: deploy this repair and complete the owner's real authenticator verification before guarded admin bootstrap. No claim of hosted MFA success.

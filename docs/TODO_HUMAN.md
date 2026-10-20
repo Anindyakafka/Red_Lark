@@ -2,6 +2,8 @@
 
 ## Current account-page launch blockers — 20 October 2026
 
+21 October administrator update: website signup/email/sign-in/TOTP are complete and guarded admin bootstrap succeeded. Earlier enrollment requests below are superseded. Deploy the session-write repair, then use the EXISTING authenticator entry to verify a fresh code and open /en/admin/. Do not delete/recreate the authenticator. Real admin publication/takedown acceptance remains pending.
+
 - Revoke the Resend API key exposed in IDE chat context; replace MAIL_PROVIDER_KEY and Supabase SMTP password. Confirm completion without sharing values. A working earlier delivery does not establish the exposed credential is safe to keep.
 - Owner chose to create the real website account after deployment: use https://redlarkworkshop.com/en/signup/ with redlarkworkshop@gmail.com, verify its email in the same browser, then enroll/verify TOTP in /en/account/settings/. Signing into the Supabase infrastructure dashboard with GitHub does not create this website account. Run the guarded bootstrap afterward; initial deployment need not wait for administrator creation, but admin/publication acceptance does.
 - Complete the owned files.redlarkworkshop.com R2 hostname, pending-bucket upload CORS and approved-file GET/HEAD CORS/lifecycle configuration in docs/R2_DOMAIN_SETUP.md and DEPLOY.md. No broad runtime token or replacement bucket is needed.

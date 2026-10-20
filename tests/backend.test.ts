@@ -14,7 +14,7 @@ import {
 } from "../src/server/security.ts";
 import { sanitize, signedUpload, printPdf } from "../src/server/storage.ts";
 import { sendEmail } from "../src/server/mail.ts";
-import { checked } from "../src/server/auth.ts";
+import { checked, saveSession } from "../src/server/auth.ts";
 import handler from "../src/server/api.ts";
 
 // Isolated fixtures only: no owner credentials, database or external mail is used.
@@ -116,6 +116,58 @@ test("successful minimal PostgREST writes and void RPCs are not mistaken for mis
     ApiError,
   );
 });
+test("MFA and token refresh can update an existing session without treating a successful empty upsert as an outage", async () => {
+  const originalFetch = globalThis.fetch;
+  process.env.SUPABASE_URL = "https://project.example.invalid";
+  process.env.SUPABASE_SECRET_KEY = "test";
+  const hash = "a".repeat(64);
+  let sessionWritten = false;
+  globalThis.fetch = async (input, init) => {
+    const url = new URL(String(input instanceof Request ? input.url : input));
+    if (url.pathname.endsWith("/roles")) return new Response(null, { status: 201 });
+    assert.match(url.pathname, /\/app_sessions$/);
+    const written = JSON.parse(String(init?.body));
+    assert.equal(written.token_hash, hash);
+    assert.equal(written.user_id, "fixture-user");
+    assert.equal(
+      decrypt<{ access_token: string }>(written.encrypted_auth).access_token,
+      "fixture-access",
+    );
+    sessionWritten = true;
+    // Hosted PostgREST update behavior: only an explicit representation has a body.
+    return url.searchParams.get("select") === "token_hash"
+      ? new Response(JSON.stringify({ token_hash: hash }), {
+          status: 200,
+          headers: { "Content-Type": "application/json" },
+        })
+      : new Response(null, { status: 200 });
+  };
+  try {
+    const saved = await saveSession(
+      {
+        access_token: "fixture-access",
+        refresh_token: "fixture-refresh",
+        expires_in: 3600,
+        expires_at: Math.floor(Date.now() / 1000) + 3600,
+        token_type: "bearer",
+        user: {
+          id: "fixture-user",
+          aud: "authenticated",
+          app_metadata: {},
+          user_metadata: {},
+          created_at: "2026-10-21T00:00:00Z",
+          email_confirmed_at: "2026-10-21T00:00:00Z",
+        },
+      },
+      hash,
+    );
+    assert.equal(saved.tokenHash, hash);
+    assert.equal(sessionWritten, true);
+  } finally {
+    globalThis.fetch = originalFetch;
+  }
+});
+
 test("encrypted server sessions authenticate ciphertext and use necessary secure cookies", () => {
   const value = encrypt({ refresh_token: "test-only", access_token: "fixture" });
   assert.deepEqual(decrypt(value), { refresh_token: "test-only", access_token: "fixture" });
