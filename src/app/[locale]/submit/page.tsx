@@ -42,6 +42,9 @@ export default function Page() {
             />
           </p>
           <ContactAddress email={email} />
+          <p>
+            <UiText id="Email fallback: if you prefer not to create an account, email the team with a link to your artwork, its licence and artist credit." />
+          </p>
         </aside>
       </div>
     </>

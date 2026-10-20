@@ -10,15 +10,103 @@ import {
   decrypt,
   encrypt,
   rateHash,
+  origin,
 } from "../src/server/security.ts";
 import { sanitize, signedUpload, printPdf } from "../src/server/storage.ts";
 import { sendEmail } from "../src/server/mail.ts";
 import { checked } from "../src/server/auth.ts";
+import handler from "../src/server/api.ts";
 
 // Isolated fixtures only: no owner credentials, database or external mail is used.
 process.env.SESSION_ENCRYPTION_KEY = randomBytes(32).toString("base64");
 process.env.RATE_LIMIT_SECRET = randomBytes(32).toString("base64");
 process.env.SITE_URL = "https://site.example.invalid";
+
+test("hosted auth refuses a missing canonical origin or preview hostname", () => {
+  const previous = { site: process.env.SITE_URL, netlify: process.env.NETLIFY };
+  try {
+    process.env.NETLIFY = "true";
+    delete process.env.SITE_URL;
+    assert.throws(() => origin(), ApiError);
+    process.env.SITE_URL = "https://preview.netlify.app";
+    assert.throws(() => origin(), ApiError);
+  } finally {
+    if (previous.site === undefined) delete process.env.SITE_URL;
+    else process.env.SITE_URL = previous.site;
+    if (previous.netlify === undefined) delete process.env.NETLIFY;
+    else process.env.NETLIFY = previous.netlify;
+  }
+});
+
+test("async service validation is serialized by the API boundary rather than becoming an unhandled server failure", async () => {
+  const originalFetch = globalThis.fetch;
+  process.env.SUPABASE_URL = "https://project.example.invalid";
+  process.env.SUPABASE_SECRET_KEY = "test";
+  globalThis.fetch = async (input) => {
+    assert.match(
+      String(input instanceof Request ? input.url : input),
+      /\/rpc\/consume_rate_limit$/,
+    );
+    return new Response("true", { headers: { "Content-Type": "application/json" } });
+  };
+  try {
+    const csrf = csrfCookie(new Request("https://site.example.invalid/api/session"));
+    const response = await handler(
+      new Request("https://site.example.invalid/api/contact", {
+        method: "POST",
+        headers: {
+          Origin: "https://site.example.invalid",
+          "Content-Type": "application/json",
+          "X-CSRF-Token": csrf.token,
+          Cookie: csrf.cookie.split(";")[0],
+        },
+        body: JSON.stringify({ started: 0 }),
+      }),
+    );
+    assert.equal(response.status, 422);
+    assert.equal((await response.json()).error, "spam_check_failed");
+  } finally {
+    globalThis.fetch = originalFetch;
+  }
+});
+
+test("an auth mail outage shows a generic service failure instead of falsely claiming inbox delivery", async () => {
+  const originalFetch = globalThis.fetch;
+  process.env.SUPABASE_URL = "https://project.example.invalid";
+  process.env.SUPABASE_SECRET_KEY = "test";
+  process.env.SUPABASE_PUBLISHABLE_KEY = "test";
+  globalThis.fetch = async (input) => {
+    const url = String(input instanceof Request ? input.url : input);
+    if (url.endsWith("/rpc/consume_rate_limit"))
+      return new Response("true", { headers: { "Content-Type": "application/json" } });
+    assert.match(url, /\/auth\/v1\/(?:otp|recover)(?:\?|$)/);
+    return new Response(
+      JSON.stringify({ message: "SMTP provider detail withheld", code: "unexpected_failure" }),
+      { status: 503, headers: { "Content-Type": "application/json" } },
+    );
+  };
+  try {
+    for (const path of ["magic", "signup-link", "forgot"]) {
+      const csrf = csrfCookie(new Request("https://site.example.invalid/api/session"));
+      const response = await handler(
+        new Request(`https://site.example.invalid/api/auth/${path}`, {
+          method: "POST",
+          headers: {
+            Origin: "https://site.example.invalid",
+            "Content-Type": "application/json",
+            "X-CSRF-Token": csrf.token,
+            Cookie: csrf.cookie.split(";")[0],
+          },
+          body: JSON.stringify({ email: "fixture@example.invalid", locale: "en" }),
+        }),
+      );
+      assert.equal(response.status, 503);
+      assert.deepEqual(await response.json(), { ok: false, error: "service_unavailable" });
+    }
+  } finally {
+    globalThis.fetch = originalFetch;
+  }
+});
 test("successful minimal PostgREST writes and void RPCs are not mistaken for missing SELECT rows", () => {
   assert.doesNotThrow(() => checked({ data: null, error: null, status: 204 }));
   assert.doesNotThrow(() => checked({ data: null, error: null, status: 201 }));
@@ -113,7 +201,7 @@ test("sanitized raster print exports are actual A4/A2 PDF pages with source-cred
     .png()
     .toBuffer();
   for (const size of ["a4", "a2"] as const) {
-    const data = printPdf(
+    const data = await printPdf(
       image,
       size,
       "Fixture artist | CC-BY-SA-4.0 | https://example.invalid/source",
@@ -121,8 +209,25 @@ test("sanitized raster print exports are actual A4/A2 PDF pages with source-cred
     const pdf = data.toString("latin1");
     assert.match(pdf, /^%PDF-/);
     assert.match(pdf, /CC-BY-SA-4.0/);
+    assert.match(pdf, /\/FontFile2/);
+    assert.match(pdf, /\/ToUnicode/);
     assert.match(pdf, size === "a4" ? /\/MediaBox \[0 0 595\./ : /\/MediaBox \[0 0 1190\./);
   }
+});
+
+test("print credits embed native Indic fonts with readable Unicode maps on a single page", async () => {
+  const image = await sharp({ create: { width: 40, height: 60, channels: 3, background: "white" } })
+    .png()
+    .toBuffer();
+  const data = await printPdf(
+    image,
+    "a4",
+    "कल्पना | কল্পনা | കൽപ്പന | CC-BY-SA-4.0 | https://example.invalid/source",
+  );
+  const pdf = data.toString("latin1");
+  assert.ok([...pdf.matchAll(/\/FontFile2/g)].length >= 4);
+  assert.ok([...pdf.matchAll(/\/ToUnicode/g)].length >= 4);
+  assert.equal([...pdf.matchAll(/\/Type \/Page\b/g)].length, 1);
 });
 test("mail uses aligned From, explicit Reply-To and idempotency; provider failures are honest", async () => {
   process.env.MAIL_FROM = "Workshop <notifications@mail.redlarkworkshop.com>";

@@ -13,16 +13,21 @@ if (
 )
   throw new Error(".env.local is tracked: remove it from the index and rotate exposed keys.");
 const reports = fs.mkdtempSync(path.join(os.tmpdir(), "redlark-secret-scan-"));
+const sourceLines = [];
 function result(file, status, label) {
   if (status !== 0) {
     let findings = [];
     try {
       findings = JSON.parse(fs.readFileSync(file, "utf8"));
     } catch {}
-    for (const f of findings)
-      console.error(
-        `${label}: ${f.RuleID} at ${f.File ?? "working-tree input"}:${f.StartLine ?? "?"}`,
+    for (const f of findings) {
+      const source = sourceLines.find(
+        (entry) => f.StartLine >= entry.start && f.StartLine < entry.end,
       );
+      console.error(
+        `${label}: ${f.RuleID} at ${f.File || source?.file || "working-tree input"}:${source ? f.StartLine - source.start + 1 : (f.StartLine ?? "?")}`,
+      );
+    }
     throw new Error(
       `${label} secret scan failed (${findings.length} redacted findings); no secrets printed.`,
     );
@@ -64,10 +69,14 @@ const files = spawnSync("git", ["ls-files", "--cached", "--others", "--exclude-s
   maxBuffer: 20 * 1024 * 1024,
 });
 if (files.status !== 0) throw new Error("Could not enumerate versioned source.");
+let line = 1;
 for (const file of new Set(files.stdout.split("\0").filter(Boolean))) {
   if (!fs.existsSync(file) || !fs.statSync(file).isFile()) continue;
   const data = fs.readFileSync(file);
   if (data.subarray(0, 8000).includes(0)) continue;
+  const lines = data.toString("utf8").split("\n").length;
+  sourceLines.push({ file, start: line + 2, end: line + 2 + lines });
+  line += 2 + lines - 1;
   if (!scan.stdin.write(Buffer.concat([Buffer.from(`\nFILE: ${file}\n`), data])))
     await once(scan.stdin, "drain");
 }

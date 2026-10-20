@@ -56,6 +56,21 @@ export function LanguageSwitcher({ landing = false }: { landing?: boolean }) {
           hrefLang={l}
           lang={l}
           onClick={(event) => {
+            if (
+              !event.metaKey &&
+              !event.ctrlKey &&
+              !event.shiftKey &&
+              !event.altKey &&
+              /\/(?:account\/works|admin\/review)\/[a-f0-9-]{36}\/?$/.test(path)
+            ) {
+              // UUID pages are static-shell rewrites, so a full navigation preserves their ID.
+              event.preventDefault();
+              window.location.assign(
+                new URL(`${localePath(l, rest)}${location.search}${location.hash}`, location.origin)
+                  .href,
+              );
+              return;
+            }
             // Preserve collection filters and private Studio share fragments.
             if (
               !event.metaKey &&

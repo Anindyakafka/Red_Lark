@@ -2,6 +2,8 @@
 
 The `redlark` branch contains the public multilingual archive/Studio and the contributor backend implementation. Browsing, downloads and Studio need no login. Verified accounts, private R2 uploads, fresh-TOTP administration and stored contact mail run through separate Netlify Functions. Supabase stores Auth/Postgres data only; R2 stores artwork. Backend deployment is waiting for the owner’s scoped Netlify configuration and launch acceptance.
 
+Current account-page checkpoint: **54 unit/RLS/copy tests and 178 browser tests pass**. Key public Lighthouse medians are 95–98, other categories 100, with CLS 0 and axe violations 0. See [current verification](docs/evidence/backend-pages-final/verification.json). Actual signup/publication/takedown/mail acceptance remains blocked by the owner steps in TODO_HUMAN.md.
+
 See [AUDIT](docs/AUDIT.md), [PLAN](docs/PLAN.md), [COPY_QUESTIONS](docs/COPY_QUESTIONS.md) and [human prerequisites](docs/TODO_HUMAN.md) for milestone status. The existing Supabase project now has tested migrations/private seed; infrastructure was not re-provisioned and backend has not been deployed.
 
 Final public checkpoint: 37 unit tests and 88 browser tests pass, including 336 locale-page accessibility checks. English/Hindi key-route Lighthouse performance medians are 96–98, with 100 in Accessibility, Best Practices and SEO. See [iterations and retained evidence](docs/ITERATIONS.md). The public checkpoint is historical. Current backend acceptance and honest external blockers are recorded at the top of CHECKLIST.md.
@@ -9,6 +11,10 @@ Final public checkpoint: 37 unit tests and 88 browser tests pass, including 336 
 ## Backend operations
 
 Follow [DEPLOY.md](docs/DEPLOY.md) for Supabase SMTP/callbacks, R2 CORS/lifecycle/custom hostname, migrations, bootstrap and every Netlify variable scope. No backend deployment is authorized until the owner confirms those variables.
+
+The localized account flow starts at `/en/signup/` or `/en/login/` (also `hi`, `bn`, `ml`). Email links are primary; passwords and recovery are available. `/account` lists private contributions, `/account/profile` manages separately consented contact/UPI fields, `/account/settings` handles TOTP/export/global logout/deletion, and `/account/works/new` opens the format-first upload wizard. Owned revision links use `/account/works/ID`.
+
+Administrators use `/admin` and `/admin/review/ID`, with separate messages, takedowns, users and audit pages. Each API request independently enforces the protected role and fresh TOTP. Netlify rewrites UUID detail addresses to static, noindex shells; private data is fetched after authentication and never included in the build. Local preview/development implements the same rewrites. Keep the supplied `netlify.toml` rewrite rules when deploying.
 
 - npm run db:check / npm run db:migrate: verified TLS, ordered migration ledger and idempotent private seed; local SQL credentials only.
 - npm run seed:backend: regenerate 28 categories, 10 formats, licence policies and 18 original private CC0 placeholder records.

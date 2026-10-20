@@ -283,12 +283,14 @@ export async function contributions(
       const outputs = [
         { kind: "sanitized", key: `${prefix}.png`, buffer: clean.buffer, mime: "image/png" },
         { kind: "preview", key: `${prefix}.webp`, buffer: clean.preview, mime: "image/webp" },
-        ...(["a4", "a2"] as const).map((size) => ({
-          kind: `pdf-${size}`,
-          key: `${prefix}-${size}.pdf`,
-          buffer: printPdf(clean.buffer, size, credit),
-          mime: "application/pdf",
-        })),
+        ...(await Promise.all(
+          (["a4", "a2"] as const).map(async (size) => ({
+            kind: `pdf-${size}`,
+            key: `${prefix}-${size}.pdf`,
+            buffer: await printPdf(clean.buffer, size, credit),
+            mime: "application/pdf",
+          })),
+        )),
       ];
       for (const file of outputs) {
         await put(file.key, file.buffer, file.mime);

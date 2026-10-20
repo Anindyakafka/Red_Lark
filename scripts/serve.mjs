@@ -1,4 +1,5 @@
 ﻿import http from "node:http";
+import { privateShellPath } from "../src/lib/private-routes.ts";
 import fs from "node:fs/promises";
 import path from "node:path";
 import { gzipSync, brotliCompressSync, constants } from "node:zlib";
@@ -69,7 +70,7 @@ http
         res.end();
         return;
       }
-      let file = path.resolve(root, "." + pathname);
+      let file = path.resolve(root, "." + privateShellPath(pathname));
       const legacy = pathname.replace(/^\/(en|hi|bn|ml)/, "").replace(/\/$/, "");
       if (legacyRoutes[legacy]) {
         const locale = pathname.split("/")[1];

@@ -6,7 +6,7 @@
 [build.environment]
   NODE_VERSION = "24"
   NEXT_TELEMETRY_DISABLED = "1"
-  # Serve the static export without the server-rendering adapter/functions.
+  # Serve the static export without the Next SSR adapter; protected APIs use independent Functions.
   NETLIFY_NEXT_PLUGIN_SKIP = "true"
 
 # Security and cache headers live in public/_headers, copied into out/ at build.
@@ -18,4 +18,55 @@
 [functions]
   directory = "netlify/functions"
   node_bundler = "esbuild"
-  external_node_modules = ["sharp"]
+  external_node_modules = ["sharp", "pdfkit"]
+included_files = ["public/fonts/**/*.ttf"]
+
+# Private route shells; API authorization is independent of these rewrites.
+
+[[redirects]]
+  from = "/en/account/works/:id"
+  to = "/en/account/works/edit/"
+  status = 200
+  force = false
+
+[[redirects]]
+  from = "/en/admin/review/:id"
+  to = "/en/admin/review/item/"
+  status = 200
+  force = false
+
+[[redirects]]
+  from = "/hi/account/works/:id"
+  to = "/hi/account/works/edit/"
+  status = 200
+  force = false
+
+[[redirects]]
+  from = "/hi/admin/review/:id"
+  to = "/hi/admin/review/item/"
+  status = 200
+  force = false
+
+[[redirects]]
+  from = "/bn/account/works/:id"
+  to = "/bn/account/works/edit/"
+  status = 200
+  force = false
+
+[[redirects]]
+  from = "/bn/admin/review/:id"
+  to = "/bn/admin/review/item/"
+  status = 200
+  force = false
+
+[[redirects]]
+  from = "/ml/account/works/:id"
+  to = "/ml/account/works/edit/"
+  status = 200
+  force = false
+
+[[redirects]]
+  from = "/ml/admin/review/:id"
+  to = "/ml/admin/review/item/"
+  status = 200
+  force = false

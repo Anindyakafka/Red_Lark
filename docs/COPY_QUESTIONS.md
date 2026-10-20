@@ -8,3 +8,7 @@ Updated during implementation, 16 October 2026. Landing text is rendered verbati
 - Keep the landing's non-commercial/free wording. Explain separately on licensing pages that each work's actual licence controls commercial and derivative use; do not rewrite the landing.
 - Draft Hindi/Bengali/Malayalam copy and print guidance require native review. Keep reviewed:false and visible fallback until reviewed.
 - Preserve the supplied artwork-review notice and exact button-label capitalization. Do not invent artists, contact addresses, payment IDs or permissions in additional copy.
+
+## Owner-directed footer change — 20 October 2026
+
+Removed the pre-rebrand footer tagline “FREE TO FIND. YOURS TO PRINT.” as requested. Appendix A landing wording remains unchanged. The formats continue using the supplied union of ten labels.

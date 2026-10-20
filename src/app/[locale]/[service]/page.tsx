@@ -1,3 +1,4 @@
+import { InboxNotice, VerifyLink, LogoutPanel } from "@/components/account-pages";
 import { notFound } from "next/navigation";
 import { AuthForm, AdminPanel } from "@/components/account-client";
 import { PageIntro } from "@/components/page-intro";
@@ -9,6 +10,9 @@ const services = {
   "forgot-password": "Password reset request",
   "reset-password": "Set a new password",
   admin: "Admin review",
+  "check-your-inbox": "Check your inbox",
+  verify: "Verify email",
+  logout: "Log out",
 } as const;
 export const dynamicParams = false;
 export function generateStaticParams() {
@@ -26,7 +30,13 @@ export default async function Service({ params }: { params: Promise<{ service: s
         action="Browse collection"
         href="/collection"
       />
-      {service === "admin" ? (
+      {service === "check-your-inbox" ? (
+        <InboxNotice />
+      ) : service === "verify" ? (
+        <VerifyLink />
+      ) : service === "logout" ? (
+        <LogoutPanel />
+      ) : service === "admin" ? (
         <AdminPanel />
       ) : (
         <div className="content-width">

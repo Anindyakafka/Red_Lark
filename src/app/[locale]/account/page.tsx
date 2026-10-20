@@ -2,6 +2,7 @@ import { AccountPanel } from "@/components/account-client";
 import { PageIntro } from "@/components/page-intro";
 import { pageMeta } from "@/lib/metadata";
 import { localizeMetadata } from "@/i18n/metadata";
+import { Link, UiText } from "@/i18n/client";
 export default function Account() {
   return (
     <>
@@ -12,6 +13,17 @@ export default function Account() {
         action="Browse collection"
         href="/collection"
       />
+      <nav className="content-width button-row" aria-label="Contributor navigation">
+        <Link href="/account/profile">
+          <UiText id="Artist profile" />
+        </Link>
+        <Link href="/account/works/new">
+          <UiText id="Upload" />
+        </Link>
+        <Link href="/account/settings">
+          <UiText id="Account security" />
+        </Link>
+      </nav>
       <AccountPanel />
     </>
   );

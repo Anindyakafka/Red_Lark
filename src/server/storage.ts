@@ -8,7 +8,7 @@ import {
 } from "@aws-sdk/client-s3";
 import { getSignedUrl } from "@aws-sdk/s3-request-presigner";
 import sharp from "sharp";
-import { jsPDF } from "jspdf";
+export { printPdf } from "./print.ts";
 import { ApiError, required, sha256 } from "./security.ts";
 
 export const MAX_UPLOAD = 25 * 1024 * 1024;
@@ -131,34 +131,4 @@ export async function sanitize(input: Buffer, claimed: string) {
   } catch {
     throw new ApiError(422, "invalid_file");
   }
-}
-export function printPdf(image: Buffer, size: "a4" | "a2", credit: string) {
-  const pdf = new jsPDF({ unit: "mm", format: size, compress: true });
-  const width = pdf.internal.pageSize.getWidth(),
-    height = pdf.internal.pageSize.getHeight();
-  const data = pdf.getImageProperties(image);
-  const scale = Math.min((width - 10) / data.width, (height - 18) / data.height);
-  pdf.addImage(
-    image,
-    "PNG",
-    (width - data.width * scale) / 2,
-    5,
-    data.width * scale,
-    data.height * scale,
-  );
-  pdf.setFont("helvetica", "normal");
-  pdf.setFontSize(7);
-  // Built-in PDF fonts do not support Indic. Artist credit remains embedded verbatim in metadata.
-  pdf.text(
-    "RED LARK WORKSHOP | Credit and licence: see PDF properties and artwork page",
-    5,
-    height - 5,
-  );
-  pdf.setProperties({
-    title: "Print-ready contribution",
-    subject: credit,
-    author: credit,
-    keywords: "credit; licence; print",
-  });
-  return Buffer.from(pdf.output("arraybuffer"));
 }

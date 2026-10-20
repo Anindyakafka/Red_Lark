@@ -53,6 +53,7 @@ test("password forms focus errors; generic inbox and password reset links work w
 }) => {
   await fixtures(page);
   await page.goto("/en/login/");
+  await page.getByRole("button", { name: "Use a password instead", exact: true }).click();
   await page.getByRole("button", { name: "Sign in", exact: true }).click();
   await expect(page.locator("#auth-email")).toBeFocused();
   await expect(page.locator("#auth-email")).toHaveAttribute("aria-describedby", "auth-email-error");
@@ -87,8 +88,7 @@ test("signup supports an email link without a password; uploads wait for a verif
 test("admin is gated by fresh MFA and never shows a counterfeit queue", async ({ page }) => {
   await fixtures(page);
   await page.goto("/en/admin/");
-  await page.getByRole("button", { name: "Load review queue" }).click();
-  await expect(page.locator("main [role=alert]")).toContainText("fresh");
+  await expect(page.locator("main [role=alert]")).toContainText("Administrator access");
   await expect(page.getByRole("button", { name: "Save decision" })).toHaveCount(0);
 });
 test("contact and takedown keep messages on network/provider failure and expose required URL errors", async ({
@@ -107,7 +107,7 @@ test("contact and takedown keep messages on network/provider failure and expose 
 });
 test("backend visual evidence: English/Malayalam at 390 and 1440", async ({ page }) => {
   test.setTimeout(120000);
-  const dir = "docs/evidence/backend-round-3";
+  const dir = "docs/evidence/backend-pages-round-1";
   fs.mkdirSync(dir, { recursive: true });
   for (const locale of ["en", "ml"])
     for (const width of [390, 1440])

@@ -1,5 +1,14 @@
 ﻿# Human prerequisites for RED LARK WORKSHOP
 
+## Current account-page launch blockers — 20 October 2026
+
+- Revoke the Resend API key exposed in IDE chat context; replace MAIL_PROVIDER_KEY and Supabase SMTP password. Confirm completion without sharing values. A working earlier delivery does not establish the exposed credential is safe to keep.
+- Owner chose to create the real website account after deployment: use https://redlarkworkshop.com/en/signup/ with redlarkworkshop@gmail.com, verify its email in the same browser, then enroll/verify TOTP in /en/account/settings/. Signing into the Supabase infrastructure dashboard with GitHub does not create this website account. Run the guarded bootstrap afterward; initial deployment need not wait for administrator creation, but admin/publication acceptance does.
+- Complete the owned files.redlarkworkshop.com R2 hostname, pending-bucket upload CORS and approved-file GET/HEAD CORS/lifecycle configuration in docs/R2_DOMAIN_SETUP.md and DEPLOY.md. No broad runtime token or replacement bucket is needed.
+- Set the documented Netlify environment variables with Functions/Build scopes, including rotated mail credentials, stable session keys, PUBLIC_CATALOGUE_ENABLED in Build AND Functions, and NETLIFY_BUILD_HOOK. Confirm this before a backend push/deployment. A static frontend deploy alone cannot enable the API.
+- Supply a controlled non-Gmail test inbox and authorize its delivery test; inspect SPF/DKIM/DMARC alignment and Reply-To. Previous Gmail Inbox/authentication results remain recorded.
+- After deployment, complete real signup/recovery/upload/approval/all-four-locale publication/takedown/export/deletion acceptance with the owner-controlled account. Native Indic review and legal/provider retention review remain required.
+
 ## Active backend prerequisites — 19 October 2026
 
 - Rotate the Resend key that appeared in IDE chat context, then update MAIL_PROVIDER_KEY and Supabase SMTP password. Do not paste the replacement into chat. Restart the local API after .env.local changes.

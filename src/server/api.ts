@@ -27,6 +27,11 @@ import {
 } from "./auth.ts";
 
 const flowName = "__Host-redlark-auth-flow";
+function checkAuthMail(error: { status?: number } | null) {
+  if (error?.status === 429) throw new ApiError(429, "try_later");
+  if (error?.status && error.status >= 500) throw new ApiError(503, "service_unavailable");
+  // Other responses deliberately do not reveal whether an address has an account.
+}
 export default async function handler(req: Request): Promise<Response> {
   try {
     const path = new URL(req.url).pathname.replace(/\/$/, "");
@@ -142,17 +147,22 @@ export default async function handler(req: Request): Promise<Response> {
           options: { emailRedirectTo: callback(lang) },
         });
         // Never report whether the address already exists.
-        if (result.error && result.error.status && result.error.status >= 500)
-          throw new ApiError(503, "service_unavailable");
+        checkAuthMail(result.error);
       } else if (path === "/api/auth/magic" || path === "/api/auth/signup-link") {
-        await flow.client.auth.signInWithOtp({
+        const result = await flow.client.auth.signInWithOtp({
           email: address,
           options: {
             emailRedirectTo: callback(lang),
             shouldCreateUser: path === "/api/auth/signup-link",
           },
         });
-      } else await flow.client.auth.resetPasswordForEmail(address, { redirectTo: callback(lang) });
+        checkAuthMail(result.error);
+      } else {
+        const result = await flow.client.auth.resetPasswordForEmail(address, {
+          redirectTo: callback(lang),
+        });
+        checkAuthMail(result.error);
+      }
       const verifier = flow.getVerifier();
       const headers = verifier
         ? {
@@ -171,7 +181,7 @@ export default async function handler(req: Request): Promise<Response> {
       return json({ ok: true, inbox: true }, 200, headers);
     }
     if (path === "/api/contact" || path === "/api/takedown")
-      return (await import("./mail.ts")).contact(req, data, path.endsWith("takedown"));
+      return await (await import("./mail.ts")).contact(req, data, path.endsWith("takedown"));
     const who = await identity(req);
     await limit(req, "account", 100, who.user.id);
     if (path === "/api/auth/logout") {
@@ -225,9 +235,9 @@ export default async function handler(req: Request): Promise<Response> {
       return json({ ok: true });
     }
     if (path.startsWith("/api/account") || path.startsWith("/api/upload"))
-      return (await import("./contributions.ts")).contributions(req, path, data, who);
+      return await (await import("./contributions.ts")).contributions(req, path, data, who);
     if (path.startsWith("/api/admin"))
-      return (await import("./admin.ts")).admin(req, path, data, who);
+      return await (await import("./admin.ts")).admin(req, path, data, who);
     throw new ApiError(404, "not_found");
   } catch (error) {
     if (req.method === "GET" && new URL(req.url).pathname === "/api/auth/callback") {
