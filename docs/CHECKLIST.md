@@ -1,5 +1,12 @@
 # Current acceptance checklist
 
+## Authenticator repair — 20 October 2026
+
+| Feature                                                                                | Status | Evidence                                                                                         | Note                                                                                  |
+| -------------------------------------------------------------------------------------- | ------ | ------------------------------------------------------------------------------------------------ | ------------------------------------------------------------------------------------- |
+| QR image, separate selectable setup key, responsive layout, cleanup after verification | PASS   | src/server/api.ts; src/components/account-client.tsx; tests/browser/mfa.spec.ts: 2 passed, axe 0 | Synthetic enrollment only; real provider QR is returned without third-party rendering |
+| Real owner TOTP verification and administrator bootstrap                               | FAIL   | Owner signup/email/sign-in verified; guarded bootstrap reported totp_verified=false              | Requires deploying repair or manual-key entry, then owner verification; no MFA bypass |
+
 ## Account pages checkpoint — 20 October 2026
 
 These rows supersede inherited acceptance for changed features. UI fixtures prove browser behavior only, never real mail delivery or production publication.

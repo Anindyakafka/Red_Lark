@@ -1,5 +1,9 @@
 # RED LARK WORKSHOP: staged implementation plan
 
+## Authenticator setup repair — 20 October 2026
+
+QR rendering and isolated, selectable manual-key field implemented. Server returns Supabase's enrollment SVG as a data image; no external QR service, logging or storage. Build, lint, typecheck and 54 unit/RLS/copy tests pass; two new English/Hindi browser tests pass with zero axe violations at mobile width. Deployment and the owner's real TOTP verification/admin bootstrap remain pending. New setup labels use explicit English fallback in unreviewed Indic messages.
+
 ## Account pages continuation — 20 October 2026
 
 This section supersedes older public-phase holds. Existing Supabase/Postgres, R2 and Resend are reused. Public pages remain static; private shells call same-origin protected APIs. UUID detail addresses are rewritten to localized static shells, with ownership/role/MFA checked independently on the server. No private record is embedded at build time.

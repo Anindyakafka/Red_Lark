@@ -1,5 +1,11 @@
 # Numbered rebuild rounds
 
+## Account pages P7 critique — 20 October 2026
+
+Owner-reported setup friction: the UI omitted the provider's QR code and put the manual secret inline with instructions. QR omission was confirmed in source; the reported illegal-character cause was not verified and no real enrollment secret was requested. Added a self-contained data-image QR and a labelled read-only/select-on-focus manual key; both are removed from React state after successful verification. No external QR generator or optimizer sees the secret. New English fallback strings retain reviewed:false in Indic dictionaries.
+
+Validation: typecheck, lint, production build/content/brand/output-secret checks and 54 unit/RLS/copy tests pass. Two targeted English/Hindi browser tests pass, including decoded image display, mobile width, axe zero and clearing setup material. Highest remaining issue: deploy this repair and complete the owner's real authenticator verification before guarded admin bootstrap. No claim of hosted MFA success.
+
 ## Account pages P1 critique — 20 October 2026
 
 The live site and local implementation had diverged: existing APIs were not deployed, account tools were consolidated in one panel, the header was permanently an Account link and auth favored passwords. Added separate localized views, magic-link-first forms, an explicit global logout confirmation, UUID route shells and a session-aware menu. Fixes also cover the source link, readable mailto contact, custom-domain canonical checks and visible multilingual printed credit.

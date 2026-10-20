@@ -279,6 +279,7 @@ export function MfaPanel() {
     action = useAction();
   const [factor, setFactor] = useState(""),
     [secret, setSecret] = useState(""),
+    [qrCode, setQrCode] = useState(""),
     [status, setStatus] = useState("");
   const [codeError, setCodeError] = useState("");
   useEffect(() => {
@@ -306,9 +307,12 @@ export function MfaPanel() {
           disabled={action.busy}
           onClick={() =>
             action.run(async () => {
-              const result = await api<{ factorId: string; secret: string }>("auth/mfa/enroll");
+              const result = await api<{ factorId: string; secret: string; qrCode: string }>(
+                "auth/mfa/enroll",
+              );
               setFactor(result.factorId);
               setSecret(result.secret);
+              setQrCode(result.qrCode);
             })
           }
         >
@@ -316,12 +320,35 @@ export function MfaPanel() {
         </button>
       )}
       {secret && (
-        <p className="notice">
-          {t(
-            "Add this setup key to your authenticator app, then verify a code. Do not share this key.",
-          )}{" "}
-          <code className="break-all">{secret}</code>
-        </p>
+        <div className="notice">
+          {qrCode && (
+            <Image
+              src={qrCode}
+              alt={t("Scan this QR code with your authenticator app.")}
+              width={240}
+              height={240}
+              unoptimized
+              style={{ maxWidth: "100%", height: "auto", background: "white" }}
+            />
+          )}
+          <p id="mfa-setup-help">
+            {t(
+              "Add this setup key to your authenticator app, then verify a code. Do not share this key.",
+            )}
+          </p>
+          <label className="form-field" htmlFor="mfa-setup-key">
+            {t("Authenticator setup key")}
+            <input
+              id="mfa-setup-key"
+              value={secret}
+              readOnly
+              spellCheck={false}
+              autoComplete="off"
+              aria-describedby="mfa-setup-help"
+              onFocus={(event) => event.currentTarget.select()}
+            />
+          </label>
+        </div>
       )}
       {factor && (
         <form
@@ -340,6 +367,7 @@ export function MfaPanel() {
             void action.run(async () => {
               await api("auth/mfa/verify", { factorId: factor, code });
               setSecret("");
+              setQrCode("");
               setStatus(t("Authenticator verified. You can return to administration."));
             });
           }}

@@ -215,6 +215,9 @@ export default async function handler(req: Request): Promise<Response> {
         factorId: enrolled.data.id,
         uri: enrolled.data.totp.uri,
         secret: enrolled.data.totp.secret,
+        qrCode: `data:image/svg+xml;base64,${Buffer.from(
+          enrolled.data.totp.qr_code.replace(/^data:image\/svg\+xml;utf-8,/, ""),
+        ).toString("base64")}`,
       });
     }
     if (path === "/api/auth/mfa/factors") {
