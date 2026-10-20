@@ -1,6 +1,14 @@
 # RED LARK WORKSHOP: staged implementation plan
 
-## Authenticator setup repair — 20 October 2026
+## Guest contributions and interaction repair — 21 October 2026
+
+Implemented optional-account contribution flow at every localized Submit/new-work entry. Guests provide the same licence/AI/categories/alt data without creating an Auth identity; artwork uses the shared private signed-PUT/sanitization/print pipeline. Hash-only receipts authorize exactly one work, expire after 90 days and show read-only review feedback. Separate per-field contact/UPI consent remains mandatory for publication. Account dashboards/editing and fresh-MFA administration are preserved. Additive migration 202610210006 was applied to the existing hosted project.
+
+Interaction fixes: Account closes on outside pointer, Escape (returning focus), focus departure and navigation. Format changes preserve form details. Existing profile saves request an explicit row to avoid false successful-upsert errors. Retry signing reuses an unprocessed ticket; repeat submission is idempotent. Invalid/expired receipts have a recoverable error.
+
+Acceptance: 58 unit/RLS/copy tests and 185 browser tests PASS, including fresh-eyes axe checks on all four locale exports and new guest flows. Real handler AND real browser/CORS tests against hosted Supabase/private R2 PASS; disposable fixtures removed. Anonymous-table denial and changed-file secret scan PASS. English/Malayalam screenshots retained in docs/evidence/guest-submissions. Performance results are recorded there separately. Remaining: deploy this branch and owner-check guest approval/publication/takedown; native review remains required. No new service setup is needed.
+
+## Prior authenticator checkpoint
 
 Superseded by the 21 October checkpoint: real owner TOTP is verified and guarded admin bootstrap succeeded. A hosted probe reproduced a 200/null response for existing session upserts, causing a false 503 after verification. The write now requests token_hash only with single-row confirmation. Hosted repaired insert/update pass and isolated diagnostic rows were cleaned. Typecheck, lint, production build/secret checks and 55 unit/RLS/copy tests pass. Remaining: deploy this session fix and verify fresh MFA/admin access with the existing authenticator.
 

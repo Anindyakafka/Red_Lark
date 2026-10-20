@@ -1,6 +1,16 @@
 # Numbered rebuild rounds
 
-## Account pages P7 critique — 20 October 2026
+## Account pages P9 critique — 21 October 2026
+
+Guest contribution replaces the account wall. Work metadata validation and sanitization/PDF generation are shared with account uploads. Random per-work receipt secrets are returned only to the submitter, stored hashed, never put in query strings/localStorage/analytics, and expire after 90 days. RLS denies receipt access to anon/contributors; server checks its exact work before signing, completion or status. Admin review still requires role/fresh MFA. Optional private contact fields remain separate from public consent.
+
+Ranked issues found and repaired: (1) forced login prevented guest contribution; (2) Account menu stayed open on outside/focus/navigation; (3) changing format reset form details; (4) existing profile upserts could report false errors; (5) interrupted signed uploads could force waiting, now unprocessed tickets can be re-signed; (6) outdated policy wording claimed backend/account-only limitations. New translations are explicit English fallbacks with reviewed:false.
+
+Early browser runs exposed a wrong test-image path and an assertion racing the completion of upload; both corrected. One signup test failed once under initial load, then passed in the focused rerun and full suite; no blanket retries introduced. Final validation: 58 unit/RLS/copy tests, 185 browser tests, typecheck/lint/build and output-secret checks PASS. Full fresh-eyes checks cover every exported page in all four locales with axe 0. Real private-service handler AND browser/CORS guest submissions pass with cleanup; no artwork was published. Viewed English form and Malayalam status mobile screenshots: no overflow or clipped script, the long metadata form remains readable. Native review is still needed. Current changed-source Gitleaks scan passes; the repeated full unchanged-history scan was stopped after several minutes, with previous full-history evidence retained. Production guest publication/takedown still requires deployment and owner click-through.
+
+## Prior account-page critiques
+
+P9 performance evidence: three cold-cache mobile runs per en/hi Home, Collection and Poster. Page medians are 96–98 Performance; all other categories 100, CLS 0. Raw first runs on both home pages included 93; the required medians pass. Metrics retained in docs/evidence/guest-submissions/lighthouse.json; raw reports in .qa/guest-lighthouse. No performance code change or selective replacement of runs was needed.
 
 ### Account pages P8 critique — 21 October 2026
 

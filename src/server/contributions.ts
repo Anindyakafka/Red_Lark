@@ -76,7 +76,7 @@ export async function contributions(
         rebuild = true;
       }
     }
-    checked(await who.client.from("profiles").upsert(profile));
+    checked(await who.client.from("profiles").upsert(profile).select("id").single());
     if (rebuild) {
       const { requestBuild } = await import("./admin.ts");
       await requestBuild();
@@ -153,50 +153,7 @@ export async function contributions(
     return json({ ok: true }, 200, { "Set-Cookie": cookie("__Host-redlark-session", "", 0) });
   }
   if (path === "/api/account/work") {
-    if (data.permission !== true) throw new ApiError(422, "permission_required");
-    const title = text(data, "title", 200, 1),
-      alt = text(data, "alt", 1000, 15),
-      format = text(data, "format_slug", 100, 1),
-      licence = text(data, "licence_id", 100, 1);
-    const reference = checked(
-      await who.client.from("licences").select("derivatives").eq("id", licence).single(),
-    );
-    const selectedLanguages = Array.isArray(data.languages)
-      ? data.languages.filter((v): v is string => typeof v === "string" && languages.includes(v))
-      : [];
-    if (!selectedLanguages.length) throw new ApiError(422, "invalid_languages");
-    const categories = Array.isArray(data.categories)
-      ? data.categories.filter((v): v is string => typeof v === "string")
-      : [];
-    if (categories.length > 28) throw new ApiError(422, "invalid_categories");
-    const tags = text(data, "tags", 500)
-      .split(",")
-      .map((s) => s.trim())
-      .filter(Boolean)
-      .slice(0, 20);
-    const id = typeof data.id === "string" ? data.id : randomUUID();
-    if (!/^[a-f0-9-]{36}$/.test(id)) throw new ApiError(422, "invalid_id");
-    const slug = `work-${id}`;
-    const ai = text(data, "ai_use", 30);
-    if (!["none", "minimal-assisted", "generated"].includes(ai))
-      throw new ApiError(422, "invalid_ai_use");
-    const canonical = origin().startsWith("https://") ? origin() : "https://redlarkworkshop.com";
-    const source = text(data, "source", 1000) || `${canonical}/en/poster/${slug}/`;
-    if (!/^https:\/\//.test(source)) throw new ApiError(422, "invalid_source");
-    const values = {
-      title,
-      alt,
-      artist_name: text(data, "artist_name", 120) || "Anonymous contributor",
-      caption: text(data, "caption", 5000),
-      format_slug: format,
-      licence_id: licence,
-      remixable: reference.derivatives === true && data.remixable !== false,
-      languages: selectedLanguages,
-      tags,
-      source,
-      ai_use: ai,
-      ai_disclosure: text(data, "ai_disclosure", 2000),
-    };
+    const { id, slug, values, categories } = await workValues(data, who.client);
     if (data.id)
       checked(
         await who.client
@@ -275,62 +232,7 @@ export async function contributions(
     );
     if (!["draft", "changes_requested"].includes(work.status))
       throw new ApiError(409, "invalid_transition");
-    const keys: string[] = [];
-    try {
-      const clean = await quarantine(ticket.object_key, ticket.bytes, ticket.mime);
-      const prefix = `sanitized/${work.id}/${randomUUID()}`;
-      const credit = `${work.artist_name} | ${work.licence_id} | ${work.source}`;
-      const outputs = [
-        { kind: "sanitized", key: `${prefix}.png`, buffer: clean.buffer, mime: "image/png" },
-        { kind: "preview", key: `${prefix}.webp`, buffer: clean.preview, mime: "image/webp" },
-        ...(await Promise.all(
-          (["a4", "a2"] as const).map(async (size) => ({
-            kind: `pdf-${size}`,
-            key: `${prefix}-${size}.pdf`,
-            buffer: await printPdf(clean.buffer, size, credit),
-            mime: "application/pdf",
-          })),
-        )),
-      ];
-      for (const file of outputs) {
-        await put(file.key, file.buffer, file.mime);
-        keys.push(file.key);
-      }
-      const old = checked(
-        await service().rpc("finish_upload", {
-          p_ticket: id,
-          p_user: who.user.id,
-          p_updated: work.updated_at,
-          p_files: outputs.map((file) => ({
-            kind: file.kind,
-            object_key: file.key,
-            mime: file.mime,
-            bytes: file.buffer.length,
-            width: clean.width,
-            height: clean.height,
-            dpi: Math.round(clean.width / ((file.kind === "pdf-a2" ? 420 : 210) / 25.4)),
-            sha256: file.kind === "sanitized" ? clean.sha256 : null,
-          })),
-        }),
-      ) as string[];
-      // Metadata replacement commits atomically. Cleanup must not undo committed new files.
-      keys.length = 0;
-      for (const key of old) await remove(key).catch(() => {});
-      await remove(ticket.object_key).catch(() => {});
-      return json({
-        ok: true,
-        width: clean.width,
-        height: clean.height,
-        dpiA4: Math.round(clean.width / (210 / 25.4)),
-        dpiA2: Math.round(clean.width / (420 / 25.4)),
-        warning: clean.width / (420 / 25.4) < 300 ? "resolution_warning" : null,
-      });
-    } catch (error) {
-      for (const key of keys) await remove(key).catch(() => {});
-      await remove(ticket.object_key).catch(() => {});
-      await service().from("uploads").update({ state: "failed" }).eq("id", id);
-      throw error;
-    }
+    return processUpload(ticket, work);
   }
   if (path === "/api/account/submit") {
     const id = text(data, "id", 100, 1);
@@ -380,4 +282,116 @@ export async function contributions(
     return json({ url: await signedRead(file.object_key) });
   }
   throw new ApiError(404, "not_found");
+}
+
+export async function workValues(data: Record<string, unknown>, client: Identity["client"]) {
+  if (data.permission !== true) throw new ApiError(422, "permission_required");
+  const title = text(data, "title", 200, 1),
+    alt = text(data, "alt", 1000, 15),
+    format = text(data, "format_slug", 100, 1),
+    licence = text(data, "licence_id", 100, 1);
+  const reference = checked(
+    await client.from("licences").select("derivatives").eq("id", licence).single(),
+  );
+  const selectedLanguages = Array.isArray(data.languages)
+    ? data.languages.filter((v): v is string => typeof v === "string" && languages.includes(v))
+    : [];
+  if (!selectedLanguages.length) throw new ApiError(422, "invalid_languages");
+  const categories = Array.isArray(data.categories)
+    ? data.categories.filter((v): v is string => typeof v === "string")
+    : [];
+  if (categories.length > 28) throw new ApiError(422, "invalid_categories");
+  const tags = text(data, "tags", 500)
+    .split(",")
+    .map((s) => s.trim())
+    .filter(Boolean)
+    .slice(0, 20);
+  const id = typeof data.id === "string" ? data.id : randomUUID();
+  if (!/^[a-f0-9-]{36}$/.test(id)) throw new ApiError(422, "invalid_id");
+  const slug = `work-${id}`;
+  const ai = text(data, "ai_use", 30);
+  if (!["none", "minimal-assisted", "generated"].includes(ai))
+    throw new ApiError(422, "invalid_ai_use");
+  const canonical = origin().startsWith("https://") ? origin() : "https://redlarkworkshop.com";
+  const source = text(data, "source", 1000) || `${canonical}/en/poster/${slug}/`;
+  if (!/^https:\/\//.test(source)) throw new ApiError(422, "invalid_source");
+  const values = {
+    title,
+    alt,
+    artist_name: text(data, "artist_name", 120) || "Anonymous contributor",
+    caption: text(data, "caption", 5000),
+    format_slug: format,
+    licence_id: licence,
+    remixable: reference.derivatives === true && data.remixable !== false,
+    languages: selectedLanguages,
+    tags,
+    source,
+    ai_use: ai,
+    ai_disclosure: text(data, "ai_disclosure", 2000),
+  };
+  return { id, slug, values, categories };
+}
+
+export async function processUpload(
+  ticket: { id: string; user_id: string | null; object_key: string; bytes: number; mime: string },
+  work: { id: string; artist_name: string; licence_id: string; source: string; updated_at: string },
+  guest = false,
+) {
+  const id = ticket.id;
+  const keys: string[] = [];
+  try {
+    const clean = await quarantine(ticket.object_key, ticket.bytes, ticket.mime);
+    const prefix = `sanitized/${work.id}/${randomUUID()}`;
+    const credit = `${work.artist_name} | ${work.licence_id} | ${work.source}`;
+    const outputs = [
+      { kind: "sanitized", key: `${prefix}.png`, buffer: clean.buffer, mime: "image/png" },
+      { kind: "preview", key: `${prefix}.webp`, buffer: clean.preview, mime: "image/webp" },
+      ...(await Promise.all(
+        (["a4", "a2"] as const).map(async (size) => ({
+          kind: `pdf-${size}`,
+          key: `${prefix}-${size}.pdf`,
+          buffer: await printPdf(clean.buffer, size, credit),
+          mime: "application/pdf",
+        })),
+      )),
+    ];
+    for (const file of outputs) {
+      await put(file.key, file.buffer, file.mime);
+      keys.push(file.key);
+    }
+    const old = checked(
+      await service().rpc(guest ? "finish_guest_upload" : "finish_upload", {
+        p_ticket: id,
+        ...(guest ? { p_work: work.id } : { p_user: ticket.user_id }),
+        p_updated: work.updated_at,
+        p_files: outputs.map((file) => ({
+          kind: file.kind,
+          object_key: file.key,
+          mime: file.mime,
+          bytes: file.buffer.length,
+          width: clean.width,
+          height: clean.height,
+          dpi: Math.round(clean.width / ((file.kind === "pdf-a2" ? 420 : 210) / 25.4)),
+          sha256: file.kind === "sanitized" ? clean.sha256 : null,
+        })),
+      }),
+    ) as string[];
+    // Metadata replacement commits atomically. Cleanup must not undo committed new files.
+    keys.length = 0;
+    for (const key of old) await remove(key).catch(() => {});
+    await remove(ticket.object_key).catch(() => {});
+    return json({
+      ok: true,
+      width: clean.width,
+      height: clean.height,
+      dpiA4: Math.round(clean.width / (210 / 25.4)),
+      dpiA2: Math.round(clean.width / (420 / 25.4)),
+      warning: clean.width / (420 / 25.4) < 300 ? "resolution_warning" : null,
+    });
+  } catch (error) {
+    for (const key of keys) await remove(key).catch(() => {});
+    await remove(ticket.object_key).catch(() => {});
+    await service().from("uploads").update({ state: "failed" }).eq("id", id);
+    throw error;
+  }
 }

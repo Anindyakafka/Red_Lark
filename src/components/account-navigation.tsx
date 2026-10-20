@@ -1,9 +1,35 @@
 "use client";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
+import { usePathname } from "next/navigation";
 import { Link, useI18n } from "@/i18n/client";
 export function AccountNavigation() {
   const { t } = useI18n();
   const [account, setAccount] = useState<{ admin: boolean } | null>(null);
+  const menu = useRef<HTMLDetailsElement>(null);
+  const pathname = usePathname();
+  useEffect(() => {
+    if (menu.current) menu.current.open = false;
+  }, [pathname]);
+  useEffect(() => {
+    function outside(event: PointerEvent | FocusEvent) {
+      if (menu.current && event.target instanceof Node && !menu.current.contains(event.target))
+        menu.current.open = false;
+    }
+    function escape(event: KeyboardEvent) {
+      if (event.key === "Escape" && menu.current?.open) {
+        menu.current.open = false;
+        menu.current.querySelector("summary")?.focus();
+      }
+    }
+    document.addEventListener("pointerdown", outside);
+    document.addEventListener("focusin", outside);
+    document.addEventListener("keydown", escape);
+    return () => {
+      document.removeEventListener("pointerdown", outside);
+      document.removeEventListener("focusin", outside);
+      document.removeEventListener("keydown", escape);
+    };
+  }, []);
   useEffect(() => {
     let live = true;
     const load = () => {
@@ -33,9 +59,14 @@ export function AccountNavigation() {
       </div>
     );
   return (
-    <details className="account-menu">
+    <details className="account-menu" ref={menu}>
       <summary>{t("Account")}</summary>
-      <nav aria-label={t("Contributor navigation")}>
+      <nav
+        aria-label={t("Contributor navigation")}
+        onClick={(event) => {
+          if ((event.target as HTMLElement).closest("a") && menu.current) menu.current.open = false;
+        }}
+      >
         <Link href="/account">{t("Dashboard")}</Link>
         <Link href="/account/works/new">{t("Upload")}</Link>
         <Link href="/account/profile">{t("Artist profile")}</Link>

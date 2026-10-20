@@ -81,8 +81,9 @@ test("signup supports an email link without a password; uploads wait for a verif
     route.fulfill({ status: 401, json: { error: "sign_in_required" } }),
   );
   await page.goto("/en/submit/");
-  await expect(page.locator("main")).toContainText("verified contributor account");
-  await expect(page.locator("input[type=file]")).toHaveCount(0);
+  await expect(page.locator("main")).toContainText("No account needed");
+  await page.getByRole("button", { name: "Poster/Placard", exact: true }).click();
+  await expect(page.locator("input[type=file]")).toBeVisible();
 });
 
 test("admin is gated by fresh MFA and never shows a counterfeit queue", async ({ page }) => {

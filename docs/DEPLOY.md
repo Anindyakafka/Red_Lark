@@ -2,6 +2,12 @@
 
 Backend must not be deployed until the owner confirms the server variables are configured. `.env.local` is ignored and does not upload to Netlify. Keep Netlify for the static public site and Functions; Supabase supplies Auth/Postgres, and R2 holds every contribution file. Do not create Supabase Storage buckets.
 
+## Guest submissions (21 October 2026)
+
+The guest migration `202610210006_guest_submissions.sql` has been applied to the existing project. Deploy the matching frontend/Functions together; no additional keys, bucket, CORS origin or Auth provider is required. `/submit/` and new-work upload accept guests; account-only dashboards/revisions/admin remain protected. Guest files go through the same private R2 pipeline. A hash-only receipt (URL fragment, 90-day expiry) grants one-work status access, never account/admin access. Hourly maintenance removes expired receipt/private contact records and abandoned draft files. The new public API paths are `/api/guest/start`, `/sign`, `/complete`, `/submit` and `/status`; CSRF/rate limits apply to all.
+
+Actual local-browser-to-hosted-service upload/CORS, sanitization and status-link acceptance passed and all fixtures were removed. After deployment, owner-check admin approval and public download/takedown before claiming production acceptance. New translations/legal wording remain drafts. Guests need no verification email; optional contact information is never inferred as consent to publication.
+
 ## Supabase authentication
 
 In the existing Red Lark project, open Authentication → URL Configuration. Set Site URL to `https://redlarkworkshop.com`. Add these redirect URLs explicitly for each locale (`en`, `hi`, `bn`, `ml`):

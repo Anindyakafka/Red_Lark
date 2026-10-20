@@ -83,6 +83,7 @@ test("real Postgres RLS: every table, ownership, roles, MFA and bootstrap", asyn
       "uploads",
       "rate_limits",
       "mail_jobs",
+      "guest_submissions",
     ])
       await assert.rejects(db.query(`select * from public.${table}`), table);
     await assert.rejects(db.query("select public.bootstrap_admin('admin@example.invalid')"));
@@ -204,6 +205,66 @@ test("real Postgres RLS: every table, ownership, roles, MFA and bootstrap", asyn
       tables.rows.every((row) => row.relrowsecurity),
       "RLS enabled on every application table",
     );
+    const guestWork = "dddddddd-dddd-4ddd-8ddd-dddddddddddd";
+    const guestTicket = "eeeeeeee-eeee-4eee-8eee-eeeeeeeeeeee";
+    await db.query(
+      `insert into public.works(id,slug,title,artist_name,alt,source,licence_id,format_slug)
+      values($1,'guest-fixture','Guest fixture','Anonymous contributor','An original black circle.','https://example.invalid/guest','CC0-1.0','poster-placard')`,
+      [guestWork],
+    );
+    await db.query(
+      "insert into public.guest_submissions(token_hash,work_id,contact) values($1,$2,'private@example.invalid')",
+      ["a".repeat(64), guestWork],
+    );
+    await as("authenticated", a);
+    assert.equal((await db.query("select * from public.guest_submissions")).rows.length, 0);
+    await assert.rejects(
+      db.query("select public.finish_guest_upload($1,$2,now(),'[]')", [guestTicket, guestWork]),
+    );
+    await as("authenticated", admin, "aal1");
+    assert.equal((await db.query("select * from public.guest_submissions")).rows.length, 0);
+    await as("authenticated", admin, "aal2");
+    assert.equal((await db.query("select * from public.guest_submissions")).rows.length, 1);
+    await as("service_role");
+    await db.query(
+      `insert into public.uploads(id,user_id,work_id,object_key,mime,bytes,expires_at,state)
+      values($1,null,$2,'quarantine/guest-fixture','image/png',100,now()+interval '5 minutes','processing')`,
+      [guestTicket, guestWork],
+    );
+    const guestUpdated = (
+      await db.query<{ updated_at: string }>("select updated_at from public.works where id=$1", [
+        guestWork,
+      ])
+    ).rows[0].updated_at;
+    const guestFiles = ["sanitized", "preview", "pdf-a4", "pdf-a2"].map((kind) => ({
+      kind,
+      object_key: `guest-fixture/${kind}`,
+      mime: kind.startsWith("pdf") ? "application/pdf" : "image/png",
+      bytes: 100,
+      width: 100,
+      height: 100,
+      dpi: 72,
+    }));
+    await assert.rejects(
+      db.query("select public.finish_guest_upload($1,$2,$3,$4)", [
+        guestTicket,
+        wa,
+        guestUpdated,
+        JSON.stringify(guestFiles),
+      ]),
+    );
+    await db.query("select public.finish_guest_upload($1,$2,$3,$4)", [
+      guestTicket,
+      guestWork,
+      guestUpdated,
+      JSON.stringify(guestFiles),
+    ]);
+    assert.equal(
+      (await db.query("select * from public.work_files where work_id=$1", [guestWork])).rows.length,
+      4,
+    );
+    await db.query("delete from public.works where id=$1", [guestWork]);
+    await db.exec("reset role");
     await db.exec(fs.readFileSync("supabase/seed.sql", "utf8"));
     await db.exec(fs.readFileSync("supabase/seed.sql", "utf8"));
     assert.equal(

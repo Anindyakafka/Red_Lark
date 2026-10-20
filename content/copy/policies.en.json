@@ -23,7 +23,7 @@
         "The planned upload flow will recommend CC BY-SA 4.0, with CC0, CC BY, CC BY-NC-SA and CC BY-NC-ND alternatives. The actual licence and permission must be reviewed; ND works never enter the Studio.",
         "Declare AI use honestly: none, minimal-assisted or generated, with an explanation where helpful. A disclosure is not proof of copyright permission. Current in-house placeholder studies are marked generated and are not presented as curated human submissions.",
         "Check print dimensions, credit strips and one sample print. A 300 DPI label alone does not establish adequate image detail. Avoid unnecessary identifying information in the artwork or proposal.",
-        "Contributions require a verified account and are uploaded privately for metadata removal and human review. Nothing is published automatically. NoDerivatives work may be downloaded under its licence but is never offered for Studio remix."
+        "Contributions can be submitted without an account and are uploaded privately for metadata removal and human review. Optional accounts provide a contribution dashboard. Nothing is published automatically. NoDerivatives work may be downloaded under its licence but is never offered for Studio remix."
       ]
     },
     "takedown": {
@@ -31,10 +31,10 @@
       "description": "Request a credit correction or removal with the work URL and a short explanation of the concern.",
       "paragraphs": [
         "Use Contact and include the work URL, the credit or permission concern, and the correction or removal you are requesting. Share only what the team needs to understand the issue. Do not send unnecessary identity documents or private addresses.",
-        "The current form opens your own email app. Review and send the message yourself. The website does not store a case, send an acknowledgement or provide a tracking number. Your email provider handles delivery.",
+        "The dedicated takedown form stores your request privately for the review team and attempts a team notification and acknowledgement email. If delivery fails, the saved case remains available for retry. Email is also available as a fallback.",
         "[SLA PLACEHOLDER] A monitored response schedule and escalation process have not yet been agreed. The team must publish the real process after legal and operational review; no response deadline is promised by this draft.",
         "The team can review attribution, permission and removal from current public pages through its publishing process. Cached pages, repository history and copies already downloaded may remain elsewhere; do not assume a request erases every copy.",
-        "Account deletion, database case tracking and administrative review tools are planned but not active. Their retention, anonymisation and removal rules need India-specific legal review before activation."
+        "Account deletion, private case tracking and administrative review tools are implemented. Their retention, anonymisation and removal rules remain subject to India-specific legal review."
       ]
     }
   }

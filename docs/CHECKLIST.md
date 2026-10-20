@@ -1,6 +1,22 @@
 # Current acceptance checklist
 
-## Authenticator repair — 20 October 2026
+## Guest contributions / UX acceptance — 21 October 2026
+
+| Requirement                                                      | Status | Evidence                                                                  | Note                                                                                                          |
+| ---------------------------------------------------------------- | ------ | ------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------- |
+| Optional accounts; guest submit in en/hi/bn/ml                   | PASS   | src/server/guest.ts; tests/browser/guest.spec.ts                          | No phantom Auth user or mandatory email/name                                                                  |
+| Private R2, sanitization, real PDF outputs, ND and consent gates | PASS   | docs/evidence/guest-submissions/hosted.json                               | Real services, pending invisibility and fixture cleanup verified                                              |
+| Real browser upload/CORS and private receipt                     | PASS   | docs/evidence/guest-submissions/browser-live-services.json                | Same local website and hosted services, no network fixtures                                                   |
+| Receipt isolation/expiry and guest RPC/RLS                       | PASS   | tests/guest.test.ts; tests/rls.test.ts; scripts/verify-hosted-database.ts | Hash-only capability; private table inaccessible to anon/contributors; fresh MFA for admins                   |
+| Menu dismissal and form preservation                             | PASS   | tests/browser/guest.spec.ts                                               | Outside click/tap, focus leave, Escape, navigation; chosen-format changes retain details                      |
+| Typecheck/lint/build/copy/content/client-secret gates            | PASS   | npm run typecheck; npm run lint; npm test; npm run build                  | 58 unit tests; Appendix A unchanged                                                                           |
+| Full browser suite and accessibility                             | PASS   | npm run test:e2e: 185 passed; test-results/results.json                   | All four locale exports axe 0; guest form/status axe 0                                                        |
+| Secret scan of changed/new source                                | PASS   | .qa/scan-guest-changes.mjs                                                | Full unchanged-history rescan stopped for runtime cost; prior history evidence retained, not claimed as rerun |
+| Production guest approval/publication/takedown                   | FAIL   | Pending deployment/owner acceptance                                       | No fixture artwork published; do not infer this from private upload acceptance                                |
+
+## Prior authenticator acceptance
+
+Current public performance: PASS — docs/evidence/guest-submissions/lighthouse.json records median-of-three mobile Lighthouse performance 96–98 in en/hi Home, Collection and Poster, with Accessibility/Best Practices/SEO 100 and CLS 0. One cold first run scored 93; all six page medians meet the target. Raw runs remain in .qa/guest-lighthouse.
 
 21 October update: owner email/sign-in/TOTP verified; guarded admin bootstrap PASS. Existing-session update repair PASS (src/server/auth.ts, tests/backend.test.ts, hosted isolated insert 201/object and update 200/object, cleanup confirmed). Typecheck/lint/build/secret checks and 55 tests PASS. Live fresh-MFA/admin retry remains FAIL/pending deployment. Earlier pending-enrollment notes below are superseded.
 

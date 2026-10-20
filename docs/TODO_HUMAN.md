@@ -1,6 +1,10 @@
 ﻿# Human prerequisites for RED LARK WORKSHOP
 
-## Current account-page launch blockers — 20 October 2026
+## Guest contribution checkpoint — 21 October 2026
+
+No new provider configuration or credentials are needed for guests. The additive migration is already applied; deploy the redlark changes, then check real guest upload -> fresh-MFA admin review -> approval/public file in all four locales -> takedown. Real local-browser/private-service upload and receipt acceptance already passed using cleaned-up fixtures. Guest receipt/privacy/admin labels need native hi/bn/ml review; reviewed:false remains. Approve the draft legal wording/90-day receipt retention and artist permissions before a full public launch. Earlier account prerequisites apply to administrators and optional dashboards, not guest contributions.
+
+## Prior account-page prerequisites
 
 21 October administrator update: website signup/email/sign-in/TOTP are complete and guarded admin bootstrap succeeded. Earlier enrollment requests below are superseded. Deploy the session-write repair, then use the EXISTING authenticator entry to verify a fresh code and open /en/admin/. Do not delete/recreate the authenticator. Real admin publication/takedown acceptance remains pending.
 

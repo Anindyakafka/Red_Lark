@@ -1,0 +1,92 @@
+{
+  "date": "2026-10-21",
+  "branch": "redlark",
+  "unitRlsCopy": {
+    "passed": 58,
+    "failed": 0
+  },
+  "browser": {
+    "startTime": "2026-10-20T19:00:00.499Z",
+    "duration": 421192.17600000004,
+    "expected": 185,
+    "skipped": 0,
+    "unexpected": 0,
+    "flaky": 0
+  },
+  "axe": "zero violations across every exported en/hi/bn/ml route and guest form/status",
+  "lighthouse": [
+    {
+      "page": "en-home",
+      "scores": {
+        "performance": 96,
+        "accessibility": 100,
+        "best-practices": 100,
+        "seo": 100
+      },
+      "cls": 0,
+      "method": "Median of three consecutive cold-cache mobile Lighthouse runs; all raw runs retained"
+    },
+    {
+      "page": "en-collection",
+      "scores": {
+        "performance": 98,
+        "accessibility": 100,
+        "best-practices": 100,
+        "seo": 100
+      },
+      "cls": 0,
+      "method": "Median of three consecutive cold-cache mobile Lighthouse runs; all raw runs retained"
+    },
+    {
+      "page": "en-poster",
+      "scores": {
+        "performance": 98,
+        "accessibility": 100,
+        "best-practices": 100,
+        "seo": 100
+      },
+      "cls": 0,
+      "method": "Median of three consecutive cold-cache mobile Lighthouse runs; all raw runs retained"
+    },
+    {
+      "page": "hi-home",
+      "scores": {
+        "performance": 96,
+        "accessibility": 100,
+        "best-practices": 100,
+        "seo": 100
+      },
+      "cls": 0,
+      "method": "Median of three consecutive cold-cache mobile Lighthouse runs; all raw runs retained"
+    },
+    {
+      "page": "hi-collection",
+      "scores": {
+        "performance": 97,
+        "accessibility": 100,
+        "best-practices": 100,
+        "seo": 100
+      },
+      "cls": 0,
+      "method": "Median of three consecutive cold-cache mobile Lighthouse runs; all raw runs retained"
+    },
+    {
+      "page": "hi-poster",
+      "scores": {
+        "performance": 96,
+        "accessibility": 100,
+        "best-practices": 100,
+        "seo": 100
+      },
+      "cls": 0,
+      "method": "Median of three consecutive cold-cache mobile Lighthouse runs; all raw runs retained"
+    }
+  ],
+  "build": "PASS: content, brand, 392 HTML routes and client-secret audit",
+  "typecheck": "PASS",
+  "lint": "PASS",
+  "secrets": "PASS changed/new source and static output; unchanged full-history rescan stopped, previous evidence retained",
+  "hostedHandlerFixture": "hosted.json",
+  "realBrowserFixture": "browser-live-services.json",
+  "deployment": "not pushed or deployed; additive hosted migration applied"
+}

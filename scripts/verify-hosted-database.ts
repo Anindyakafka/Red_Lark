@@ -35,6 +35,7 @@ try {
     "app_sessions",
     "rate_limits",
     "mail_jobs",
+    "guest_submissions",
   ]) {
     let denied = false;
     try {

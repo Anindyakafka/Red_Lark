@@ -37,7 +37,7 @@ export default function Page() {
           <p>
             <UiText
               id={
-                "Browsing, downloading and the Studio need no account. Uploading requires a verified contributor account."
+                "Browsing, downloading, the Studio and guest submissions need no account. An optional account lets you manage your contributions."
               }
             />
           </p>

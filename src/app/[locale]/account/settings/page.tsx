@@ -9,7 +9,7 @@ export default function Page() {
       <PageIntro
         index="ACCOUNT"
         title="Account settings"
-        description="Browsing, downloading and the Studio need no account. Uploading requires a verified contributor account."
+        description="Browsing, downloading, the Studio and guest submissions need no account. An optional account lets you manage your contributions."
         action="My contributions"
         href="/account"
       />

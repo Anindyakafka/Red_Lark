@@ -26,7 +26,7 @@ export default async function Service({ params }: { params: Promise<{ service: s
       <PageIntro
         index="ACCOUNT"
         title={services[service as keyof typeof services]}
-        description="Browsing, downloading and the Studio need no account. Uploading requires a verified contributor account."
+        description="Browsing, downloading, the Studio and guest submissions need no account. An optional account lets you manage your contributions."
         action="Browse collection"
         href="/collection"
       />

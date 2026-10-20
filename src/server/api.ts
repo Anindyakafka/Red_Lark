@@ -182,6 +182,8 @@ export default async function handler(req: Request): Promise<Response> {
     }
     if (path === "/api/contact" || path === "/api/takedown")
       return await (await import("./mail.ts")).contact(req, data, path.endsWith("takedown"));
+    if (path.startsWith("/api/guest/"))
+      return await (await import("./guest.ts")).guest(req, path, data);
     const who = await identity(req);
     await limit(req, "account", 100, who.user.id);
     if (path === "/api/auth/logout") {

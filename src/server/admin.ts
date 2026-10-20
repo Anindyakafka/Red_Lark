@@ -72,7 +72,7 @@ export async function admin(
         await who.client
           .from("works")
           .select(
-            "*,work_files(id,kind,mime,bytes,width,height,dpi),work_categories(category_slug)",
+            "*,work_files(id,kind,mime,bytes,width,height,dpi),work_categories(category_slug),guest_submissions(contact,upi,contact_public,upi_public)",
           )
           .in("status", ["pending", "changes_requested", "approved", "taken_down"])
           .order("created_at", { ascending: false }),

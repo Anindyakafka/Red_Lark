@@ -1,5 +1,5 @@
 "use client";
-import { useEffect, useRef, useState, type FormEvent } from "react";
+import { useCallback, useEffect, useRef, useState, type FormEvent } from "react";
 import { Link, useI18n } from "@/i18n/client";
 import { useRouter } from "next/navigation";
 import { track } from "@/lib/analytics";
@@ -9,6 +9,10 @@ import formats from "../../content/formats.json";
 import { AdminRecords } from "./admin-records";
 
 const errors: Record<string, string> = {
+  submission_unavailable:
+    "This private submission link is invalid or expired. Check the complete link or contact the team.",
+  upload_in_progress: "An upload is already in progress. Wait a few minutes, then try again.",
+  spam_check_failed: "Please wait a moment before submitting, then try again.",
   sign_in_failed:
     "Sign-in failed. Check your details and verify your email, or request a new link.",
   sign_in_required: "Sign in to continue.",
@@ -187,7 +191,7 @@ export function AuthForm({
       </noscript>
       <p>
         {t(
-          "Browsing, downloading and the Studio need no account. Uploading requires a verified contributor account.",
+          "Browsing, downloading, the Studio and guest submissions need no account. An optional account lets you manage your contributions.",
         )}
       </p>
       {mode !== "reset-password" && (
@@ -403,6 +407,12 @@ export function MfaPanel() {
   );
 }
 type Work = {
+  guest_submissions?: {
+    contact: string;
+    upi: string;
+    contact_public: boolean;
+    upi_public: boolean;
+  } | null;
   id: string;
   title: string;
   status: string;
@@ -770,10 +780,15 @@ export function UploadPanel({
   works?: Work[];
   initialWork?: Work;
 }) {
-  const { t } = useI18n(),
+  const { t, locale } = useI18n(),
     action = useAction();
   const [status, setStatus] = useState("");
   const [access, setAccess] = useState<"loading" | "allowed" | "denied">("loading");
+  const [guestMode, setGuestMode] = useState(false);
+  const [receipt, setReceipt] = useState("");
+  const [restoredReceipt, setRestoredReceipt] = useState("");
+  const [started] = useState(() => Date.now());
+  const guestDraft = useRef<{ id: string; token: string } | null>(null);
   const [chosenFormat, setChosenFormat] = useState(initialWork?.format_slug || "poster-placard");
   const [step, setStep] = useState(0);
   const [completed, setCompleted] = useState(false);
@@ -790,6 +805,12 @@ export function UploadPanel({
     let live = true;
     const supplied = new URLSearchParams(location.search).get("format");
     if (formats.some((f) => f.slug === supplied)) setChosenFormat(supplied!);
+    const restore = () => {
+      const saved = new URLSearchParams(location.hash.slice(1)).get("submission");
+      setRestoredReceipt(saved !== null ? saved || "invalid" : "");
+    };
+    restore();
+    window.addEventListener("hashchange", restore);
     api<{ profile: Profile | null }>("account")
       .then((result) => {
         if (live) {
@@ -798,10 +819,14 @@ export function UploadPanel({
         }
       })
       .catch(() => {
-        if (live) setAccess("denied");
+        if (live) {
+          setGuestMode(true);
+          setAccess("allowed");
+        }
       });
     return () => {
       live = false;
+      window.removeEventListener("hashchange", restore);
     };
   }, []);
   async function upload(event: FormEvent<HTMLFormElement>) {
@@ -839,7 +864,7 @@ export function UploadPanel({
     }
     await action.run(async () => {
       if (!(file instanceof File) || !file.size) throw new Error("invalid_file");
-      if (String(data.get("contact") || "") || String(data.get("upi") || "")) {
+      if (!guestMode && (String(data.get("contact") || "") || String(data.get("upi") || ""))) {
         await api("account/profile", {
           artist_name: data.get("artist_name") || uploadProfile?.artist_name || "",
           bio: uploadProfile?.bio || "",
@@ -849,20 +874,35 @@ export function UploadPanel({
           upi_public: data.has("profile_upi_public"),
         });
       }
-      const created = await api<{ id: string }>("account/work", {
+      const details = {
         ...Object.fromEntries(data),
         id: data.get("id") || undefined,
         languages: data.getAll("languages"),
         categories: data.getAll("categories"),
         permission: data.has("permission"),
         remixable: data.has("remixable"),
-      });
+        contact_consent: data.has("contact_consent"),
+        upi_consent: data.has("upi_consent"),
+        started,
+      };
+      const created = guestMode
+        ? guestDraft.current || (await api<{ id: string; token: string }>("guest/start", details))
+        : await api<{ id: string }>("account/work", details);
+      if (guestMode && "token" in created) {
+        guestDraft.current = created as { id: string; token: string };
+        setReceipt(`${location.origin}/${locale}/submit/#submission=${created.token}`);
+      }
+      const token = guestDraft.current?.token;
       setStatus(t("Uploading privately…"));
-      const signed = await api<{ id: string; url: string }>("upload/sign", {
-        work_id: created.id,
-        mime: file.type,
-        bytes: file.size,
-      });
+      const signed = await api<{ id: string; url: string }>(
+        guestMode ? "guest/sign" : "upload/sign",
+        {
+          token,
+          work_id: created.id,
+          mime: file.type,
+          bytes: file.size,
+        },
+      );
       const sent = await fetch(signed.url, {
         method: "PUT",
         headers: { "Content-Type": file.type },
@@ -871,12 +911,14 @@ export function UploadPanel({
       if (!sent.ok) throw new Error("network_error");
       setStatus(t("Stripping image metadata and generating print files…"));
       const processed = await api<{ warning: string | null; dpiA4?: number; dpiA2: number }>(
-        "upload/complete",
+        guestMode ? "guest/complete" : "upload/complete",
         {
+          token,
           id: signed.id,
         },
       );
-      await api("account/submit", {
+      await api(guestMode ? "guest/submit" : "account/submit", {
+        token,
         id: created.id,
         contact_consent: data.has("contact_consent"),
         upi_consent: data.has("upi_consent"),
@@ -889,6 +931,7 @@ export function UploadPanel({
       onSaved?.();
     });
   }
+  if (restoredReceipt) return <GuestSubmissionStatus token={restoredReceipt} />;
   if (access !== "allowed")
     return (
       <section className="backend-panel">
@@ -897,10 +940,21 @@ export function UploadPanel({
           {t(
             access === "loading"
               ? "Checking your session…"
-              : "Browsing, downloading and the Studio need no account. Uploading requires a verified contributor account.",
+              : "Browsing, downloading, the Studio and guest submissions need no account. An optional account lets you manage your contributions.",
           )}
         </p>
-        <Link className="button accent" href="/login">
+        {access !== "loading" && (
+          <button
+            className="button accent"
+            onClick={() => {
+              setGuestMode(true);
+              setAccess("allowed");
+            }}
+          >
+            {t("Contribute without an account")}
+          </button>
+        )}
+        <Link className="button" href="/login">
           {t("Sign in")}
         </Link>
         <Link className="button" href="/signup">
@@ -914,9 +968,13 @@ export function UploadPanel({
         <h2>{t("Submission saved for review.")}</h2>
         <p>{status}</p>
         <p>{t("Note: Your artwork will be featured after the website admin review")}</p>
-        <Link className="button" href="/account">
-          {t("My contributions")}
-        </Link>
+        {guestMode ? (
+          <GuestReceipt link={receipt} />
+        ) : (
+          <Link className="button" href="/account">
+            {t("My contributions")}
+          </Link>
+        )}
       </section>
     );
   return (
@@ -924,11 +982,19 @@ export function UploadPanel({
       <h2>{t("UPLOAD YOUR OWN ART AND DESIGN")}</h2>
       <p>
         {t(
-          "Browsing, downloading and the Studio need no account. Uploading requires a verified contributor account.",
+          "Browsing, downloading, the Studio and guest submissions need no account. An optional account lets you manage your contributions.",
         )}{" "}
         <Link href="/login">{t("Sign in")}</Link>
       </p>
       <p>{t("Fill the details: (Recommended but not mandatory)")}</p>
+      {guestMode && (
+        <p>
+          {t(
+            "No account needed. Save your private submission link to check review status. Artist name and email are optional.",
+          )}
+        </p>
+      )}
+      {receipt && <GuestReceipt link={receipt} />}
       <ol className="wizard-steps">
         <li aria-current={step === 0 ? "step" : undefined}>{t("Choose format")}</li>
         <li aria-current={step === 1 ? "step" : undefined}>{t("Fill the details:")}</li>
@@ -953,12 +1019,16 @@ export function UploadPanel({
       <form
         method="post"
         hidden={step === 0}
-        key={initialWork?.id || chosenFormat}
+        key={initialWork?.id || "new"}
         ref={uploadForm}
         className="handoff-form"
         noValidate
         onSubmit={upload}
       >
+        <label className="honeypot" aria-hidden="true">
+          Website
+          <input name="website" tabIndex={-1} autoComplete="off" />
+        </label>
         {initialWork && <input type="hidden" name="id" value={initialWork.id} />}
         <button type="button" className="button" onClick={() => setStep(0)}>
           {t("Choose format")}
@@ -1029,25 +1099,34 @@ export function UploadPanel({
             {fieldError(name)}
           </label>
         ))}
-        <label className="checkbox-field">
-          <input
-            type="checkbox"
-            name="profile_contact_public"
-            defaultChecked={uploadProfile?.contact_public || false}
-          />
-          {t("Allow my contact email to be public")}
-        </label>
-        <label className="checkbox-field">
-          <input
-            type="checkbox"
-            name="profile_upi_public"
-            defaultChecked={uploadProfile?.upi_public || false}
-          />
-          {t("Allow my UPI ID to be public")}
-        </label>
+        {!guestMode && (
+          <>
+            <label className="checkbox-field">
+              <input
+                type="checkbox"
+                name="profile_contact_public"
+                defaultChecked={uploadProfile?.contact_public || false}
+              />
+              {t("Allow my contact email to be public")}
+            </label>
+            <label className="checkbox-field">
+              <input
+                type="checkbox"
+                name="profile_upi_public"
+                defaultChecked={uploadProfile?.upi_public || false}
+              />
+              {t("Allow my UPI ID to be public")}
+            </label>
+          </>
+        )}
         <label className="form-field" htmlFor="upload-format">
           {t("Choose format")}
-          <select id="upload-format" name="format_slug" defaultValue={chosenFormat}>
+          <select
+            id="upload-format"
+            name="format_slug"
+            value={chosenFormat}
+            onChange={(event) => setChosenFormat(event.target.value)}
+          >
             {formats.map((f) => (
               <option value={f.slug} key={f.slug}>
                 {t(f.label)}
@@ -1181,6 +1260,113 @@ export function UploadPanel({
         </button>
         <p>{t("Note: Your artwork will be featured after the website admin review")}</p>
       </form>
+    </section>
+  );
+}
+function GuestReceipt({ link }: { link: string }) {
+  const { t } = useI18n();
+  const [notice, setNotice] = useState("");
+  return (
+    <div className="notice">
+      <p>
+        {t(
+          "Keep this link private. Anyone with it can read your submission status and review feedback. It expires after 90 days. It cannot edit your work.",
+        )}
+      </p>
+      <label className="form-field">
+        {t("Private submission link")}
+        <input
+          value={link}
+          readOnly
+          autoComplete="off"
+          onFocus={(event) => event.currentTarget.select()}
+        />
+      </label>
+      <button
+        className="button"
+        type="button"
+        onClick={async () => {
+          try {
+            await navigator.clipboard.writeText(link);
+            setNotice(t("Link copied."));
+          } catch {
+            setNotice(t("Select and copy the link above."));
+          }
+        }}
+      >
+        {t("Copy private link")}
+      </button>
+      <a className="button" href={link}>
+        {t("Check submission status")}
+      </a>
+      <p role="status">{notice}</p>
+    </div>
+  );
+}
+function GuestSubmissionStatus({ token }: { token: string }) {
+  const { t } = useI18n();
+  const action = useAction();
+  const [result, setResult] = useState<{
+    title: string;
+    status: string;
+    feedback: string;
+    slug: string | null;
+    expiresAt: string;
+  } | null>(null);
+  const loaded = useRef("");
+  const refresh = useCallback(async () => {
+    await action.run(async () => setResult(await api("guest/status", { token })));
+  }, [action, token]);
+  useEffect(() => {
+    if (/^[A-Za-z0-9_-]{43}$/.test(token) && loaded.current !== token) {
+      loaded.current = token;
+      setResult(null);
+      void refresh();
+    }
+  }, [refresh, token]);
+  return (
+    <section className="backend-panel">
+      <h2>{t("Submission status")}</h2>
+      {result && (
+        <>
+          <h3>{result.title}</h3>
+          <p>
+            {t("Status")}: {t(result.status)}
+          </p>
+          {result.feedback && (
+            <p>
+              {t("Admin feedback")}: {result.feedback}
+            </p>
+          )}
+          {result.slug && (
+            <Link className="button" href={`/poster/${result.slug}`}>
+              {t("View published work")}
+            </Link>
+          )}
+          <p>
+            {t(
+              "This link is read-only. Contact the team with your work title if you need to revise or remove it.",
+            )}
+          </p>
+        </>
+      )}
+      <Alert
+        text={
+          /^[A-Za-z0-9_-]{43}$/.test(token)
+            ? action.failure
+            : t(errorMessage("submission_unavailable"))
+        }
+      />
+      <button
+        className="button"
+        disabled={action.busy || !/^[A-Za-z0-9_-]{43}$/.test(token)}
+        onClick={refresh}
+      >
+        {t(action.busy ? "Working…" : "Refresh status")}
+      </button>
+      <a className="button" href="?new=1">
+        {t("New contribution")}
+      </a>
     </section>
   );
 }
@@ -1402,6 +1588,21 @@ export function AdminPanel({
             </form>
             <p>{work.alt}</p>
             <p>{work.ai_disclosure}</p>
+            {work.guest_submissions && (
+              <div className="notice">
+                <p>
+                  {t(
+                    "Guest submission. Contact details below are private to the review team unless separately consented for publication.",
+                  )}
+                </p>
+                <p>
+                  {t("Contact")}: {work.guest_submissions.contact || t("Not supplied")}
+                </p>
+                <p>
+                  {t("UPI ID")}: {work.guest_submissions.upi || t("Not supplied")}
+                </p>
+              </div>
+            )}
             <p>
               {t("Contact consent")}: {work.consent_contact || t("Private")}; {t("UPI consent")}:{" "}
               {work.consent_upi || t("Private")}

@@ -19,6 +19,28 @@ export async function maintenance() {
   }
   checked(await db.from("app_sessions").delete().lt("expires_at", new Date().toISOString()));
   checked(await db.from("rate_limits").delete().lt("expires_at", new Date().toISOString()));
+  // Read-only guest receipts expire independently of publication; remove their
+  // optional private contact details with the capability after 90 days.
+  const expiredReceipts = checked(
+    await db
+      .from("guest_submissions")
+      .select("work_id,works(status)")
+      .lt("expires_at", new Date().toISOString())
+      .limit(2),
+  );
+  for (const receipt of expiredReceipts) {
+    // Drafts have never entered review; remove their abandoned private files too.
+    const work = checked(
+      await db.from("works").select("status").eq("id", receipt.work_id).single(),
+    );
+    if (work.status === "draft") {
+      const files = checked(
+        await db.from("work_files").select("object_key").eq("work_id", receipt.work_id),
+      );
+      for (const file of files) await remove(file.object_key);
+      checked(await db.from("works").delete().eq("id", receipt.work_id).eq("status", "draft"));
+    } else checked(await db.from("guest_submissions").delete().eq("work_id", receipt.work_id));
+  }
   const jobs = checked(
     await db
       .from("mail_jobs")
