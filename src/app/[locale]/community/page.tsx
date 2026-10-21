@@ -29,7 +29,7 @@ export default function Page() {
       ) : (
         <section className="content-width empty-state">
           <p className="label">
-            <UiText id={"[NO REVIEWED SUBMISSIONS YET]"} />
+            <UiText id={"NO REVIEWED SUBMISSIONS YET"} />
           </p>
           <h2>
             <UiText id={"YOUR WORK COULD GO HERE."} />
@@ -40,7 +40,7 @@ export default function Page() {
             />
           </p>
           <Link className="button" href="/studio" prefetch={false}>
-            <UiText id={"[MAKE A POSTER] ↗"} />
+            <UiText id={"MAKE A POSTER ↗"} />
           </Link>
         </section>
       )}

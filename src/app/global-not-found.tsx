@@ -1,13 +1,10 @@
-import { UiText } from "@/i18n/client";
 import "./globals.css";
 import NotFound from "@/components/not-found";
 export default function GlobalNotFound() {
   return (
     <html lang="en">
       <head>
-        <title>
-          <UiText id={"Page not found | RED LARK WORKSHOP"} />
-        </title>
+        <title>Page not found | RED LARK WORKSHOP</title>
         <meta name="robots" content="noindex" />
         <meta
           name="description"

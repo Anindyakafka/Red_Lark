@@ -25,6 +25,7 @@ for (const locale of ["en", "hi", "bn", "ml"])
         await expect(page.locator("h1")).toHaveCount(1);
         await expect(page.locator("main")).toHaveCount(1);
         await page.evaluate(() => document.fonts.ready);
+        expect(await page.locator("body").innerText(), route).not.toMatch(/[\[\]]/);
         expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(
           true,
         );

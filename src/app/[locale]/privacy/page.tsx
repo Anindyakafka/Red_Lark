@@ -19,7 +19,7 @@ export default function Page() {
         <UiText id={"HOW WE HANDLE DATA."} />
       </h1>
       <Link className="button accent" href="/studio" prefetch={false}>
-        <UiText id={"[OPEN PRIVATE STUDIO] ↗"} />
+        <UiText id={"OPEN PRIVATE STUDIO ↗"} />
       </Link>
       <p>
         <UiText

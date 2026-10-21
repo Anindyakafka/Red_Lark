@@ -66,7 +66,7 @@ export function Collection({
   function search(e: React.FormEvent) {
     e.preventDefault();
     if (draft.length > 150) {
-      setError("[ERROR] Use 150 characters or fewer.");
+      setError("ERROR Use 150 characters or fewer.");
       document.getElementById("archive-search")?.focus();
       return;
     }
@@ -132,12 +132,12 @@ export function Collection({
       <div className="collection-heading">
         <h2>{heading}</h2>
         <Link href="/search/image/" className="label">
-          <UiText id={"IMAGE SEARCH [COMING SOON]"} />
+          <UiText id={"IMAGE SEARCH COMING SOON"} />
         </Link>
       </div>
       <p className="license-note">
         <strong>
-          <UiText id={"[PLEASE READ BEFORE USING]"} />
+          <UiText id={"PLEASE READ BEFORE USING"} />
         </strong>
         <UiText
           id={
@@ -169,7 +169,7 @@ export function Collection({
             aria-describedby={error ? "search-error" : undefined}
           />
           <button type="submit">
-            <UiText id={"[SEARCH] ↗"} />
+            <UiText id={"SEARCH ↗"} />
           </button>
         </div>
         {error && (
@@ -249,7 +249,7 @@ export function Collection({
           </select>
         </label>
         <button aria-pressed={filters.saved} onClick={() => set("saved", !filters.saved)}>
-          [{filters.saved ? "SAVED ONLY" : "SAVED"}]
+          {filters.saved ? "SAVED ONLY" : "SAVED"}
         </button>
         <strong className="result-count" aria-live="polite">
           {results.length}
@@ -272,7 +272,7 @@ export function Collection({
               }
             }}
           >
-            <UiText id={"[CLEAR"} />
+            <UiText id={"CLEAR"} />
             {saved.length}
             <UiText id={"LOCAL BOOKMARKS]"} />
           </button>
@@ -292,7 +292,7 @@ export function Collection({
             <article className="poster-card" key={p.slug}>
               <Link className="poster-preview" href={`/poster/${p.slug}`} prefetch={false}>
                 <PosterImage poster={p} priority={i < 4} />
-                <span className="poster-number">[{String(i + 1).padStart(2, "0")}]</span>
+                <span className="poster-number">{String(i + 1).padStart(2, "0")}</span>
               </Link>
               <div className="card-details">
                 <div className="card-title-row">
@@ -307,7 +307,7 @@ export function Collection({
                     aria-pressed={saved.includes(p.slug)}
                     onClick={() => toggle(p.slug)}
                   >
-                    {saved.includes(p.slug) ? "[−]" : "[+]"}
+                    {saved.includes(p.slug) ? "−" : "+"}
                   </button>
                 </div>
                 {p.titleOriginal && <p className="translated-title">{p.title}</p>}
@@ -323,7 +323,7 @@ export function Collection({
                 </p>
                 {p.placeholder && (
                   <span className="placeholder-label">
-                    <UiText id={"[PLACEHOLDER]"} />
+                    <UiText id={"PLACEHOLDER"} />
                   </span>
                 )}
               </div>

@@ -28,7 +28,7 @@ export default function Page() {
               <div className="rail-heading">
                 <h2>{category.label}</h2>
                 <Link href={`/category/${category.slug}/`}>
-                  <UiText id={"[EXPLORE] ↗"} />
+                  <UiText id={"EXPLORE ↗"} />
                 </Link>
               </div>
               <div className="rail-grid">
@@ -60,12 +60,12 @@ export default function Page() {
             />
           </p>
           <Link className="button" href="/collection">
-            <UiText id={"[BROWSE LANGUAGES] ↗"} />
+            <UiText id={"BROWSE LANGUAGES ↗"} />
           </Link>
         </section>
         <section className="notice">
           <h2>
-            <UiText id={"[PRINT + TYPE KITS]"} />
+            <UiText id={"PRINT + TYPE KITS"} />
           </h2>
           <p>
             <UiText
@@ -75,7 +75,7 @@ export default function Page() {
             />
           </p>
           <a className="button accent" href="/bundles/redlark-type-kit.zip" download>
-            <UiText id={"[DOWNLOAD FONT PACK / OFL] ↓"} />
+            <UiText id={"DOWNLOAD FONT PACK / OFL ↓"} />
           </a>
         </section>
       </div>

@@ -74,14 +74,14 @@ test("filters/search/count/save are real and search errors are accessible", asyn
   await page.getByLabel("Category", { exact: true }).selectOption("displacement-and-migration");
   await expect(page.locator(".poster-card")).toHaveCount(5);
   await page.getByRole("searchbox", { name: "SEARCH THE ARCHIVE" }).fill("homes");
-  await page.getByRole("button", { name: "[SEARCH]" }).click();
+  await page.getByRole("button", { name: "SEARCH" }).click();
   await expect(page.locator(".poster-card")).toHaveCount(1);
   await page.getByRole("button", { name: "Save Homes for all", exact: true }).click();
   await expect(
     page.getByRole("button", { name: "Unsave Homes for all", exact: true }),
   ).toHaveAttribute("aria-pressed", "true");
   await page.getByRole("searchbox", { name: "SEARCH THE ARCHIVE" }).fill("a".repeat(151));
-  await page.getByRole("button", { name: "[SEARCH]" }).click();
+  await page.getByRole("button", { name: "SEARCH" }).click();
   await expect(page.locator("main [role=alert]")).toContainText("150");
 });
 test("contact required/reply errors, stored provider failure and confirmed receipt", async ({
@@ -138,7 +138,7 @@ test("Studio add text, colour, lock, undo, export, share and local restore", asy
   await page.reload();
   await expect(page.locator(".studio-paper")).toBeVisible();
   await expect(page.getByRole("status")).toContainText("RESTORED");
-  await page.getByRole("button", { name: "[SHARE LINK]", exact: true }).click();
+  await page.getByRole("button", { name: "SHARE LINK", exact: true }).click();
   await expect(page.locator(".share-input")).toHaveValue(/#design=/);
 });
 test("remix loads the chosen base and retains source credits", async ({ page }) => {
@@ -154,7 +154,7 @@ test("mobile browse CTA hidden in Studio; tools and exports are reachable", asyn
   await page.goto("/studio/?format=poster-placard");
   await expect(page.locator(".studio-paper")).toBeVisible();
   await expect(page.locator(".mobile-cta")).toHaveCount(0);
-  await page.getByRole("button", { name: "[ELEMENTS]", exact: true }).click();
+  await page.getByRole("button", { name: "ELEMENTS", exact: true }).click();
   await page.getByRole("button", { name: "+ TEXT", exact: true }).click();
   await expect(page.getByLabel("Words", { exact: true })).toBeVisible();
 });

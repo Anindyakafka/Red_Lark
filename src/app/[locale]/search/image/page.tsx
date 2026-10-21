@@ -13,7 +13,7 @@ export default function Page() {
       <PageIntro
         index="SEARCH"
         title="IMAGE SEARCH."
-        description="[COMING SOON] No photo uploads here. Text search is available now."
+        description="COMING SOON No photo uploads here. Text search is available now."
         action="Use text search"
         href="/collection"
       />

@@ -17,7 +17,7 @@ export default function Page() {
         <UiText id={"READ THE SMALL PRINT."} />
       </h1>
       <Link className="button accent" href="/collection">
-        <UiText id={"[BROWSE LICENSED PRINTS] ↗"} />
+        <UiText id={"BROWSE LICENSED PRINTS ↗"} />
       </Link>
       <h2>
         <UiText id={"EACH WORK HAS ITS OWN LICENCE."} />

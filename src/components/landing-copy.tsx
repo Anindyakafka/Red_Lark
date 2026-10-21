@@ -17,7 +17,7 @@ export function LandingBlocks({ copy, locale }: { copy: LandingCopy; locale: Loc
     <div className="landing-narrative">
       <section className="landing-about" id="about">
         <div>
-          <p className="label">[01 / ABOUT]</p>
+          <p className="label">01 / ABOUT</p>
           <h2 data-copy="aboutHeading">{copy.aboutHeading}</h2>
         </div>
         <div>
@@ -26,7 +26,7 @@ export function LandingBlocks({ copy, locale }: { copy: LandingCopy; locale: Loc
         </div>
       </section>
       <section className="landing-objectives">
-        <p className="label">[02 / OBJECTIVES]</p>
+        <p className="label">02 / OBJECTIVES</p>
         <h2 data-copy="objectivesHeading">{copy.objectivesHeading}</h2>
         <ol>
           {copy.objectives.map((text, i) => (
@@ -41,7 +41,7 @@ export function LandingBlocks({ copy, locale }: { copy: LandingCopy; locale: Loc
         </ol>
       </section>
       <section className="landing-ai">
-        <p className="policy-stamp">[POLICY]</p>
+        <p className="policy-stamp">POLICY</p>
         <h2 data-copy="aiHeading">{copy.aiHeading}</h2>
         <details open>
           <summary>Read policy / close panel</summary>

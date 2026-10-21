@@ -53,15 +53,23 @@ export function AccountNavigation() {
       window.removeEventListener("redlark:session", load);
     };
   }, []);
-  if (!account) return null;
+  if (!account)
+    return (
+      <div className="account-links">
+        <Link href="/login">{t("Log in")}</Link>
+        <Link href="/signup">{t("Sign up")}</Link>
+      </div>
+    );
   return (
     <div className="account-links">
       {account.admin && (
         <Link href="/admin/review" className="admin-link">
           {t("Admin")}{" "}
-          <span aria-label={`${t("Pending review")}: ${account.pendingCount ?? t("Verify code")}`}>
-            {account.pendingCount ?? "!"}
-          </span>
+          {typeof account.pendingCount === "number" && (
+            <span aria-label={`${t("Pending review")}: ${account.pendingCount}`}>
+              {account.pendingCount}
+            </span>
+          )}
         </Link>
       )}
       <details className="account-menu" ref={menu}>

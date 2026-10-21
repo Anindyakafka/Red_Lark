@@ -25,7 +25,7 @@ export default function Page() {
         <HandoffForm kind="contact" email={email} />
         <aside aria-labelledby="contact-address-heading">
           <h2 id="contact-address-heading">
-            <UiText id={"[CONTACT ADDRESS]"} />
+            <UiText id={"CONTACT ADDRESS"} />
           </h2>
           <ContactAddress email={email} />
           <p>

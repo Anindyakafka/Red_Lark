@@ -10,7 +10,7 @@ export function PrintInstructions({ locale }: { locale: Locale }) {
       <h2>{copy.title}</h2>
       {!copy.reviewed && (
         <p className="label" lang="en">
-          [DRAFT TRANSLATION — NEEDS NATIVE REVIEW]
+          DRAFT TRANSLATION — NEEDS NATIVE REVIEW
         </p>
       )}
       <ol>

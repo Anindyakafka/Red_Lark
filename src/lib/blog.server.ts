@@ -101,7 +101,7 @@ export function rssFeed(locale: Locale, origin: string) {
   const items = blogPosts(locale)
     .map((post) => {
       const link = `${url}${post.slug}/`;
-      return `<item><title>${escapeXml(post.title)}</title><link>${escapeXml(link)}</link><guid isPermaLink="true">${escapeXml(link)}</guid><pubDate>${new Date(`${post.date}T00:00:00Z`).toUTCString()}</pubDate><description>${escapeXml(`${post.placeholder ? "[EDITORIAL PLACEHOLDER] " : ""}${!post.reviewed ? "[UNREVIEWED TRANSLATION] " : ""}${post.description}`)}</description>${post.tags.map((tag) => `<category>${escapeXml(tag)}</category>`).join("")}</item>`;
+      return `<item><title>${escapeXml(post.title)}</title><link>${escapeXml(link)}</link><guid isPermaLink="true">${escapeXml(link)}</guid><pubDate>${new Date(`${post.date}T00:00:00Z`).toUTCString()}</pubDate><description>${escapeXml(`${post.placeholder ? "EDITORIAL PLACEHOLDER " : ""}${!post.reviewed ? "UNREVIEWED TRANSLATION " : ""}${post.description}`)}</description>${post.tags.map((tag) => `<category>${escapeXml(tag)}</category>`).join("")}</item>`;
     })
     .join("");
   return `<?xml version="1.0" encoding="UTF-8"?><rss version="2.0"><channel><title>RED LARK WORKSHOP / ${locale}</title><link>${escapeXml(url)}</link><description>Workshop notes on political graphics and printing. Placeholder posts are marked.</description><language>${locale}</language>${items}</channel></rss>`;

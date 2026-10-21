@@ -7,7 +7,7 @@ export default function ErrorPage({ reset }: { reset: () => void }) {
   return (
     <section className="prose">
       <p className="label">
-        <UiText id={"[SOMETHING DID NOT LOAD]"} />
+        <UiText id={"SOMETHING DID NOT LOAD"} />
       </p>
       <h1>
         <UiText id={"TRY THAT AGAIN."} />
@@ -20,10 +20,10 @@ export default function ErrorPage({ reset }: { reset: () => void }) {
         />
       </p>
       <button className="button accent" onClick={reset}>
-        <UiText id={"[RETRY]"} />
+        <UiText id={"RETRY"} />
       </button>
       <Link className="button" href="/collection/">
-        <UiText id={"[COLLECTION]"} />
+        <UiText id={"COLLECTION"} />
       </Link>
     </section>
   );

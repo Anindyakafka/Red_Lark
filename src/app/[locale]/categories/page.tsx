@@ -19,7 +19,7 @@ export default function Categories() {
         <div className="category-grid">
           {categories.map((category, index) => (
             <Link key={category.slug} href={`/category/${category.slug}/`}>
-              <span>[{String(index + 1).padStart(2, "0")}]</span>
+              <span>{String(index + 1).padStart(2, "0")}</span>
               <span className="category-label">{category.label}</span>
               <span>
                 {posters.filter((poster) => poster.categories.includes(category.slug)).length}

@@ -17,13 +17,13 @@ export default async function Blog({ params }: { params: Promise<{ locale: strin
       />
       <div className="content-width">
         <p className="notice">
-          <UiText id="[EDITORIAL PLACEHOLDERS] These are draft guides and interview questions, not reports or attributed artist interviews." />
+          <UiText id="EDITORIAL PLACEHOLDERS These are draft guides and interview questions, not reports or attributed artist interviews." />
         </p>
         <div className="index-grid">
           {posts.map((post) => (
             <article className="index-card" key={post.slug} lang={post.language}>
               <p className="label">
-                [PLACEHOLDER] / {post.date}
+                PLACEHOLDER / {post.date}
                 {!post.reviewed ? " / DRAFT TRANSLATION" : ""}
               </p>
               <h2>

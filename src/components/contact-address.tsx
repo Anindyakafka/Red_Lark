@@ -11,11 +11,11 @@ export function ContactAddress({ email }: { email: string }) {
     return (
       <p className="contact-placeholder">
         <strong>
-          <UiText id="[CONTACT ADDRESS NOT SET]" />
+          <UiText id="CONTACT ADDRESS NOT SET" />
         </strong>
       </p>
     );
-  const readable = clean.replace("@", " [at] ").replaceAll(".", " [dot] ");
+  const readable = clean.replace("@", " at ").replaceAll(".", " dot ");
   return (
     <p>
       <span className="sr-only">

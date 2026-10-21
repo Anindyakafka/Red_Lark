@@ -128,7 +128,7 @@ function useAction() {
 function Alert({ text }: { text: string }) {
   return text ? (
     <p className="notice failure" role="alert">
-      [ERROR] {text}
+      ERROR {text}
     </p>
   ) : null;
 }
@@ -372,6 +372,11 @@ export function MfaPanel({ onVerified }: { onVerified?: () => void } = {}) {
       <h2>{t("Account security")}</h2>
       <p>
         {t(
+          "Admin verification lasts up to 24 hours in this signed-in browser. Signing out or using another browser requires verification again.",
+        )}
+      </p>
+      <p>
+        {t(
           "Administration requires TOTP and a fresh six-digit authenticator code. Your authenticator secret is shown only during setup.",
         )}
       </p>
@@ -458,7 +463,7 @@ export function MfaPanel({ onVerified }: { onVerified?: () => void } = {}) {
               name="code"
               inputMode="numeric"
               autoComplete="one-time-code"
-              pattern="[0-9]{6}"
+              pattern="0-9{6}"
               minLength={6}
               maxLength={6}
               required
@@ -899,7 +904,7 @@ export function UploadPanel({
   const fieldError = (name: string) =>
     fieldErrors[name] ? (
       <span className="field-error" id={"upload-" + name + "-error"}>
-        [ERROR] {fieldErrors[name]}
+        ERROR {fieldErrors[name]}
       </span>
     ) : null;
   useEffect(() => {

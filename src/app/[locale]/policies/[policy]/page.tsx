@@ -31,7 +31,7 @@ export default async function Policy({
       <h1>{policy === "ai-policy" ? copy.aiHeading : article.title}</h1>
       {locale !== "en" && (
         <p className="notice" lang="en">
-          [DRAFT TRANSLATION / ENGLISH FALLBACK — NEEDS NATIVE REVIEW]
+          DRAFT TRANSLATION / ENGLISH FALLBACK — NEEDS NATIVE REVIEW
         </p>
       )}
       {policy === "ai-policy" ? (

@@ -1,4 +1,5 @@
 import { createClient, type Session, type SupabaseClient, type User } from "@supabase/supabase-js";
+import { adminMfaFresh, type AssuranceClaims } from "./admin-mfa.ts";
 import {
   ApiError,
   cookie,
@@ -147,18 +148,9 @@ export async function identity(req: Request): Promise<Identity> {
   // Auth validated the token above. Claims are inspected only after that verification.
   const claims = JSON.parse(
     Buffer.from(tokens.access_token.split(".")[1], "base64url").toString(),
-  ) as { aal?: string; amr?: { method: string; timestamp: number }[] };
+  ) as AssuranceClaims;
   const aal2 = claims.aal === "aal2";
-  const fresh =
-    aal2 &&
-    Boolean(
-      claims.amr?.some(
-        (x) =>
-          x.method === "totp" &&
-          x.timestamp * 1000 >= Date.now() - 600000 &&
-          x.timestamp * 1000 <= Date.now() + 30000,
-      ),
-    );
+  const fresh = adminMfaFresh(claims);
   return { user: verified.data.user, client, tokenHash, tokens, admin, aal2, fresh };
 }
 export function requireAdmin(who: Identity, fresh = true) {

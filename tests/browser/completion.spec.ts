@@ -61,7 +61,7 @@ test("touch pinch changes zoom and mobile controls stay usable", async ({ browse
   });
   await cdp.send("Input.dispatchTouchEvent", { type: "touchEnd", touchPoints: [] });
   await expect(page.locator(".paper-wrap")).not.toHaveAttribute("style", /width: 100%/);
-  await page.getByRole("button", { name: "[ELEMENTS]", exact: true }).click();
+  await page.getByRole("button", { name: "ELEMENTS", exact: true }).click();
   await page.getByRole("button", { name: "+ RECTANGLE", exact: true }).click();
   await expect(page.getByLabel("width", { exact: true })).toBeVisible();
   await context.close();
@@ -69,7 +69,7 @@ test("touch pinch changes zoom and mobile controls stay usable", async ({ browse
 test("bad remix source, print modes and shared source credits are handled", async ({ page }) => {
   await page.goto("/studio/?remix=missing-source");
   await expect(page.locator("main [role=alert]")).toContainText("REMIX BLOCKED");
-  await page.getByRole("button", { name: "[START FRESH]", exact: true }).click();
+  await page.getByRole("button", { name: "START FRESH", exact: true }).click();
   await expect(page.locator(".studio-paper")).toBeVisible();
   await page.getByLabel("Print mode").selectOption("1");
   await expect(page.getByLabel("Separation preview").locator("option")).toHaveCount(2);
@@ -77,7 +77,7 @@ test("bad remix source, print modes and shared source credits are handled", asyn
   await expect(page.locator(".studio-paper metadata")).toContainText("USER ADDITIONS");
   await page.goto(`/studio/?remix=${posters[0].slug}`);
   await expect(page.locator(".studio-paper")).toBeVisible();
-  await page.getByRole("button", { name: "[SHARE LINK]", exact: true }).click();
+  await page.getByRole("button", { name: "SHARE LINK", exact: true }).click();
   const link = await page.locator(".share-input").inputValue();
   const other = await page.context().newPage();
   await other.goto(link);

@@ -1,5 +1,19 @@
 # RED LARK WORKSHOP: staged implementation plan
 
+## Contribution navigation and one-day admin verification
+
+| Work                          | Status      | Evidence                                                                                                     |
+| ----------------------------- | ----------- | ------------------------------------------------------------------------------------------------------------ |
+| Landing contribution CTA      | PASS        | Contribute immediately after Open Studio; navigation-session browser checks                                  |
+| Public account entry          | PASS        | Header Log in / Sign up restored; account menu dismissal regression passes                                   |
+| Admin badge                   | PASS        | Numeric pending count only when available; no exclamation mark                                               |
+| One-day MFA                   | PASS        | Owner explicitly chose 24 hours; API + new migration 202610210011 match; unit/RLS boundaries pass            |
+| Language controls and labels  | PASS        | 20 locale/width geometry + axe checks; 396 HTML files contain no rendered brackets; saved comparisons viewed |
+| Final UI/session verification | PASS        | 71 unit/copy/RLS and 249 unique browser tests after targeted rerun; disposable hosted refresh proof          |
+| Performance verification      | IN PROGRESS | Three cold-cache mobile runs per English/Hindi Home, Collection and Poster                                   |
+
+The requested one-day window supersedes prior ten-minute instructions. A new login/browser or logout still requires MFA; expiry is measured from TOTP verification, not extended on page visits.
+
 ## Staff invitation repair
 
 | Work                                     | Status | Evidence                                                                                                         |

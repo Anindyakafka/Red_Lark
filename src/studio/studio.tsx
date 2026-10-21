@@ -45,7 +45,7 @@ export default function Studio() {
   const [ready, setReady] = useState(false);
   const [autosaveEnabled, setAutosaveEnabled] = useState(false);
   const [selected, setSelected] = useState<string | null>("headline");
-  const [status, setStatus] = useState("[LOADING] Preparing same-origin fonts and assets…");
+  const [status, setStatus] = useState("LOADING Preparing same-origin fonts and assets…");
   const [failure, setFailure] = useState("");
   const [busy, setBusy] = useState(false);
   const [storageAvailable, setStorageAvailable] = useState(true);
@@ -84,7 +84,7 @@ export default function Studio() {
       try {
         if (!window.PointerEvent || !window.Blob || !window.DOMParser)
           throw new Error(
-            "[UNSUPPORTED BROWSER] Use a recent browser with SVG, Pointer Events and file downloads.",
+            "UNSUPPORTED BROWSER Use a recent browser with SVG, Pointer Events and file downloads.",
           );
         const load = async (path: string) => {
           const r = await fetch(path).catch(() => {
@@ -124,7 +124,7 @@ export default function Studio() {
               restoreRef.current = stored;
             } else
               setStatus(
-                "[DRAFT NOT RESTORED] The saved version is unsupported. Start fresh or use a saved export.",
+                "DRAFT NOT RESTORED The saved version is unsupported. Start fresh or use a saved export.",
               );
           }
           // Read existing designs even when writes are unavailable. Opening
@@ -138,13 +138,11 @@ export default function Studio() {
         let chosen = stored;
         if (location.hash.startsWith("#design=")) {
           chosen = verifySources(decodeScene(location.hash.slice(8)));
-          setStatus("[SHARED DESIGN] Anyone with this link can read its contents.");
+          setStatus("SHARED DESIGN Anyone with this link can read its contents.");
         } else if (remix) {
           const poster = posters.find((p) => p.slug === remix);
           if (!poster || !canRemix(poster) || (!poster.studioLayers && !poster.remixImage))
-            throw new Error(
-              "[REMIX BLOCKED] This poster is missing or does not permit derivatives.",
-            );
+            throw new Error("REMIX BLOCKED This poster is missing or does not permit derivatives.");
           if (poster.studioLayers) chosen = structuredClone(poster.studioLayers);
           else {
             if (!poster.remixImage?.startsWith("https://files.redlarkworkshop.com/works/"))
@@ -174,13 +172,13 @@ export default function Studio() {
           const credit = sourceCredit(poster, artistFor(poster.artist).name);
           chosen.layers = chosen.layers.map((l) => ({ ...l, credit }));
           setStatus(
-            `[REMIX READY] ${poster.title} / ${poster.license}. Source credits are retained.`,
+            `REMIX READY ${poster.title} / ${poster.license}. Source credits are retained.`,
           );
         } else
           setStatus(
             stored
-              ? "[RESTORED] Your latest browser-local draft is ready."
-              : "[READY] Your draft autosaves in this browser. Nothing is uploaded.",
+              ? "RESTORED Your latest browser-local draft is ready."
+              : "READY Your draft autosaves in this browser. Nothing is uploaded.",
           );
         if (chosen) {
           sceneSvg(chosen, { display, mono, indic });
@@ -192,7 +190,7 @@ export default function Studio() {
         if (!cancelled) {
           setFailure(error instanceof Error ? error.message : "The Studio could not load.");
           setStatus(
-            "[LOAD FAILED] Your existing local draft is preserved. Restore it or choose Start fresh.",
+            "LOAD FAILED Your existing local draft is preserved. Restore it or choose Start fresh.",
           );
           setReady(true);
         }
@@ -244,7 +242,7 @@ export default function Studio() {
           ),
         });
         setStatus(
-          "[INK REPLACED] This print mode is full. The matching ink was replaced throughout the composition.",
+          "INK REPLACED This print mode is full. The matching ink was replaced throughout the composition.",
         );
         return;
       }
@@ -311,7 +309,7 @@ export default function Studio() {
   }, [selectedLayer, patch, duplicate, remove]);
   function add(kind: Layer["kind"]) {
     if (scene.layers.length >= 80) {
-      setFailure("[LIMIT] This Studio supports up to 80 layers.");
+      setFailure("LIMIT This Studio supports up to 80 layers.");
       return;
     }
     const layer = newLayer(kind);
@@ -323,7 +321,7 @@ export default function Studio() {
   }
   function addSource(slug: string) {
     if (scene.layers.length >= 80) {
-      setFailure("[LIMIT] This Studio supports up to 80 layers.");
+      setFailure("LIMIT This Studio supports up to 80 layers.");
       return;
     }
     const p = posters.find((p) => p.slug === slug);
@@ -498,7 +496,7 @@ export default function Studio() {
   async function upload(file: File | undefined) {
     if (!file) return;
     if (scene.layers.length >= 80) {
-      setFailure("[LIMIT] Remove a layer before adding an image.");
+      setFailure("LIMIT Remove a layer before adding an image.");
       return;
     }
     setBusy(true);
@@ -519,7 +517,7 @@ export default function Studio() {
       commit({ ...scene, layers: [...scene.layers, layer] });
       setSelected(layer.id);
       setStatus(
-        "[IMAGE IMPORTED] EXIF/GPS discarded by local PNG re-encoding. Visible image contents can still identify people. Uploads do not leave your browser.",
+        "IMAGE IMPORTED EXIF/GPS discarded by local PNG re-encoding. Visible image contents can still identify people. Uploads do not leave your browser.",
       );
     } catch (error) {
       setFailure(error instanceof Error ? error.message : "Image import failed.");
@@ -532,14 +530,14 @@ export default function Studio() {
     if (!fonts) return;
     setBusy(true);
     setFailure("");
-    setStatus(`[EXPORTING ${format}] Preparing your file…`);
+    setStatus(`EXPORTING ${format} Preparing your file…`);
     try {
       verifySources(scene);
       await exportFile(scene, fonts, format);
-      setStatus(`[EXPORTED ${format}] Check the file and a sample print. Credits are included.`);
+      setStatus(`EXPORTED ${format} Check the file and a sample print. Credits are included.`);
     } catch (error) {
       setFailure(
-        `[EXPORT FAILED] ${error instanceof Error ? error.message : "Try a smaller preset or SVG."}`,
+        `EXPORT FAILED ${error instanceof Error ? error.message : "Try a smaller preset or SVG."}`,
       );
       setStatus("Your draft is still here. Choose another format or retry.");
     } finally {
@@ -554,7 +552,7 @@ export default function Studio() {
       setShareLink(link);
       if (navigator.clipboard) await navigator.clipboard.writeText(link);
       setStatus(
-        "[SHARE LINK READY] Anyone with the link can read this design. It contains no uploaded image.",
+        "SHARE LINK READY Anyone with the link can read this design. It contains no uploaded image.",
       );
     } catch (error) {
       setFailure(
@@ -575,7 +573,7 @@ export default function Studio() {
     } catch {
       setStorageAvailable(false);
     }
-    setStatus("[FRESH START] Previous draft removed. This new composition will autosave locally.");
+    setStatus("FRESH START Previous draft removed. This new composition will autosave locally.");
   }
   function historyReplace() {
     window.history.replaceState(null, "", location.pathname);
@@ -588,10 +586,10 @@ export default function Studio() {
       <div className="studio-loading" role="status">
         <p>{failure || status}</p>
         <button className="button" onClick={() => location.reload()}>
-          <UiText id={"[RETRY]"} />
+          <UiText id={"RETRY"} />
         </button>
         <Link className="button" href="/collection/">
-          <UiText id={"[DOWNLOAD A POSTER]"} />
+          <UiText id={"DOWNLOAD A POSTER"} />
         </Link>
       </div>
     );
@@ -609,35 +607,35 @@ export default function Studio() {
             onClick={() => dispatch({ type: "undo" })}
             disabled={!history.past.length || busy}
           >
-            <UiText id={"[UNDO]"} />
+            <UiText id={"UNDO"} />
           </button>
           <button
             onClick={() => dispatch({ type: "redo" })}
             disabled={!history.future.length || busy}
           >
-            <UiText id={"[REDO]"} />
+            <UiText id={"REDO"} />
           </button>
           <button onClick={fresh} disabled={busy}>
-            <UiText id={"[START FRESH]"} />
+            <UiText id={"START FRESH"} />
           </button>
           <button
             onClick={() => {
               if (restoreRef.current) {
                 commit(structuredClone(restoreRef.current));
-                setStatus("[RESTORED] The draft saved when you opened this session.");
+                setStatus("RESTORED The draft saved when you opened this session.");
               }
             }}
             disabled={!restoreRef.current || busy}
           >
-            <UiText id={"[RESTORE]"} />
+            <UiText id={"RESTORE"} />
           </button>
         </div>
         <div>
           <button onClick={() => void share()} disabled={busy}>
-            <UiText id={"[SHARE LINK]"} />
+            <UiText id={"SHARE LINK"} />
           </button>
           <button className="accent" onClick={() => void exportNow("PDF")} disabled={busy}>
-            <UiText id={"[EXPORT PDF] ↓"} />
+            <UiText id={"EXPORT PDF ↓"} />
           </button>
           <button className="accent" onClick={() => void exportNow("PNG")} disabled={busy}>
             <UiText id="Download for Free" /> ↓
@@ -656,7 +654,7 @@ export default function Studio() {
       {!storageAvailable && (
         <p className="studio-notice failure" role="status">
           <UiText
-            id={"[STORAGE UNAVAILABLE] Your draft cannot autosave. Export a file before leaving."}
+            id={"STORAGE UNAVAILABLE Your draft cannot autosave. Export a file before leaving."}
           />
         </p>
       )}
@@ -677,7 +675,7 @@ export default function Studio() {
           aria-labelledby="studio-elements-heading"
         >
           <h2 id="studio-elements-heading">
-            <UiText id={"[01] ELEMENTS"} />
+            <UiText id={"01 ELEMENTS"} />
           </h2>
           <div className="element-buttons">
             {(
@@ -705,7 +703,7 @@ export default function Studio() {
             onChange={(e) => void upload(e.target.files?.[0])}
           />
           <button onClick={() => uploadRef.current?.click()} disabled={busy}>
-            <UiText id={"[IMPORT IMAGE]"} />
+            <UiText id={"IMPORT IMAGE"} />
           </button>
           <p className="small">
             <UiText
@@ -765,7 +763,7 @@ export default function Studio() {
               ))}
           </div>
           <h3>
-            <UiText id={"[LAYERS] TOP FIRST"} />
+            <UiText id={"LAYERS TOP FIRST"} />
           </h3>
           <div className="layer-list">
             {[...scene.layers].reverse().map((l, i) => (
@@ -778,7 +776,7 @@ export default function Studio() {
                     setMobileTab("controls");
                   }}
                 >
-                  {l.name} {l.hidden ? "[HIDDEN]" : ""}
+                  {l.name} {l.hidden ? "HIDDEN" : ""}
                 </button>
                 <div>
                   <button
@@ -855,10 +853,10 @@ export default function Studio() {
               <span>{Math.round(zoom * 100)}%</span>
             </label>
             <button aria-pressed={pan} onClick={() => setPan(!pan)}>
-              [{pan ? "PAN ON" : "PAN"}]
+              {pan ? "PAN ON" : "PAN"}
             </button>
             <button aria-pressed={snap} onClick={() => setSnap(!snap)}>
-              [{snap ? "SNAP ON" : "SNAP OFF"}]
+              {snap ? "SNAP ON" : "SNAP OFF"}
             </button>
             <button
               onClick={() => {
@@ -869,7 +867,7 @@ export default function Studio() {
                 }
               }}
             >
-              <UiText id={"[FIT]"} />
+              <UiText id={"FIT"} />
             </button>
           </div>
           <div
@@ -1002,7 +1000,7 @@ export default function Studio() {
           </p>
           {!scene.layers.length && (
             <div className="notice">
-              <UiText id={"[EMPTY CANVAS] Add an element from the shelf."} />
+              <UiText id={"EMPTY CANVAS Add an element from the shelf."} />
             </div>
           )}
         </div>
@@ -1011,7 +1009,7 @@ export default function Studio() {
           aria-labelledby="studio-controls-heading"
         >
           <h2 id="studio-controls-heading">
-            <UiText id={"[02] CONTROLS"} />
+            <UiText id={"02 CONTROLS"} />
           </h2>
           <label className="control">
             <UiText id={"Paper colour"} />
@@ -1024,7 +1022,7 @@ export default function Studio() {
           {selectedLayer ? (
             <fieldset disabled={selectedLayer.locked || busy}>
               <legend>
-                {selectedLayer.name} {selectedLayer.locked ? "[LOCKED]" : ""}
+                {selectedLayer.name} {selectedLayer.locked ? "LOCKED" : ""}
               </legend>
               <label className="control">
                 <UiText id={"Layer name"} />
@@ -1126,10 +1124,10 @@ export default function Studio() {
                 ))}
               </div>
               <button onClick={duplicate}>
-                <UiText id={"[DUPLICATE]"} />
+                <UiText id={"DUPLICATE"} />
               </button>
               <button className="remove" onClick={remove}>
-                <UiText id={"[REMOVE LAYER]"} />
+                <UiText id={"REMOVE LAYER"} />
               </button>
               {selectedLayer.credit && (
                 <p className="small">
@@ -1148,7 +1146,7 @@ export default function Studio() {
             </p>
           )}
           <h3>
-            <UiText id={"[EXPORT]"} />
+            <UiText id={"EXPORT"} />
           </h3>
           <div className="export-buttons">
             {(["PDF", "PNG", "SVG", "TILED", "SEPARATIONS"] as const).map((format) => (
@@ -1172,7 +1170,7 @@ export default function Studio() {
           </p>
           <details>
             <summary>
-              <UiText id={"[CREDITS / SHORTCUTS]"} />
+              <UiText id={"CREDITS / SHORTCUTS"} />
             </summary>
             {creditLines(scene).map((line, i) => (
               <p className="small" key={i}>
@@ -1192,11 +1190,11 @@ export default function Studio() {
       <nav className="studio-mobile-toolbar" aria-label="Studio mobile tools">
         {["elements", "canvas", "controls"].map((tab) => (
           <button key={tab} aria-pressed={mobileTab === tab} onClick={() => setMobileTab(tab)}>
-            [{tab.toUpperCase()}]
+            {tab.toUpperCase()}
           </button>
         ))}
         <button onClick={() => void exportNow("PDF")} disabled={busy}>
-          <UiText id={"[EXPORT]"} />
+          <UiText id={"EXPORT"} />
         </button>
       </nav>
     </section>

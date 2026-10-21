@@ -14,7 +14,7 @@ export default function Page() {
   return (
     <section className="prose">
       <p className="label">
-        <UiText id={"[THANK YOU]"} />
+        <UiText id={"THANK YOU"} />
       </p>
       <h1>
         <UiText id={"READY IN YOUR HANDS."} />
@@ -34,10 +34,10 @@ export default function Page() {
         />
       </p>
       <Link className="button accent" href="/contact">
-        <UiText id={"[BACK TO CONTACT] ↗"} />
+        <UiText id={"BACK TO CONTACT ↗"} />
       </Link>
       <Link className="button" href="/collection">
-        <UiText id={"[BROWSE COLLECTION] ↗"} />
+        <UiText id={"BROWSE COLLECTION ↗"} />
       </Link>
     </section>
   );

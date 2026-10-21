@@ -40,8 +40,8 @@ export default async function Page({
     <article className="poster-detail">
       <header className="mobile-poster-intro">
         <p className="label">
-          <UiText id={"[POSTER /"} />
-          {p.placeholder ? "PLACEHOLDER" : "PUBLISHED"} / {p.license}]
+          <UiText id={"POSTER /"} />
+          {p.placeholder ? "PLACEHOLDER" : "PUBLISHED"} / {p.license}
         </p>
         <p className="mobile-poster-title">{p.titleOriginal ?? p.title}</p>
         <a href="#downloads" className="button accent">
@@ -56,7 +56,7 @@ export default async function Page({
           <UiText id={"← COLLECTION"} />
         </Link>
         <p className="label">
-          [{p.placeholder ? "PLACEHOLDER" : "PUBLISHED"}] / {p.year} / {p.languages.join(" / ")}
+          {p.placeholder ? "PLACEHOLDER" : "PUBLISHED"} / {p.year} / {p.languages.join(" / ")}
         </p>
         <h1 className="desktop-poster-title">{p.titleOriginal ?? p.title}</h1>
         {p.titleOriginal && <p className="detail-translation">{p.title}</p>}
@@ -72,7 +72,7 @@ export default async function Page({
         <p>{p.caption}</p>
         {Object.values(p.translations ?? {}).some((translation) => !translation.reviewed) && (
           <p className="notice">
-            <UiText id="[DRAFT TRANSLATION — NEEDS NATIVE REVIEW]" />
+            <UiText id="DRAFT TRANSLATION — NEEDS NATIVE REVIEW" />
           </p>
         )}
         <dl className="work-specifications">
@@ -134,7 +134,7 @@ export default async function Page({
             <UiText id="AI-use disclosure" />
           </h2>
           <p>
-            <strong>[{p.aiUse.toUpperCase()}]</strong> {p.aiDisclosure}
+            <strong>{p.aiUse.toUpperCase()}</strong> {p.aiDisclosure}
           </p>
         </section>
         <ArtistContact
@@ -182,7 +182,7 @@ export default async function Page({
         </section>
         <section className="license-block">
           <h2>
-            <UiText id={"[LICENSE]"} />
+            <UiText id={"LICENSE"} />
           </h2>
           <p>
             <a href={p.licenseUrl} rel="noreferrer" className="underlined">
