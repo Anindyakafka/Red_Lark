@@ -61,6 +61,24 @@ test("contribution review: optional alt, transactional facets, ownership, admin 
       (await db.query("select * from public.work_tags where work_id=$1", [work])).rows.length,
       2,
     );
+    await as("anon");
+    assert.equal(
+      (await db.query("select label from public.tags where label='Local solidarity'")).rows.length,
+      0,
+      "unpublished custom labels are private",
+    );
+    assert.equal(
+      (await db.query("select label from public.tags where label='Protest'")).rows.length,
+      1,
+      "canonical suggestions remain public",
+    );
+    await as("authenticated", other);
+    assert.equal(
+      (await db.query("select label from public.tags where label='Local solidarity'")).rows.length,
+      0,
+      "another contributor cannot enumerate private tags",
+    );
+    await as("authenticated", owner);
     await assert.rejects(
       db.query("select public.save_work_facets($1,$2,$3)", [guest, [], []]),
       "NULL owner never bypasses authorization",
@@ -140,7 +158,27 @@ test("contribution review: optional alt, transactional facets, ownership, admin 
     );
     await as("anon");
     await assert.rejects(db.query("select * from public.work_notifications"));
+    assert.equal(
+      (await db.query("select label from public.tags where label='Renamed custom'")).rows.length,
+      0,
+      "rejected work tags remain private",
+    );
     await assert.rejects(db.query("select public.save_work_facets($1,$2,$3)", [guest, [], []]));
+    await as("service_role");
+    await db.query(
+      "insert into public.work_tags(work_id,tag_slug) select $1,slug from public.tags where label='Renamed custom'",
+      [guest],
+    );
+    await db.query(
+      "update public.works set status='approved',publication_state='published' where id=$1",
+      [guest],
+    );
+    await as("anon");
+    assert.equal(
+      (await db.query("select label from public.tags where label='Renamed custom'")).rows.length,
+      1,
+      "a label becomes public with an approved published work",
+    );
   } finally {
     await db.close();
   }

@@ -1,5 +1,16 @@
 ﻿# Human prerequisites for RED LARK WORKSHOP
 
+## Current owner follow-up (21 October 2026)
+
+The upload/review repairs are implemented and tested locally on redlark. No new Supabase, Cloudflare or Resend resources are required. This list supersedes the older setup/hold checkpoints below.
+
+1. Review and deploy the branch through the normal merge/release flow. Confirm the existing Netlify configuration has PUBLIC_CATALOGUE_ENABLED=1 in Build and Functions and a real NETLIFY_BUILD_HOOK before publishing real works. Migrations 202610210007, 202610210008 and 202610210009 are already applied to the configured project.
+2. Use the existing website admin account and verify a fresh authenticator code, then open /en/admin/review/. Its admin role and enrolled authenticator were confirmed read-only; they do not need to be recreated. For another admin: verify their website email first, then use the admin:grant command in README.md from a trusted configured checkout with their verified email; they must enroll/verify MFA before administration.
+3. After deployment, confirm the new team/contributor notifications reach the intended inboxes and approval completes a real production rebuild. Test transports were intercepted; no production deployment or new notification inbox delivery is claimed. Guest optional contacts are unverified, so guest status is provided by the private receipt instead of emailing arbitrary addresses.
+4. Obtain native review of the new Hindi/Bengali/Malayalam controls, licence/category/tag wording and legal English fallbacks. These remain reviewed:false. Existing legal review, real artist permissions and physical print approval remain human responsibilities.
+
+Detailed workflow: README.md and docs/DEPLOY.md. There are no unresolved engineering failures in the five requested repairs. Earlier historical provider prerequisites should not be read as instructions to re-provision completed infrastructure.
+
 ## Guest contribution checkpoint — 21 October 2026
 
 No new provider configuration or credentials are needed for guests. The additive migration is already applied; deploy the redlark changes, then check real guest upload -> fresh-MFA admin review -> approval/public file in all four locales -> takedown. Real local-browser/private-service upload and receipt acceptance already passed using cleaned-up fixtures. Guest receipt/privacy/admin labels need native hi/bn/ml review; reviewed:false remains. Approve the draft legal wording/90-day receipt retention and artist permissions before a full public launch. Earlier account prerequisites apply to administrators and optional dashboards, not guest contributions.

@@ -1,0 +1,32 @@
+{
+  "date": "2026-10-21",
+  "branch": "redlark",
+  "unitTestsPassed": 64,
+  "browser": {
+    "startTime": "2026-10-21T08:08:29.069Z",
+    "duration": 371534.394,
+    "expected": 202,
+    "skipped": 0,
+    "unexpected": 0,
+    "flaky": 0
+  },
+  "exportedLocalePages": 392,
+  "axeViolations": 0,
+  "buildHtmlPages": 396,
+  "build": "PASS",
+  "typecheck": "PASS",
+  "lint": "PASS",
+  "format": "PASS",
+  "copy": "PASS; Appendix A unchanged",
+  "content": "PASS; checked-in archive still requires alt",
+  "sourceSecretScan": "PASS; changed files since d471a29",
+  "clientSecretScan": "PASS; all static output",
+  "migrationsApplied": [
+    "202610210007_contribution_review.sql",
+    "202610210008_notification_snapshot.sql",
+    "202610210009_private_custom_tags.sql"
+  ],
+  "hostedServices": "Real Supabase/Auth/TOTP/R2; notification and build-hook transports intercepted",
+  "deployment": "Not pushed or deployed by this repair",
+  "evidence": "Before/after screenshots in docs/evidence/upload-repair; complete application and RLS test sources committed"
+}

@@ -1,5 +1,21 @@
 # RED LARK WORKSHOP: staged implementation plan
 
+## Current checkpoint: upload and review repairs (21 October 2026)
+
+All five requested repairs are implemented on redlark. Three additive migrations were applied to the existing project; the owner account and its real pending contribution were left untouched. No service was re-provisioned.
+
+| Work                       | Status | Acceptance                                                                                                                     |
+| -------------------------- | ------ | ------------------------------------------------------------------------------------------------------------------------------ |
+| Optional image description | PASS   | 300-character field, deterministic image fallback, strict archive validation retained                                          |
+| Tags                       | PASS   | Suggested/free-text chips, keyboard/limits/errors, normalized relational rows, custom flag/editing; unpublished labels private |
+| Plain-language licences    | PASS   | Four cards, NC mapping, untouched recommended default and ND gate                                                              |
+| Categories                 | PASS   | Searchable checkbox chips; three DB rows through dashboard/admin to three public category pages in four locales                |
+| Admin review               | PASS   | Visible badge, compact queue, metadata editor, valid decisions, MFA/RLS, durable notification retry, admin:grant               |
+| Final verification         | PASS   | 64 unit/copy/RLS + 202 browser tests; all 392 locale pages axe 0; build/typecheck/lint/format/brand/client-secret checks green |
+| Performance                | PASS   | en landing/collection/poster 95/99/96; hi 97/97/97; all other Lighthouse categories 100; CLS 0                                 |
+
+Evidence: docs/evidence/upload-repair/final.json and CHECKLIST.md. Deployment and production inbox/build-hook confirmation remain owner release steps in TODO_HUMAN.md. Indic drafts retain reviewed:false. Older checkpoints below are historical; their backend holds do not apply to this completed repair.
+
 ## Guest contributions and interaction repair — 21 October 2026
 
 Implemented optional-account contribution flow at every localized Submit/new-work entry. Guests provide the same licence/AI/categories/alt data without creating an Auth identity; artwork uses the shared private signed-PUT/sanitization/print pipeline. Hash-only receipts authorize exactly one work, expire after 90 days and show read-only review feedback. Separate per-field contact/UPI consent remains mandatory for publication. Account dashboards/editing and fresh-MFA administration are preserved. Additive migration 202610210006 was applied to the existing hosted project.
