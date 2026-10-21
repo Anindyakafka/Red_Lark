@@ -1,4 +1,4 @@
-import { UiText } from "@/i18n/client";
+import { Link, UiText } from "@/i18n/client";
 import { localizeMetadata } from "@/i18n/metadata";
 import { PageIntro } from "@/components/page-intro";
 import { UploadPanel } from "@/components/account-client";
@@ -37,9 +37,18 @@ export default function Page() {
           <p>
             <UiText
               id={
-                "Browsing, downloading, the Studio and contributions need no account. Accounts are reserved for invited staff."
+                "Browsing, downloading, the Studio and guest submissions need no account. An optional account lets you manage your contributions."
               }
             />
+          </p>
+          <p>
+            <Link href="/signup">
+              <UiText id="Create a contributor account" />
+            </Link>
+            {" / "}
+            <Link href="/login">
+              <UiText id="Sign in" />
+            </Link>
           </p>
           <ContactAddress email={email} />
           <p>

@@ -1,5 +1,18 @@
 # RED LARK WORKSHOP: staged implementation plan
 
+## Password reset repair and optional accounts clarification
+
+| Work                          | Status | Evidence                                                                                                 |
+| ----------------------------- | ------ | -------------------------------------------------------------------------------------------------------- |
+| Reproduce/reset MFA           | PASS   | password-reset/before.json reproduced insufficient_aal hidden as password_update_failed                  |
+| Password setting with MFA     | PASS   | password-reset/after.json: verify authenticator, change password, revoke old session, new password login |
+| Optional contributor accounts | PASS   | Signup/login/recovery restored, Submit links added; guest flow remains default; no public admin grant    |
+| Final browser verification    | PASS   | Password challenge, signup and review regression checks                                                  |
+
+Keep provider signup ON. Earlier staff-only account and provider-OFF directions are superseded; only administrator privileges are invitation/grant controlled.
+
+Final verification: 67 unit/copy/RLS and 51 focused browser checks PASS; typecheck/lint/format/build/content/brand/canonical/client-secret checks PASS. Password/MFA checks cover en/hi at 390 and 1440 px with axe 0 and no page overflow. Real disposable recovery session verified against the configured Supabase project; no real email or password was used. Evidence: docs/evidence/password-reset/. Prior full-browser/Lighthouse evidence is retained for unchanged public-page scope; not represented as rerun here.
+
 ## Staff access and review reliability (21 October 2026)
 
 | Work            | Status | Acceptance                                                                                                          |

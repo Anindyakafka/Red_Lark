@@ -5,8 +5,8 @@ import { PageIntro } from "@/components/page-intro";
 import { pageMeta } from "@/lib/metadata";
 import { localizeMetadata } from "@/i18n/metadata";
 const services = {
-  login: "Staff login",
-  signup: "Staff accounts are invitation only.",
+  login: "Sign in",
+  signup: "Create a contributor account",
   "forgot-password": "Password reset request",
   "reset-password": "Set a new password",
   admin: "Admin review",
@@ -26,7 +26,7 @@ export default async function Service({ params }: { params: Promise<{ service: s
       <PageIntro
         index="ACCOUNT"
         title={services[service as keyof typeof services]}
-        description="Browsing, downloading, the Studio and contributions need no account. Accounts are reserved for invited staff."
+        description="Browsing, downloading, the Studio and guest submissions need no account. An optional account lets you manage your contributions."
         action="Browse collection"
         href="/collection"
       />
@@ -56,7 +56,7 @@ export async function generateMetadata({
     ...localizeMetadata(
       pageMeta(
         services[service as keyof typeof services] ?? "Unavailable service",
-        `${services[service as keyof typeof services]} for invited staff. Browse, contribute and use the Studio without signing in.`,
+        `${services[service as keyof typeof services]} for contributors and staff. Browse, contribute and use the Studio without signing in.`,
         `/${service}`,
       ),
       locale,

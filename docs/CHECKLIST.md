@@ -1,5 +1,19 @@
 # Current acceptance checklist
 
+## Password reset and optional contributor accounts
+
+| Item                            | Status | Evidence                                                                                                              |
+| ------------------------------- | ------ | --------------------------------------------------------------------------------------------------------------------- |
+| MFA password failure reproduced | PASS   | docs/evidence/password-reset/before.json: insufficient_aal -> old generic update error                                |
+| MFA-preserving password change  | PASS   | docs/evidence/password-reset/after.json: code verification, password updated, old session revoked, new password works |
+| Clear password failure states   | PASS   | passwordError maps same/weak/stale-session/MFA cases; password remains in page memory only                            |
+| Contributor signup optional     | PASS   | Public signup/login/recovery restored, guest upload unchanged, staff grant and MFA/RLS unchanged                      |
+| Final browser regression        | PASS   | tests/browser/password-reset.spec.ts plus existing suite                                                              |
+
+The earlier provider signup FAIL row is superseded: keeping public signup enabled is now the owner's explicit requirement.
+
+Final verification: 67 unit/copy/RLS and 51 focused browser checks PASS; typecheck/lint/format/build/content/brand/canonical/client-secret checks PASS. Password/MFA checks cover en/hi at 390 and 1440 px with axe 0 and no page overflow. Real disposable recovery session verified against the configured Supabase project; no real email or password was used. Evidence: docs/evidence/password-reset/. Prior full-browser/Lighthouse evidence is retained for unchanged public-page scope; not represented as rerun here.
+
 ## Staff-only release verification (21 October 2026)
 
 | Item                              | Status | Evidence / limit                                                                                                                             |

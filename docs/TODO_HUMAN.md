@@ -1,8 +1,16 @@
 ﻿# Human prerequisites for RED LARK WORKSHOP
 
+## Current instructions: optional contributor accounts and password repair
+
+**Leave Supabase Allow new users to sign up ON.** This supersedes every earlier instruction below to turn it off. Contributors may create an optional account; guest contributions remain the default and never require login. Only admin roles require a controlled grant/invitation and mandatory authenticator verification. Existing admin passwords do not require disabling public signup.
+
+After the updated PR is merged and deployed: Staff login (or the Sign in link on Submit) -> Forgot password -> open the reset link in the same browser -> enter your new password. If your account has MFA, verify the authenticator code shown directly on the password page, then click Set new password again. No password, email link or authenticator secret should be sent in chat. A lost authenticator still requires a separate identity-verified recovery process; this fix does not bypass it.
+
+Merge/deployment confirmation, native review of draft translations, and legal review remain human steps. No Supabase setting, real account or real password was changed during testing.
+
 ## Staff-only release follow-up (21 October 2026)
 
-- **Supabase:** Authentication -> Sign In / Providers -> **Allow new users to sign up: OFF** -> Save. Hosted read-only settings found it ON. Both website signup APIs already deny requests; this additional provider switch blocks direct public Auth signup. It cannot be changed with the configured project API keys. [done, but I want contributors to sign in if they want just not as admins of course, wouldn't this block that?]
+- **Supabase:** Authentication -> Sign In / Providers -> **Allow new users to sign up: OFF** -> Save. Hosted read-only settings found it ON. Both website signup APIs already deny requests; this additional provider switch blocks direct public Auth signup. It cannot be changed with the configured project API keys.
 - **Merge/deploy:** merge the prepared redlark pull request into main, then let Netlify deploy. Migration 202610210010_staff_access.sql is applied. Existing staff accounts and real artwork are untouched. Automated review acceptance uses disposable artwork.
 - **Your password:** Staff login -> Forgot password? -> reset in the same browser -> Use a password instead. Keep mandatory authenticator verification. Never send a password, PIN or verification link in chat.
 - **Future staff:** run `npm run admin:invite -- <staff-email>` from the trusted checkout. No real invitation has been sent during testing. Existing verified website accounts use admin:grant instead.

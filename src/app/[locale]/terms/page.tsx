@@ -55,7 +55,7 @@ export default function Page() {
       <p>
         <UiText
           id={
-            "You must own submitted artwork or have permission to share it, and supply credit, an explicit licence and a source. Private uploads accept account-free submissions; invited staff can also upload through their dashboard. An administrator reviews licence, credit, AI disclosure and consent before approval. Approval requests publication; it does not guarantee a review time or automatic inclusion in a curated gallery."
+            "You must own submitted artwork or have permission to share it, and supply credit, an explicit licence and a source. Private uploads accept guest submissions or verified contributor accounts. An administrator reviews licence, credit, AI disclosure and consent before approval. Approval requests publication; it does not guarantee a review time or automatic inclusion in a curated gallery."
           }
         />
       </p>

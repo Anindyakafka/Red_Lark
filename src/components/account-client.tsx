@@ -22,8 +22,16 @@ const errors: Record<string, string> = {
     "The service is unavailable. Your form has not been submitted. Please try again.",
   try_later: "Too many requests. Please try again later.",
   invalid_password: "Use a password between 12 and 128 characters.",
+  password_mfa_required:
+    "Verify your authenticator code, then click Set new password again. Your entered password is still here.",
+  password_unchanged: "Choose a different password. This is already your current password.",
+  password_too_weak:
+    "Choose a stronger password of 12 to 128 characters, including uppercase and lowercase letters, a number and a symbol. Avoid common or previously breached passwords.",
+  password_reauthentication_required:
+    "Request a fresh password reset link and open it in this browser before setting your password.",
+  password_update_failed:
+    "Your password could not be updated. Try again, or request a fresh reset link. Do not share your password with the team.",
   fresh_mfa_required: "Verify a fresh authenticator code to use administration.",
-  signup_disabled: "Staff accounts are invitation only. You can contribute without an account.",
   invalid_transition:
     "This artwork has already changed status. Reload the review queue before making another decision.",
   invalid_reason: "Explain the decision in at least ten characters (up to 3000).",
@@ -113,7 +121,7 @@ function useAction() {
       setBusy(false);
     }
   }
-  return { busy, failure, run };
+  return { busy, failure, run, clear: () => setFailure("") };
 }
 function Alert({ text }: { text: string }) {
   return text ? (
@@ -135,27 +143,14 @@ export function AuthForm({
     [inbox, setInbox] = useState(false),
     [reset, setReset] = useState(false);
   const [linkFailure, setLinkFailure] = useState(false);
+  const [passwordMfa, setPasswordMfa] = useState(false);
+  const [passwordNotice, setPasswordNotice] = useState("");
   const [passwordMode, setPasswordMode] = useState(
     mode === "reset-password" || mode === "forgot-password",
   );
   useEffect(() => {
     if (new URLSearchParams(location.search).get("error") === "link_expired") setLinkFailure(true);
   }, []);
-  if (mode === "signup")
-    return (
-      <section className="notice">
-        <h2>{t("Staff accounts are invitation only.")}</h2>
-        <p>
-          {t(
-            "You can upload artwork without an account. Staff access is arranged directly by the team.",
-          )}
-        </p>
-        <Link className="button accent" href="/submit">
-          {t("Submit a poster")}
-        </Link>
-        <Link href="/login">{t("Staff login")}</Link>
-      </section>
-    );
   async function submit(
     event: FormEvent<HTMLFormElement>,
     magic = !passwordMode && (mode === "login" || mode === "signup"),
@@ -190,7 +185,13 @@ export function AuthForm({
           : mode === "reset-password"
             ? "reset"
             : mode;
-      await api(`auth/${path}`, { email: address, password, locale });
+      try {
+        await api(`auth/${path}`, { email: address, password, locale });
+      } catch (error) {
+        if (error instanceof Error && error.message === "password_mfa_required")
+          setPasswordMfa(true);
+        throw error;
+      }
       if (mode === "reset-password") {
         setReset(true);
         window.dispatchEvent(new Event("redlark:session"));
@@ -225,102 +226,127 @@ export function AuthForm({
       </p>
     );
   return (
-    <form method="post" ref={form} className="handoff-form" noValidate onSubmit={submit}>
-      <noscript>
-        <p className="notice">
-          {t("Enable JavaScript to use account forms. Form fields are never submitted in a URL.")}
-        </p>
-      </noscript>
-      <p>
-        {t(
-          "Browsing, downloading, the Studio and contributions need no account. Accounts are reserved for invited staff.",
-        )}
-      </p>
-      {mode !== "reset-password" && (
-        <label className="form-field" htmlFor="auth-email">
-          {t("Email")}
-          <input
-            id="auth-email"
-            name="email"
-            type="email"
-            autoComplete="email"
-            required
-            aria-invalid={!!fieldErrors.email}
-            aria-describedby={fieldErrors.email ? "auth-email-error" : undefined}
-          />
-          {fieldErrors.email && (
-            <span id="auth-email-error" className="field-error">
-              {fieldErrors.email}
-            </span>
-          )}
-        </label>
-      )}
-      {mode !== "forgot-password" && passwordMode && (
-        <label className="form-field" htmlFor="auth-password">
-          {t("Password")}
-          <input
-            id="auth-password"
-            name="password"
-            type="password"
-            autoComplete={mode === "login" ? "current-password" : "new-password"}
-            minLength={mode === "login" ? 1 : 12}
-            maxLength={128}
-            required
-            aria-invalid={!!fieldErrors.password}
-            aria-describedby={fieldErrors.password ? "auth-password-error" : undefined}
-          />
-          {fieldErrors.password && (
-            <span id="auth-password-error" className="field-error">
-              {fieldErrors.password}
-            </span>
-          )}
-        </label>
-      )}
-      {!!Object.keys(fieldErrors).length && (
-        <p role="alert">
-          {t("Check the highlighted fields. Errors are written beside each field.")}
-        </p>
-      )}
-      <Alert text={action.failure || (linkFailure ? t(errorMessage("link_expired")) : "")} />
-      <button className="button accent" disabled={action.busy}>
-        {t(
-          action.busy
-            ? "Working…"
-            : mode === "login"
-              ? passwordMode
-                ? "Sign in"
-                : "Email me a sign-in link"
-              : mode === "forgot-password"
-                ? "Send reset link"
-                : "Set new password",
-        )}
-      </button>
-      {mode === "login" && (
-        <>
-          <button
-            type="button"
-            className="button"
-            disabled={action.busy}
-            onClick={() => {
-              setPasswordMode((value) => !value);
-              setFieldErrors({});
+    <>
+      {passwordMfa && (
+        <section aria-label={t("Verify before changing your password")}>
+          <MfaPanel
+            onVerified={() => {
+              setPasswordMfa(false);
+              action.clear();
+              setPasswordNotice(t("Authenticator verified. Click Set new password to continue."));
+              requestAnimationFrame(() =>
+                form.current?.querySelector<HTMLButtonElement>('button[type="submit"]')?.focus(),
+              );
             }}
-          >
-            {t(passwordMode ? "Use an email link instead" : "Use a password instead")}
-          </button>
-          <Link href="/forgot-password">{t("Forgot password?")}</Link>
-          <p>
-            {t(
-              "To add a password to an existing staff account, use Forgot password. Authenticator verification is still required for administration.",
-            )}
-          </p>
-        </>
+          />
+        </section>
       )}
-      {mode !== "login" && <Link href="/login">{t("Back to sign in")}</Link>}
-    </form>
+      <form method="post" ref={form} className="handoff-form" noValidate onSubmit={submit}>
+        <noscript>
+          <p className="notice">
+            {t("Enable JavaScript to use account forms. Form fields are never submitted in a URL.")}
+          </p>
+        </noscript>
+        <p>
+          {t(
+            "Browsing, downloading, the Studio and guest submissions need no account. An optional account lets you manage your contributions.",
+          )}
+        </p>
+        {mode !== "reset-password" && (
+          <label className="form-field" htmlFor="auth-email">
+            {t("Email")}
+            <input
+              id="auth-email"
+              name="email"
+              type="email"
+              autoComplete="email"
+              required
+              aria-invalid={!!fieldErrors.email}
+              aria-describedby={fieldErrors.email ? "auth-email-error" : undefined}
+            />
+            {fieldErrors.email && (
+              <span id="auth-email-error" className="field-error">
+                {fieldErrors.email}
+              </span>
+            )}
+          </label>
+        )}
+        {mode !== "forgot-password" && passwordMode && (
+          <label className="form-field" htmlFor="auth-password">
+            {t("Password")}
+            <input
+              id="auth-password"
+              name="password"
+              type="password"
+              autoComplete={mode === "login" ? "current-password" : "new-password"}
+              minLength={mode === "login" ? 1 : 12}
+              maxLength={128}
+              required
+              aria-invalid={!!fieldErrors.password}
+              aria-describedby={fieldErrors.password ? "auth-password-error" : undefined}
+            />
+            {fieldErrors.password && (
+              <span id="auth-password-error" className="field-error">
+                {fieldErrors.password}
+              </span>
+            )}
+          </label>
+        )}
+        {!!Object.keys(fieldErrors).length && (
+          <p role="alert">
+            {t("Check the highlighted fields. Errors are written beside each field.")}
+          </p>
+        )}
+        <Alert text={action.failure || (linkFailure ? t(errorMessage("link_expired")) : "")} />
+        {passwordNotice && <p role="status">{passwordNotice}</p>}
+        <button type="submit" className="button accent" disabled={action.busy}>
+          {t(
+            action.busy
+              ? "Working…"
+              : mode === "login"
+                ? passwordMode
+                  ? "Sign in"
+                  : "Email me a sign-in link"
+                : mode === "signup"
+                  ? passwordMode
+                    ? "Create account"
+                    : "Create account with email link"
+                  : mode === "forgot-password"
+                    ? "Send reset link"
+                    : "Set new password",
+          )}
+        </button>
+        {(mode === "login" || mode === "signup") && (
+          <>
+            <button
+              type="button"
+              className="button"
+              disabled={action.busy}
+              onClick={() => {
+                setPasswordMode((value) => !value);
+                setFieldErrors({});
+              }}
+            >
+              {t(passwordMode ? "Use an email link instead" : "Use a password instead")}
+            </button>
+            <Link href="/forgot-password">{t("Forgot password?")}</Link>
+            {mode === "login" && <Link href="/signup">{t("Create a contributor account")}</Link>}
+            <p>
+              {t(
+                "To add a password to an existing staff account, use Forgot password. Authenticator verification is still required for administration.",
+              )}
+            </p>
+          </>
+        )}
+        {mode !== "login" && <Link href="/login">{t("Back to sign in")}</Link>}
+        {mode === "reset-password" && (
+          <Link href="/forgot-password">{t("Request a new reset link")}</Link>
+        )}
+      </form>
+    </>
   );
 }
-export function MfaPanel() {
+export function MfaPanel({ onVerified }: { onVerified?: () => void } = {}) {
   const { t } = useI18n(),
     action = useAction();
   const [factor, setFactor] = useState(""),
@@ -416,6 +442,7 @@ export function MfaPanel() {
               setSecret("");
               setQrCode("");
               setStatus(t("Authenticator verified. You can return to administration."));
+              onVerified?.();
             });
           }}
         >
@@ -423,6 +450,9 @@ export function MfaPanel() {
             {t("Authenticator code")}
             <input
               id="mfa-code"
+              ref={(input) => {
+                if (input && onVerified) input.focus();
+              }}
               name="code"
               inputMode="numeric"
               autoComplete="one-time-code"
@@ -1021,7 +1051,7 @@ export function UploadPanel({
           {t(
             access === "loading"
               ? "Checking your session…"
-              : "Browsing, downloading, the Studio and contributions need no account. Accounts are reserved for invited staff.",
+              : "Browsing, downloading, the Studio and guest submissions need no account. An optional account lets you manage your contributions.",
           )}
         </p>
         {access !== "loading" && (
@@ -1066,7 +1096,7 @@ export function UploadPanel({
       <h2>{t("UPLOAD YOUR OWN ART AND DESIGN")}</h2>
       <p>
         {t(
-          "Browsing, downloading, the Studio and contributions need no account. Accounts are reserved for invited staff.",
+          "Browsing, downloading, the Studio and guest submissions need no account. An optional account lets you manage your contributions.",
         )}
       </p>
       <p>{t("Fill the details: (Recommended but not mandatory)")}</p>

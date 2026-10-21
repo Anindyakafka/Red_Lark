@@ -1,0 +1,25 @@
+{
+  "date": "2026-10-21",
+  "unitCopyRls": 67,
+  "focusedBrowser": 51,
+  "build": "PASS",
+  "typecheck": "PASS",
+  "lint": "PASS",
+  "format": "PASS",
+  "contentBrandCanonicalClientSecrets": "PASS",
+  "axe": 0,
+  "passwordRecovery": {
+    "realRecoverySession": true,
+    "providerError": "insufficient_aal",
+    "resetStatus": 403,
+    "resetError": "password_mfa_required",
+    "passwordSetAfterMfa": true,
+    "oldAppSessionRevoked": true,
+    "newPasswordWorks": true
+  },
+  "optionalContributorSignup": true,
+  "guestUpload": true,
+  "adminRolesAndMfaRetained": true,
+  "providerSignupMustRemainEnabled": true,
+  "productionDeploy": "pending PR merge"
+}

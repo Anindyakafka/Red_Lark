@@ -7,6 +7,7 @@ import { admin } from "../src/server/admin.ts";
 import { publicClient, type Identity } from "../src/server/auth.ts";
 process.env.SITE_URL = "https://staff.example.invalid";
 process.env.RATE_LIMIT_SECRET = randomBytes(32).toString("base64");
+process.env.SESSION_ENCRYPTION_KEY = randomBytes(32).toString("base64");
 process.env.SUPABASE_URL = "https://project.example.invalid";
 process.env.SUPABASE_SECRET_KEY = "fixture";
 process.env.SUPABASE_PUBLISHABLE_KEY = "fixture";
@@ -23,42 +24,35 @@ function request(path: string, values: Record<string, unknown>) {
     body: JSON.stringify(values),
   });
 }
-test("both public signup endpoints are closed server-side, without contacting Auth", async () => {
+test("optional contributor signup and email recovery remain available without assigning admin roles", async () => {
   const original = globalThis.fetch;
-  globalThis.fetch = async () => {
-    throw new Error("No external request should occur");
-  };
-  try {
-    for (const path of ["signup", "signup-link"]) {
-      const response = await handler(
-        request(path, { email: "unknown@example.invalid", password: "fixture-password" }),
-      );
-      assert.equal(response.status, 403);
-      assert.equal((await response.json()).error, "signup_disabled");
-    }
-  } finally {
-    globalThis.fetch = original;
-  }
-});
-test("non-staff email login and recovery return the same generic success without sending email", async () => {
-  const original = globalThis.fetch;
+  const calls: string[] = [];
   globalThis.fetch = async (input) => {
     const path = new URL(String(input instanceof Request ? input.url : input)).pathname;
-    assert.match(path, /\/rpc\/(consume_rate_limit|staff_email_allowed)$/);
-    return new Response(path.endsWith("staff_email_allowed") ? "false" : "true", {
-      headers: { "Content-Type": "application/json" },
-    });
+    calls.push(path);
+    if (path.endsWith("/rpc/consume_rate_limit")) return Response.json(true);
+    assert.match(path, /\/auth\/v1\/(signup|otp|recover)$/);
+    return Response.json({});
   };
   try {
-    for (const path of ["magic", "forgot"]) {
-      const response = await handler(request(path, { email: "unknown@example.invalid" }));
-      assert.equal(response.status, 200);
+    for (const path of ["signup", "signup-link", "magic", "forgot"]) {
+      const response = await handler(
+        request(path, { email: "fixture@example.invalid", password: "Fixture-password-123!" }),
+      );
+      assert.equal(response.status, 200, path);
       assert.deepEqual(await response.json(), { ok: true, inbox: true });
     }
+    assert(calls.some((p) => p.endsWith("/signup")));
+    assert(
+      !calls.some(
+        (p) => p.endsWith("/roles") || p.includes("invite_staff") || p.includes("grant_admin"),
+      ),
+    );
   } finally {
     globalThis.fetch = original;
   }
 });
+
 test("audit filters and decisions validate before database writes; MFA remains mandatory", async () => {
   const who = { admin: true, aal2: true, fresh: true, client: publicClient() } as Identity;
   const request = new Request("https://staff.example.invalid/api/admin/audit");

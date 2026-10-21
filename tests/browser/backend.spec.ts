@@ -66,16 +66,15 @@ test("password forms focus errors; generic inbox and password reset links work w
   await expect(page.getByRole("heading", { name: "Check your inbox" })).toBeVisible();
   await expect(page.locator("main")).toContainText("does not confirm whether an account exists");
 });
-test("public signup is invitation-only and guest uploads remain available", async ({ page }) => {
+test("optional contributor signup and guest uploads both remain available", async ({ page }) => {
   await fixtures(page);
   await page.route("**/api/auth/signup-link", (route) =>
     route.fulfill({ json: { ok: true, inbox: true } }),
   );
   await page.goto("/en/signup/");
-  await expect(
-    page.getByRole("heading", { name: "Staff accounts are invitation only.", exact: true }).last(),
-  ).toBeVisible();
-  await expect(page.getByLabel("Email", { exact: true })).toHaveCount(0);
+  await page.getByLabel("Email", { exact: true }).fill("fixture@example.invalid");
+  await page.getByRole("button", { name: "Create account with email link", exact: true }).click();
+  await expect(page.getByRole("heading", { name: "Check your inbox", exact: true })).toBeVisible();
   await page.route("**/api/account", (route) =>
     route.fulfill({ status: 401, json: { error: "sign_in_required" } }),
   );

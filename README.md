@@ -1,6 +1,6 @@
 # RED LARK WORKSHOP
 
-Guest submissions are available at `/en/submit/` (also `hi`, `bn`, `ml`) without creating an account. Artwork goes through the same private R2 sanitization/print pipeline and human review as staff uploads. Artist name, contact email and UPI are optional; publication consent is separate for each field. Save the private receipt link to check status/feedback for 90 days. It is read-only after submission. New accounts are invitation-only for staff; existing account data is preserved. Never share a real receipt link in logs or screenshots.
+Guest submissions are available at `/en/submit/` (also `hi`, `bn`, `ml`) without creating an account. Artwork goes through the same private R2 sanitization/print pipeline and human review as staff uploads. Artist name, contact email and UPI are optional; publication consent is separate for each field. Save the private receipt link to check status/feedback for 90 days. It is read-only after submission. Contributor accounts are optional and provide dashboards, editing and resubmission; guest upload remains available. Never share a real receipt link in logs or screenshots.
 
 Guest backend migration: `supabase/migrations/202610210006_guest_submissions.sql` (already applied to the existing project during implementation). `guest_submissions` has RLS and no anonymous/contributor access; only server-side capability checks or fresh-MFA admins can read receipts. No guest Auth user, tracking cookie, new bucket or additional service key is created. Existing CORS and environment settings still apply. Hourly cleanup expires receipts/private contact fields and abandoned draft files; published artwork follows the existing takedown process. New interface strings retain draft translation flags.
 
@@ -16,7 +16,7 @@ Final public checkpoint: 37 unit tests and 88 browser tests pass, including 336 
 
 Follow [DEPLOY.md](docs/DEPLOY.md) for Supabase SMTP/callbacks, R2 CORS/lifecycle/custom hostname, migrations, bootstrap and Netlify variables. Existing production settings are reused for guests; deployment still follows owner authorization.
 
-Staff use the discreet footer **Staff login** link (`/en/login/`, also `hi`, `bn`, `ml`). Email links are primary; **Use a password instead** and **Forgot password?** remain available. Public signup endpoints return `signup_disabled`; `/signup/` explains invitation-only access. Disable Supabase's provider-level public signup too, as described in [DEPLOY](docs/DEPLOY.md). `/account` lists private contributions, `/account/profile` manages separately consented contact/UPI fields, `/account/settings` handles TOTP/export/global logout/deletion, and `/account/works/new` opens the staff upload wizard. Owned revision links use `/account/works/ID`. Public contributions remain at `/submit/`.
+Optional contributor accounts use `/en/signup/` and `/en/login/` (also hi/bn/ml); Submit offers these links and the footer retains Staff login. Keep Supabase public signup enabled. Accounts provide private dashboards, editing and resubmission; uploading as a guest needs no account. Admin roles still require controlled invitation/grant and authenticator verification. Password reset shows an inline authenticator challenge for an MFA-enabled account before the password can change. See [DEPLOY](docs/DEPLOY.md).
 
 Administrators use `/admin` and `/admin/review/ID`, with separate messages, takedowns, users and audit pages. Each API request independently enforces the protected role and fresh TOTP. Netlify rewrites UUID detail addresses to static, noindex shells; private data is fetched after authentication and never included in the build. Local preview/development implements the same rewrites. Keep the supplied `netlify.toml` rewrite rules when deploying.
 
@@ -104,7 +104,7 @@ R2 credential preparation uses R2_ACCOUNT_ID, R2_ACCESS_KEY_ID, R2_SECRET_ACCESS
 
 Public pages use /en, /hi, /bn or /ml: landing, collection, categories/category/[slug], poster/[slug], discover, artists/artist/[slug], studio, community, submit, blog/blog/[slug], about, policies and policy articles, contact, privacy, terms, thank-you, 404 and search/image. Each locale has feed.xml. Root sitemap.xml, robots.txt and site.webmanifest stay unprefixed. Old themes/theme URLs redirect to categories while preserving locale/query.
 
-Localized /login, /signup (closed), /account, /forgot-password, /reset-password and /admin are noindex account screens. The server verifies sessions and RLS permissions; admin actions additionally require fresh TOTP. /takedown is a separate minimal form.
+Localized /login, /signup, /account, /forgot-password, /reset-password and /admin are noindex account screens. The server verifies sessions and RLS permissions; admin actions additionally require fresh TOTP. /takedown is a separate minimal form.
 
 Image search is honestly labelled coming soon; no photo is collected. Community is an empty curated gallery until human-reviewed submissions exist. No fabricated posts, artists, support URLs or download counts.
 

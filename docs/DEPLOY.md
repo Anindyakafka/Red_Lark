@@ -1,5 +1,11 @@
 # Backend deployment and owner setup
 
+## Current access model and password setting
+
+This section supersedes the older staff-only signup instructions below. **Keep Supabase Allow new users to sign up enabled.** Guest contributions need no account. Optional contributor signup, login and password recovery are available; Submit links to Sign in / Create a contributor account. Public header auth buttons stay hidden, and the footer Staff login remains a discreet entry. Public signup grants only contributor access; admin roles still require the service-only invitation/grant and fresh TOTP/RLS gates.
+
+An MFA-enabled account must verify an authenticator before setting/changing its password. The reset page now shows the existing authenticator challenge inline when Supabase returns insufficient_aal, retains the typed password only in the page, and asks you to submit again after verification. It does not persist passwords in storage, log them, or use the privileged admin API to bypass MFA. Same-password, weak-password and reauthentication errors have separate safe instructions. A successful reset revokes app/provider sessions and requires signing in again. Use a fresh reset link in the same browser if the recovery session expired.
+
 ## Staff-only authentication (21 October 2026)
 
 Public contribution remains account-free. The header has no visitor Log in/Sign up controls; the footer links to **Staff login**. /signup/ is a closed explanation; both signup APIs reject requests server-side. Login and recovery email is sent only for verified addresses with an admin role, with the same generic inbox response for all addresses. Password login checks the same role. Existing data is retained.

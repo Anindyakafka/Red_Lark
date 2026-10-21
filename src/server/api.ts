@@ -25,6 +25,7 @@ import {
   service,
   sessionName,
 } from "./auth.ts";
+import { passwordError } from "./password.ts";
 
 const flowName = "__Host-redlark-auth-flow";
 async function staffAllowed(address: string) {
@@ -142,8 +143,6 @@ export default async function handler(req: Request): Promise<Response> {
       if (!code || code.length > 300) throw new ApiError(400, "link_expired");
       const result = await flowClient(flow.verifier).client.auth.exchangeCodeForSession(code);
       if (result.error || !result.data.session) throw new ApiError(400, "link_expired");
-      if (!result.data.user?.email || !(await staffAllowed(result.data.user.email)))
-        throw new ApiError(400, "link_expired");
       const saved = await saveSession(result.data.session);
       const headers = new Headers({
         Location: `${origin()}/${locale(flow.locale)}/${flow.mode === "recovery" ? "reset-password" : "account"}/`,
@@ -157,36 +156,43 @@ export default async function handler(req: Request): Promise<Response> {
     if (req.method !== "POST") throw new ApiError(404, "not_found");
     checkMutation(req);
     const data = await body(req);
-    if (path === "/api/auth/signup" || path === "/api/auth/signup-link")
-      throw new ApiError(403, "signup_disabled");
-    if (["/api/auth/login", "/api/auth/magic", "/api/auth/forgot"].includes(path)) {
+    if (
+      [
+        "/api/auth/login",
+        "/api/auth/signup",
+        "/api/auth/signup-link",
+        "/api/auth/magic",
+        "/api/auth/forgot",
+      ].includes(path)
+    ) {
       const address = email(data);
       await limit(req, "auth", 15, address);
       const lang = locale(data.locale),
         password = typeof data.password === "string" ? data.password : "";
-      const allowed = await staffAllowed(address);
       if (path === "/api/auth/login") {
         if (password.length < 1 || password.length > 128) throw new ApiError(400, "sign_in_failed");
         const result = await publicClient().auth.signInWithPassword({ email: address, password });
-        if (
-          result.error ||
-          !result.data.session ||
-          !result.data.user?.email_confirmed_at ||
-          !allowed
-        )
+        if (result.error || !result.data.session || !result.data.user?.email_confirmed_at)
           throw new ApiError(400, "sign_in_failed");
         const saved = await saveSession(result.data.session);
         return json({ ok: true }, 200, { "Set-Cookie": saved.cookie });
       }
-      // Match the successful response for non-staff; never send an account-existence signal.
-      if (!allowed) return json({ ok: true, inbox: true });
       const flow = flowClient();
-      if (path === "/api/auth/magic") {
+      if (path === "/api/auth/signup") {
+        if (password.length < 12 || password.length > 128)
+          throw new ApiError(422, "invalid_password");
+        const result = await flow.client.auth.signUp({
+          email: address,
+          password,
+          options: { emailRedirectTo: callback(lang) },
+        });
+        checkAuthMail(result.error);
+      } else if (path === "/api/auth/magic" || path === "/api/auth/signup-link") {
         const result = await flow.client.auth.signInWithOtp({
           email: address,
           options: {
             emailRedirectTo: callback(lang),
-            shouldCreateUser: false,
+            shouldCreateUser: path === "/api/auth/signup-link",
           },
         });
         checkAuthMail(result.error);
@@ -225,10 +231,12 @@ export default async function handler(req: Request): Promise<Response> {
       return json({ ok: true }, 200, { "Set-Cookie": cookie(sessionName, "", 0) });
     }
     if (path === "/api/auth/reset") {
-      const password = text(data, "password", 128, 12);
+      const password = typeof data.password === "string" ? data.password : "";
+      if (password.length < 12 || password.length > 128)
+        throw new ApiError(422, "invalid_password");
       // Recovered sessions and freshly password-authenticated sessions are verified by Auth.
       const result = await who.client.auth.updateUser({ password });
-      if (result.error) throw new ApiError(400, "password_update_failed");
+      passwordError(result.error);
       await who.client.auth.signOut({ scope: "global" });
       checked(await service().from("app_sessions").delete().eq("user_id", who.user.id));
       return json({ ok: true }, 200, { "Set-Cookie": cookie(sessionName, "", 0) });
