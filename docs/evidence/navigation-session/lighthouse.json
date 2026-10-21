@@ -202,5 +202,107 @@
         "tbt": 35
       }
     ]
+  },
+  {
+    "page": "hi-collection",
+    "method": "Median of three consecutive cold-cache mobile Lighthouse runs; all raw runs retained",
+    "scores": {
+      "performance": 96,
+      "accessibility": 100,
+      "best-practices": 100,
+      "seo": 100
+    },
+    "cls": 0,
+    "lcp": 2729.3292500000002,
+    "tbt": 40.5,
+    "runs": [
+      {
+        "run": 1,
+        "scores": {
+          "performance": 96,
+          "accessibility": 100,
+          "best-practices": 100,
+          "seo": 100
+        },
+        "cls": 0,
+        "lcp": 2729.3292500000002,
+        "tbt": 42.5
+      },
+      {
+        "run": 2,
+        "scores": {
+          "performance": 94,
+          "accessibility": 100,
+          "best-practices": 100,
+          "seo": 100
+        },
+        "cls": 0,
+        "lcp": 3027.9477500000003,
+        "tbt": 37.5
+      },
+      {
+        "run": 3,
+        "scores": {
+          "performance": 97,
+          "accessibility": 100,
+          "best-practices": 100,
+          "seo": 100
+        },
+        "cls": 0,
+        "lcp": 2643.517,
+        "tbt": 40.5
+      }
+    ]
+  },
+  {
+    "page": "hi-poster",
+    "method": "Median of three consecutive cold-cache mobile Lighthouse runs; all raw runs retained",
+    "scores": {
+      "performance": 97,
+      "accessibility": 100,
+      "best-practices": 100,
+      "seo": 100
+    },
+    "cls": 0,
+    "lcp": 2343.1902,
+    "tbt": 69.29887499999995,
+    "runs": [
+      {
+        "run": 1,
+        "scores": {
+          "performance": 97,
+          "accessibility": 100,
+          "best-practices": 100,
+          "seo": 100
+        },
+        "cls": 0,
+        "lcp": 2343.1902,
+        "tbt": 129.9683
+      },
+      {
+        "run": 2,
+        "scores": {
+          "performance": 96,
+          "accessibility": 100,
+          "best-practices": 100,
+          "seo": 100
+        },
+        "cls": 0,
+        "lcp": 2730.363,
+        "tbt": 48.93949999999995
+      },
+      {
+        "run": 3,
+        "scores": {
+          "performance": 98,
+          "accessibility": 100,
+          "best-practices": 100,
+          "seo": 100
+        },
+        "cls": 0,
+        "lcp": 2341.2067500000003,
+        "tbt": 69.29887499999995
+      }
+    ]
   }
 ]
