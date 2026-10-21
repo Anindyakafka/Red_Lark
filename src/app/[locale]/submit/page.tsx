@@ -37,13 +37,13 @@ export default function Page() {
           <p>
             <UiText
               id={
-                "Browsing, downloading, the Studio and guest submissions need no account. An optional account lets you manage your contributions."
+                "Browsing, downloading, the Studio and contributions need no account. Accounts are reserved for invited staff."
               }
             />
           </p>
           <ContactAddress email={email} />
           <p>
-            <UiText id="Email fallback: if you prefer not to create an account, email the team with a link to your artwork, its licence and artist credit." />
+            <UiText id="Email fallback: email the team with a link to your artwork, its licence and artist credit. No account is needed." />
           </p>
         </aside>
       </div>

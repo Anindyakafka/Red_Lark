@@ -9,7 +9,7 @@ export default function Page() {
       <PageIntro
         index="ACCOUNT"
         title="Edit your contribution"
-        description="Browsing, downloading, the Studio and guest submissions need no account. An optional account lets you manage your contributions."
+        description="Browsing, downloading, the Studio and contributions need no account. Accounts are reserved for invited staff."
         action="My contributions"
         href="/account"
       />

@@ -1,5 +1,17 @@
 # RED LARK WORKSHOP: staged implementation plan
 
+## Staff access and review reliability (21 October 2026)
+
+| Work            | Status      | Acceptance                                                                                                          |
+| --------------- | ----------- | ------------------------------------------------------------------------------------------------------------------- |
+| Public access   | PASS        | No visitor auth buttons; footer staff entry; guest upload unaffected; signup APIs deny server-side                  |
+| Staff setup     | PASS        | Service-only invite/lookup RPCs; disposable hosted invite -> verification -> password -> staff login; no MFA bypass |
+| Review recovery | PASS        | Valid decisions, useful errors, one safe CSRF retry, inline fresh MFA preserving forms                              |
+| Audit           | PASS        | Collapsed table, UTC range/action filters, 50-row API pagination, mobile and axe checks                             |
+| Release         | IN PROGRESS | Full verification, then push branch and create PR for owner merge                                                   |
+
+Supabase provider signup setting needs the owner dashboard change in TODO_HUMAN. Website signup already denies requests. Earlier public contributor-account instructions are superseded.
+
 ## Current checkpoint: upload and review repairs (21 October 2026)
 
 All five requested repairs are implemented on redlark. Three additive migrations were applied to the existing project; the owner account and its real pending contribution were left untouched. No service was re-provisioned.

@@ -23,6 +23,18 @@ const errors: Record<string, string> = {
   try_later: "Too many requests. Please try again later.",
   invalid_password: "Use a password between 12 and 128 characters.",
   fresh_mfa_required: "Verify a fresh authenticator code to use administration.",
+  signup_disabled: "Staff accounts are invitation only. You can contribute without an account.",
+  invalid_transition:
+    "This artwork has already changed status. Reload the review queue before making another decision.",
+  invalid_reason: "Explain the decision in at least ten characters (up to 3000).",
+  invalid_title: "Enter an artwork title of 1 to 200 characters.",
+  invalid_alt: "Keep the image description to 300 characters or fewer.",
+  invalid_action: "Choose a valid review decision.",
+  invalid_id: "This review reference is missing. Open the artwork from the review queue.",
+  invalid_audit_filter: "Check the audit dates and page number, then try again.",
+  file_required:
+    "This artwork is missing its processed image or preview, or still has an unprocessed original. Complete the upload processing before approval.",
+  request_rejected: "Your form session expired. Try saving again; your entries are still here.",
   mfa_failed: "The authenticator code could not be verified. Try a new code.",
   invalid_file:
     "Use a valid, single-image JPEG or PNG up to 25 MB. SVG and executable files are not accepted.",
@@ -44,7 +56,11 @@ export const errorMessage = (code: string) =>
   errors[code] || "Please check the form and try again. If this continues, contact the team.";
 let csrfRequest: Promise<string> | undefined;
 let csrfIssued = 0;
-export async function api<T = Record<string, unknown>>(path: string, data?: unknown): Promise<T> {
+export async function api<T = Record<string, unknown>>(
+  path: string,
+  data?: unknown,
+  retry = true,
+): Promise<T> {
   if (!csrfRequest || Date.now() - csrfIssued > 15 * 60000) {
     csrfIssued = Date.now();
     csrfRequest = fetch("/api/session", { credentials: "same-origin", cache: "no-store" })
@@ -68,7 +84,11 @@ export async function api<T = Record<string, unknown>>(path: string, data?: unkn
   });
   const result = await response.json();
   if (!response.ok) {
-    if (result.error === "request_rejected") csrfRequest = undefined;
+    if (result.error === "request_rejected") {
+      csrfRequest = undefined;
+      // CSRF is checked before mutations: exactly one fresh-token retry is safe.
+      if (retry) return api<T>(path, data, false);
+    }
     throw Object.assign(new Error(result.error || "service_unavailable"), {
       saved: result.saved,
       receipt: result.receipt,
@@ -86,6 +106,8 @@ function useAction() {
     try {
       await action();
     } catch (error) {
+      if (error instanceof Error && error.message === "fresh_mfa_required")
+        window.dispatchEvent(new Event("redlark:reauth"));
       setFailure(t(errorMessage(error instanceof Error ? error.message : "network_error")));
     } finally {
       setBusy(false);
@@ -119,6 +141,21 @@ export function AuthForm({
   useEffect(() => {
     if (new URLSearchParams(location.search).get("error") === "link_expired") setLinkFailure(true);
   }, []);
+  if (mode === "signup")
+    return (
+      <section className="notice">
+        <h2>{t("Staff accounts are invitation only.")}</h2>
+        <p>
+          {t(
+            "You can upload artwork without an account. Staff access is arranged directly by the team.",
+          )}
+        </p>
+        <Link className="button accent" href="/submit">
+          {t("Submit a poster")}
+        </Link>
+        <Link href="/login">{t("Staff login")}</Link>
+      </section>
+    );
   async function submit(
     event: FormEvent<HTMLFormElement>,
     magic = !passwordMode && (mode === "login" || mode === "signup"),
@@ -196,7 +233,7 @@ export function AuthForm({
       </noscript>
       <p>
         {t(
-          "Browsing, downloading, the Studio and guest submissions need no account. An optional account lets you manage your contributions.",
+          "Browsing, downloading, the Studio and contributions need no account. Accounts are reserved for invited staff.",
         )}
       </p>
       {mode !== "reset-password" && (
@@ -253,16 +290,12 @@ export function AuthForm({
               ? passwordMode
                 ? "Sign in"
                 : "Email me a sign-in link"
-              : mode === "signup"
-                ? passwordMode
-                  ? "Create account"
-                  : "Create account with email link"
-                : mode === "forgot-password"
-                  ? "Send reset link"
-                  : "Set new password",
+              : mode === "forgot-password"
+                ? "Send reset link"
+                : "Set new password",
         )}
       </button>
-      {(mode === "login" || mode === "signup") && (
+      {mode === "login" && (
         <>
           <button
             type="button"
@@ -276,7 +309,11 @@ export function AuthForm({
             {t(passwordMode ? "Use an email link instead" : "Use a password instead")}
           </button>
           <Link href="/forgot-password">{t("Forgot password?")}</Link>
-          {mode === "login" && <Link href="/signup">{t("Create a contributor account")}</Link>}
+          <p>
+            {t(
+              "To add a password to an existing staff account, use Forgot password. Authenticator verification is still required for administration.",
+            )}
+          </p>
         </>
       )}
       {mode !== "login" && <Link href="/login">{t("Back to sign in")}</Link>}
@@ -517,8 +554,8 @@ export function AccountPanel({
         <Link className="button accent" href="/login">
           {t("Sign in")}
         </Link>
-        <Link className="button" href="/signup">
-          {t("Create a contributor account")}
+        <Link className="button" href="/submit">
+          {t("Contribute without an account")}
         </Link>
       </section>
     );
@@ -984,7 +1021,7 @@ export function UploadPanel({
           {t(
             access === "loading"
               ? "Checking your session…"
-              : "Browsing, downloading, the Studio and guest submissions need no account. An optional account lets you manage your contributions.",
+              : "Browsing, downloading, the Studio and contributions need no account. Accounts are reserved for invited staff.",
           )}
         </p>
         {access !== "loading" && (
@@ -1001,8 +1038,8 @@ export function UploadPanel({
         <Link className="button" href="/login">
           {t("Sign in")}
         </Link>
-        <Link className="button" href="/signup">
-          {t("Create a contributor account")}
+        <Link className="button" href="/submit">
+          {t("Contribute without an account")}
         </Link>
       </section>
     );
@@ -1029,9 +1066,8 @@ export function UploadPanel({
       <h2>{t("UPLOAD YOUR OWN ART AND DESIGN")}</h2>
       <p>
         {t(
-          "Browsing, downloading, the Studio and guest submissions need no account. An optional account lets you manage your contributions.",
-        )}{" "}
-        <Link href="/login">{t("Sign in")}</Link>
+          "Browsing, downloading, the Studio and contributions need no account. Accounts are reserved for invited staff.",
+        )}
       </p>
       <p>{t("Fill the details: (Recommended but not mandatory)")}</p>
       {guestMode && (
@@ -1391,6 +1427,7 @@ export function AdminPanel({
   const [works, setWorks] = useState<Work[]>([]),
     [notice, setNotice] = useState("");
   const [records, setRecords] = useState<unknown>(null);
+  const [reauth, setReauth] = useState(false);
   const [reviewErrors, setReviewErrors] = useState<Record<string, string>>({});
   const [access, setAccess] = useState<"loading" | "denied" | "mfa" | "allowed">("loading");
   useEffect(() => {
@@ -1411,15 +1448,19 @@ export function AdminPanel({
                   ? "allowed"
                   : "mfa",
             );
+          if (live && data?.account?.fresh && data.account.aal2) setReauth(false);
         })
         .catch(() => {
           if (live) setAccess("denied");
         });
     };
     refresh();
+    const requestReauth = () => setReauth(true);
+    window.addEventListener("redlark:reauth", requestReauth);
     window.addEventListener("redlark:session", refresh);
     return () => {
       window.removeEventListener("redlark:session", refresh);
+      window.removeEventListener("redlark:reauth", requestReauth);
       live = false;
     };
   }, [locale, router]);
@@ -1470,6 +1511,14 @@ export function AdminPanel({
     );
   return (
     <div className="content-width">
+      {reauth && (
+        <section aria-label={t("Verify your session")} className="notice">
+          <p role="alert">
+            {t("Your review is still here. Verify an authenticator code below, then save again.")}
+          </p>
+          <MfaPanel />
+        </section>
+      )}
       <nav className="button-row" aria-label={t("Administration")}>
         <Link href="/admin/review">{t("Review queue")}</Link>
         <Link href="/admin/messages">{t("Messages")}</Link>
@@ -1477,53 +1526,36 @@ export function AdminPanel({
         <Link href="/admin/users">{t("Contributors")}</Link>
         <Link href="/admin/audit">{t("Audit log")}</Link>
       </nav>
-      <p>
-        {t(
-          "Administration requires TOTP and a fresh six-digit authenticator code. Your authenticator secret is shown only during setup.",
-        )}
-      </p>
-      <Link className="button" href="/account/settings">
-        {t("Account security")}
-      </Link>
-      <div className="button-row">
-        <button className="button accent" onClick={load} disabled={action.busy}>
-          {t("Load review queue")}
-        </button>
-        <button
-          className="button"
-          disabled={action.busy}
-          onClick={() =>
-            action.run(async () => {
-              await api("admin/rebuild");
-              setNotice(t("Archive rebuild requested."));
-            })
-          }
-        >
-          {t("Retry archive build")}
-        </button>
-        {(
-          [
-            ["inbox", "Messages and takedowns"],
-            ["audit", "Audit log"],
-            ["users", "Contributors"],
-          ] as const
-        ).map(([route, label]) => (
+      {(view === "queue" || view === "review") && (
+        <div className="button-row">
+          <button className="button accent" onClick={load} disabled={action.busy}>
+            {t("Load review queue")}
+          </button>
           <button
-            key={route}
             className="button"
+            disabled={action.busy}
             onClick={() =>
               action.run(async () => {
-                setRecords(await api(`admin/${route}`));
+                await api("admin/rebuild");
+                setNotice(t("Archive rebuild requested."));
               })
             }
           >
-            {t(label)}
+            {t("Retry archive build")}
           </button>
-        ))}
-      </div>
+        </div>
+      )}
       <Alert text={action.failure} />
       <p role="status">{notice}</p>
-      {records !== null && <AdminRecords records={records} view={view} />}
+      {records !== null && (
+        <AdminRecords
+          records={records}
+          view={view}
+          onFilter={async (filters) => {
+            await action.run(async () => setRecords(await api("admin/audit", filters)));
+          }}
+        />
+      )}
       {records !== null && (view === "messages" || view === "takedowns") && (
         <form
           method="post"

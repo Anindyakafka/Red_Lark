@@ -1,5 +1,15 @@
 # Current acceptance checklist
 
+## Staff-only release verification (21 October 2026)
+
+| Item                              | Status | Evidence / limit                                                                                                                             |
+| --------------------------------- | ------ | -------------------------------------------------------------------------------------------------------------------------------------------- |
+| Public signup blocked server-side | PASS   | tests/staff.test.ts; /signup and /signup-link return 403 without contacting Auth                                                             |
+| Staff password and invitation     | PASS   | docs/evidence/staff-access/hosted-auth.json; disposable real Supabase invite/password login; MFA remains mandatory                           |
+| Provider direct-signup setting    | FAIL   | Hosted settings check found disable_signup=false; owner dashboard step in TODO_HUMAN                                                         |
+| Review recovery and audit table   | PASS   | browser-full.json: 212 passed; hosted.json real upload/review/public R2 and audit filters; fresh-MFA preservation and all-locale audit axe 0 |
+| Copy/licence/strict checks        | PASS   | 67 unit/copy/RLS tests; build/typecheck/lint green before final browser run                                                                  |
+
 ## Current upload/review acceptance (21 October 2026)
 
 This table supersedes the earlier repair progress rows. Measurements and scopes are retained in docs/evidence/upload-repair/final.json; production deployment is not claimed.

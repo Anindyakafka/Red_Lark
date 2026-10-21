@@ -66,6 +66,8 @@ test("real Postgres RLS: every table, ownership, roles, MFA and bootstrap", asyn
       [wa, approved],
     );
     await as("anon");
+    await assert.rejects(db.query("select public.staff_email_allowed('admin@example.invalid')"));
+    await assert.rejects(db.query("select public.invite_staff($1)", [a]));
     assert.equal(
       (await db.query<{ public_catalogue: unknown[] }>("select public.public_catalogue()")).rows[0]
         .public_catalogue.length,
@@ -347,6 +349,35 @@ test("real Postgres RLS: every table, ownership, roles, MFA and bootstrap", asyn
         "select public.store_message($1,'General','Different message content','owner@example.invalid','en','')",
         [receipt],
       ),
+    );
+    await as("authenticated", a);
+    await assert.rejects(db.query("select public.staff_email_allowed('admin@example.invalid')"));
+    await assert.rejects(db.query("select public.invite_staff($1)", [a]));
+    await as("service_role");
+    assert.equal(
+      (
+        await db.query<{ allowed: boolean }>(
+          "select public.staff_email_allowed('owner@example.invalid') as allowed",
+        )
+      ).rows[0].allowed,
+      false,
+    );
+    await db.query("select public.invite_staff($1)", [a]);
+    assert.equal(
+      (
+        await db.query<{ allowed: boolean }>(
+          "select public.staff_email_allowed('OWNER@example.invalid') as allowed",
+        )
+      ).rows[0].allowed,
+      true,
+    );
+    assert.equal(
+      (
+        await db.query<{ allowed: boolean }>(
+          "select public.staff_email_allowed('missing@example.invalid') as allowed",
+        )
+      ).rows[0].allowed,
+      false,
     );
   } finally {
     await db.close();

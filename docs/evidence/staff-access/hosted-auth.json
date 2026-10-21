@@ -1,0 +1,9 @@
+{
+  "actualEmailsSent": 0,
+  "unverifiedInvitationCannotLogin": true,
+  "invitationVerifiesAndCreatesSecureSession": true,
+  "invitationIsSingleUse": true,
+  "invitedStaffCanSetPassword": true,
+  "staffPasswordLoginWorksButDoesNotBypassMfa": true,
+  "providerPublicSignupDisabled": false
+}

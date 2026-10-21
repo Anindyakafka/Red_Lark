@@ -1,5 +1,15 @@
 ﻿# Human prerequisites for RED LARK WORKSHOP
 
+## Staff-only release follow-up (21 October 2026)
+
+- **Supabase:** Authentication -> Sign In / Providers -> **Allow new users to sign up: OFF** -> Save. Hosted read-only settings found it ON. Both website signup APIs already deny requests; this additional provider switch blocks direct public Auth signup. It cannot be changed with the configured project API keys. [done, but I want contributors to sign in if they want just not as admins of course, wouldn't this block that?]
+- **Merge/deploy:** merge the prepared redlark pull request into main, then let Netlify deploy. Migration 202610210010_staff_access.sql is applied. Existing staff accounts and real artwork are untouched. Automated review acceptance uses disposable artwork.
+- **Your password:** Staff login -> Forgot password? -> reset in the same browser -> Use a password instead. Keep mandatory authenticator verification. Never send a password, PIN or verification link in chat.
+- **Future staff:** run `npm run admin:invite -- <staff-email>` from the trusted checkout. No real invitation has been sent during testing. Existing verified website accounts use admin:grant instead.
+- Native review of draft hi/bn/ml additions and the existing legal review remain required. New untranslated staff/audit strings fall back visibly to English with reviewed:false.
+
+Older checkpoints below are historical. Public signup and optional public contributor-account instructions are superseded by this staff-only release.
+
 ## Current owner follow-up (21 October 2026)
 
 The upload/review repairs are implemented and tested locally on redlark. No new Supabase, Cloudflare or Resend resources are required. This list supersedes the older setup/hold checkpoints below.

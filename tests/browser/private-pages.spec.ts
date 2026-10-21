@@ -119,16 +119,19 @@ for (const locale of ["en", "hi"])
         await expect(page.locator('meta[name="robots"]')).toHaveAttribute("content", /noindex/);
     });
   }
-test("header has visitor links, contributor menu, admin control and a working assembled contact address", async ({
+test("header hides public authentication; footer staff entry, account menu and contact address work", async ({
   page,
 }) => {
   await fixtures(page);
   await page.goto("/en/contact/");
   await expect(
     page.locator("header").getByRole("link", { name: "Log in", exact: true }),
-  ).toBeVisible();
+  ).toHaveCount(0);
   await expect(
     page.locator("header").getByRole("link", { name: "Sign up", exact: true }),
+  ).toHaveCount(0);
+  await expect(
+    page.locator("footer").getByRole("link", { name: "Staff login", exact: true }),
   ).toBeVisible();
   await expect(
     page.getByRole("link", { name: "redlarkworkshop@gmail.com", exact: true }),

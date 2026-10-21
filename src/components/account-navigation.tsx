@@ -53,13 +53,7 @@ export function AccountNavigation() {
       window.removeEventListener("redlark:session", load);
     };
   }, []);
-  if (!account)
-    return (
-      <div className="account-links">
-        <Link href="/login">{t("Log in")}</Link>
-        <Link href="/signup">{t("Sign up")}</Link>
-      </div>
-    );
+  if (!account) return null;
   return (
     <div className="account-links">
       {account.admin && (

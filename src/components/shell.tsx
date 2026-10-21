@@ -55,6 +55,9 @@ export function Footer() {
         )}
       </div>
       <nav aria-label="Footer navigation">
+        <Link prefetch={false} href="/login">
+          <UiText id="Staff login" />
+        </Link>
         <Link prefetch={false} href="/submit">
           <UiText id={"Submit a poster"} />
         </Link>

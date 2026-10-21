@@ -158,15 +158,33 @@ export async function admin(
     });
   }
   if (path === "/api/admin/audit") {
+    const start = text(data, "start", 30),
+      end = text(data, "end", 30),
+      filter = text(data, "action", 100),
+      offset = Number(data.offset ?? 0);
+    if (
+      (start && !Number.isFinite(Date.parse(start))) ||
+      (end && !Number.isFinite(Date.parse(end))) ||
+      (start && end && Date.parse(start) > Date.parse(end)) ||
+      !Number.isInteger(offset) ||
+      offset < 0 ||
+      offset > 100000
+    )
+      throw new ApiError(422, "invalid_audit_filter");
     checked(await who.client.rpc("audit_admin_access", { p_action: "audit_read" }));
+    let query = who.client
+      .from("audit_log")
+      .select("*", { count: "exact" })
+      .order("created_at", { ascending: false })
+      .order("id", { ascending: false });
+    if (start) query = query.gte("created_at", new Date(start).toISOString());
+    if (end) query = query.lte("created_at", new Date(end).toISOString());
+    if (filter) query = query.eq("action", filter);
+    const result = await query.range(offset, offset + 49);
     return json({
-      audit: checked(
-        await who.client
-          .from("audit_log")
-          .select("*")
-          .order("created_at", { ascending: false })
-          .limit(100),
-      ),
+      audit: checked(result),
+      total: result.count,
+      offset,
     });
   }
   if (path === "/api/admin/users") {
@@ -197,8 +215,10 @@ export async function admin(
   }
   if (path !== "/api/admin/review") throw new ApiError(404, "not_found");
   const id = text(data, "id", 100, 1),
-    action = text(data, "action", 40, 1),
-    reason = text(data, "reason", 3000, action === "approve" ? 0 : 10);
+    action = text(data, "action", 40, 1);
+  if (!["approve", "changes_requested", "rejected", "taken_down"].includes(action))
+    throw new ApiError(422, "invalid_action");
+  const reason = text(data, "reason", 3000, action === "approve" ? 0 : 10);
   const work = checked(await who.client.from("works").select("*").eq("id", id).single());
   if (["changes_requested", "rejected"].includes(action)) {
     if (work.status !== "pending") throw new ApiError(409, "invalid_transition");
