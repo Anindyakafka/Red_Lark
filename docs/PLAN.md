@@ -117,3 +117,5 @@ Final Round 15 public acceptance: 37 unit tests, 88 browser tests, all 336 local
 | Full verification and fresh-eyes review         | PENDING     | Expanded keyboard/mobile tests, real services, axe, full build/suite, secret scan                                           |
 
 Round 2 update: migration applied; disposable Supabase/R2 contributor/admin workflow PASS (including three category pages in four locales); 62 unit tests and 14 focused browser tests PASS; mobile screenshot critique led to removal of redundant MFA setup. Final full-suite/performance/secret verification remains IN PROGRESS.
+
+Round 3: durable original notification feedback and audited retry implemented, tested and migrated; first complete browser suite 201 PASS. Final-source rebuild, follow-up regression/performance measurements and review evidence remain in progress. No change to landing wording or real pending submissions.

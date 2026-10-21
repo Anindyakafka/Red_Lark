@@ -144,7 +144,7 @@ Human launch decisions are in TODO_HUMAN.md. No deployment, push, database setup
 
 These FAIL rows are human prerequisites, not missing page implementations. They prevent a claim of full live-service acceptance. No backend push/deployment was performed.
 
-## Upload/review repair ? current acceptance (21 October 2026)
+## Upload/review repair - current acceptance (21 October 2026)
 
 | Item                             | Status      | Evidence                                                              | Note                                                                                                                                  |
 | -------------------------------- | ----------- | --------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------- |
@@ -162,3 +162,12 @@ These FAIL rows are human prerequisites, not missing page implementations. They 
 | Relational tags and three categories            | PASS   | tests/contribution-review-rls.test.ts; hosted.json                                  | Persisted relational rows -> dashboard/admin -> three public category pages in four locales.                                                            |
 | Review permissions and decisions                | PASS   | hosted.json; local RLS tests                                                        | Real fixture admin role/TOTP, non-admin denied, metadata edits, approval/changes/rejection, public-copy workflow; production build request intercepted. |
 | Notification failure recovery                   | PASS   | hosted.json                                                                         | Real persisted outbox, injected provider failure and successful transport retry. Does not establish real inbox delivery.                                |
+
+### Round 3 verification progress
+
+| Check                                              | Status      | Evidence                                            | Note                                                                                                                                |
+| -------------------------------------------------- | ----------- | --------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------- |
+| Full route/browser regression                      | PASS        | npm run test:e2e: 201 passed                        | Includes route-wide four-locale axe checks; final timestamp/action polish to be retested.                                           |
+| Delayed notification correctness and audited retry | PASS        | tests/contribution-review-rls.test.ts; hosted.json  | Original feedback retained; persisted failed mail can be retried without repeating the decision.                                    |
+| Source and client secrets                          | PASS        | evidence/upload-repair/security.json; npm run build | Focused changed-source Gitleaks; complete static output checked against configured private credentials. Historic scan not repeated. |
+| Final performance / polished screenshot review     | IN PROGRESS | evidence/upload-repair                              | Final measurements pending.                                                                                                         |

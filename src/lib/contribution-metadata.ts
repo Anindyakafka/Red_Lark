@@ -1,6 +1,24 @@
-import suggestions from "../../content/tags.json";
-import formats from "../../content/formats.json";
+import suggestions from "../../content/tags.json" with { type: "json" };
+import formats from "../../content/formats.json" with { type: "json" };
 import type { LicenseId } from "./types";
+
+export function orderReviewWorks<
+  T extends { created_at?: string; work_notifications?: { event?: string; created_at?: string }[] },
+>(works: T[]) {
+  return works
+    .map((work) => ({
+      ...work,
+      submitted_at:
+        work.work_notifications
+          ?.filter((event) => event.event === "pending" && event.created_at)
+          .map((event) => event.created_at!)
+          .sort()
+          .at(-1) || null,
+    }))
+    .sort((a, b) =>
+      (b.submitted_at || b.created_at || "").localeCompare(a.submitted_at || a.created_at || ""),
+    );
+}
 
 export function imageDescription(work: {
   alt?: string;

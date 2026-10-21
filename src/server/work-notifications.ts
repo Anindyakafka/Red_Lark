@@ -52,7 +52,7 @@ export async function deliverWorkNotifications(workId?: string): Promise<boolean
       await sendEmail(
         to,
         `Red Lark Workshop: ${job.event === "pending" ? "new submission" : job.event.replaceAll("_", " ")}`,
-        `${work.title}\nStatus: ${job.event.replaceAll("_", " ")}\n${job.event === "pending" ? "A submission is ready for private review." : work.feedback}\n\n${link}\n\nDo not forward private review links.`,
+        `${job.work_title}\nStatus: ${job.event.replaceAll("_", " ")}\n${job.event === "pending" ? "A submission is ready for private review." : job.feedback}\n\n${link}\n\nDo not forward private review links.`,
         team,
         `work-${job.id}`,
       );

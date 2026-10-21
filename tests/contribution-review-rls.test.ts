@@ -117,6 +117,15 @@ test("contribution review: optional alt, transactional facets, ownership, admin 
       4,
       "all transitions atomically enqueue mail",
     );
+    assert.equal(
+      (
+        await db.query<{ feedback: string }>(
+          "select feedback from public.work_notifications where event='changes_requested'",
+        )
+      ).rows[0].feedback,
+      "Please improve this image",
+      "later rejection cannot overwrite delayed changes-requested feedback",
+    );
     assert.ok(
       (await db.query("select * from public.audit_log where action='review_metadata'")).rows.length,
     );

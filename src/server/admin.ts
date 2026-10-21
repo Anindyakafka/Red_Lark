@@ -1,4 +1,4 @@
-import { normalizeTags } from "../lib/contribution-metadata.ts";
+import { normalizeTags, orderReviewWorks } from "../lib/contribution-metadata.ts";
 import { notificationNotice } from "./work-notifications.ts";
 import { checked, requireAdmin, type Identity, service } from "./auth.ts";
 import { ApiError, json, required, text } from "./security.ts";
@@ -29,6 +29,26 @@ export async function admin(
   who: Identity,
 ) {
   requireAdmin(who);
+  if (path === "/api/admin/retry-work-mail") {
+    const id = text(data, "id", 100, 1);
+    checked(await who.client.from("works").select("id").eq("id", id).single());
+    checked(
+      await who.client.rpc("audit_admin_operation", { p_action: "retry_mail", p_target: id }),
+    );
+    checked(
+      await service()
+        .from("work_notifications")
+        .update({
+          attempts: 0,
+          state: "pending",
+          lease_until: null,
+          next_attempt: new Date().toISOString(),
+        })
+        .eq("work_id", id)
+        .eq("state", "failed"),
+    );
+    return json({ ok: true, mailPending: await notificationNotice(id) });
+  }
   if (path === "/api/admin/rebuild") {
     checked(await who.client.rpc("audit_admin_operation", { p_action: "retry_publish" }));
     await requestBuild();
@@ -89,14 +109,16 @@ export async function admin(
   if (path === "/api/admin/queue") {
     checked(await who.client.rpc("audit_admin_access", { p_action: "review_queue" }));
     return json({
-      works: checked(
-        await who.client
-          .from("works")
-          .select(
-            "*,work_files(id,kind,mime,bytes,width,height,dpi),work_categories(category_slug),work_tags(tags(slug,label,custom)),guest_submissions(contact,upi,contact_public,upi_public)",
-          )
-          .in("status", ["pending", "changes_requested", "rejected", "approved", "taken_down"])
-          .order("created_at", { ascending: false }),
+      works: orderReviewWorks(
+        checked(
+          await who.client
+            .from("works")
+            .select(
+              "*,work_files(id,kind,mime,bytes,width,height,dpi),work_categories(category_slug),work_tags(tags(slug,label,custom)),work_notifications(state,event,created_at),guest_submissions(contact,upi,contact_public,upi_public)",
+            )
+            .in("status", ["pending", "changes_requested", "rejected", "approved", "taken_down"])
+            .order("created_at", { ascending: false }),
+        ),
       ),
     });
   }

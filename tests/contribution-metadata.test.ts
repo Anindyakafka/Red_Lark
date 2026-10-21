@@ -1,11 +1,40 @@
 import test from "node:test";
 import assert from "node:assert/strict";
+import { spawnSync } from "node:child_process";
 import {
   imageDescription,
   normalizeTags,
   selectedLicence,
+  orderReviewWorks,
 } from "../src/lib/contribution-metadata.ts";
 import { LICENSES } from "../src/lib/types.ts";
+
+test("queue sorts by actual submission events and labels older records with creation time only", () => {
+  const queue = orderReviewWorks([
+    {
+      id: "old-draft",
+      created_at: "2026-01-01",
+      work_notifications: [{ event: "pending", created_at: "2026-10-21" }],
+    },
+    { id: "newer-draft", created_at: "2026-10-20" },
+  ]);
+  assert.equal(queue[0].id, "old-draft");
+  assert.equal(queue[0].submitted_at, "2026-10-21");
+  assert.equal(queue[1].submitted_at, null);
+});
+
+test("shared upload metadata loads in the native Node local API bridge", () => {
+  const result = spawnSync(
+    process.execPath,
+    [
+      "--input-type=module",
+      "-e",
+      "import { normalizeTags } from './src/lib/contribution-metadata.ts'; if(normalizeTags(['protest'])[0] !== 'Protest') process.exit(1)",
+    ],
+    { env: { ...process.env, NODE_OPTIONS: "" }, stdio: "ignore" },
+  );
+  assert.equal(result.status, 0);
+});
 
 test("blank upload descriptions receive deterministic title, format and artist text", () => {
   assert.equal(
