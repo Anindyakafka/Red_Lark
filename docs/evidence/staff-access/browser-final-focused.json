@@ -1,0 +1,388 @@
+{
+  "stats": {
+    "startTime": "2026-10-21T11:39:31.133Z",
+    "duration": 56099.662,
+    "expected": 47,
+    "skipped": 0,
+    "unexpected": 0,
+    "flaky": 0
+  },
+  "tests": [
+    {
+      "file": "backend.spec.ts",
+      "title": "backend page + axe en/login",
+      "ok": true,
+      "statuses": [
+        "passed"
+      ]
+    },
+    {
+      "file": "backend.spec.ts",
+      "title": "backend page + axe en/signup",
+      "ok": true,
+      "statuses": [
+        "passed"
+      ]
+    },
+    {
+      "file": "backend.spec.ts",
+      "title": "backend page + axe en/forgot-password",
+      "ok": true,
+      "statuses": [
+        "passed"
+      ]
+    },
+    {
+      "file": "backend.spec.ts",
+      "title": "backend page + axe en/reset-password",
+      "ok": true,
+      "statuses": [
+        "passed"
+      ]
+    },
+    {
+      "file": "backend.spec.ts",
+      "title": "backend page + axe en/account",
+      "ok": true,
+      "statuses": [
+        "passed"
+      ]
+    },
+    {
+      "file": "backend.spec.ts",
+      "title": "backend page + axe en/admin",
+      "ok": true,
+      "statuses": [
+        "passed"
+      ]
+    },
+    {
+      "file": "backend.spec.ts",
+      "title": "backend page + axe en/submit",
+      "ok": true,
+      "statuses": [
+        "passed"
+      ]
+    },
+    {
+      "file": "backend.spec.ts",
+      "title": "backend page + axe en/takedown",
+      "ok": true,
+      "statuses": [
+        "passed"
+      ]
+    },
+    {
+      "file": "backend.spec.ts",
+      "title": "backend page + axe hi/login",
+      "ok": true,
+      "statuses": [
+        "passed"
+      ]
+    },
+    {
+      "file": "backend.spec.ts",
+      "title": "backend page + axe hi/signup",
+      "ok": true,
+      "statuses": [
+        "passed"
+      ]
+    },
+    {
+      "file": "backend.spec.ts",
+      "title": "backend page + axe hi/forgot-password",
+      "ok": true,
+      "statuses": [
+        "passed"
+      ]
+    },
+    {
+      "file": "backend.spec.ts",
+      "title": "backend page + axe hi/reset-password",
+      "ok": true,
+      "statuses": [
+        "passed"
+      ]
+    },
+    {
+      "file": "backend.spec.ts",
+      "title": "backend page + axe hi/account",
+      "ok": true,
+      "statuses": [
+        "passed"
+      ]
+    },
+    {
+      "file": "backend.spec.ts",
+      "title": "backend page + axe hi/admin",
+      "ok": true,
+      "statuses": [
+        "passed"
+      ]
+    },
+    {
+      "file": "backend.spec.ts",
+      "title": "backend page + axe hi/submit",
+      "ok": true,
+      "statuses": [
+        "passed"
+      ]
+    },
+    {
+      "file": "backend.spec.ts",
+      "title": "backend page + axe hi/takedown",
+      "ok": true,
+      "statuses": [
+        "passed"
+      ]
+    },
+    {
+      "file": "backend.spec.ts",
+      "title": "backend page + axe bn/login",
+      "ok": true,
+      "statuses": [
+        "passed"
+      ]
+    },
+    {
+      "file": "backend.spec.ts",
+      "title": "backend page + axe bn/signup",
+      "ok": true,
+      "statuses": [
+        "passed"
+      ]
+    },
+    {
+      "file": "backend.spec.ts",
+      "title": "backend page + axe bn/forgot-password",
+      "ok": true,
+      "statuses": [
+        "passed"
+      ]
+    },
+    {
+      "file": "backend.spec.ts",
+      "title": "backend page + axe bn/reset-password",
+      "ok": true,
+      "statuses": [
+        "passed"
+      ]
+    },
+    {
+      "file": "backend.spec.ts",
+      "title": "backend page + axe bn/account",
+      "ok": true,
+      "statuses": [
+        "passed"
+      ]
+    },
+    {
+      "file": "backend.spec.ts",
+      "title": "backend page + axe bn/admin",
+      "ok": true,
+      "statuses": [
+        "passed"
+      ]
+    },
+    {
+      "file": "backend.spec.ts",
+      "title": "backend page + axe bn/submit",
+      "ok": true,
+      "statuses": [
+        "passed"
+      ]
+    },
+    {
+      "file": "backend.spec.ts",
+      "title": "backend page + axe bn/takedown",
+      "ok": true,
+      "statuses": [
+        "passed"
+      ]
+    },
+    {
+      "file": "backend.spec.ts",
+      "title": "backend page + axe ml/login",
+      "ok": true,
+      "statuses": [
+        "passed"
+      ]
+    },
+    {
+      "file": "backend.spec.ts",
+      "title": "backend page + axe ml/signup",
+      "ok": true,
+      "statuses": [
+        "passed"
+      ]
+    },
+    {
+      "file": "backend.spec.ts",
+      "title": "backend page + axe ml/forgot-password",
+      "ok": true,
+      "statuses": [
+        "passed"
+      ]
+    },
+    {
+      "file": "backend.spec.ts",
+      "title": "backend page + axe ml/reset-password",
+      "ok": true,
+      "statuses": [
+        "passed"
+      ]
+    },
+    {
+      "file": "backend.spec.ts",
+      "title": "backend page + axe ml/account",
+      "ok": true,
+      "statuses": [
+        "passed"
+      ]
+    },
+    {
+      "file": "backend.spec.ts",
+      "title": "backend page + axe ml/admin",
+      "ok": true,
+      "statuses": [
+        "passed"
+      ]
+    },
+    {
+      "file": "backend.spec.ts",
+      "title": "backend page + axe ml/submit",
+      "ok": true,
+      "statuses": [
+        "passed"
+      ]
+    },
+    {
+      "file": "backend.spec.ts",
+      "title": "backend page + axe ml/takedown",
+      "ok": true,
+      "statuses": [
+        "passed"
+      ]
+    },
+    {
+      "file": "backend.spec.ts",
+      "title": "password forms focus errors; generic inbox and password reset links work without enumeration",
+      "ok": true,
+      "statuses": [
+        "passed"
+      ]
+    },
+    {
+      "file": "backend.spec.ts",
+      "title": "public signup is invitation-only and guest uploads remain available",
+      "ok": true,
+      "statuses": [
+        "passed"
+      ]
+    },
+    {
+      "file": "backend.spec.ts",
+      "title": "admin is gated by fresh MFA and never shows a counterfeit queue",
+      "ok": true,
+      "statuses": [
+        "passed"
+      ]
+    },
+    {
+      "file": "backend.spec.ts",
+      "title": "contact and takedown keep messages on network/provider failure and expose required URL errors",
+      "ok": true,
+      "statuses": [
+        "passed"
+      ]
+    },
+    {
+      "file": "backend.spec.ts",
+      "title": "backend visual evidence: English/Malayalam at 390 and 1440",
+      "ok": true,
+      "statuses": [
+        "passed"
+      ]
+    },
+    {
+      "file": "staff-access.spec.ts",
+      "title": "review preserves entered feedback across expired MFA and safely retries after verification",
+      "ok": true,
+      "statuses": [
+        "passed"
+      ]
+    },
+    {
+      "file": "staff-access.spec.ts",
+      "title": "review retries one rejected CSRF token and explains stale status without losing feedback",
+      "ok": true,
+      "statuses": [
+        "passed"
+      ]
+    },
+    {
+      "file": "staff-access.spec.ts",
+      "title": "audit collapsed table filters and accessibility en 390",
+      "ok": true,
+      "statuses": [
+        "passed"
+      ]
+    },
+    {
+      "file": "staff-access.spec.ts",
+      "title": "audit collapsed table filters and accessibility en 1440",
+      "ok": true,
+      "statuses": [
+        "passed"
+      ]
+    },
+    {
+      "file": "staff-access.spec.ts",
+      "title": "audit collapsed table filters and accessibility hi 390",
+      "ok": true,
+      "statuses": [
+        "passed"
+      ]
+    },
+    {
+      "file": "staff-access.spec.ts",
+      "title": "audit collapsed table filters and accessibility hi 1440",
+      "ok": true,
+      "statuses": [
+        "passed"
+      ]
+    },
+    {
+      "file": "staff-access.spec.ts",
+      "title": "audit collapsed table filters and accessibility bn 390",
+      "ok": true,
+      "statuses": [
+        "passed"
+      ]
+    },
+    {
+      "file": "staff-access.spec.ts",
+      "title": "audit collapsed table filters and accessibility bn 1440",
+      "ok": true,
+      "statuses": [
+        "passed"
+      ]
+    },
+    {
+      "file": "staff-access.spec.ts",
+      "title": "audit collapsed table filters and accessibility ml 390",
+      "ok": true,
+      "statuses": [
+        "passed"
+      ]
+    },
+    {
+      "file": "staff-access.spec.ts",
+      "title": "audit collapsed table filters and accessibility ml 1440",
+      "ok": true,
+      "statuses": [
+        "passed"
+      ]
+    }
+  ]
+}

@@ -2,15 +2,17 @@
 
 ## Staff access and review reliability (21 October 2026)
 
-| Work            | Status      | Acceptance                                                                                                          |
-| --------------- | ----------- | ------------------------------------------------------------------------------------------------------------------- |
-| Public access   | PASS        | No visitor auth buttons; footer staff entry; guest upload unaffected; signup APIs deny server-side                  |
-| Staff setup     | PASS        | Service-only invite/lookup RPCs; disposable hosted invite -> verification -> password -> staff login; no MFA bypass |
-| Review recovery | PASS        | Valid decisions, useful errors, one safe CSRF retry, inline fresh MFA preserving forms                              |
-| Audit           | PASS        | Collapsed table, UTC range/action filters, 50-row API pagination, mobile and axe checks                             |
-| Release         | IN PROGRESS | Full verification, then push branch and create PR for owner merge                                                   |
+| Work            | Status | Acceptance                                                                                                          |
+| --------------- | ------ | ------------------------------------------------------------------------------------------------------------------- |
+| Public access   | PASS   | No visitor auth buttons; footer staff entry; guest upload unaffected; signup APIs deny server-side                  |
+| Staff setup     | PASS   | Service-only invite/lookup RPCs; disposable hosted invite -> verification -> password -> staff login; no MFA bypass |
+| Review recovery | PASS   | Valid decisions, useful errors, one safe CSRF retry, inline fresh MFA preserving forms                              |
+| Audit           | PASS   | Collapsed table, UTC range/action filters, 50-row API pagination, mobile and axe checks                             |
+| Release         | PASS   | Verified merge branch prepared; owner merges the PR and confirms deployment                                         |
 
 Supabase provider signup setting needs the owner dashboard change in TODO_HUMAN. Website signup already denies requests. Earlier public contributor-account instructions are superseded.
+
+Final evidence: docs/evidence/staff-access/final.json. 67 unit/copy/RLS + 212 full browser + 47 final focused browser checks pass. Typecheck/lint/format/build/content/canonical/client-secret checks pass; commit secret scan has zero findings. Mobile Lighthouse medians: en landing/collection/poster 96/97/96; hi 96/96/95. A11y/BP/SEO 100 throughout; CLS 0. Existing real accounts/artwork were not changed. Production deployment/inbox verification remains the owner release step.
 
 ## Current checkpoint: upload and review repairs (21 October 2026)
 

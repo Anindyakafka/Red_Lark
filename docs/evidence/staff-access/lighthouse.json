@@ -105,14 +105,14 @@
     "page": "en-poster",
     "method": "Median of three consecutive cold-cache mobile Lighthouse runs; all raw runs retained",
     "scores": {
-      "performance": 94,
+      "performance": 96,
       "accessibility": 100,
       "best-practices": 100,
       "seo": 100
     },
     "cls": 0,
-    "lcp": 2956.9709999999995,
-    "tbt": 50.5,
+    "lcp": 2657.5152,
+    "tbt": 52.5,
     "runs": [
       {
         "run": 1,
@@ -123,8 +123,8 @@
           "seo": 100
         },
         "cls": 0,
-        "lcp": 3016.7497999999996,
-        "tbt": 91.59372499999995
+        "lcp": 2985.2424000000005,
+        "tbt": 55.5
       },
       {
         "run": 2,
@@ -135,20 +135,20 @@
           "seo": 100
         },
         "cls": 0,
-        "lcp": 2350.00875,
-        "tbt": 49.5
+        "lcp": 2341.4122499999994,
+        "tbt": 48
       },
       {
         "run": 3,
         "scores": {
-          "performance": 94,
+          "performance": 96,
           "accessibility": 100,
           "best-practices": 100,
           "seo": 100
         },
         "cls": 0,
-        "lcp": 2956.9709999999995,
-        "tbt": 50.5
+        "lcp": 2657.5152,
+        "tbt": 52.5
       }
     ]
   },

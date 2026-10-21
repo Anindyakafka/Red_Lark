@@ -10,6 +10,8 @@
 | Review recovery and audit table   | PASS   | browser-full.json: 212 passed; hosted.json real upload/review/public R2 and audit filters; fresh-MFA preservation and all-locale audit axe 0 |
 | Copy/licence/strict checks        | PASS   | 67 unit/copy/RLS tests; build/typecheck/lint green before final browser run                                                                  |
 
+Final evidence: docs/evidence/staff-access/final.json. 67 unit/copy/RLS + 212 full browser + 47 final focused browser checks pass. Typecheck/lint/format/build/content/canonical/client-secret checks pass; commit secret scan has zero findings. Mobile Lighthouse medians: en landing/collection/poster 96/97/96; hi 96/96/95. A11y/BP/SEO 100 throughout; CLS 0. Existing real accounts/artwork were not changed. Production deployment/inbox verification remains the owner release step.
+
 ## Current upload/review acceptance (21 October 2026)
 
 This table supersedes the earlier repair progress rows. Measurements and scopes are retained in docs/evidence/upload-repair/final.json; production deployment is not claimed.
