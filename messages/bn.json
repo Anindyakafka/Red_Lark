@@ -871,6 +871,10 @@
     "Request a new reset link": "Request a new reset link",
     "Authenticator verified. Click Set new password to continue.": "Authenticator verified. Click Set new password to continue.",
     "Plain-language draft covering browser-local Studio designs, optional contributor and staff accounts, private uploads, contact mail, necessary cookies and optional cookieless analytics.": "Plain-language draft covering browser-local Studio designs, optional contributor and staff accounts, private uploads, contact mail, necessary cookies and optional cookieless analytics.",
-    "Verify your authenticator code, then click Set new password again. Your entered password is still here.": "Verify your authenticator code, then click Set new password again. Your entered password is still here."
+    "Verify your authenticator code, then click Set new password again. Your entered password is still here.": "Verify your authenticator code, then click Set new password again. Your entered password is still here.",
+    "Staff invitation": "Staff invitation",
+    "Accept staff invitation": "Accept staff invitation",
+    "Accept this invitation only if you expected staff access from the team. Opening this page does not verify your email or create a session.": "Accept this invitation only if you expected staff access from the team. Opening this page does not verify your email or create a session.",
+    "This invitation is invalid, expired or already used. Use the newest invitation. If your email is already verified, sign in or request a password reset; otherwise ask the team to reissue it.": "This invitation is invalid, expired or already used. Use the newest invitation. If your email is already verified, sign in or request a password reset; otherwise ask the team to reissue it."
   }
 }

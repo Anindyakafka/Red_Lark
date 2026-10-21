@@ -11,6 +11,8 @@ import { DescriptionField, TagsField, CategoriesField, LicenceField } from "./co
 import { imageDescription, licenceSummary, normalizeTags } from "@/lib/contribution-metadata";
 
 const errors: Record<string, string> = {
+  invitation_expired:
+    "This invitation is invalid, expired or already used. Use the newest invitation. If your email is already verified, sign in or request a password reset; otherwise ask the team to reissue it.",
   submission_unavailable:
     "This private submission link is invalid or expired. Check the complete link or contact the team.",
   upload_in_progress: "An upload is already in progress. Wait a few minutes, then try again.",

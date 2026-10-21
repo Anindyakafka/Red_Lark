@@ -1,5 +1,18 @@
 # RED LARK WORKSHOP: staged implementation plan
 
+## Staff invitation repair
+
+| Work                                     | Status | Evidence                                                                                                         |
+| ---------------------------------------- | ------ | ---------------------------------------------------------------------------------------------------------------- |
+| Diagnose wrong hostname                  | PASS   | Owner confirmed localhost refused connection; local SITE_URL unset; live endpoint exists                         |
+| Public invitation URL / deployment guard | PASS   | invitationOrigin defaults to canonical production; rejects local URLs; preflights server before creating/sending |
+| Explicit confirmation                    | PASS   | Fragment token + button-triggered CSRF POST; GET cannot consume invitations                                      |
+| Verification                             | PASS   | Origin/unit, browser, disposable hosted invite and password flow                                                 |
+
+No existing identity/password or real invitation has been modified/sent. Keep contributor signup enabled.
+
+Final evidence: docs/evidence/invitation-fix/. 70 unit/copy/RLS + 46 focused browser tests pass; build/typecheck/lint/format/content/brand/canonical/client-secret checks pass. en/hi at 390/1440 px have axe 0 and no page overflow. Hosted disposable invitation opens without verifying, accepts once, grants no MFA bypass, and sets a password; fixture removed. Public homepage/collection/poster performance is unchanged and not remeasured in this focused repair. Deployment and a fresh invitation remain owner release steps.
+
 ## Password reset repair and optional accounts clarification
 
 | Work                          | Status | Evidence                                                                                                 |

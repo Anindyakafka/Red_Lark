@@ -26,6 +26,7 @@ import {
   sessionName,
 } from "./auth.ts";
 import { passwordError } from "./password.ts";
+import { invitationPage, validInvitationToken } from "./staff-invitation.ts";
 
 const flowName = "__Host-redlark-auth-flow";
 async function staffAllowed(address: string) {
@@ -111,21 +112,14 @@ export default async function handler(req: Request): Promise<Response> {
     }
     if (req.method === "GET" && path === "/api/auth/invite") {
       const token = new URL(req.url).searchParams.get("token_hash") || "";
-      if (!/^(?:[a-f0-9]{56}|[a-f0-9]{64})$/i.test(token)) throw new ApiError(400, "link_expired");
-      const result = await publicClient().auth.verifyOtp({ token_hash: token, type: "invite" });
-      if (
-        result.error ||
-        !result.data.session ||
-        !result.data.user?.email ||
-        !(await staffAllowed(result.data.user.email))
-      )
-        throw new ApiError(400, "link_expired");
-      const saved = await saveSession(result.data.session);
+      // Backward-compatible links never consume a token on GET: mail scanners may open them.
       return new Response(null, {
         status: 303,
         headers: {
-          Location: `${origin()}/en/reset-password/`,
-          "Set-Cookie": saved.cookie,
+          Location: validInvitationToken(token)
+            ? invitationPage(token, origin())
+            : `${origin()}/en/verify/?error=invitation_expired`,
+          "X-Redlark-Invite-Flow": "confirm-v1",
           "Cache-Control": "no-store",
           "Referrer-Policy": "no-referrer",
         },
@@ -156,6 +150,25 @@ export default async function handler(req: Request): Promise<Response> {
     if (req.method !== "POST") throw new ApiError(404, "not_found");
     checkMutation(req);
     const data = await body(req);
+    if (path === "/api/auth/invite") {
+      const token = text(data, "token", 64);
+      if (!validInvitationToken(token)) throw new ApiError(400, "invitation_expired");
+      await limit(req, "staff-invite", 15);
+      const result = await publicClient().auth.verifyOtp({ token_hash: token, type: "invite" });
+      if (result.error) {
+        if (result.error.status && result.error.status >= 500)
+          throw new ApiError(503, "service_unavailable");
+        throw new ApiError(400, "invitation_expired");
+      }
+      if (
+        !result.data.session ||
+        !result.data.user?.email ||
+        !(await staffAllowed(result.data.user.email))
+      )
+        throw new ApiError(400, "invitation_expired");
+      const saved = await saveSession(result.data.session);
+      return json({ ok: true }, 200, { "Set-Cookie": saved.cookie });
+    }
     if (
       [
         "/api/auth/login",

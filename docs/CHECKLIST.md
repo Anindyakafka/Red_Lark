@@ -1,5 +1,16 @@
 # Current acceptance checklist
 
+## Staff invitation correction
+
+| Item                             | Status | Evidence                                                                               |
+| -------------------------------- | ------ | -------------------------------------------------------------------------------------- |
+| Wrong link diagnosed             | PASS   | Unset local SITE_URL made old command choose localhost; owner confirmed refusal        |
+| Public URL and rollout guard     | PASS   | staff-invitation.ts; CLI checks deployed confirm-v1 before any user/role/mail change   |
+| Scanner-safe invitation          | PASS   | GET redirects only; explicit CSRF POST verifies token; new links use fragment          |
+| Recovery / accessibility / roles | PASS   | invitation browser/unit/hosted checks; MFA and service-only invitation grants retained |
+
+Final evidence: docs/evidence/invitation-fix/. 70 unit/copy/RLS + 46 focused browser tests pass; build/typecheck/lint/format/content/brand/canonical/client-secret checks pass. en/hi at 390/1440 px have axe 0 and no page overflow. Hosted disposable invitation opens without verifying, accepts once, grants no MFA bypass, and sets a password; fixture removed. Public homepage/collection/poster performance is unchanged and not remeasured in this focused repair. Deployment and a fresh invitation remain owner release steps.
+
 ## Password reset and optional contributor accounts
 
 | Item                            | Status | Evidence                                                                                                              |

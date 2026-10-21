@@ -1,5 +1,11 @@
 # Backend deployment and owner setup
 
+## Staff invitation safety and deployment
+
+The invitation CLI uses the public SITE_URL, defaulting to https://redlarkworkshop.com even when the local development setting is blank. It refuses localhost/non-HTTPS/preview URLs and preflights the deployed confirmation endpoint before creating or sending an invitation. Do not change local development SITE_URL just to send invitations. Deploy this fix first; a merge is not sufficient until Netlify publishes it.
+
+New invite links use /en/verify/#invite=… so the token is absent from HTTP requests and referrers. The account is verified only after **Accept staff invitation** submits a CSRF-protected POST. Older /api/auth/invite GET links redirect to the confirmation page without consuming the token. Expired/used links show Sign in / Forgot password and reissue guidance rather than raw JSON. Reissue unused invitations with admin:invite; already verified identities use admin:grant plus normal sign-in/recovery. Never paste invitation URLs into chat or issue reports. MFA and service-only grants remain required; optional contributor signup stays enabled.
+
 ## Current access model and password setting
 
 This section supersedes the older staff-only signup instructions below. **Keep Supabase Allow new users to sign up enabled.** Guest contributions need no account. Optional contributor signup, login and password recovery are available; Submit links to Sign in / Create a contributor account. Public header auth buttons stay hidden, and the footer Staff login remains a discreet entry. Public signup grants only contributor access; admin roles still require the service-only invitation/grant and fresh TOTP/RLS gates.
