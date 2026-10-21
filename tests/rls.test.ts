@@ -155,7 +155,19 @@ test("real Postgres RLS: every table, ownership, roles, MFA and bootstrap", asyn
         role: "authenticated",
         sub: admin,
         aal: "aal2",
-        amr: [{ method: "totp", timestamp: Math.floor(Date.now() / 1000) - 1000 }],
+        amr: [{ method: "totp", timestamp: Math.floor(Date.now() / 1000) - 43200 }],
+      }),
+    ]);
+    assert.ok(
+      (await db.query("select * from public.audit_log")).rows.length,
+      "verified administrators retain access after twelve hours",
+    );
+    await db.query("select set_config('request.jwt.claims',$1,false)", [
+      JSON.stringify({
+        role: "authenticated",
+        sub: admin,
+        aal: "aal2",
+        amr: [{ method: "totp", timestamp: Math.floor(Date.now() / 1000) - 86401 }],
       }),
     ]);
     await assert.rejects(

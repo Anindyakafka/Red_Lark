@@ -21,7 +21,7 @@ export default async function BlogArticle({
   return (
     <article className="prose blog-article" lang={post.language}>
       <p className="legal-draft">
-        <UiText id="[EDITORIAL PLACEHOLDER]" />
+        <UiText id="EDITORIAL PLACEHOLDER" />
       </p>
       <Link className="button accent" href="/collection">
         <UiText id="Browse collection" /> ↗
@@ -29,7 +29,7 @@ export default async function BlogArticle({
       <h1>{post.title}</h1>
       {(!post.reviewed || post.fallback) && (
         <p className="notice" lang="en">
-          [DRAFT TRANSLATION / ENGLISH FALLBACK — NEEDS NATIVE REVIEW]
+          DRAFT TRANSLATION / ENGLISH FALLBACK — NEEDS NATIVE REVIEW
         </p>
       )}
       <p className="small">

@@ -8,7 +8,7 @@ const Studio = dynamic(() => import("./studio"), {
   loading: () => (
     <div className="studio-loading" role="status">
       <h2>
-        <UiText id={"[LOADING STUDIO]"} />
+        <UiText id={"LOADING STUDIO"} />
       </h2>
       <p>
         <UiText id={"Preparing local fonts and tools. No designs are uploaded."} />

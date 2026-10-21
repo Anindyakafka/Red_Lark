@@ -1,5 +1,17 @@
 # Current acceptance checklist
 
+## Navigation and admin verification window
+
+| Item                                    | Status | Evidence                                                                                                                             |
+| --------------------------------------- | ------ | ------------------------------------------------------------------------------------------------------------------------------------ |
+| Contribution CTA and visitor auth links | PASS   | Landing/header links; navigation-session browser checks                                                                              |
+| No warning badge                        | PASS   | Admin shows a pending number only when known; no ! placeholder                                                                       |
+| Bounded 24-hour MFA                     | PASS   | admin-mfa unit boundaries; RLS allows twelve-hour verified admin and denies past 24h; mandatory role/AAL2/TOTP retained              |
+| API/DB consistency                      | PASS   | Applied 202610210011_admin_mfa_window.sql through verified TLS; no new account or service configuration                              |
+| Final browser/session proof             | PASS   | docs/evidence/navigation-session/browser-summary.json: 249 unique tests passing; hosted.json: repeated sessions/provider refresh/RLS |
+| Language alignment / bracket-free UI    | PASS   | 20 locale/width geometry and axe checks; viewed header/picker PNGs; export-brackets.json: 396 HTML files, zero hits                  |
+| Public performance                      | PASS   | docs/evidence/navigation-session/lighthouse.json: en medians 96/98/98; hi 96/96/97; Accessibility/Best Practices/SEO 100; CLS 0      |
+
 ## Staff invitation correction
 
 | Item                             | Status | Evidence                                                                               |

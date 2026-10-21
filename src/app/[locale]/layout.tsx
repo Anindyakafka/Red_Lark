@@ -114,7 +114,7 @@ export default async function Layout({
               </span>
               <UiText
                 id={
-                  "[DRAFT TRANSLATION — NEEDS NATIVE REVIEW] Untranslated interface text falls back to English."
+                  "DRAFT TRANSLATION — NEEDS NATIVE REVIEW Untranslated interface text falls back to English."
                 }
               />
               <Link href="/en/">

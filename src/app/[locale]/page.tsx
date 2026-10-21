@@ -27,7 +27,7 @@ export default async function Home({ params }: { params: Promise<{ locale: strin
     <>
       <section className="redlark-hero">
         <div className="hero-heading">
-          <p className="label">[ARCHIVE / WORKSHOP / INDIA]</p>
+          <p className="label">ARCHIVE / WORKSHOP / INDIA</p>
           <h1>
             RED LARK
             <br />
@@ -39,6 +39,9 @@ export default async function Home({ params }: { params: Promise<{ locale: strin
             </NextLink>
             <NextLink prefetch={false} className="button" href={`/${locale}/studio/`}>
               <UiText id="Open Studio" /> ↗
+            </NextLink>
+            <NextLink prefetch={false} className="button" href={`/${locale}/submit/`}>
+              <UiText id="Contribute" /> ↗
             </NextLink>
           </div>
         </div>
@@ -61,7 +64,7 @@ export default async function Home({ params }: { params: Promise<{ locale: strin
               />
             </NextLink>
           ))}
-          <span className="wall-caption">[CC0 PLACEHOLDER STUDIES / 2026]</span>
+          <span className="wall-caption">CC0 PLACEHOLDER STUDIES / 2026</span>
         </div>
       </section>
       <LandingBlocks copy={copy} locale={locale} />
@@ -91,7 +94,7 @@ export default async function Home({ params }: { params: Promise<{ locale: strin
       </section>
       <section className="landing-taxonomy">
         <div className="section-heading">
-          <p className="label">[STEP 2]</p>
+          <p className="label">STEP 2</p>
           <h2>
             <UiText id="Categories" />
           </h2>
@@ -102,7 +105,7 @@ export default async function Home({ params }: { params: Promise<{ locale: strin
         <div className="category-grid">
           {categories.map((c, i) => (
             <NextLink prefetch={false} href={`/${locale}/category/${c.slug}/`} key={c.slug}>
-              <span>[{String(i + 1).padStart(2, "0")}]</span>
+              <span>{String(i + 1).padStart(2, "0")}</span>
               <span className="category-label">{c.label}</span>
               <span aria-hidden="true">↗</span>
             </NextLink>
@@ -111,7 +114,7 @@ export default async function Home({ params }: { params: Promise<{ locale: strin
       </section>
       <section className="landing-formats">
         <div className="section-heading">
-          <p className="label">[STEP 3]</p>
+          <p className="label">STEP 3</p>
           <h2>
             <UiText id="Choose format" />
           </h2>
@@ -119,7 +122,7 @@ export default async function Home({ params }: { params: Promise<{ locale: strin
         <div className="format-grid">
           {formats.map((f, i) => (
             <NextLink prefetch={false} href={`/${locale}/collection/?kind=${f.slug}`} key={f.slug}>
-              <span>[{String(i + 1).padStart(2, "0")}]</span>
+              <span>{String(i + 1).padStart(2, "0")}</span>
               <strong>
                 {f.label.includes("/") ? (
                   <>

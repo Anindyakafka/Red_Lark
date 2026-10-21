@@ -21,7 +21,7 @@ export default function Page() {
         {themes.map((t) => (
           <Link className="index-card" href={`/theme/${slugify(t)}`} key={t}>
             <p className="label">
-              <UiText id={"[THEME] /"} />
+              <UiText id={"THEME /"} />
               {posters.filter((p) => p.themes.includes(t)).length}
               <UiText id={"POSTERS"} />
             </p>
@@ -31,7 +31,7 @@ export default function Page() {
       </div>
       <section className="content-width notice">
         <h2>
-          <UiText id={"[MOVEMENTS]"} />
+          <UiText id={"MOVEMENTS"} />
         </h2>
         <p>{movements.join(" / ")}</p>
       </section>

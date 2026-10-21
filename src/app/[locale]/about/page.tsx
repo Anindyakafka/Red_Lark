@@ -89,7 +89,7 @@ export default async function Page({ params }: { params: Promise<{ locale: strin
           />
         </p>
         <Link className="button accent" href="/submit">
-          <UiText id={"[SUBMIT A POSTER] ↗"} />
+          <UiText id={"SUBMIT A POSTER ↗"} />
         </Link>
         <h2>
           <UiText id="Join the network" />
@@ -98,7 +98,7 @@ export default async function Page({ params }: { params: Promise<{ locale: strin
           <UiText id="Artists, writers, designers and legal volunteers can contact the team about contributing, joining or commissioning campaign material. Contributor uploads are private until human review; contact messages are stored privately and emailed to the team." />
         </p>
         <p className="notice">
-          <UiText id="[SUPPORT DETAILS PENDING] No site donation address or UPI ID is published. Ask the team before sending support; never infer payment details from placeholder artwork." />
+          <UiText id="SUPPORT DETAILS PENDING No site donation address or UPI ID is published. Ask the team before sending support; never infer payment details from placeholder artwork." />
         </p>
         <Link className="button" href="/contact">
           <UiText id="Contact" /> ↗

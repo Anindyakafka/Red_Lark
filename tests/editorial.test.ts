@@ -21,7 +21,7 @@ test("RSS has absolute localized links, explicit placeholders and XML escaping",
     const xml = rssFeed(locale, "https://example.invalid");
     assert.equal((xml.match(/<item>/g) ?? []).length, 2);
     assert.ok(xml.includes(`https://example.invalid/${locale}/blog/`));
-    assert.ok(xml.includes("[EDITORIAL PLACEHOLDER]"));
+    assert.ok(xml.includes("EDITORIAL PLACEHOLDER"));
   }
   assert.equal(escapeXml('A&B < "quote"'), "A&amp;B &lt; &quot;quote&quot;");
 });

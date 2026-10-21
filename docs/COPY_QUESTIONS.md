@@ -2,6 +2,8 @@
 
 Updated during implementation, 16 October 2026. Landing text is rendered verbatim and locked by independent source and rendered-text tests. No editorial changes have been made to Appendix A.
 
+Owner-directed visual change, 21 October 2026: remove decorative square brackets from interface labels, numbering, errors, Studio controls and RSS placeholder markers. Keep the labels and warnings themselves, including placeholder/review/AI/licence disclosures. Appendix A wording is unchanged. Source-code arrays, CSS selectors and user-authored design text retain their syntax/content.
+
 - Appendix A, including curly quotes, capitalization, sentence order and repeated policy links, is canonical. Slide spacing does not override it.
 - Format lists differ between slides. Use Appendix C's instructed union: Badge, Caricature, Cartoon, Flyer, Meme, Portrait, Poster/Placard, Stencil, Sticker, Zine.
 - Keep ALL (Uncategorized) verbatim as the default all-works view label; do not silently rename it or assign every work to that category.

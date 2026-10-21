@@ -4,7 +4,7 @@ export default function NotFound() {
   return (
     <section className="prose not-found">
       <p className="label">
-        <UiText id={"[404 / NOT ON THIS WALL]"} />
+        <UiText id={"404 / NOT ON THIS WALL"} />
       </p>
       <h1>
         <UiText id={"WRONG TURN."} />
@@ -26,16 +26,16 @@ export default function NotFound() {
             placeholder="Try a word, theme or artist"
           />
           <button type="submit">
-            <UiText id={"[SEARCH] ↗"} />
+            <UiText id={"SEARCH ↗"} />
           </button>
         </div>
       </form>
       <div className="hero-ctas">
         <Link className="button accent" href="/collection">
-          <UiText id={"[COLLECTION] ↗"} />
+          <UiText id={"COLLECTION ↗"} />
         </Link>
         <Link className="button" href="/studio" prefetch={false}>
-          <UiText id={"[OPEN STUDIO] ↗"} />
+          <UiText id={"OPEN STUDIO ↗"} />
         </Link>
       </div>
     </section>

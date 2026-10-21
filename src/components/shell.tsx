@@ -12,7 +12,7 @@ export function Header() {
           <Image src="/icons/mark.svg" alt="" width={32} height={32} />
           <UiText id={"RED LARK WORKSHOP"} />
           <span className="edition">
-            <UiText id={"[FREE PRINT ARCHIVE]"} />
+            <UiText id={"FREE PRINT ARCHIVE"} />
           </span>
         </Link>
         <div className="header-controls">
@@ -44,7 +44,7 @@ export function Footer() {
     <footer className="site-footer">
       <div>
         <Link className="footer-mark" href="/">
-          <UiText id={"RED LARK WORKSHOP [01]"} />
+          <UiText id={"RED LARK WORKSHOP 01"} />
         </Link>
         {posters.every((poster) => poster.placeholder) && (
           <p>

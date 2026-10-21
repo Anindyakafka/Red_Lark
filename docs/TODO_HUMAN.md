@@ -1,5 +1,13 @@
 ﻿# Human prerequisites for RED LARK WORKSHOP
 
+## Current navigation / admin-session release
+
+After merging this release, wait for the Netlify production deployment. Contribute appears beside Open Studio on the landing page; Log in / Sign up appear in the header for signed-out visitors. Contributor accounts remain optional and public signup stays ON.
+
+This release also aligns header languages on one row, balances the landing language picker and removes decorative square brackets throughout the interface. Confirm the production header and landing at phone/desktop widths after Netlify reports Published. No new environment variables or dashboard configuration are required for these UI changes.
+
+The owner selected **one day (24 hours)** for administrator authenticator verification in the same signed-in browser. This replaces earlier ten-minute instructions. A new login, logout, different browser or 24-hour expiry still requires verification. No browser-storage MFA bypass or permanent trusted-device token was added. The matching database migration 202610210011_admin_mfa_window.sql has been applied; no Netlify environment variable or Supabase dashboard change is needed. Only a real-browser post-deploy confirmation remains.
+
 ## Staff invitation link fix
 
 The earlier invitation email used localhost because local SITE_URL was unset. Do not use the old link pasted in chat. After merging this invitation fix, wait for Netlify to show the production deployment as Published; then run `npm run admin:invite -- <actual-email>` again. New invitations default to https://redlarkworkshop.com when local SITE_URL is blank. An explicit localhost SITE_URL is rejected. The command checks that the new invite endpoint is deployed before creating an identity, granting a role or sending mail.

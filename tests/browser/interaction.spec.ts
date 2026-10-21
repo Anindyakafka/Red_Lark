@@ -30,12 +30,12 @@ test("pointer move/resize/rotate, zoom/pan and paper presets operate", async ({ 
   expect(Number(await page.getByLabel("rotation", { exact: true }).inputValue())).not.toBe(0);
   await page.getByRole("slider").fill("1.5");
   await expect(page.locator(".paper-wrap")).toHaveAttribute("style", /150%/);
-  await page.getByRole("button", { name: "[PAN]", exact: true }).click();
-  await expect(page.getByRole("button", { name: "[PAN ON]", exact: true })).toHaveAttribute(
+  await page.getByRole("button", { name: "PAN", exact: true }).click();
+  await expect(page.getByRole("button", { name: "PAN ON", exact: true })).toHaveAttribute(
     "aria-pressed",
     "true",
   );
-  await page.getByRole("button", { name: "[FIT]", exact: true }).click();
+  await page.getByRole("button", { name: "FIT", exact: true }).click();
   await expect(page.locator(".paper-wrap")).toHaveAttribute("style", /100%/);
   await page.getByLabel("Paper preset").selectOption("Social");
   await expect(page.locator(".studio-paper")).toHaveAttribute("viewBox", "0 0 600 750");

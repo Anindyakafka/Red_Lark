@@ -75,7 +75,7 @@ export function HandoffForm({
   function fieldError(name: string) {
     return errors[name] ? (
       <span id={`${name}-error`} className="field-error">
-        [ERROR] {errors[name]}
+        ERROR {errors[name]}
       </span>
     ) : null;
   }

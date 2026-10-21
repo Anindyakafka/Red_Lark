@@ -16,8 +16,8 @@ export function PageIntro({
   return (
     <section className="page-intro">
       <p className="label">
-        [{index}
-        <UiText id={"] RED LARK WORKSHOP / OPEN ARCHIVE"} />
+        {index}
+        <UiText id={" RED LARK WORKSHOP / OPEN ARCHIVE"} />
       </p>
       <div className="intro-row">
         <div>
@@ -29,7 +29,7 @@ export function PageIntro({
           </p>
         </div>
         <Link className="button accent" href={href} prefetch={false}>
-          [<UiText id={action} />] ↗
+          <UiText id={action} /> ↗
         </Link>
       </div>
     </section>

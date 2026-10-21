@@ -25,7 +25,7 @@ export default function Page() {
         <UploadPanel />
         <aside aria-labelledby="submission-guidance-heading">
           <h2 id="submission-guidance-heading">
-            <UiText id={"[BEFORE YOU SUBMIT]"} />
+            <UiText id={"BEFORE YOU SUBMIT"} />
           </h2>
           <p>
             <UiText

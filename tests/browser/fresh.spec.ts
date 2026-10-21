@@ -42,13 +42,13 @@ test("fresh-eyes form focus and true empty Studio recovery", async ({ page }) =>
     localStorage.setItem("redlark.studio.v2", JSON.stringify(raw));
   });
   await page.reload();
-  await expect(page.getByText("[EMPTY CANVAS]", { exact: false })).toBeVisible();
+  await expect(page.getByText("EMPTY CANVAS", { exact: false })).toBeVisible();
   await page.getByRole("button", { name: "+ TEXT", exact: true }).click();
   await expect(page.getByLabel("Words", { exact: true })).toBeVisible();
 });
 test("curation is empty honestly and font bundle is a real download", async ({ page }) => {
   await page.goto("/community/");
-  await expect(page.getByText("[NO REVIEWED SUBMISSIONS YET]", { exact: true })).toBeVisible();
+  await expect(page.getByText("NO REVIEWED SUBMISSIONS YET", { exact: true })).toBeVisible();
   await page.goto("/discover/");
   const waiting = page.waitForEvent("download");
   await page.getByRole("link", { name: /DOWNLOAD FONT PACK/ }).click();

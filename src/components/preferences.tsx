@@ -27,7 +27,7 @@ export function Preferences() {
       }}
     >
       {" "}
-      [{dark ? "LIGHT" : "DARK"}]{" "}
+      {dark ? "LIGHT" : "DARK"}{" "}
     </button>
   );
 }
@@ -68,7 +68,7 @@ export function BrowseCTA() {
   return browse ? (
     <aside className="mobile-cta">
       <Link href="/studio" prefetch={false}>
-        <UiText id={"[OPEN STUDIO] ↗"} />
+        <UiText id={"OPEN STUDIO ↗"} />
       </Link>
     </aside>
   ) : null;

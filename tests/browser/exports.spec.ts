@@ -56,7 +56,7 @@ test("uploads are locally re-encoded, metadata discarded, and cannot enter share
   expect(bytes.includes(Buffer.from("eXIf"))).toBe(false);
   expect(bytes.readUInt32BE(16)).toBeLessThanOrEqual(1800);
   expect(bytes.readUInt32BE(20)).toBeLessThanOrEqual(1800);
-  await page.getByRole("button", { name: "[SHARE LINK]", exact: true }).click();
+  await page.getByRole("button", { name: "SHARE LINK", exact: true }).click();
   await expect(page.locator("main [role=alert]")).toContainText("exclude uploaded images");
   expect(network).toEqual([]);
 });
@@ -80,9 +80,9 @@ test("keyboard edit, lock, hide, reorder, remove and undo work", async ({ page }
   await expect(page.getByRole("button", { name: "Show rectangle", exact: true })).toBeVisible();
   await page.getByRole("button", { name: "Show rectangle", exact: true }).click();
   await page.getByRole("button", { name: "Send rectangle back", exact: true }).click();
-  await page.getByRole("button", { name: "[REMOVE LAYER]", exact: true }).click();
+  await page.getByRole("button", { name: "REMOVE LAYER", exact: true }).click();
   await expect(page.getByRole("button", { name: "Lock rectangle", exact: true })).toHaveCount(0);
-  await page.getByRole("button", { name: "[UNDO]", exact: true }).click();
+  await page.getByRole("button", { name: "UNDO", exact: true }).click();
   await expect(page.getByRole("button", { name: "Lock rectangle", exact: true })).toBeVisible();
 });
 
@@ -110,7 +110,7 @@ test("storage failure, font/network failure, unsupported browser and bad shared 
     );
     if (state === "storage") {
       await expect(page.locator(".studio-paper")).toBeVisible();
-      await expect(page.getByText("[STORAGE UNAVAILABLE]", { exact: false })).toBeVisible();
+      await expect(page.getByText("STORAGE UNAVAILABLE", { exact: false })).toBeVisible();
     } else if (state === "hash") await expect(page.locator("main [role=alert]")).toBeVisible();
     else
       await expect(page.locator(".studio-loading")).toContainText(
