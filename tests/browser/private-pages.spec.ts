@@ -69,7 +69,7 @@ async function fixtures(page: Page, role: "visitor" | "contributor" | "admin" = 
     if (path === "/api/auth/mfa/factors") return route.fulfill({ json: { factors: [] } });
     if (path === "/api/admin/queue")
       return role === "admin"
-        ? route.fulfill({ json: { works: [work] } })
+        ? route.fulfill({ json: { works: [{ ...work, status: "pending" }] } })
         : route.fulfill({ status: 403, json: { error: "fresh_mfa_required" } });
     if (["/api/admin/inbox", "/api/admin/audit", "/api/admin/users"].includes(path))
       return route.fulfill({ json: { messages: [], takedowns: [], audit: [], profiles: [] } });
@@ -119,16 +119,19 @@ for (const locale of ["en", "hi"])
         await expect(page.locator('meta[name="robots"]')).toHaveAttribute("content", /noindex/);
     });
   }
-test("header has visitor links, contributor menu, admin control and a working assembled contact address", async ({
+test("header hides public authentication; footer staff entry, account menu and contact address work", async ({
   page,
 }) => {
   await fixtures(page);
   await page.goto("/en/contact/");
   await expect(
     page.locator("header").getByRole("link", { name: "Log in", exact: true }),
-  ).toBeVisible();
+  ).toHaveCount(0);
   await expect(
     page.locator("header").getByRole("link", { name: "Sign up", exact: true }),
+  ).toHaveCount(0);
+  await expect(
+    page.locator("footer").getByRole("link", { name: "Staff login", exact: true }),
   ).toBeVisible();
   await expect(
     page.getByRole("link", { name: "redlarkworkshop@gmail.com", exact: true }),
@@ -139,9 +142,7 @@ test("header has visitor links, contributor menu, admin control and a working as
   await expect(
     page.locator("header").getByRole("link", { name: "Dashboard", exact: true }),
   ).toBeVisible();
-  await expect(
-    page.locator("header").getByRole("link", { name: "Admin", exact: true }),
-  ).toBeVisible();
+  await expect(page.locator("header").getByRole("link", { name: /^Admin/ })).toBeVisible();
 });
 test("upload wizard edits an owned revision, preserves metadata and validates file and permission", async ({
   page,
@@ -258,7 +259,15 @@ test("upload wizard sends only a private signed PUT before submitting for review
   await page.getByRole("button", { name: "Sticker", exact: true }).click();
   await page.locator("#upload-title").fill("Fixture, never published");
   await page.locator("#upload-alt").fill("Large red lettering on a white rectangle.");
-  await page.locator("#upload-licence").selectOption("CC-BY-NC-ND-4.0");
+  await page
+    .getByRole("radio", {
+      name: "People can print and share it exactly as it is, but not remix or change it.",
+      exact: true,
+    })
+    .check();
+  await page
+    .getByLabel("Only for non-commercial use (nobody can sell it)", { exact: true })
+    .check();
   await page.locator("#upload-file").setInputFiles({
     name: "fixture.png",
     mimeType: "image/png",
@@ -284,7 +293,7 @@ test("admin review requires a written reason and never grants browser-provided r
   await expect(page.locator(`#reason-${id}-error`)).toBeVisible();
   await fixtures(page, "contributor");
   await page.reload();
-  await expect(page.locator("main")).toContainText("Administrator access is required.");
+  await expect(page.locator("main")).toContainText("You don't have admin access");
   await expect(page.getByRole("button", { name: "Save decision", exact: true })).toHaveCount(0);
 });
 
@@ -337,8 +346,9 @@ test("profile validation keeps optional contact private and focuses accessible f
 
 test("review screenshots include real UI states with explicitly mocked private data", async ({
   page,
-}) => {
-  const dir = "docs/evidence/backend-pages-round-2";
+}, testInfo) => {
+  // Fresh per-run artifacts avoid rewriting historical evidence and Windows file locks.
+  const dir = testInfo.outputPath("screenshots");
   fs.mkdirSync(dir, { recursive: true });
   for (const locale of ["en", "ml"])
     for (const width of [390, 1440])

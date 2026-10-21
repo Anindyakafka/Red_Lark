@@ -1,4 +1,4 @@
-import { UiText } from "@/i18n/client";
+import { Link, UiText } from "@/i18n/client";
 import { localizeMetadata } from "@/i18n/metadata";
 import { PageIntro } from "@/components/page-intro";
 import { UploadPanel } from "@/components/account-client";
@@ -41,9 +41,18 @@ export default function Page() {
               }
             />
           </p>
+          <p>
+            <Link href="/signup">
+              <UiText id="Create a contributor account" />
+            </Link>
+            {" / "}
+            <Link href="/login">
+              <UiText id="Sign in" />
+            </Link>
+          </p>
           <ContactAddress email={email} />
           <p>
-            <UiText id="Email fallback: if you prefer not to create an account, email the team with a link to your artwork, its licence and artist credit." />
+            <UiText id="Email fallback: email the team with a link to your artwork, its licence and artist credit. No account is needed." />
           </p>
         </aside>
       </div>

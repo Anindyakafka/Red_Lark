@@ -1,5 +1,51 @@
 # Current acceptance checklist
 
+## Password reset and optional contributor accounts
+
+| Item                            | Status | Evidence                                                                                                              |
+| ------------------------------- | ------ | --------------------------------------------------------------------------------------------------------------------- |
+| MFA password failure reproduced | PASS   | docs/evidence/password-reset/before.json: insufficient_aal -> old generic update error                                |
+| MFA-preserving password change  | PASS   | docs/evidence/password-reset/after.json: code verification, password updated, old session revoked, new password works |
+| Clear password failure states   | PASS   | passwordError maps same/weak/stale-session/MFA cases; password remains in page memory only                            |
+| Contributor signup optional     | PASS   | Public signup/login/recovery restored, guest upload unchanged, staff grant and MFA/RLS unchanged                      |
+| Final browser regression        | PASS   | tests/browser/password-reset.spec.ts plus existing suite                                                              |
+
+The earlier provider signup FAIL row is superseded: keeping public signup enabled is now the owner's explicit requirement.
+
+Final verification: 67 unit/copy/RLS and 51 focused browser checks PASS; typecheck/lint/format/build/content/brand/canonical/client-secret checks PASS. Password/MFA checks cover en/hi at 390 and 1440 px with axe 0 and no page overflow. Real disposable recovery session verified against the configured Supabase project; no real email or password was used. Evidence: docs/evidence/password-reset/. Prior full-browser/Lighthouse evidence is retained for unchanged public-page scope; not represented as rerun here.
+
+## Staff-only release verification (21 October 2026)
+
+| Item                              | Status | Evidence / limit                                                                                                                             |
+| --------------------------------- | ------ | -------------------------------------------------------------------------------------------------------------------------------------------- |
+| Public signup blocked server-side | PASS   | tests/staff.test.ts; /signup and /signup-link return 403 without contacting Auth                                                             |
+| Staff password and invitation     | PASS   | docs/evidence/staff-access/hosted-auth.json; disposable real Supabase invite/password login; MFA remains mandatory                           |
+| Provider direct-signup setting    | FAIL   | Hosted settings check found disable_signup=false; owner dashboard step in TODO_HUMAN                                                         |
+| Review recovery and audit table   | PASS   | browser-full.json: 212 passed; hosted.json real upload/review/public R2 and audit filters; fresh-MFA preservation and all-locale audit axe 0 |
+| Copy/licence/strict checks        | PASS   | 67 unit/copy/RLS tests; build/typecheck/lint green before final browser run                                                                  |
+
+Final evidence: docs/evidence/staff-access/final.json. 67 unit/copy/RLS + 212 full browser + 47 final focused browser checks pass. Typecheck/lint/format/build/content/canonical/client-secret checks pass; commit secret scan has zero findings. Mobile Lighthouse medians: en landing/collection/poster 96/97/96; hi 96/96/95. A11y/BP/SEO 100 throughout; CLS 0. Existing real accounts/artwork were not changed. Production deployment/inbox verification remains the owner release step.
+
+## Current upload/review acceptance (21 October 2026)
+
+This table supersedes the earlier repair progress rows. Measurements and scopes are retained in docs/evidence/upload-repair/final.json; production deployment is not claimed.
+
+| Requirement                                                    | Status | Evidence                                                                           | Note                                                                                                                                                                  |
+| -------------------------------------------------------------- | ------ | ---------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 1 / carry-over 9: optional image description, described images | PASS   | contribution-metadata tests; DescriptionField; fetch-public-catalogue; hosted.json | Empty upload accepted; title/format/artist fallback at render/build; archive files remain strict                                                                      |
+| 2: tags                                                        | PASS   | upload-repair browser tests; contribution-review-rls tests                         | Suggestions, Enter/comma/blur, Add, x/Backspace, dedup/limits/errors/retention; tags/work_tags rows; custom flag and admin editing                                    |
+| 3: licence choices                                             | PASS   | metadata unit tests; default-submission browser test; hosted ND gate               | Four cards map to seven IDs, CC0 disables NC, default persisted, no ND remix                                                                                          |
+| 4: category selection/persistence                              | PASS   | hosted.json; category browser/RLS tests                                            | Existing handler supported arrays; replaced confusing native control. Three rows visible in dashboard/admin and three public category pages in all four locales       |
+| 5: admin review and notifications                              | PASS   | hosted.json; queue/detail/MFA tests; grant_admin RLS                               | Real fixture role/TOTP/private upload/edit/changes/approve/reject/public download; transactional mail outbox and audited retry; transport failure preserved decisions |
+| Carry-over 13: accessible errors and retained state            | PASS   | upload-repair.spec.ts                                                              | English/Hindi 390/1440, optional alt, tag limits, category retention, reason errors, no forced Enter submission                                                       |
+| Four locale draft handling / landing copy                      | PASS   | messages/*.json; copy.test.ts                                                      | hi/bn/ml reviewed:false, visible fallback notice; Appendix A untouched                                                                                                |
+| Complete automated verification                                | PASS   | final.json; browser-full-final.json                                                | 64 unit/copy/RLS; 202 browser; all 392 locale pages broad axe 0; build/typecheck/lint/format/content/brand green                                                      |
+| Mobile/desktop visual inspection                               | PASS   | after/*.png; ITERATIONS round 5                                                    | English/Hindi 390/1440 inspected; readable scripts, visible badge, compact queue and large detail preview                                                             |
+| Performance                                                    | PASS   | lighthouse.json; lighthouse-collection-followup.json                               | Six route medians >=95, other categories 100, CLS 0. Initial 94 retained transparently                                                                                |
+| Secret handling                                                | PASS   | security.json; complete build client-secret scan                                   | Ignored/untracked local env; no private credentials in static output; focused source scan passed                                                                      |
+
+Mail and production build-hook requests were intercepted during hosted acceptance. Real deployed inbox delivery and production rebuild completion are owner checks in TODO_HUMAN.md. Screenshots of private pages use explicitly synthetic data; they do not claim a browser session as the real owner. Custom-tag RLS is also verified against anonymous, owner and fresh-MFA admin sessions; unpublished/rejected/orphan labels are not a public dictionary.
+
 ## Guest contributions / UX acceptance — 21 October 2026
 
 | Requirement                                                      | Status | Evidence                                                                  | Note                                                                                                          |
@@ -143,3 +189,44 @@ Human launch decisions are in TODO_HUMAN.md. No deployment, push, database setup
 | 8. Axe, Lighthouse, client and repository secrets            | PASS   | docs/evidence/redlark-round-1-account-pages-p5/summary.json; build and Gitleaks checks | 178 browser tests; all key public medians >=95, other categories 100; CLS 0; no private client credentials.                           |
 
 These FAIL rows are human prerequisites, not missing page implementations. They prevent a claim of full live-service acceptance. No backend push/deployment was performed.
+
+## Upload/review repair - current acceptance (21 October 2026)
+
+| Item                             | Status      | Evidence                                                              | Note                                                                                                                                  |
+| -------------------------------- | ----------- | --------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------- |
+| 9: descriptions on images        | IN PROGRESS | src/lib/contribution-metadata.ts; tests/contribution-metadata.test.ts | Upload description optional, deterministic title/format/artist fallback; archive file alt remains required. Hosted migration pending. |
+| 13: contribution form errors     | IN PROGRESS | tests/browser/upload-repair.spec.ts; evidence/upload-repair/after     | Original five regressions green; expanded limits/keyboard/mobile checks pending.                                                      |
+| Category and tag persistence     | IN PROGRESS | tests/contribution-review-rls.test.ts                                 | Transactional three-category/two-tag persistence and ownership guards verified locally.                                               |
+| Admin discoverability and review | IN PROGRESS | /admin/review; tests/browser/upload-repair.spec.ts                    | Direct route green; hosted edit/approval/mail acceptance pending.                                                                     |
+
+### Round 2 measured evidence
+
+| Item                                            | Status | Evidence                                                                            | Note                                                                                                                                                    |
+| ----------------------------------------------- | ------ | ----------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 9: every image described, optional upload input | PASS   | tests/contribution-metadata.test.ts; scripts/fetch-public-catalogue.ts; hosted.json | Blank alt stored successfully; review/public rendering supplies deterministic title/format/artist fallback; archive remains strict.                     |
+| 13: form errors and retained selections         | PASS   | tests/browser/upload-repair.spec.ts (14 passed)                                     | Tag limits/errors, duplicates, keyboard, blur, comma, Enter, removal and category retention; en/hi 390/1440 axe 0. Full regression pending.             |
+| Relational tags and three categories            | PASS   | tests/contribution-review-rls.test.ts; hosted.json                                  | Persisted relational rows -> dashboard/admin -> three public category pages in four locales.                                                            |
+| Review permissions and decisions                | PASS   | hosted.json; local RLS tests                                                        | Real fixture admin role/TOTP, non-admin denied, metadata edits, approval/changes/rejection, public-copy workflow; production build request intercepted. |
+| Notification failure recovery                   | PASS   | hosted.json                                                                         | Real persisted outbox, injected provider failure and successful transport retry. Does not establish real inbox delivery.                                |
+
+### Round 3 verification progress
+
+| Check                                              | Status      | Evidence                                            | Note                                                                                                                                |
+| -------------------------------------------------- | ----------- | --------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------- |
+| Full route/browser regression                      | PASS        | npm run test:e2e: 201 passed                        | Includes route-wide four-locale axe checks; final timestamp/action polish to be retested.                                           |
+| Delayed notification correctness and audited retry | PASS        | tests/contribution-review-rls.test.ts; hosted.json  | Original feedback retained; persisted failed mail can be retried without repeating the decision.                                    |
+| Source and client secrets                          | PASS        | evidence/upload-repair/security.json; npm run build | Focused changed-source Gitleaks; complete static output checked against configured private credentials. Historic scan not repeated. |
+| Final performance / polished screenshot review     | IN PROGRESS | evidence/upload-repair                              | Final measurements pending.                                                                                                         |
+
+### Round 4 performance acceptance
+
+| Route              | Status | Performance median | Accessibility / Best practices / SEO | Evidence                                                   |
+| ------------------ | ------ | ------------------ | ------------------------------------ | ---------------------------------------------------------- |
+| English landing    | PASS   | 95                 | 100 / 100 / 100                      | evidence/upload-repair/lighthouse.json                     |
+| English Collection | PASS   | 99                 | 100 / 100 / 100                      | evidence/upload-repair/lighthouse-collection-followup.json |
+| English poster     | PASS   | 96                 | 100 / 100 / 100                      | evidence/upload-repair/lighthouse.json                     |
+| Hindi landing      | PASS   | 97                 | 100 / 100 / 100                      | evidence/upload-repair/lighthouse.json                     |
+| Hindi Collection   | PASS   | 97                 | 100 / 100 / 100                      | evidence/upload-repair/lighthouse-collection-followup.json |
+| Hindi poster       | PASS   | 97                 | 100 / 100 / 100                      | evidence/upload-repair/lighthouse.json                     |
+
+Three cold-cache runs per route, all raw scores recorded, CLS 0. Initial Hindi Collection 94 remains in lighthouse-round3-before.json; only the two affected Collection routes were remeasured after the font-dependency fix. Final-source browser acceptance is pending the corrected QA-configured full run.

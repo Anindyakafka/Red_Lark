@@ -1,3 +1,4 @@
+import { notificationNotice } from "./work-notifications.ts";
 import { randomUUID } from "node:crypto";
 import { checked, service, limit } from "./auth.ts";
 import { ApiError, email, json, opaque, sha256, text } from "./security.ts";
@@ -35,12 +36,13 @@ export async function guest(req: Request, path: string, data: Record<string, unk
           upi_public: data.upi_consent === true,
         }),
       );
-      if (categories.length)
-        checked(
-          await db
-            .from("work_categories")
-            .insert(categories.map((category_slug) => ({ work_id: id, category_slug }))),
-        );
+      checked(
+        await db.rpc("save_work_facets", {
+          p_work: id,
+          p_categories: categories,
+          p_tags: values.tags,
+        }),
+      );
     } catch (error) {
       await db.from("works").delete().eq("id", id);
       throw error;
@@ -80,7 +82,8 @@ export async function guest(req: Request, path: string, data: Record<string, unk
       slug: work.status === "approved" ? work.slug : null,
       expiresAt: receipt.data.expires_at,
     });
-  if (path === "/api/guest/submit" && work.status === "pending") return json({ ok: true });
+  if (path === "/api/guest/submit" && work.status === "pending")
+    return json({ ok: true, mailPending: await notificationNotice(work.id) });
   if (work.status !== "draft") throw new ApiError(409, "invalid_transition");
   if (path === "/api/guest/sign") {
     if (privateBucket() === publicBucket()) throw new ApiError(503, "storage_isolation_failed");
@@ -171,5 +174,5 @@ export async function guest(req: Request, path: string, data: Record<string, unk
       .select("id")
       .single(),
   );
-  return json({ ok: true });
+  return json({ ok: true, mailPending: await notificationNotice(work.id) });
 }

@@ -1,3 +1,4 @@
+import { deliverWorkNotifications } from "./work-notifications.ts";
 import { checked, service } from "./auth.ts";
 import { remove } from "./storage.ts";
 import { deliver } from "./mail.ts";
@@ -57,5 +58,6 @@ export async function maintenance() {
     } catch {
       /* Persisted outbox retries without logging personal content. */
     }
-  return { cleaned, mail };
+  const workMailPending = await deliverWorkNotifications();
+  return { cleaned, mail, workMailPending };
 }

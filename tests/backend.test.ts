@@ -79,6 +79,8 @@ test("an auth mail outage shows a generic service failure instead of falsely cla
     const url = String(input instanceof Request ? input.url : input);
     if (url.endsWith("/rpc/consume_rate_limit"))
       return new Response("true", { headers: { "Content-Type": "application/json" } });
+    if (url.endsWith("/rpc/staff_email_allowed"))
+      return new Response("true", { headers: { "Content-Type": "application/json" } });
     assert.match(url, /\/auth\/v1\/(?:otp|recover)(?:\?|$)/);
     return new Response(
       JSON.stringify({ message: "SMTP provider detail withheld", code: "unexpected_failure" }),
@@ -86,7 +88,7 @@ test("an auth mail outage shows a generic service failure instead of falsely cla
     );
   };
   try {
-    for (const path of ["magic", "signup-link", "forgot"]) {
+    for (const path of ["magic", "forgot"]) {
       const csrf = csrfCookie(new Request("https://site.example.invalid/api/session"));
       const response = await handler(
         new Request(`https://site.example.invalid/api/auth/${path}`, {

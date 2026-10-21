@@ -1,3 +1,5 @@
+import { notificationNotice } from "./work-notifications.ts";
+import { normalizeTags } from "../lib/contribution-metadata.ts";
 import { randomUUID } from "node:crypto";
 import { checked, type Identity, service } from "./auth.ts";
 import { ApiError, cookie, email, json, origin, text } from "./security.ts";
@@ -29,7 +31,9 @@ export async function contributions(
     const works = checked(
       await who.client
         .from("works")
-        .select("*,work_files(id,kind,mime,bytes,width,height,dpi),work_categories(category_slug)")
+        .select(
+          "*,work_files(id,kind,mime,bytes,width,height,dpi),work_categories(category_slug),work_tags(tags(slug,label,custom))",
+        )
         .eq("owner_id", who.user.id)
         .order("created_at", { ascending: false }),
     );
@@ -168,13 +172,13 @@ export async function contributions(
       checked(
         await who.client.from("works").insert({ ...values, id, slug, owner_id: who.user.id }),
       );
-    checked(await who.client.from("work_categories").delete().eq("work_id", id));
-    if (categories.length)
-      checked(
-        await who.client
-          .from("work_categories")
-          .insert(categories.map((category_slug) => ({ work_id: id, category_slug }))),
-      );
+    checked(
+      await who.client.rpc("save_work_facets", {
+        p_work: id,
+        p_categories: categories,
+        p_tags: values.tags,
+      }),
+    );
     return json({ ok: true, id });
   }
   if (path === "/api/upload/sign") {
@@ -261,7 +265,7 @@ export async function contributions(
         .select("id")
         .single(),
     );
-    return json({ ok: true });
+    return json({ ok: true, mailPending: await notificationNotice(text(data, "id", 100, 1)) });
   }
   if (path === "/api/account/file") {
     const file = checked(
@@ -287,9 +291,9 @@ export async function contributions(
 export async function workValues(data: Record<string, unknown>, client: Identity["client"]) {
   if (data.permission !== true) throw new ApiError(422, "permission_required");
   const title = text(data, "title", 200, 1),
-    alt = text(data, "alt", 1000, 15),
+    alt = text(data, "alt", 300),
     format = text(data, "format_slug", 100, 1),
-    licence = text(data, "licence_id", 100, 1);
+    licence = text(data, "licence_id", 100) || "CC-BY-SA-4.0";
   const reference = checked(
     await client.from("licences").select("derivatives").eq("id", licence).single(),
   );
@@ -300,12 +304,12 @@ export async function workValues(data: Record<string, unknown>, client: Identity
   const categories = Array.isArray(data.categories)
     ? data.categories.filter((v): v is string => typeof v === "string")
     : [];
-  if (categories.length > 28) throw new ApiError(422, "invalid_categories");
-  const tags = text(data, "tags", 500)
-    .split(",")
-    .map((s) => s.trim())
-    .filter(Boolean)
-    .slice(0, 20);
+  let tags: string[];
+  try {
+    tags = normalizeTags(data.tags);
+  } catch (error) {
+    throw new ApiError(422, error instanceof Error ? error.message : "invalid_tags");
+  }
   const id = typeof data.id === "string" ? data.id : randomUUID();
   if (!/^[a-f0-9-]{36}$/.test(id)) throw new ApiError(422, "invalid_id");
   const slug = `work-${id}`;

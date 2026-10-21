@@ -66,9 +66,7 @@ test("password forms focus errors; generic inbox and password reset links work w
   await expect(page.getByRole("heading", { name: "Check your inbox" })).toBeVisible();
   await expect(page.locator("main")).toContainText("does not confirm whether an account exists");
 });
-test("signup supports an email link without a password; uploads wait for a verified session", async ({
-  page,
-}) => {
+test("optional contributor signup and guest uploads both remain available", async ({ page }) => {
   await fixtures(page);
   await page.route("**/api/auth/signup-link", (route) =>
     route.fulfill({ json: { ok: true, inbox: true } }),
@@ -76,7 +74,7 @@ test("signup supports an email link without a password; uploads wait for a verif
   await page.goto("/en/signup/");
   await page.getByLabel("Email", { exact: true }).fill("fixture@example.invalid");
   await page.getByRole("button", { name: "Create account with email link", exact: true }).click();
-  await expect(page.getByRole("heading", { name: "Check your inbox" })).toBeVisible();
+  await expect(page.getByRole("heading", { name: "Check your inbox", exact: true })).toBeVisible();
   await page.route("**/api/account", (route) =>
     route.fulfill({ status: 401, json: { error: "sign_in_required" } }),
   );
@@ -89,7 +87,7 @@ test("signup supports an email link without a password; uploads wait for a verif
 test("admin is gated by fresh MFA and never shows a counterfeit queue", async ({ page }) => {
   await fixtures(page);
   await page.goto("/en/admin/");
-  await expect(page.locator("main [role=alert]")).toContainText("Administrator access");
+  await expect(page).toHaveURL(/\/en\/login\//);
   await expect(page.getByRole("button", { name: "Save decision" })).toHaveCount(0);
 });
 test("contact and takedown keep messages on network/provider failure and expose required URL errors", async ({

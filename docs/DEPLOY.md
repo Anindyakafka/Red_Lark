@@ -1,5 +1,23 @@
 # Backend deployment and owner setup
 
+## Current access model and password setting
+
+This section supersedes the older staff-only signup instructions below. **Keep Supabase Allow new users to sign up enabled.** Guest contributions need no account. Optional contributor signup, login and password recovery are available; Submit links to Sign in / Create a contributor account. Public header auth buttons stay hidden, and the footer Staff login remains a discreet entry. Public signup grants only contributor access; admin roles still require the service-only invitation/grant and fresh TOTP/RLS gates.
+
+An MFA-enabled account must verify an authenticator before setting/changing its password. The reset page now shows the existing authenticator challenge inline when Supabase returns insufficient_aal, retains the typed password only in the page, and asks you to submit again after verification. It does not persist passwords in storage, log them, or use the privileged admin API to bypass MFA. Same-password, weak-password and reauthentication errors have separate safe instructions. A successful reset revokes app/provider sessions and requires signing in again. Use a fresh reset link in the same browser if the recovery session expired.
+
+## Staff-only authentication (21 October 2026)
+
+Public contribution remains account-free. The header has no visitor Log in/Sign up controls; the footer links to **Staff login**. /signup/ is a closed explanation; both signup APIs reject requests server-side. Login and recovery email is sent only for verified addresses with an admin role, with the same generic inbox response for all addresses. Password login checks the same role. Existing data is retained.
+
+**Owner action in Supabase:** existing Red Lark project -> Authentication -> Sign In / Providers (sometimes labelled Providers) -> turn **Allow new users to sign up** OFF -> Save. A read-only hosted check on 21 October found it still enabled. The application already blocks signup; this switch also closes direct requests to Supabase Auth. Email login and service-admin invitations remain enabled. No new project, SMTP service or DNS record is needed. Project publishable/secret keys cannot change this dashboard setting.
+
+To add staff from the trusted checkout, run `npm run admin:invite -- <staff-email>`. Migration 202610210010_staff_access.sql must be applied first (already applied to this project). The service-only command creates an invitation, records the staff role and an audit event, then sends the one-use link through Resend. /api/auth/invite verifies the provider-issued token, checks the staff role, creates an HttpOnly session and opens password setup. Neither address nor token is logged. Invitees cannot sign in before email verification; admin access still requires TOTP. Run only for an intended staff member. For an existing email-verified website account use `npm run admin:grant -- <existing-verified-email>` instead. If delivery fails, correct mail configuration before retrying; no invitation token is printed for manual sharing. Revoke an unused invitation by removing that person's admin role and deleting their unverified Auth identity in Supabase; do not delete an existing contributor or artwork.
+
+For your existing admin password: footer **Staff login** -> **Forgot password?** -> enter your staff email -> open the reset link in the same browser -> choose a unique 12-128 character password -> sign in with **Use a password instead**. Resetting logs out all sessions. Keep the authenticator; there is no shared PIN. Fresh MFA is still required every ten minutes for privileged actions. An expired review shows an inline verifier and retains draft feedback/metadata; verify, then save again.
+
+Audit details default to collapsed. UTC date/time range, exact action filtering and 50-row pagination run on the fresh-MFA API. The browser does not download the whole log. Inbox/user details also collapse. Confirm real email delivery and production reviews after merging; automated hosted checks use disposable identities and intercepted notification transport.
+
 Backend must not be deployed until the owner confirms the server variables are configured. `.env.local` is ignored and does not upload to Netlify. Keep Netlify for the static public site and Functions; Supabase supplies Auth/Postgres, and R2 holds every contribution file. Do not create Supabase Storage buckets.
 
 ## Guest submissions (21 October 2026)

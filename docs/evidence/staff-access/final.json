@@ -1,0 +1,86 @@
+{
+  "date": "2026-10-21",
+  "branch": "redlark",
+  "unitCopyRlsTests": 67,
+  "fullBrowserTests": 212,
+  "finalFocusedBrowserTests": 47,
+  "typecheck": "PASS",
+  "lint": "PASS",
+  "format": "PASS",
+  "build": "PASS",
+  "contentAndCanonicalAndClientSecrets": "PASS",
+  "commitSecretFindings": 0,
+  "axe": "0 WCAG violations on tested public/private routes and all eight audit locale/width combinations",
+  "lighthouse": [
+    {
+      "page": "en-home",
+      "scores": {
+        "performance": 96,
+        "accessibility": 100,
+        "best-practices": 100,
+        "seo": 100
+      },
+      "cls": 0
+    },
+    {
+      "page": "en-collection",
+      "scores": {
+        "performance": 97,
+        "accessibility": 100,
+        "best-practices": 100,
+        "seo": 100
+      },
+      "cls": 0
+    },
+    {
+      "page": "en-poster",
+      "scores": {
+        "performance": 96,
+        "accessibility": 100,
+        "best-practices": 100,
+        "seo": 100
+      },
+      "cls": 0
+    },
+    {
+      "page": "hi-home",
+      "scores": {
+        "performance": 96,
+        "accessibility": 100,
+        "best-practices": 100,
+        "seo": 100
+      },
+      "cls": 0
+    },
+    {
+      "page": "hi-collection",
+      "scores": {
+        "performance": 96,
+        "accessibility": 100,
+        "best-practices": 100,
+        "seo": 100
+      },
+      "cls": 0
+    },
+    {
+      "page": "hi-poster",
+      "scores": {
+        "performance": 95,
+        "accessibility": 100,
+        "best-practices": 100,
+        "seo": 100
+      },
+      "cls": 0
+    }
+  ],
+  "hostedStaffInvite": "one-use verification, reissue, password setup/login, mandatory MFA gate; disposable account removed",
+  "hostedReview": "real Supabase/R2 upload, metadata, decisions, public download and audit filters; fixtures removed",
+  "productionMailOrBuildTriggered": false,
+  "providerPublicSignupDisabled": false,
+  "remainingOwnerActions": [
+    "Turn off provider Allow new users to sign up in Supabase (website signup is already denied).",
+    "Merge the prepared PR and verify the Netlify deployment.",
+    "Use Forgot password to add an admin password; keep TOTP.",
+    "Native translation and legal review remain required."
+  ]
+}

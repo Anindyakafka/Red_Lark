@@ -25,8 +25,8 @@ test("fresh-eyes clickthrough of poster, artist and category indexes", async ({ 
   }
 });
 test("fresh-eyes form focus and true empty Studio recovery", async ({ page }) => {
-  await page.goto("/signup/");
-  await page.getByRole("button", { name: "Create account with email link", exact: true }).click();
+  await page.goto("/login/");
+  await page.getByRole("button", { name: "Email me a sign-in link", exact: true }).click();
   await expect(page.locator("#auth-email")).toBeFocused();
   await page.goto("/contact/");
   await page.getByRole("button", { name: "Send message" }).click();

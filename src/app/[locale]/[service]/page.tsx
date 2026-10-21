@@ -56,7 +56,7 @@ export async function generateMetadata({
     ...localizeMetadata(
       pageMeta(
         services[service as keyof typeof services] ?? "Unavailable service",
-        `${services[service as keyof typeof services]} for contributors. Browse and use the Studio without signing in.`,
+        `${services[service as keyof typeof services]} for contributors and staff. Browse, contribute and use the Studio without signing in.`,
         `/${service}`,
       ),
       locale,

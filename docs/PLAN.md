@@ -1,5 +1,48 @@
 # RED LARK WORKSHOP: staged implementation plan
 
+## Password reset repair and optional accounts clarification
+
+| Work                          | Status | Evidence                                                                                                 |
+| ----------------------------- | ------ | -------------------------------------------------------------------------------------------------------- |
+| Reproduce/reset MFA           | PASS   | password-reset/before.json reproduced insufficient_aal hidden as password_update_failed                  |
+| Password setting with MFA     | PASS   | password-reset/after.json: verify authenticator, change password, revoke old session, new password login |
+| Optional contributor accounts | PASS   | Signup/login/recovery restored, Submit links added; guest flow remains default; no public admin grant    |
+| Final browser verification    | PASS   | Password challenge, signup and review regression checks                                                  |
+
+Keep provider signup ON. Earlier staff-only account and provider-OFF directions are superseded; only administrator privileges are invitation/grant controlled.
+
+Final verification: 67 unit/copy/RLS and 51 focused browser checks PASS; typecheck/lint/format/build/content/brand/canonical/client-secret checks PASS. Password/MFA checks cover en/hi at 390 and 1440 px with axe 0 and no page overflow. Real disposable recovery session verified against the configured Supabase project; no real email or password was used. Evidence: docs/evidence/password-reset/. Prior full-browser/Lighthouse evidence is retained for unchanged public-page scope; not represented as rerun here.
+
+## Staff access and review reliability (21 October 2026)
+
+| Work            | Status | Acceptance                                                                                                          |
+| --------------- | ------ | ------------------------------------------------------------------------------------------------------------------- |
+| Public access   | PASS   | No visitor auth buttons; footer staff entry; guest upload unaffected; signup APIs deny server-side                  |
+| Staff setup     | PASS   | Service-only invite/lookup RPCs; disposable hosted invite -> verification -> password -> staff login; no MFA bypass |
+| Review recovery | PASS   | Valid decisions, useful errors, one safe CSRF retry, inline fresh MFA preserving forms                              |
+| Audit           | PASS   | Collapsed table, UTC range/action filters, 50-row API pagination, mobile and axe checks                             |
+| Release         | PASS   | Verified merge branch prepared; owner merges the PR and confirms deployment                                         |
+
+Supabase provider signup setting needs the owner dashboard change in TODO_HUMAN. Website signup already denies requests. Earlier public contributor-account instructions are superseded.
+
+Final evidence: docs/evidence/staff-access/final.json. 67 unit/copy/RLS + 212 full browser + 47 final focused browser checks pass. Typecheck/lint/format/build/content/canonical/client-secret checks pass; commit secret scan has zero findings. Mobile Lighthouse medians: en landing/collection/poster 96/97/96; hi 96/96/95. A11y/BP/SEO 100 throughout; CLS 0. Existing real accounts/artwork were not changed. Production deployment/inbox verification remains the owner release step.
+
+## Current checkpoint: upload and review repairs (21 October 2026)
+
+All five requested repairs are implemented on redlark. Three additive migrations were applied to the existing project; the owner account and its real pending contribution were left untouched. No service was re-provisioned.
+
+| Work                       | Status | Acceptance                                                                                                                     |
+| -------------------------- | ------ | ------------------------------------------------------------------------------------------------------------------------------ |
+| Optional image description | PASS   | 300-character field, deterministic image fallback, strict archive validation retained                                          |
+| Tags                       | PASS   | Suggested/free-text chips, keyboard/limits/errors, normalized relational rows, custom flag/editing; unpublished labels private |
+| Plain-language licences    | PASS   | Four cards, NC mapping, untouched recommended default and ND gate                                                              |
+| Categories                 | PASS   | Searchable checkbox chips; three DB rows through dashboard/admin to three public category pages in four locales                |
+| Admin review               | PASS   | Visible badge, compact queue, metadata editor, valid decisions, MFA/RLS, durable notification retry, admin:grant               |
+| Final verification         | PASS   | 64 unit/copy/RLS + 202 browser tests; all 392 locale pages axe 0; build/typecheck/lint/format/brand/client-secret checks green |
+| Performance                | PASS   | en landing/collection/poster 95/99/96; hi 97/97/97; all other Lighthouse categories 100; CLS 0                                 |
+
+Evidence: docs/evidence/upload-repair/final.json and CHECKLIST.md. Deployment and production inbox/build-hook confirmation remain owner release steps in TODO_HUMAN.md. Indic drafts retain reviewed:false. Older checkpoints below are historical; their backend holds do not apply to this completed repair.
+
 ## Guest contributions and interaction repair — 21 October 2026
 
 Implemented optional-account contribution flow at every localized Submit/new-work entry. Guests provide the same licence/AI/categories/alt data without creating an Auth identity; artwork uses the shared private signed-PUT/sanitization/print pipeline. Hash-only receipts authorize exactly one work, expire after 90 days and show read-only review feedback. Separate per-field contact/UPI consent remains mandatory for publication. Account dashboards/editing and fresh-MFA administration are preserved. Additive migration 202610210006 was applied to the existing hosted project.
@@ -107,3 +150,17 @@ Execution is authorized for M1-M5, M6 CREATE and public M9. The real contact inb
 Public M9 now includes four localized static RSS feeds, trusted MDX placeholders, the complete policy hub, expanded About and accurate current privacy/terms. Round 14 records 37 unit tests, 83 browser passes, 340 validated HTML pages and its Hindi Collection performance failure. Round 15 adds the comprehensive four-locale public review and corrects native heading/landmark/font-loading issues; final evidence is recorded in ITERATIONS/CHECKLIST rather than inheriting an older PASS. The backend milestone statuses remain unchanged.
 
 Final Round 15 public acceptance: 37 unit tests, 88 browser tests, all 336 locale pages broad-axe clean, source/build checks green. Lighthouse three-run medians en 96/97/98 and hi 97/97/96, all other categories 100. Public scope is complete; M6 UPLOAD, M7 and M8 remain explicitly held. M9 final service-policy/end-to-end acceptance remains PARTIAL until those services exist. No secrets, provider resources, push or deployment are required or claimed for this completed public phase.
+
+## Current upload/review repair (21 October 2026)
+
+| Work                                            | Status      | Evidence / next acceptance                                                                                                  |
+| ----------------------------------------------- | ----------- | --------------------------------------------------------------------------------------------------------------------------- |
+| Reproduce five issues                           | PASS        | Five initial failing tests and before screenshots; hosted read-only diagnosis in docs/evidence/upload-repair                |
+| Shared form, metadata and review implementation | IN PROGRESS | First five browser regressions now pass; new local PostgreSQL RLS tests pass; hosted migration and end-to-end checks remain |
+| Full verification and fresh-eyes review         | PENDING     | Expanded keyboard/mobile tests, real services, axe, full build/suite, secret scan                                           |
+
+Round 2 update: migration applied; disposable Supabase/R2 contributor/admin workflow PASS (including three category pages in four locales); 62 unit tests and 14 focused browser tests PASS; mobile screenshot critique led to removal of redundant MFA setup. Final full-suite/performance/secret verification remains IN PROGRESS.
+
+Round 3: durable original notification feedback and audited retry implemented, tested and migrated; first complete browser suite 201 PASS. Final-source rebuild, follow-up regression/performance measurements and review evidence remain in progress. No change to landing wording or real pending submissions.
+
+Round 4 update: performance acceptance PASS after the recorded Collection notice/font fix; compact queue and review detail are distinct, status-appropriate decisions and visible pending badge verified in browser tests. Final 202-test run is pending after correcting an isolated QA fixture-server configuration failure.

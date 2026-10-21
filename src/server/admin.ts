@@ -1,3 +1,5 @@
+import { normalizeTags, orderReviewWorks } from "../lib/contribution-metadata.ts";
+import { notificationNotice } from "./work-notifications.ts";
 import { checked, requireAdmin, type Identity, service } from "./auth.ts";
 import { ApiError, json, required, text } from "./security.ts";
 import { copyPublic, publicBase, publicUrl, remove, signedRead } from "./storage.ts";
@@ -27,6 +29,26 @@ export async function admin(
   who: Identity,
 ) {
   requireAdmin(who);
+  if (path === "/api/admin/retry-work-mail") {
+    const id = text(data, "id", 100, 1);
+    checked(await who.client.from("works").select("id").eq("id", id).single());
+    checked(
+      await who.client.rpc("audit_admin_operation", { p_action: "retry_mail", p_target: id }),
+    );
+    checked(
+      await service()
+        .from("work_notifications")
+        .update({
+          attempts: 0,
+          state: "pending",
+          lease_until: null,
+          next_attempt: new Date().toISOString(),
+        })
+        .eq("work_id", id)
+        .eq("state", "failed"),
+    );
+    return json({ ok: true, mailPending: await notificationNotice(id) });
+  }
   if (path === "/api/admin/rebuild") {
     checked(await who.client.rpc("audit_admin_operation", { p_action: "retry_publish" }));
     await requestBuild();
@@ -65,17 +87,38 @@ export async function admin(
     if (work.status === "approved") await requestBuild();
     return json({ ok: true });
   }
+  if (path === "/api/admin/metadata") {
+    let tags: string[];
+    try {
+      tags = normalizeTags(data.tags);
+    } catch {
+      throw new ApiError(422, "invalid_tags");
+    }
+    checked(
+      await who.client.rpc("review_work_metadata", {
+        p_work: text(data, "id", 100, 1),
+        p_title: text(data, "title", 200, 1),
+        p_alt: text(data, "alt", 300),
+        p_format: text(data, "format_slug", 100, 1),
+        p_categories: Array.isArray(data.categories) ? data.categories : [],
+        p_tags: tags,
+      }),
+    );
+    return json({ ok: true });
+  }
   if (path === "/api/admin/queue") {
     checked(await who.client.rpc("audit_admin_access", { p_action: "review_queue" }));
     return json({
-      works: checked(
-        await who.client
-          .from("works")
-          .select(
-            "*,work_files(id,kind,mime,bytes,width,height,dpi),work_categories(category_slug),guest_submissions(contact,upi,contact_public,upi_public)",
-          )
-          .in("status", ["pending", "changes_requested", "approved", "taken_down"])
-          .order("created_at", { ascending: false }),
+      works: orderReviewWorks(
+        checked(
+          await who.client
+            .from("works")
+            .select(
+              "*,work_files(id,kind,mime,bytes,width,height,dpi),work_categories(category_slug),work_tags(tags(slug,label,custom)),work_notifications(state,event,created_at),guest_submissions(contact,upi,contact_public,upi_public)",
+            )
+            .in("status", ["pending", "changes_requested", "rejected", "approved", "taken_down"])
+            .order("created_at", { ascending: false }),
+        ),
       ),
     });
   }
@@ -115,15 +158,33 @@ export async function admin(
     });
   }
   if (path === "/api/admin/audit") {
+    const start = text(data, "start", 30),
+      end = text(data, "end", 30),
+      filter = text(data, "action", 100),
+      offset = Number(data.offset ?? 0);
+    if (
+      (start && !Number.isFinite(Date.parse(start))) ||
+      (end && !Number.isFinite(Date.parse(end))) ||
+      (start && end && Date.parse(start) > Date.parse(end)) ||
+      !Number.isInteger(offset) ||
+      offset < 0 ||
+      offset > 100000
+    )
+      throw new ApiError(422, "invalid_audit_filter");
     checked(await who.client.rpc("audit_admin_access", { p_action: "audit_read" }));
+    let query = who.client
+      .from("audit_log")
+      .select("*", { count: "exact" })
+      .order("created_at", { ascending: false })
+      .order("id", { ascending: false });
+    if (start) query = query.gte("created_at", new Date(start).toISOString());
+    if (end) query = query.lte("created_at", new Date(end).toISOString());
+    if (filter) query = query.eq("action", filter);
+    const result = await query.range(offset, offset + 49);
     return json({
-      audit: checked(
-        await who.client
-          .from("audit_log")
-          .select("*")
-          .order("created_at", { ascending: false })
-          .limit(100),
-      ),
+      audit: checked(result),
+      total: result.count,
+      offset,
     });
   }
   if (path === "/api/admin/users") {
@@ -154,8 +215,10 @@ export async function admin(
   }
   if (path !== "/api/admin/review") throw new ApiError(404, "not_found");
   const id = text(data, "id", 100, 1),
-    action = text(data, "action", 40, 1),
-    reason = text(data, "reason", 3000, action === "approve" ? 0 : 10);
+    action = text(data, "action", 40, 1);
+  if (!["approve", "changes_requested", "rejected", "taken_down"].includes(action))
+    throw new ApiError(422, "invalid_action");
+  const reason = text(data, "reason", 3000, action === "approve" ? 0 : 10);
   const work = checked(await who.client.from("works").select("*").eq("id", id).single());
   if (["changes_requested", "rejected"].includes(action)) {
     if (work.status !== "pending") throw new ApiError(409, "invalid_transition");
@@ -169,7 +232,7 @@ export async function admin(
         .select("id")
         .single(),
     );
-    return json({ ok: true });
+    return json({ ok: true, mailPending: await notificationNotice(id) });
   }
   buildConfigured();
   if (action === "taken_down") {
@@ -259,6 +322,7 @@ export async function admin(
       .eq("publication_state", "copying");
     throw error;
   }
+  const mailPending = await notificationNotice(id);
   await requestBuild();
-  return json({ ok: true, rebuilding: true });
+  return json({ ok: true, rebuilding: true, mailPending });
 }

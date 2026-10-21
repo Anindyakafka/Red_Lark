@@ -568,6 +568,8 @@ picture {
   text-underline-offset: 3px;
 }
 .license-note {
+  /* This early, prominent notice must paint without waiting for the body webfont. */
+  font-family: "Courier New", Courier, var(--font-indic), monospace;
   font-size: 11px;
   max-width: 100%;
   margin-bottom: 16px;
@@ -2632,5 +2634,151 @@ html:not([lang="en"]) .page-intro h1 {
     justify-self: end;
     min-width: 60px;
     white-space: nowrap;
+  }
+}
+
+/* Contribution controls: visible choices, keyboard focus and touch targets. */
+.metadata-field {
+  min-width: 0;
+  position: relative;
+  padding: 16px;
+  border: 2px solid currentColor;
+}
+.metadata-field input:not([type="checkbox"]):not([type="radio"]):not([type="hidden"]) {
+  width: 100%;
+  min-width: 0;
+}
+.metadata-chips,
+.metadata-add {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+.metadata-add input {
+  flex: 1;
+  min-width: 120px !important;
+}
+.metadata-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  border: 2px solid currentColor;
+  padding-left: 8px;
+  max-width: 100%;
+  overflow-wrap: anywhere;
+}
+.metadata-chip button {
+  min-width: 44px;
+  min-height: 44px;
+  border-left: 2px solid currentColor;
+  font-size: 24px;
+  cursor: pointer;
+}
+.category-options,
+.tag-options {
+  max-height: 280px;
+  overflow-y: auto;
+  margin-top: 12px;
+  overscroll-behavior: contain;
+}
+.category-options .checkbox-field {
+  min-height: 44px;
+}
+.tag-options [role="option"] {
+  padding: 12px;
+  border-bottom: 1px solid currentColor;
+  cursor: pointer;
+}
+.tag-options [role="option"].active,
+.tag-options [aria-selected="true"] {
+  outline: 3px solid currentColor;
+  outline-offset: -3px;
+  font-weight: bold;
+}
+.licence-cards {
+  display: grid;
+  gap: 12px;
+}
+.licence-card {
+  border: 2px solid currentColor;
+  padding: 12px;
+  min-height: 60px;
+}
+.licence-card:has(:checked) {
+  box-shadow: 4px 4px 0 currentColor;
+}
+
+.admin-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+}
+.audit-filters {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+  align-items: end;
+  margin-block: 1rem;
+}
+.audit-filters .form-field {
+  flex: 1 1 200px;
+  min-width: 0;
+}
+.audit-filters input {
+  min-width: 0;
+  width: 100%;
+}
+.audit-table-scroll {
+  max-width: 100%;
+  overflow-x: auto;
+  border: 2px solid currentColor;
+}
+.audit-table {
+  width: 100%;
+  min-width: 600px;
+  border-collapse: collapse;
+  font-size: 0.875rem;
+}
+.audit-table caption {
+  text-align: left;
+  font-weight: bold;
+  padding: 0.75rem;
+}
+.audit-table th,
+.audit-table td {
+  text-align: left;
+  vertical-align: top;
+  padding: 0.75rem;
+  border: 1px solid currentColor;
+  overflow-wrap: anywhere;
+}
+.audit-table details {
+  min-width: 140px;
+}
+.audit-table summary,
+.admin-record-list summary {
+  min-height: 44px;
+  cursor: pointer;
+  padding-block: 0.5rem;
+}
+.audit-table dl {
+  max-width: 25rem;
+}
+.admin-link span {
+  display: inline-grid;
+  place-items: center;
+  min-width: 1.5em;
+  border: 2px solid currentColor;
+  padding: 0 0.2em;
+}
+.review-queue-row .review-image {
+  width: 140px;
+  max-height: 180px;
+  margin: 0 1rem 1rem 0;
+}
+@media (max-width: 767px) {
+  .review-queue-row .review-image {
+    float: left;
+    width: 90px;
   }
 }

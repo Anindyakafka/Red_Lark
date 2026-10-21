@@ -16,11 +16,11 @@
     },
     "contributor-guidelines": {
       "title": "Contributor guidelines",
-      "description": "Prepare a rights-cleared contribution with credit, source, language, alt text and an honest AI-use declaration.",
+      "description": "Prepare a rights-cleared contribution with credit, source, language and an honest AI-use declaration. Image descriptions are optional and welcome.",
       "paragraphs": [
-        "Share only work you made or have explicit permission to publish. Supply the source and licence, an approved artist credit, meaningful alt text, language, categories and tags. Pseudonymous artist names are welcome.",
+        "Share only work you made or have explicit permission to publish. Supply the source and licence, an approved artist credit, an optional image description, language, categories and tags. Pseudonymous artist names are welcome.",
         "Public contact email and UPI ID are optional. Each field needs separate explicit consent before publication. An account email, when accounts become available, must never automatically become public artist contact.",
-        "The planned upload flow will recommend CC BY-SA 4.0, with CC0, CC BY, CC BY-NC-SA and CC BY-NC-ND alternatives. The actual licence and permission must be reviewed; ND works never enter the Studio.",
+        "The upload form recommends sharing and remixing while keeping remixes open (CC BY-SA 4.0). You can choose credit-only remixing, unrestricted use, or unchanged sharing; a non-commercial checkbox is available except for CC0. The legal-details disclosure links the exact licence. Only grant rights you hold. ND works never enter the Studio.",
         "Declare AI use honestly: none, minimal-assisted or generated, with an explanation where helpful. A disclosure is not proof of copyright permission. Current in-house placeholder studies are marked generated and are not presented as curated human submissions.",
         "Check print dimensions, credit strips and one sample print. A 300 DPI label alone does not establish adequate image detail. Avoid unnecessary identifying information in the artwork or proposal.",
         "Contributions can be submitted without an account and are uploaded privately for metadata removal and human review. Optional accounts provide a contribution dashboard. Nothing is published automatically. NoDerivatives work may be downloaded under its licence but is never offered for Studio remix."

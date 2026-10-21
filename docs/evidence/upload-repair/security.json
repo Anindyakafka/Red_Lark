@@ -1,0 +1,6 @@
+{
+  "changedSourceSecretScanPassed": true,
+  "clientSecretAudit": "Passed during build: all static output checked against configured private credentials",
+  "scope": "Changed source since d471a29; unchanged historic scan not repeated",
+  "envLocalIgnored": true
+}

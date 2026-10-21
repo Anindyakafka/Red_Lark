@@ -1,0 +1,92 @@
+{
+  "stats": {
+    "startTime": "2026-10-21T09:14:29.756Z",
+    "duration": 12487.949,
+    "expected": 10,
+    "skipped": 0,
+    "unexpected": 0,
+    "flaky": 0
+  },
+  "tests": [
+    {
+      "file": "staff-access.spec.ts",
+      "title": "review preserves entered feedback across expired MFA and safely retries after verification",
+      "ok": true,
+      "statuses": [
+        "passed"
+      ]
+    },
+    {
+      "file": "staff-access.spec.ts",
+      "title": "review retries one rejected CSRF token and explains stale status without losing feedback",
+      "ok": true,
+      "statuses": [
+        "passed"
+      ]
+    },
+    {
+      "file": "staff-access.spec.ts",
+      "title": "audit collapsed table filters and accessibility en 390",
+      "ok": true,
+      "statuses": [
+        "passed"
+      ]
+    },
+    {
+      "file": "staff-access.spec.ts",
+      "title": "audit collapsed table filters and accessibility en 1440",
+      "ok": true,
+      "statuses": [
+        "passed"
+      ]
+    },
+    {
+      "file": "staff-access.spec.ts",
+      "title": "audit collapsed table filters and accessibility hi 390",
+      "ok": true,
+      "statuses": [
+        "passed"
+      ]
+    },
+    {
+      "file": "staff-access.spec.ts",
+      "title": "audit collapsed table filters and accessibility hi 1440",
+      "ok": true,
+      "statuses": [
+        "passed"
+      ]
+    },
+    {
+      "file": "staff-access.spec.ts",
+      "title": "audit collapsed table filters and accessibility bn 390",
+      "ok": true,
+      "statuses": [
+        "passed"
+      ]
+    },
+    {
+      "file": "staff-access.spec.ts",
+      "title": "audit collapsed table filters and accessibility bn 1440",
+      "ok": true,
+      "statuses": [
+        "passed"
+      ]
+    },
+    {
+      "file": "staff-access.spec.ts",
+      "title": "audit collapsed table filters and accessibility ml 390",
+      "ok": true,
+      "statuses": [
+        "passed"
+      ]
+    },
+    {
+      "file": "staff-access.spec.ts",
+      "title": "audit collapsed table filters and accessibility ml 1440",
+      "ok": true,
+      "statuses": [
+        "passed"
+      ]
+    }
+  ]
+}

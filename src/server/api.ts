@@ -25,8 +25,12 @@ import {
   service,
   sessionName,
 } from "./auth.ts";
+import { passwordError } from "./password.ts";
 
 const flowName = "__Host-redlark-auth-flow";
+async function staffAllowed(address: string) {
+  return checked(await service().rpc("staff_email_allowed", { p_email: address })) === true;
+}
 function checkAuthMail(error: { status?: number } | null) {
   if (error?.status === 429) throw new ApiError(429, "try_later");
   if (error?.status && error.status >= 500) throw new ApiError(503, "service_unavailable");
@@ -40,7 +44,21 @@ export default async function handler(req: Request): Promise<Response> {
       let account: unknown = null;
       try {
         const who = await identity(req);
-        account = { email: who.user.email, admin: who.admin, aal2: who.aal2, fresh: who.fresh };
+        let pendingCount: number | null = null;
+        if (who.admin && who.fresh) {
+          const count = await who.client
+            .from("works")
+            .select("id", { count: "exact", head: true })
+            .eq("status", "pending");
+          if (!count.error) pendingCount = count.count;
+        }
+        account = {
+          email: who.user.email,
+          admin: who.admin,
+          aal2: who.aal2,
+          fresh: who.fresh,
+          pendingCount,
+        };
       } catch (error) {
         if (!(error instanceof ApiError) || error.status !== 401) throw error;
       }
@@ -88,6 +106,28 @@ export default async function handler(req: Request): Promise<Response> {
           "Cache-Control": "private, no-store",
           "Referrer-Policy": "no-referrer",
           "X-Content-Type-Options": "nosniff",
+        },
+      });
+    }
+    if (req.method === "GET" && path === "/api/auth/invite") {
+      const token = new URL(req.url).searchParams.get("token_hash") || "";
+      if (!/^(?:[a-f0-9]{56}|[a-f0-9]{64})$/i.test(token)) throw new ApiError(400, "link_expired");
+      const result = await publicClient().auth.verifyOtp({ token_hash: token, type: "invite" });
+      if (
+        result.error ||
+        !result.data.session ||
+        !result.data.user?.email ||
+        !(await staffAllowed(result.data.user.email))
+      )
+        throw new ApiError(400, "link_expired");
+      const saved = await saveSession(result.data.session);
+      return new Response(null, {
+        status: 303,
+        headers: {
+          Location: `${origin()}/en/reset-password/`,
+          "Set-Cookie": saved.cookie,
+          "Cache-Control": "no-store",
+          "Referrer-Policy": "no-referrer",
         },
       });
     }
@@ -146,7 +186,6 @@ export default async function handler(req: Request): Promise<Response> {
           password,
           options: { emailRedirectTo: callback(lang) },
         });
-        // Never report whether the address already exists.
         checkAuthMail(result.error);
       } else if (path === "/api/auth/magic" || path === "/api/auth/signup-link") {
         const result = await flow.client.auth.signInWithOtp({
@@ -192,10 +231,12 @@ export default async function handler(req: Request): Promise<Response> {
       return json({ ok: true }, 200, { "Set-Cookie": cookie(sessionName, "", 0) });
     }
     if (path === "/api/auth/reset") {
-      const password = text(data, "password", 128, 12);
+      const password = typeof data.password === "string" ? data.password : "";
+      if (password.length < 12 || password.length > 128)
+        throw new ApiError(422, "invalid_password");
       // Recovered sessions and freshly password-authenticated sessions are verified by Auth.
       const result = await who.client.auth.updateUser({ password });
-      if (result.error) throw new ApiError(400, "password_update_failed");
+      passwordError(result.error);
       await who.client.auth.signOut({ scope: "global" });
       checked(await service().from("app_sessions").delete().eq("user_id", who.user.id));
       return json({ ok: true }, 200, { "Set-Cookie": cookie(sessionName, "", 0) });
