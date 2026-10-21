@@ -1,5 +1,11 @@
 ﻿# Human prerequisites for RED LARK WORKSHOP
 
+## Staff invitation link fix
+
+The earlier invitation email used localhost because local SITE_URL was unset. Do not use the old link pasted in chat. After merging this invitation fix, wait for Netlify to show the production deployment as Published; then run `npm run admin:invite -- <actual-email>` again. New invitations default to https://redlarkworkshop.com when local SITE_URL is blank. An explicit localhost SITE_URL is rejected. The command checks that the new invite endpoint is deployed before creating an identity, granting a role or sending mail.
+
+Open the newest email and click **Accept staff invitation** on the website, then choose a password and set up/verify the authenticator. Merely opening the email link no longer consumes it. If the person is already email-verified, use `npm run admin:grant -- <existing-verified-email>`, then have them Sign in or use Forgot password instead of sending another invitation. Keep public contributor signup ON. No owner's account, password or mail was changed during this repair.
+
 ## Current instructions: optional contributor accounts and password repair
 
 **Leave Supabase Allow new users to sign up ON.** This supersedes every earlier instruction below to turn it off. Contributors may create an optional account; guest contributions remain the default and never require login. Only admin roles require a controlled grant/invitation and mandatory authenticator verification. Existing admin passwords do not require disabling public signup.

@@ -73,8 +73,22 @@ export function InboxNotice() {
 }
 export function VerifyLink() {
   const { t, locale } = useI18n();
+  const router = useRouter();
   const [failed, setFailed] = useState(false);
+  const [invite, setInvite] = useState(""),
+    [busy, setBusy] = useState(false),
+    [failure, setFailure] = useState("");
   useEffect(() => {
+    const token = new URLSearchParams(location.hash.slice(1)).get("invite");
+    if (token !== null) {
+      if (/^(?:[a-f0-9]{56}|[a-f0-9]{64})$/i.test(token)) setInvite(token);
+      else setFailure("invitation_expired");
+      return;
+    }
+    if (new URLSearchParams(location.search).get("error") === "invitation_expired") {
+      setFailure("invitation_expired");
+      return;
+    }
     const code = new URLSearchParams(location.search).get("code");
     if (!code || code.length > 300) {
       setFailed(true);
@@ -82,6 +96,46 @@ export function VerifyLink() {
     }
     location.replace(`/api/auth/callback?locale=${locale}&code=${encodeURIComponent(code)}`);
   }, [locale]);
+  if (invite || failure)
+    return (
+      <section className="content-width">
+        <h2>{t("Staff invitation")}</h2>
+        <p>
+          {t(
+            "Accept this invitation only if you expected staff access from the team. Opening this page does not verify your email or create a session.",
+          )}
+        </p>
+        {invite && (
+          <button
+            className="button accent"
+            disabled={busy}
+            onClick={async () => {
+              setBusy(true);
+              setFailure("");
+              history.replaceState(null, "", location.pathname + location.search);
+              try {
+                await api("auth/invite", { token: invite });
+                setInvite("");
+                window.dispatchEvent(new Event("redlark:session"));
+                router.replace(`/${locale}/reset-password/`);
+              } catch (error) {
+                setFailure(error instanceof Error ? error.message : "network_error");
+              } finally {
+                setBusy(false);
+              }
+            }}
+          >
+            {t(busy ? "Working…" : "Accept staff invitation")}
+          </button>
+        )}
+        {failure && <p role="alert">{t(errorMessage(failure))}</p>}
+        <p>
+          <Link href="/login">{t("Sign in")}</Link>
+          {" / "}
+          <Link href="/forgot-password">{t("Forgot password?")}</Link>
+        </p>
+      </section>
+    );
   return (
     <section className="content-width">
       <p role={failed ? "alert" : "status"}>
