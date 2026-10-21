@@ -821,6 +821,10 @@
     "Illustration": "Illustration",
     "The upload form recommends sharing and remixing while keeping remixes open. You can instead require credit only, allow unrestricted use, or allow unchanged sharing only. The non-commercial option is unavailable for CC0. Legal details identify the exact licence. Image descriptions are optional; a title, format and artist template is used when blank. You may ask the team to change a licence, but permissions already granted cannot be recalled.": "The upload form recommends sharing and remixing while keeping remixes open. You can instead require credit only, allow unrestricted use, or allow unchanged sharing only. The non-commercial option is unavailable for CC0. Legal details identify the exact licence. Image descriptions are optional; a title, format and artist template is used when blank. You may ask the team to change a licence, but permissions already granted cannot be recalled.",
     "Choose up to 10 tags, each 30 characters or fewer.": "Choose up to 10 tags. Keep each tag to 30 characters or fewer.",
-    "contributions": "contributions"
+    "contributions": "contributions",
+    "Notification sent.": "Notification sent.",
+    "Retry failed notification": "Retry failed notification",
+    "Submitted:": "Submitted:",
+    "Created:": "Created:"
   }
 }

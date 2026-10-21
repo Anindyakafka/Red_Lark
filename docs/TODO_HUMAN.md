@@ -64,6 +64,6 @@ Human prerequisites before that work are release of the hold, project/region/ret
 ## Upload/review repair follow-up (21 October 2026)
 
 - Native-language review: the new Hindi/Bengali/Malayalam upload controls, licence cards, category names and suggested tags are draft translations (`reviewed:false`). Legal explanatory text currently falls back visibly to English.
-- Deploy the repair branch through the normal review/merge flow. Migration 202610210007 was applied to the configured existing project; do not re-provision it. Existing R2/mail/build-hook settings are reused.
+- Deploy the repair branch through the normal review/merge flow. Migrations 202610210007 and 202610210008 were applied to the configured existing project; do not re-provision it. Existing R2/mail/build-hook settings are reused.
 - Real owner admin role and an enrolled authenticator were confirmed read-only. The owner still needs to sign in and verify a fresh code to review at /en/admin/review/. No real identity was granted or modified during the repair.
 - Hosted acceptance uses disposable accounts and real R2/Supabase with intercepted notification/build-hook transports. It does not prove a newly deployed production notification reached an inbox or a production rebuild completed; confirm those after deployment.

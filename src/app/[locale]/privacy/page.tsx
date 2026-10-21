@@ -41,7 +41,9 @@ export default function Page() {
       <h2>
         <UiText id={"LOCAL STORAGE."} />
       </h2>
-      <p><UiText id="Guest contributions do not create an account. We store the artwork, review details and any optional contact or UPI fields you choose to provide. Each field is published only with its own explicit consent. A private status link contains a random secret in its URL fragment; only a hash is stored in the database. Anyone holding the link can read that submission's status and feedback. Links expire after 90 days; scheduled cleanup removes expired receipt/contact records and abandoned draft files. Submitted artwork remains subject to review and the takedown policy. Save the link yourself: we do not email it or save it in localStorage." /></p>
+      <p>
+        <UiText id="Guest contributions do not create an account. We store the artwork, review details and any optional contact or UPI fields you choose to provide. Each field is published only with its own explicit consent. A private status link contains a random secret in its URL fragment; only a hash is stored in the database. Anyone holding the link can read that submission's status and feedback. Links expire after 90 days; scheduled cleanup removes expired receipt/contact records and abandoned draft files. Submitted artwork remains subject to review and the takedown policy. Save the link yourself: we do not email it or save it in localStorage." />
+      </p>
       <p>
         <UiText id="Browsing, downloading, the Studio and guest submissions need no account. An optional account lets you manage your contributions. Supabase handles email/password and magic-link authentication. Necessary HttpOnly, Secure, SameSite=Lax cookies keep sessions and protect forms; they are not tracking cookies. Server-stored authentication tokens are encrypted. Administration requires TOTP and recent verification." />
       </p>

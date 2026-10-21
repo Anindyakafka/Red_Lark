@@ -171,3 +171,16 @@ These FAIL rows are human prerequisites, not missing page implementations. They 
 | Delayed notification correctness and audited retry | PASS        | tests/contribution-review-rls.test.ts; hosted.json  | Original feedback retained; persisted failed mail can be retried without repeating the decision.                                    |
 | Source and client secrets                          | PASS        | evidence/upload-repair/security.json; npm run build | Focused changed-source Gitleaks; complete static output checked against configured private credentials. Historic scan not repeated. |
 | Final performance / polished screenshot review     | IN PROGRESS | evidence/upload-repair                              | Final measurements pending.                                                                                                         |
+
+### Round 4 performance acceptance
+
+| Route              | Status | Performance median | Accessibility / Best practices / SEO | Evidence                                                   |
+| ------------------ | ------ | ------------------ | ------------------------------------ | ---------------------------------------------------------- |
+| English landing    | PASS   | 95                 | 100 / 100 / 100                      | evidence/upload-repair/lighthouse.json                     |
+| English Collection | PASS   | 99                 | 100 / 100 / 100                      | evidence/upload-repair/lighthouse-collection-followup.json |
+| English poster     | PASS   | 96                 | 100 / 100 / 100                      | evidence/upload-repair/lighthouse.json                     |
+| Hindi landing      | PASS   | 97                 | 100 / 100 / 100                      | evidence/upload-repair/lighthouse.json                     |
+| Hindi Collection   | PASS   | 97                 | 100 / 100 / 100                      | evidence/upload-repair/lighthouse-collection-followup.json |
+| Hindi poster       | PASS   | 97                 | 100 / 100 / 100                      | evidence/upload-repair/lighthouse.json                     |
+
+Three cold-cache runs per route, all raw scores recorded, CLS 0. Initial Hindi Collection 94 remains in lighthouse-round3-before.json; only the two affected Collection routes were remeasured after the font-dependency fix. Final-source browser acceptance is pending the corrected QA-configured full run.

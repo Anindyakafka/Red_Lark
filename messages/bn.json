@@ -821,6 +821,10 @@
     "Illustration": "চিত্রণ",
     "The upload form recommends sharing and remixing while keeping remixes open. You can instead require credit only, allow unrestricted use, or allow unchanged sharing only. The non-commercial option is unavailable for CC0. Legal details identify the exact licence. Image descriptions are optional; a title, format and artist template is used when blank. You may ask the team to change a licence, but permissions already granted cannot be recalled.": "The upload form recommends sharing and remixing while keeping remixes open. You can instead require credit only, allow unrestricted use, or allow unchanged sharing only. The non-commercial option is unavailable for CC0. Legal details identify the exact licence. Image descriptions are optional; a title, format and artist template is used when blank. You may ask the team to change a licence, but permissions already granted cannot be recalled.",
     "Choose up to 10 tags, each 30 characters or fewer.": "সর্বোচ্চ ১০টি ট্যাগ বাছুন। প্রতিটি ট্যাগ ৩০ অক্ষরের মধ্যে রাখুন।",
-    "contributions": "অবদান"
+    "contributions": "অবদান",
+    "Notification sent.": "বিজ্ঞপ্তি পাঠানো হয়েছে।",
+    "Retry failed notification": "বিজ্ঞপ্তি আবার পাঠান",
+    "Submitted:": "জমা দেওয়া হয়েছে:",
+    "Created:": "তৈরি করা হয়েছে:"
   }
 }

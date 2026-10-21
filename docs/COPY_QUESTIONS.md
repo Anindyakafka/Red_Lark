@@ -15,4 +15,4 @@ Removed the pre-rebrand footer tagline “FREE TO FIND. YOURS TO PRINT.” as re
 
 ## Owner-directed upload wording (21 October 2026)
 
-Image descriptions on contributed uploads are optional, labelled ?Describe the image (optional)?, with the supplied accessibility helper and a 300-character maximum. Empty descriptions receive a deterministic title + format + artist template at rendering/build time; no AI service is used. Archive content files still require a meaningful description. Licence cards use the four supplied sentences; technical identifiers remain in a legal-details disclosure. Appendix A landing wording is unchanged.
+Image descriptions on contributed uploads are optional, labelled "Describe the image (optional)", with the supplied accessibility helper and a 300-character maximum. Empty descriptions receive a deterministic title + format + artist template at rendering/build time; no AI service is used. Archive content files still require a meaningful description. Licence cards use the four supplied sentences; technical identifiers remain in a legal-details disclosure. Appendix A landing wording is unchanged.

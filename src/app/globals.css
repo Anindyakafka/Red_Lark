@@ -568,6 +568,8 @@ picture {
   text-underline-offset: 3px;
 }
 .license-note {
+  /* This early, prominent notice must paint without waiting for the body webfont. */
+  font-family: "Courier New", Courier, var(--font-indic), monospace;
   font-size: 11px;
   max-width: 100%;
   margin-bottom: 16px;
@@ -2704,4 +2706,28 @@ html:not([lang="en"]) .page-intro h1 {
 }
 .licence-card:has(:checked) {
   box-shadow: 4px 4px 0 currentColor;
+}
+
+.admin-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+}
+.admin-link span {
+  display: inline-grid;
+  place-items: center;
+  min-width: 1.5em;
+  border: 2px solid currentColor;
+  padding: 0 0.2em;
+}
+.review-queue-row .review-image {
+  width: 140px;
+  max-height: 180px;
+  margin: 0 1rem 1rem 0;
+}
+@media (max-width: 767px) {
+  .review-queue-row .review-image {
+    float: left;
+    width: 90px;
+  }
 }

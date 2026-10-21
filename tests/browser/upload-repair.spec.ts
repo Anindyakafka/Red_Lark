@@ -12,9 +12,17 @@ const fixture = {
   status: "pending",
   licence_id: "CC-BY-SA-4.0",
   format_slug: "poster-placard",
-  tags: [],
-  work_tags: [],
-  work_files: [],
+  tags: ["Local solidarity"],
+  work_tags: [{ tags: { label: "Local solidarity", custom: true } }],
+  work_files: [
+    {
+      id: "99999999-1234-1234-1234-123456789012",
+      kind: "preview",
+      mime: "image/png",
+      bytes: 100,
+      dpi: 300,
+    },
+  ],
   work_categories: [
     { category_slug: "workers" },
     { category_slug: "anti-war" },
@@ -30,6 +38,11 @@ const fixture = {
 async function logged(page: Page, admin = false) {
   await page.route("**/api/**", async (route) => {
     const path = new URL(route.request().url()).pathname;
+    if (path.startsWith("/api/preview/"))
+      return route.fulfill({
+        contentType: "image/png",
+        body: fs.readFileSync("public/icons/icon-512.png"),
+      });
     if (path === "/api/session")
       return route.fulfill({
         json: { csrf: "fixture", account: { admin, aal2: true, fresh: true, pendingCount: 1 } },
@@ -101,6 +114,8 @@ test("4 categories support searchable multiple checkboxes and survive errors", a
 test("5 admin review queue is directly reachable", async ({ page }) => {
   await logged(page, true);
   expect((await page.goto("/en/admin/review/"))?.status()).toBe(200);
+  await expect(page.getByRole("button", { name: "Save metadata", exact: true })).toHaveCount(0);
+  await expect(page.getByRole("link", { name: "Review contribution", exact: true })).toBeVisible();
   await expect(
     page.getByRole("heading", { name: "Upload repair fixture", exact: true }),
   ).toBeVisible();
@@ -154,6 +169,105 @@ test("tags support suggestions, comma, blur, Backspace, limits and error retenti
   await expect(page.locator("input[name=tags]")).toHaveCount(10);
 });
 
+test("untouched recommended licence and blank description submit with all selected facets", async ({
+  page,
+}) => {
+  await logged(page);
+  await page.route("**/api/account/work", async (route) => {
+    const data = route.request().postDataJSON();
+    expect(data.licence_id).toBe("CC-BY-SA-4.0");
+    expect(data.alt).toBe("");
+    expect(data.tags).toEqual(["Protest", "Local solidarity"]);
+    expect(data.categories).toEqual(["workers", "farmers", "anti-war"]);
+    await route.fulfill({ json: { id: fixture.id } });
+  });
+  await page.route("**/api/upload/sign", (route) =>
+    route.fulfill({ json: { id: fixture.id, url: "http://localhost:3000/__fixture/upload" } }),
+  );
+  await page.route("**/__fixture/upload", (route) => route.fulfill({ status: 200 }));
+  await page.route("**/api/upload/complete", (route) =>
+    route.fulfill({ json: { dpiA4: 20, dpiA2: 10, warning: "low_resolution" } }),
+  );
+  await page.route("**/api/account/submit", (route) =>
+    route.fulfill({ json: { ok: true, mailPending: true } }),
+  );
+  await page.goto("/en/submit/");
+  await page.locator(".format-picker button").nth(6).click();
+  await page.locator("#upload-title").fill("Original fixture");
+  for (const slug of ["Workers", "Farmers", "Anti-War"]) {
+    await page.getByLabel("Search categories", { exact: true }).fill(slug);
+    await page.locator(".category-options input[type=checkbox]").check();
+  }
+  const tags = page.getByRole("combobox", { name: "Tags", exact: true });
+  await tags.fill("Protest");
+  await tags.press("Enter");
+  await tags.fill("Local solidarity");
+  await tags.press("Tab");
+  await page.locator("#upload-file").setInputFiles({
+    name: "fixture.png",
+    mimeType: "image/png",
+    buffer: fs.readFileSync("public/icons/icon-16.png"),
+  });
+  await page.locator("input[name=permission]").check();
+  await page.locator("form button.accent").click();
+  await expect(
+    page.getByRole("heading", { name: "Submission saved for review.", exact: true }),
+  ).toBeVisible();
+  await expect(
+    page.getByText("You chose: Share and remix, keep it open", { exact: true }),
+  ).toBeVisible();
+  await expect(page.getByText(/Email delivery is pending/)).toBeVisible();
+});
+
+test("fresh MFA verification opens the review queue without a manual reload", async ({ page }) => {
+  await logged(page, true);
+  let fresh = false;
+  await page.route("**/api/session", (route) =>
+    route.fulfill({
+      json: {
+        csrf: "fixture",
+        account: { admin: true, fresh, aal2: fresh, pendingCount: fresh ? 1 : null },
+      },
+    }),
+  );
+  await page.route("**/api/auth/mfa/factors", (route) =>
+    route.fulfill({ json: { factors: [{ id: fixture.id, status: "verified" }] } }),
+  );
+  await page.route("**/api/auth/mfa/verify", (route) => {
+    fresh = true;
+    return route.fulfill({ json: { ok: true } });
+  });
+  await page.goto("/en/admin/review/");
+  await page.locator("#mfa-code").fill("123456");
+  await page.getByRole("button", { name: "Verify code", exact: true }).click();
+  await expect(page.getByRole("heading", { name: fixture.title, exact: true })).toBeVisible();
+  await expect(page.locator("#mfa-code")).toHaveCount(0);
+});
+
+test("review actions match the work status and keep earlier feedback visible", async ({ page }) => {
+  await logged(page, true);
+  await page.route("**/api/admin/queue", (route) =>
+    route.fulfill({
+      json: {
+        works: [
+          {
+            ...fixture,
+            status: "approved",
+            publication_state: "published",
+            feedback: "Approved after checking the source.",
+          },
+        ],
+      },
+    }),
+  );
+  await page.goto(`/en/admin/review/${fixture.id}/`);
+  await expect(page.locator(`#review-action-${fixture.id} option`)).toHaveCount(1);
+  await expect(page.locator(`#review-action-${fixture.id}`)).toHaveValue("taken_down");
+  await expect(
+    page.getByText("Review feedback: Approved after checking the source.", { exact: true }),
+  ).toBeVisible();
+});
+
 for (const locale of ["en", "hi"] as const)
   for (const width of [390, 1440]) {
     const t = (s: string) =>
@@ -193,6 +307,13 @@ for (const locale of ["en", "hi"] as const)
     test(`localized admin fields and axe ${locale} ${width}`, async ({ page }) => {
       await page.setViewportSize({ width, height: 900 });
       await logged(page, true);
+      await page.route("**/api/admin/metadata", (route) => {
+        const data = route.request().postDataJSON();
+        expect(data.alt).toBe("A red hand on white paper.");
+        expect(data.tags).toEqual(["Local solidarity"]);
+        expect(data.categories).toHaveLength(3);
+        return route.fulfill({ json: { ok: true } });
+      });
       await page.goto(`/${locale}/admin/review/${fixture.id}/`);
       await expect(page.getByRole("heading", { name: fixture.title, exact: true })).toBeVisible();
       await expect(page.locator("header a.admin-link")).toHaveAttribute(

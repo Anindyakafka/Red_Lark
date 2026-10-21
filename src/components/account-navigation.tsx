@@ -64,7 +64,10 @@ export function AccountNavigation() {
     <div className="account-links">
       {account.admin && (
         <Link href="/admin/review" className="admin-link">
-          {t("Admin")} <span aria-label={t("Pending review")}>{account.pendingCount ?? "!"}</span>
+          {t("Admin")}{" "}
+          <span aria-label={`${t("Pending review")}: ${account.pendingCount ?? t("Verify code")}`}>
+            {account.pendingCount ?? "!"}
+          </span>
         </Link>
       )}
       <details className="account-menu" ref={menu}>

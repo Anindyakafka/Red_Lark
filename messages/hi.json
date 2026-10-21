@@ -821,6 +821,10 @@
     "Illustration": "चित्रांकन",
     "The upload form recommends sharing and remixing while keeping remixes open. You can instead require credit only, allow unrestricted use, or allow unchanged sharing only. The non-commercial option is unavailable for CC0. Legal details identify the exact licence. Image descriptions are optional; a title, format and artist template is used when blank. You may ask the team to change a licence, but permissions already granted cannot be recalled.": "The upload form recommends sharing and remixing while keeping remixes open. You can instead require credit only, allow unrestricted use, or allow unchanged sharing only. The non-commercial option is unavailable for CC0. Legal details identify the exact licence. Image descriptions are optional; a title, format and artist template is used when blank. You may ask the team to change a licence, but permissions already granted cannot be recalled.",
     "Choose up to 10 tags, each 30 characters or fewer.": "अधिकतम 10 टैग चुनें। हर टैग 30 या उससे कम अक्षरों का रखें।",
-    "contributions": "योगदान"
+    "contributions": "योगदान",
+    "Notification sent.": "सूचना भेजी गई।",
+    "Retry failed notification": "सूचना भेजने की फिर कोशिश करें",
+    "Submitted:": "जमा किया:",
+    "Created:": "बनाया:"
   }
 }

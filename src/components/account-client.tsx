@@ -422,6 +422,7 @@ type Work = {
   id: string;
   title: string;
   status: string;
+  publication_state?: string;
   feedback: string;
   licence_id: string;
   ai_use: string;
@@ -437,6 +438,8 @@ type Work = {
   format_slug: string;
   languages: string[];
   created_at?: string;
+  submitted_at?: string | null;
+  work_notifications?: { state: string }[];
   work_tags?: { tags: { label: string; custom: boolean } }[];
   work_categories?: { category_slug: string }[];
   work_files: { id: string; kind: string; mime: string; bytes: number; dpi: number }[];
@@ -562,9 +565,9 @@ export function AccountPanel({
                             c.category_slug,
                         ),
                       )
-                      .join(" ? ") || t("ALL (Uncategorized)")}
+                      .join(" | ") || t("ALL (Uncategorized)")}
                   </p>
-                  <p>{work.tags.map((tag) => t(tag)).join(" ? ")}</p>
+                  <p>{work.tags.map((tag) => t(tag)).join(" | ")}</p>
                   {work.feedback && (
                     <p>
                       {t("Review feedback")}: {work.feedback}
@@ -1582,7 +1585,10 @@ export function AdminPanel({
         )
         .filter((work) => view !== "review" || work.id === selectedId)
         .map((work) => (
-          <article key={work.id} className="backend-panel">
+          <article
+            key={work.id}
+            className={view === "queue" ? "backend-panel review-queue-row" : "backend-panel"}
+          >
             <h2>
               <a href={`/${locale}/admin/review/${work.id}/`}>{work.title}</a>
             </h2>
@@ -1591,29 +1597,70 @@ export function AdminPanel({
             </p>
             <ReviewImage work={work} />
             <p>
-              {work.artist_name} ?{" "}
-              {t(formats.find((f) => f.slug === work.format_slug)?.label || work.format_slug)} ?{" "}
-              {work.created_at
-                ? new Date(work.created_at).toISOString().replace("T", " ").slice(0, 16) + " UTC"
+              {work.artist_name} |{" "}
+              {t(formats.find((f) => f.slug === work.format_slug)?.label || work.format_slug)} |{" "}
+              {work.submitted_at || work.created_at
+                ? t(work.submitted_at ? "Submitted:" : "Created:") + " "
+                : ""}
+              {work.submitted_at || work.created_at
+                ? new Date(work.submitted_at || work.created_at!)
+                    .toISOString()
+                    .replace("T", " ")
+                    .slice(0, 16) + " UTC"
                 : ""}
             </p>
             <p>{t(licenceSummary(work.licence_id))}</p>
+            {work.work_notifications?.some((job) => job.state !== "sent") && (
+              <p className="notice">
+                {t("Email delivery is pending. The action was saved and delivery will retry.")}
+              </p>
+            )}
+            {work.work_notifications?.some((job) => job.state === "failed") && (
+              <button
+                type="button"
+                className="button"
+                disabled={action.busy}
+                onClick={() =>
+                  action.run(async () => {
+                    const result = await api<{ mailPending: boolean }>("admin/retry-work-mail", {
+                      id: work.id,
+                    });
+                    setNotice(
+                      t(
+                        result.mailPending
+                          ? "Email delivery is pending. The action was saved and delivery will retry."
+                          : "Notification sent.",
+                      ),
+                    );
+                    const queue = await api<{ works: Work[] }>("admin/queue");
+                    setWorks(queue.works);
+                  })
+                }
+              >
+                {t("Retry failed notification")}
+              </button>
+            )}
             <p>
               {(work.work_categories || [])
                 .map((c) =>
                   t(categories.find((v) => v.slug === c.category_slug)?.label || c.category_slug),
                 )
-                .join(" ? ") || t("ALL (Uncategorized)")}
+                .join(" | ") || t("ALL (Uncategorized)")}
             </p>
             <p>
               {(work.work_tags || []).map((tag) => (
                 <span key={tag.tags.label}>
                   {t(tag.tags.label)}
-                  {tag.tags.custom ? " [" + t("custom") + "]" : ""} ?{" "}
+                  {tag.tags.custom ? " [" + t("custom") + "]" : ""} |{" "}
                 </span>
               ))}
             </p>
-            {["pending", "changes_requested"].includes(work.status) && (
+            {view === "queue" && (
+              <a className="button accent" href={`/${locale}/admin/review/${work.id}/`}>
+                {t("Review contribution")}
+              </a>
+            )}
+            {view === "review" && ["pending", "changes_requested"].includes(work.status) && (
               <form
                 method="post"
                 className="handoff-form"
@@ -1675,6 +1722,11 @@ export function AdminPanel({
               </form>
             )}
             <p>{work.ai_disclosure}</p>
+            {work.feedback && (
+              <p>
+                {t("Review feedback")}: {work.feedback}
+              </p>
+            )}
             {work.guest_submissions && (
               <div className="notice">
                 <p>
@@ -1710,72 +1762,83 @@ export function AdminPanel({
                 </button>
               ))}
             </div>
-            <form
-              method="post"
-              className="handoff-form"
-              onSubmit={(event) => {
-                event.preventDefault();
-                const data = new FormData(event.currentTarget);
-                void action.run(async () => {
-                  const reason = String(data.get("reason") || "").trim();
-                  if (data.get("action") !== "approve" && reason.length < 10) {
-                    setReviewErrors((previous) => ({
-                      ...previous,
-                      [work.id]: t("Explain the decision in at least ten characters."),
-                    }));
-                    requestAnimationFrame(() =>
-                      document.getElementById(`reason-${work.id}`)?.focus(),
+            {view === "review" && ["pending", "approved", "taken_down"].includes(work.status) && (
+              <form
+                method="post"
+                className="handoff-form"
+                onSubmit={(event) => {
+                  event.preventDefault();
+                  const data = new FormData(event.currentTarget);
+                  void action.run(async () => {
+                    const reason = String(data.get("reason") || "").trim();
+                    if (data.get("action") !== "approve" && reason.length < 10) {
+                      setReviewErrors((previous) => ({
+                        ...previous,
+                        [work.id]: t("Explain the decision in at least ten characters."),
+                      }));
+                      requestAnimationFrame(() =>
+                        document.getElementById(`reason-${work.id}`)?.focus(),
+                      );
+                      return;
+                    }
+                    setReviewErrors((previous) => ({ ...previous, [work.id]: "" }));
+                    const decision = await api<{ mailPending?: boolean }>("admin/review", {
+                      id: work.id,
+                      ...Object.fromEntries(data),
+                    });
+                    window.dispatchEvent(new Event("redlark:session"));
+                    setNotice(
+                      t("Review saved. Approved publication may take a few minutes to rebuild.") +
+                        (decision.mailPending
+                          ? " " +
+                            t(
+                              "Email delivery is pending. The action was saved and delivery will retry.",
+                            )
+                          : ""),
                     );
-                    return;
-                  }
-                  setReviewErrors((previous) => ({ ...previous, [work.id]: "" }));
-                  const decision = await api<{ mailPending?: boolean }>("admin/review", {
-                    id: work.id,
-                    ...Object.fromEntries(data),
+                    const result = await api<{ works: Work[] }>("admin/queue");
+                    setWorks(result.works);
                   });
-                  window.dispatchEvent(new Event("redlark:session"));
-                  setNotice(
-                    t("Review saved. Approved publication may take a few minutes to rebuild.") +
-                      (decision.mailPending
-                        ? " " +
-                          t(
-                            "Email delivery is pending. The action was saved and delivery will retry.",
-                          )
-                        : ""),
-                  );
-                  const result = await api<{ works: Work[] }>("admin/queue");
-                  setWorks(result.works);
-                });
-              }}
-            >
-              <label className="form-field" htmlFor={`review-action-${work.id}`}>
-                {t("Decision")}
-                <select id={`review-action-${work.id}`} name="action">
-                  <option value="approve">{t("Approve")}</option>
-                  <option value="changes_requested">{t("Request changes")}</option>
-                  <option value="rejected">{t("Reject")}</option>
-                  <option value="taken_down">{t("Take down")}</option>
-                </select>
-              </label>
-              <label className="form-field" htmlFor={`reason-${work.id}`}>
-                {t("Reason (required except for approval)")}
-                <textarea
-                  id={`reason-${work.id}`}
-                  name="reason"
-                  maxLength={3000}
-                  aria-invalid={!!reviewErrors[work.id]}
-                  aria-describedby={reviewErrors[work.id] ? `reason-${work.id}-error` : undefined}
-                />
-                {reviewErrors[work.id] && (
-                  <span className="field-error" id={`reason-${work.id}-error`} role="alert">
-                    {reviewErrors[work.id]}
-                  </span>
-                )}
-              </label>
-              <button className="button accent" disabled={action.busy}>
-                {t("Save decision")}
-              </button>
-            </form>
+                }}
+              >
+                <label className="form-field" htmlFor={`review-action-${work.id}`}>
+                  {t("Decision")}
+                  <select id={`review-action-${work.id}`} name="action">
+                    {(work.status === "pending" ||
+                      (work.status === "approved" && work.publication_state === "failed")) && (
+                      <option value="approve">{t("Approve")}</option>
+                    )}
+                    {work.status === "pending" && (
+                      <>
+                        <option value="changes_requested">{t("Request changes")}</option>
+                        <option value="rejected">{t("Reject")}</option>
+                      </>
+                    )}
+                    {["approved", "taken_down"].includes(work.status) && (
+                      <option value="taken_down">{t("Take down")}</option>
+                    )}
+                  </select>
+                </label>
+                <label className="form-field" htmlFor={`reason-${work.id}`}>
+                  {t("Reason (required except for approval)")}
+                  <textarea
+                    id={`reason-${work.id}`}
+                    name="reason"
+                    maxLength={3000}
+                    aria-invalid={!!reviewErrors[work.id]}
+                    aria-describedby={reviewErrors[work.id] ? `reason-${work.id}-error` : undefined}
+                  />
+                  {reviewErrors[work.id] && (
+                    <span className="field-error" id={`reason-${work.id}-error`} role="alert">
+                      {reviewErrors[work.id]}
+                    </span>
+                  )}
+                </label>
+                <button className="button accent" disabled={action.busy}>
+                  {t("Save decision")}
+                </button>
+              </form>
+            )}
           </article>
         ))}
     </div>

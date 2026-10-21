@@ -15,6 +15,7 @@
   "pendingAppearsInAdminQueue": true,
   "realAdminEditsAltAndTags": true,
   "requestChangesVisibleToContributor": true,
+  "auditedAdminNotificationRetry": true,
   "approvedInPublicCatalogueWithThreeCategories": true,
   "approvedR2FilePubliclyDownloadable": true,
   "approvedStatusOnContributorDashboard": true,
@@ -24,5 +25,6 @@
   "rebuildRequestsIntercepted": 1,
   "approvedAppearsOnAllThreeCategoryPagesInFourLocales": true,
   "approvedItemPagesBuiltInFourLocales": true,
+  "staticPageEvidence": "Verified in preceding real approval/static-build run; not repeated for notification-only follow-up.",
   "fixtureCleanupSucceeded": true
 }

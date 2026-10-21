@@ -69,7 +69,7 @@ async function fixtures(page: Page, role: "visitor" | "contributor" | "admin" = 
     if (path === "/api/auth/mfa/factors") return route.fulfill({ json: { factors: [] } });
     if (path === "/api/admin/queue")
       return role === "admin"
-        ? route.fulfill({ json: { works: [work] } })
+        ? route.fulfill({ json: { works: [{ ...work, status: "pending" }] } })
         : route.fulfill({ status: 403, json: { error: "fresh_mfa_required" } });
     if (["/api/admin/inbox", "/api/admin/audit", "/api/admin/users"].includes(path))
       return route.fulfill({ json: { messages: [], takedowns: [], audit: [], profiles: [] } });
@@ -343,8 +343,9 @@ test("profile validation keeps optional contact private and focuses accessible f
 
 test("review screenshots include real UI states with explicitly mocked private data", async ({
   page,
-}) => {
-  const dir = "docs/evidence/backend-pages-round-2";
+}, testInfo) => {
+  // Fresh per-run artifacts avoid rewriting historical evidence and Windows file locks.
+  const dir = testInfo.outputPath("screenshots");
   fs.mkdirSync(dir, { recursive: true });
   for (const locale of ["en", "ml"])
     for (const width of [390, 1440])
