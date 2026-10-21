@@ -208,3 +208,15 @@ Dependency details: [DEPENDENCIES](docs/DEPENDENCIES.md). Production audit is cl
 ## Licence
 
 Existing AGPL v3 software licence retained. Original placeholder artwork under content/posters and public/posters is dedicated to CC0-1.0. Self-hosted fonts carry their own OFL licences in public/fonts. Supplied and refined Red Lark Workshop brand assets remain separate. A deployed AGPL service must provide corresponding source as required by its licence.
+
+## Becoming an administrator and reviewing contributions
+
+1. Create a website account and verify its email. A Supabase dashboard login is separate from a website account.
+2. From a trusted local checkout with server credentials in ignored .env.local, run `npm run admin:grant -- <existing-verified-email>`. The command is idempotent, rejects unknown/unverified addresses, and has no public API endpoint. It does not create an account or send an invitation.
+3. Sign in to the website, open Account ? Account security, and enroll/verify an authenticator. The review API and database policies require a fresh TOTP verification (within ten minutes). Granting the role does not bypass MFA.
+4. Open `/en/admin/review/` (or the corresponding locale). The visible Admin header link shows the pending count after fresh MFA. Select a contribution for a large private preview, edit title/description/format/categories/tags, save metadata, then approve, request changes or reject. Reasons are required except for approval.
+5. Approval copies sanitized files to the approved R2 bucket and requests a Netlify rebuild; public item/category pages appear after deployment. The contributor dashboard shows the decision and feedback.
+
+Image descriptions on uploads are optional (300 characters maximum); blank descriptions receive deterministic title/format/artist text on public and review images. Archive files still require authored alt text. Suggested/custom tags are normalized into tags/work_tags; category and tag replacements are transactional. Four plain-language licence choices map to seven supported Creative Commons licences. NoDerivatives work is always download-only.
+
+The `202610210007_contribution_review.sql` migration adds these controls and a private notification outbox. Run `npm run db:migrate` before deploying the updated Functions. Existing MAIL_* settings are reused: team notification on submission, verified account-email notification on review. Guest contact fields do not establish email ownership, so guest contributors check their private receipt instead. Mail failure never rolls back the contribution/decision: the UI reports pending delivery and scheduled maintenance retries (up to eight attempts). Check work_notifications as a trusted operator for exhausted jobs; do not expose recipient details or credentials.

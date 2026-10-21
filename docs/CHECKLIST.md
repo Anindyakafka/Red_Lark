@@ -143,3 +143,22 @@ Human launch decisions are in TODO_HUMAN.md. No deployment, push, database setup
 | 8. Axe, Lighthouse, client and repository secrets            | PASS   | docs/evidence/redlark-round-1-account-pages-p5/summary.json; build and Gitleaks checks | 178 browser tests; all key public medians >=95, other categories 100; CLS 0; no private client credentials.                           |
 
 These FAIL rows are human prerequisites, not missing page implementations. They prevent a claim of full live-service acceptance. No backend push/deployment was performed.
+
+## Upload/review repair ? current acceptance (21 October 2026)
+
+| Item                             | Status      | Evidence                                                              | Note                                                                                                                                  |
+| -------------------------------- | ----------- | --------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------- |
+| 9: descriptions on images        | IN PROGRESS | src/lib/contribution-metadata.ts; tests/contribution-metadata.test.ts | Upload description optional, deterministic title/format/artist fallback; archive file alt remains required. Hosted migration pending. |
+| 13: contribution form errors     | IN PROGRESS | tests/browser/upload-repair.spec.ts; evidence/upload-repair/after     | Original five regressions green; expanded limits/keyboard/mobile checks pending.                                                      |
+| Category and tag persistence     | IN PROGRESS | tests/contribution-review-rls.test.ts                                 | Transactional three-category/two-tag persistence and ownership guards verified locally.                                               |
+| Admin discoverability and review | IN PROGRESS | /admin/review; tests/browser/upload-repair.spec.ts                    | Direct route green; hosted edit/approval/mail acceptance pending.                                                                     |
+
+### Round 2 measured evidence
+
+| Item                                            | Status | Evidence                                                                            | Note                                                                                                                                                    |
+| ----------------------------------------------- | ------ | ----------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 9: every image described, optional upload input | PASS   | tests/contribution-metadata.test.ts; scripts/fetch-public-catalogue.ts; hosted.json | Blank alt stored successfully; review/public rendering supplies deterministic title/format/artist fallback; archive remains strict.                     |
+| 13: form errors and retained selections         | PASS   | tests/browser/upload-repair.spec.ts (14 passed)                                     | Tag limits/errors, duplicates, keyboard, blur, comma, Enter, removal and category retention; en/hi 390/1440 axe 0. Full regression pending.             |
+| Relational tags and three categories            | PASS   | tests/contribution-review-rls.test.ts; hosted.json                                  | Persisted relational rows -> dashboard/admin -> three public category pages in four locales.                                                            |
+| Review permissions and decisions                | PASS   | hosted.json; local RLS tests                                                        | Real fixture admin role/TOTP, non-admin denied, metadata edits, approval/changes/rejection, public-copy workflow; production build request intercepted. |
+| Notification failure recovery                   | PASS   | hosted.json                                                                         | Real persisted outbox, injected provider failure and successful transport retry. Does not establish real inbox delivery.                                |

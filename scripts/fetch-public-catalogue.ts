@@ -1,3 +1,4 @@
+import { imageDescription } from "../src/lib/contribution-metadata.ts";
 import fs from "node:fs";
 import { createClient } from "@supabase/supabase-js";
 import { LICENSES, type Artist, type Poster, type LicenseId } from "../src/lib/types.ts";
@@ -85,7 +86,7 @@ for (const work of result.data as PublicWork[]) {
     slug: work.slug,
     title: work.title,
     caption: work.caption || work.title,
-    alt: work.alt,
+    alt: imageDescription(work),
     artist: artist.id,
     artistUrl: `/artist/${artist.id}/`,
     year: new Date(work.created_at).getUTCFullYear(),

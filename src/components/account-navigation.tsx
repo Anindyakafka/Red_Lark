@@ -4,7 +4,9 @@ import { usePathname } from "next/navigation";
 import { Link, useI18n } from "@/i18n/client";
 export function AccountNavigation() {
   const { t } = useI18n();
-  const [account, setAccount] = useState<{ admin: boolean } | null>(null);
+  const [account, setAccount] = useState<{ admin: boolean; pendingCount?: number | null } | null>(
+    null,
+  );
   const menu = useRef<HTMLDetailsElement>(null);
   const pathname = usePathname();
   useEffect(() => {
@@ -59,21 +61,28 @@ export function AccountNavigation() {
       </div>
     );
   return (
-    <details className="account-menu" ref={menu}>
-      <summary>{t("Account")}</summary>
-      <nav
-        aria-label={t("Contributor navigation")}
-        onClick={(event) => {
-          if ((event.target as HTMLElement).closest("a") && menu.current) menu.current.open = false;
-        }}
-      >
-        <Link href="/account">{t("Dashboard")}</Link>
-        <Link href="/account/works/new">{t("Upload")}</Link>
-        <Link href="/account/profile">{t("Artist profile")}</Link>
-        <Link href="/account/settings">{t("Account security")}</Link>
-        {account.admin && <Link href="/admin">{t("Admin")}</Link>}
-        <Link href="/logout">{t("Log out")}</Link>
-      </nav>
-    </details>
+    <div className="account-links">
+      {account.admin && (
+        <Link href="/admin/review" className="admin-link">
+          {t("Admin")} <span aria-label={t("Pending review")}>{account.pendingCount ?? "!"}</span>
+        </Link>
+      )}
+      <details className="account-menu" ref={menu}>
+        <summary>{t("Account")}</summary>
+        <nav
+          aria-label={t("Contributor navigation")}
+          onClick={(event) => {
+            if ((event.target as HTMLElement).closest("a") && menu.current)
+              menu.current.open = false;
+          }}
+        >
+          <Link href="/account">{t("Dashboard")}</Link>
+          <Link href="/account/works/new">{t("Upload")}</Link>
+          <Link href="/account/profile">{t("Artist profile")}</Link>
+          <Link href="/account/settings">{t("Account security")}</Link>
+          <Link href="/logout">{t("Log out")}</Link>
+        </nav>
+      </details>
+    </div>
   );
 }

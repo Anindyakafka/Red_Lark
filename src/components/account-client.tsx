@@ -7,6 +7,8 @@ import Image from "next/image";
 import categories from "../../content/categories.json";
 import formats from "../../content/formats.json";
 import { AdminRecords } from "./admin-records";
+import { DescriptionField, TagsField, CategoriesField, LicenceField } from "./contribution-fields";
+import { imageDescription, licenceSummary, normalizeTags } from "@/lib/contribution-metadata";
 
 const errors: Record<string, string> = {
   submission_unavailable:
@@ -24,6 +26,9 @@ const errors: Record<string, string> = {
   mfa_failed: "The authenticator code could not be verified. Try a new code.",
   invalid_file:
     "Use a valid, single-image JPEG or PNG up to 25 MB. SVG and executable files are not accepted.",
+  tag_too_long: "Keep each tag to 30 characters or fewer.",
+  too_many_tags: "Choose up to 10 tags.",
+  invalid_tags: "Choose up to 10 tags, each 30 characters or fewer.",
   mail_delivery_pending:
     "Your message was saved, but email delivery is pending. You can retry without sending a duplicate.",
   publishing_not_ready:
@@ -370,6 +375,7 @@ export function MfaPanel() {
             }
             void action.run(async () => {
               await api("auth/mfa/verify", { factorId: factor, code });
+              window.dispatchEvent(new Event("redlark:session"));
               setSecret("");
               setQrCode("");
               setStatus(t("Authenticator verified. You can return to administration."));
@@ -430,6 +436,8 @@ type Work = {
   tags: string[];
   format_slug: string;
   languages: string[];
+  created_at?: string;
+  work_tags?: { tags: { label: string; custom: boolean } }[];
   work_categories?: { category_slug: string }[];
   work_files: { id: string; kind: string; mime: string; bytes: number; dpi: number }[];
 };
@@ -447,7 +455,7 @@ function ReviewImage({ work }: { work: Work }) {
     <Image
       className="review-image"
       src={"/api/preview/" + preview.id}
-      alt={work.alt}
+      alt={imageDescription(work)}
       width={600}
       height={840}
       unoptimized
@@ -535,8 +543,28 @@ export function AccountPanel({
                     <a href={`/${locale}/account/works/${work.id}/`}>{work.title}</a>
                   </h3>
                   <p>
-                    <strong>{t(work.status)}</strong> · {work.licence_id}
+                    <strong>
+                      {t(
+                        work.status === "pending"
+                          ? "Pending review"
+                          : work.status === "approved"
+                            ? "Approved"
+                            : work.status,
+                      )}
+                    </strong>{" "}
+                    · {work.licence_id}
                   </p>
+                  <p>
+                    {(work.work_categories || [])
+                      .map((c) =>
+                        t(
+                          categories.find((v) => v.slug === c.category_slug)?.label ||
+                            c.category_slug,
+                        ),
+                      )
+                      .join(" ? ") || t("ALL (Uncategorized)")}
+                  </p>
+                  <p>{work.tags.map((tag) => t(tag)).join(" ? ")}</p>
                   {work.feedback && (
                     <p>
                       {t("Review feedback")}: {work.feedback}
@@ -792,6 +820,7 @@ export function UploadPanel({
   const [chosenFormat, setChosenFormat] = useState(initialWork?.format_slug || "poster-placard");
   const [step, setStep] = useState(0);
   const [completed, setCompleted] = useState(false);
+  const [chosenLicence, setChosenLicence] = useState("CC-BY-SA-4.0");
   const [uploadProfile, setUploadProfile] = useState<Profile | null>(null);
   const uploadForm = useRef<HTMLFormElement>(null);
   const [fieldErrors, setFieldErrors] = useState<Record<string, string>>({});
@@ -834,9 +863,14 @@ export function UploadPanel({
     const data = new FormData(event.currentTarget),
       file = data.get("file");
     const next: Record<string, string> = {};
+    let tags: string[] = [];
+    try {
+      tags = normalizeTags([...data.getAll("tags"), String(data.get("tag_pending") || "")]);
+    } catch {
+      next.tags = t("Choose up to 10 tags, each 30 characters or fewer.");
+    }
     if (!String(data.get("title") || "").trim()) next.title = t("Enter a title.");
-    if (String(data.get("alt") || "").trim().length < 15)
-      next.alt = t("Use at least 15 characters to describe what the image shows.");
+    if (String(data.get("alt") || "").length > 300) next.alt = t("Use at most 300 characters.");
     if (
       !(file instanceof File) ||
       !file.size ||
@@ -879,6 +913,8 @@ export function UploadPanel({
         id: data.get("id") || undefined,
         languages: data.getAll("languages"),
         categories: data.getAll("categories"),
+        tags,
+        locale,
         permission: data.has("permission"),
         remixable: data.has("remixable"),
         contact_consent: data.has("contact_consent"),
@@ -917,17 +953,22 @@ export function UploadPanel({
           id: signed.id,
         },
       );
-      await api(guestMode ? "guest/submit" : "account/submit", {
-        token,
-        id: created.id,
-        contact_consent: data.has("contact_consent"),
-        upi_consent: data.has("upi_consent"),
-      });
+      const submitted = await api<{ mailPending?: boolean }>(
+        guestMode ? "guest/submit" : "account/submit",
+        {
+          token,
+          id: created.id,
+          contact_consent: data.has("contact_consent"),
+          upi_consent: data.has("upi_consent"),
+        },
+      );
       track("upload-submitted");
       setStatus(
-        `${t("Submission saved for review.")}${processed.dpiA4 ? ` ${t("Estimated full-sheet resolution")}: A4 ${processed.dpiA4} DPI / A2 ${processed.dpiA2} DPI.` : ""}${processed.warning ? ` ${t("Resolution warning: the image may look soft at A2. No artificial resolution is promised.")}` : ""}`,
+        `${submitted.mailPending ? t("Email delivery is pending. The action was saved and delivery will retry.") + " " : ""}${t("Submission saved for review.")}${processed.dpiA4 ? ` ${t("Estimated full-sheet resolution")}: A4 ${processed.dpiA4} DPI / A2 ${processed.dpiA2} DPI.` : ""}${processed.warning ? ` ${t("Resolution warning: the image may look soft at A2. No artificial resolution is promised.")}` : ""}`,
       );
+      setChosenLicence(String(data.get("licence_id") || "CC-BY-SA-4.0"));
       setCompleted(true);
+      window.dispatchEvent(new Event("redlark:session"));
       onSaved?.();
     });
   }
@@ -967,6 +1008,9 @@ export function UploadPanel({
       <section className="backend-panel" role="status">
         <h2>{t("Submission saved for review.")}</h2>
         <p>{status}</p>
+        <p>
+          {t("You chose:")} {t(licenceSummary(chosenLicence))}
+        </p>
         <p>{t("Note: Your artwork will be featured after the website admin review")}</p>
         {guestMode ? (
           <GuestReceipt link={receipt} />
@@ -1052,10 +1096,8 @@ export function UploadPanel({
           [
             ["title", "Title", true],
             ["artist_name", "Artist name", false],
-            ["alt", "Describe the image for someone who cannot see it", true],
             ["caption", "Caption", false],
             ["source", "Source URL (optional for your own original work)", false],
-            ["tags", "Tags (comma separated)", false],
           ] as const
         ).map(([name, label, required]) => (
           <label className="form-field" htmlFor={`upload-${name}`} key={name}>
@@ -1066,13 +1108,10 @@ export function UploadPanel({
               name={name}
               type={name === "source" ? "url" : "text"}
               defaultValue={
-                name === "tags"
-                  ? initialWork?.tags.join(", ")
-                  : initialWork?.[name] ||
-                    (name === "artist_name" ? uploadProfile?.artist_name : "") ||
-                    ""
+                initialWork?.[name] ||
+                (name === "artist_name" ? uploadProfile?.artist_name : "") ||
+                ""
               }
-              minLength={name === "alt" ? 15 : undefined}
               aria-invalid={!!fieldErrors[name]}
               aria-describedby={fieldErrors[name] ? "upload-" + name + "-error" : undefined}
               required={required}
@@ -1134,29 +1173,10 @@ export function UploadPanel({
             ))}
           </select>
         </label>
-        <label className="form-field" htmlFor="upload-licence">
-          {t("Licence")}
-          <select
-            id="upload-licence"
-            name="licence_id"
-            defaultValue={initialWork?.licence_id || "CC-BY-SA-4.0"}
-          >
-            {["CC-BY-SA-4.0", "CC0-1.0", "CC-BY-4.0", "CC-BY-NC-SA-4.0", "CC-BY-NC-ND-4.0"].map(
-              (l) => (
-                <option key={l}>{l}</option>
-              ),
-            )}
-          </select>
-        </label>
-        <p>
-          {t(
-            "ShareAlike keeps remixes under the same licence. NC restricts commercial use. ND allows downloads but prohibits Studio remixes. Only grant rights you hold.",
-          )}
-        </p>
-        <label className="checkbox-field">
-          <input name="remixable" type="checkbox" defaultChecked />
-          {t("Allow Studio remixes when the licence permits derivatives")}
-        </label>
+        <DescriptionField inputId="upload-alt" initial={initialWork?.alt} />
+        <TagsField initial={initialWork?.tags} />
+        {fieldError("tags")}
+        <LicenceField initial={initialWork?.licence_id} />
         <fieldset aria-describedby={fieldErrors.languages ? "upload-languages-error" : undefined}>
           <legend>{t("Languages (required)")}</legend>
           {["English", "Hindi", "Bengali", "Malayalam"].map((l) => (
@@ -1174,22 +1194,9 @@ export function UploadPanel({
           ))}
           {fieldError("languages")}
         </fieldset>
-        <label className="form-field" htmlFor="upload-categories">
-          {t("Categories (multiple selections allowed)")}
-          <select
-            id="upload-categories"
-            name="categories"
-            multiple
-            size={5}
-            defaultValue={(initialWork?.work_categories || []).map((c) => c.category_slug)}
-          >
-            {categories.map((c) => (
-              <option value={c.slug} key={c.slug}>
-                {t(c.label)}
-              </option>
-            ))}
-          </select>
-        </label>
+        <CategoriesField
+          initial={(initialWork?.work_categories || []).map((c) => c.category_slug)}
+        />
         <label className="form-field" htmlFor="upload-ai">
           {t("AI-use declaration")}
           <select id="upload-ai" name="ai_use" defaultValue={initialWork?.ai_use || "none"}>
@@ -1385,25 +1392,34 @@ export function AdminPanel({
   const [access, setAccess] = useState<"loading" | "denied" | "mfa" | "allowed">("loading");
   useEffect(() => {
     let live = true;
-    fetch("/api/session", { cache: "no-store" })
-      .then(async (response) => (response.ok ? response.json() : null))
-      .then((data) => {
-        if (live)
-          setAccess(
-            !data?.account?.admin
-              ? "denied"
-              : data.account.fresh && data.account.aal2
-                ? "allowed"
-                : "mfa",
-          );
-      })
-      .catch(() => {
-        if (live) setAccess("denied");
-      });
+    const refresh = () => {
+      fetch("/api/session", { cache: "no-store" })
+        .then(async (response) => (response.ok ? response.json() : null))
+        .then((data) => {
+          if (live && !data?.account) {
+            router.replace(`/${locale}/login/?next=${encodeURIComponent(location.pathname)}`);
+            return;
+          }
+          if (live)
+            setAccess(
+              !data?.account?.admin
+                ? "denied"
+                : data.account.fresh && data.account.aal2
+                  ? "allowed"
+                  : "mfa",
+            );
+        })
+        .catch(() => {
+          if (live) setAccess("denied");
+        });
+    };
+    refresh();
+    window.addEventListener("redlark:session", refresh);
     return () => {
+      window.removeEventListener("redlark:session", refresh);
       live = false;
     };
-  }, []);
+  }, [locale, router]);
   async function load() {
     await action.run(async () => {
       const result = await api<{ works: Work[] }>("admin/queue");
@@ -1411,6 +1427,7 @@ export function AdminPanel({
       setNotice(t("Review queue loaded."));
     });
   }
+  const [statusFilter, setStatusFilter] = useState("pending");
   const [selectedId, setSelectedId] = useState("");
   useEffect(() => {
     if (access !== "allowed") return;
@@ -1436,9 +1453,9 @@ export function AdminPanel({
   if (access === "denied")
     return (
       <section className="content-width">
-        <p role="alert">{t("Administrator access is required.")}</p>
-        <Link className="button" href="/login">
-          {t("Sign in")}
+        <p role="alert">{t("You don't have admin access")}</p>
+        <Link className="button" href="/">
+          {t("Home")}
         </Link>
       </section>
     );
@@ -1446,16 +1463,12 @@ export function AdminPanel({
     return (
       <section className="content-width">
         <MfaPanel />
-        <p>{t("After verifying your code, reload this page to open administration.")}</p>
-        <button className="button" onClick={() => location.reload()}>
-          {t("Load review queue")}
-        </button>
       </section>
     );
   return (
     <div className="content-width">
       <nav className="button-row" aria-label={t("Administration")}>
-        <Link href="/admin">{t("Review queue")}</Link>
+        <Link href="/admin/review">{t("Review queue")}</Link>
         <Link href="/admin/messages">{t("Messages")}</Link>
         <Link href="/admin/takedowns">{t("Takedowns")}</Link>
         <Link href="/admin/users">{t("Contributors")}</Link>
@@ -1469,7 +1482,6 @@ export function AdminPanel({
       <Link className="button" href="/account/settings">
         {t("Account security")}
       </Link>
-      <MfaPanel />
       <div className="button-row">
         <button className="button accent" onClick={load} disabled={action.busy}>
           {t("Load review queue")}
@@ -1540,7 +1552,34 @@ export function AdminPanel({
           </button>
         </form>
       )}
+      {view === "queue" && (
+        <label className="form-field" htmlFor="review-status">
+          {t("Filter by status")}
+          <select
+            id="review-status"
+            value={statusFilter}
+            onChange={(e) => setStatusFilter(e.target.value)}
+          >
+            {["pending", "changes_requested", "rejected", "approved", "taken_down", "all"].map(
+              (v) => (
+                <option key={v} value={v}>
+                  {t(v === "pending" ? "Pending review" : v === "all" ? "All" : v)}
+                </option>
+              ),
+            )}
+          </select>
+        </label>
+      )}
+      {view === "queue" && (
+        <p role="status">
+          {works.filter((work) => statusFilter === "all" || work.status === statusFilter).length}{" "}
+          {t("contributions")}
+        </p>
+      )}
       {works
+        .filter(
+          (work) => view !== "queue" || statusFilter === "all" || work.status === statusFilter,
+        )
         .filter((work) => view !== "review" || work.id === selectedId)
         .map((work) => (
           <article key={work.id} className="backend-panel">
@@ -1551,42 +1590,90 @@ export function AdminPanel({
               {t(work.status)} | {work.licence_id} | {t("AI-use declaration")}: {work.ai_use}
             </p>
             <ReviewImage work={work} />
-            <form
-              method="post"
-              className="handoff-form"
-              onSubmit={(event) => {
-                event.preventDefault();
-                const data = new FormData(event.currentTarget);
-                void action.run(async () => {
-                  await api("admin/work-categories", {
-                    id: work.id,
-                    categories: data.getAll("categories"),
+            <p>
+              {work.artist_name} ?{" "}
+              {t(formats.find((f) => f.slug === work.format_slug)?.label || work.format_slug)} ?{" "}
+              {work.created_at
+                ? new Date(work.created_at).toISOString().replace("T", " ").slice(0, 16) + " UTC"
+                : ""}
+            </p>
+            <p>{t(licenceSummary(work.licence_id))}</p>
+            <p>
+              {(work.work_categories || [])
+                .map((c) =>
+                  t(categories.find((v) => v.slug === c.category_slug)?.label || c.category_slug),
+                )
+                .join(" ? ") || t("ALL (Uncategorized)")}
+            </p>
+            <p>
+              {(work.work_tags || []).map((tag) => (
+                <span key={tag.tags.label}>
+                  {t(tag.tags.label)}
+                  {tag.tags.custom ? " [" + t("custom") + "]" : ""} ?{" "}
+                </span>
+              ))}
+            </p>
+            {["pending", "changes_requested"].includes(work.status) && (
+              <form
+                method="post"
+                className="handoff-form"
+                onSubmit={(event) => {
+                  event.preventDefault();
+                  const data = new FormData(event.currentTarget);
+                  void action.run(async () => {
+                    await api("admin/metadata", {
+                      id: work.id,
+                      title: data.get("title"),
+                      alt: data.get("alt"),
+                      format_slug: data.get("format_slug"),
+                      categories: data.getAll("categories"),
+                      tags: data.getAll("tags"),
+                    });
+                    setNotice(t("Metadata saved."));
+                    const result = await api<{ works: Work[] }>("admin/queue");
+                    setWorks(result.works);
                   });
-                  setNotice(t("Categories saved."));
-                });
-              }}
-            >
-              <label className="form-field" htmlFor={"review-categories-" + work.id}>
-                {t("Review categories")}
-                <select
-                  id={"review-categories-" + work.id}
-                  name="categories"
-                  multiple
-                  size={4}
-                  defaultValue={(work.work_categories || []).map((c) => c.category_slug)}
-                >
-                  {categories.map((c) => (
-                    <option key={c.slug} value={c.slug}>
-                      {t(c.label)}
-                    </option>
-                  ))}
-                </select>
-              </label>
-              <button className="button" disabled={action.busy}>
-                {t("Save categories")}
-              </button>
-            </form>
-            <p>{work.alt}</p>
+                }}
+              >
+                <label className="form-field" htmlFor={"review-title-" + work.id}>
+                  {t("Title")}
+                  <input
+                    id={"review-title-" + work.id}
+                    name="title"
+                    required
+                    maxLength={200}
+                    defaultValue={work.title}
+                  />
+                </label>
+                <DescriptionField initial={work.alt} fallback={work} />
+                <label className="form-field" htmlFor={"review-format-" + work.id}>
+                  {t("Choose format")}
+                  <select
+                    id={"review-format-" + work.id}
+                    name="format_slug"
+                    defaultValue={work.format_slug}
+                  >
+                    {formats.map((f) => (
+                      <option key={f.slug} value={f.slug}>
+                        {t(f.label)}
+                      </option>
+                    ))}
+                  </select>
+                </label>
+                <CategoriesField
+                  initial={(work.work_categories || []).map((c) => c.category_slug)}
+                />
+                <TagsField initial={work.tags} />
+                <p>
+                  {t(
+                    "Remove a custom tag and add the preferred spelling to merge or rename it for this work.",
+                  )}
+                </p>
+                <button className="button" disabled={action.busy}>
+                  {t("Save metadata")}
+                </button>
+              </form>
+            )}
             <p>{work.ai_disclosure}</p>
             {work.guest_submissions && (
               <div className="notice">
@@ -1642,9 +1729,19 @@ export function AdminPanel({
                     return;
                   }
                   setReviewErrors((previous) => ({ ...previous, [work.id]: "" }));
-                  await api("admin/review", { id: work.id, ...Object.fromEntries(data) });
+                  const decision = await api<{ mailPending?: boolean }>("admin/review", {
+                    id: work.id,
+                    ...Object.fromEntries(data),
+                  });
+                  window.dispatchEvent(new Event("redlark:session"));
                   setNotice(
-                    t("Review saved. Approved publication may take a few minutes to rebuild."),
+                    t("Review saved. Approved publication may take a few minutes to rebuild.") +
+                      (decision.mailPending
+                        ? " " +
+                          t(
+                            "Email delivery is pending. The action was saved and delivery will retry.",
+                          )
+                        : ""),
                   );
                   const result = await api<{ works: Work[] }>("admin/queue");
                   setWorks(result.works);

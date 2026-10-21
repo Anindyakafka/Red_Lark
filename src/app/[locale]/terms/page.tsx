@@ -63,6 +63,9 @@ export default function Page() {
         <UiText id={"ACCEPTABLE USE."} />
       </h2>
       <p>
+        <UiText id="The upload form recommends sharing and remixing while keeping remixes open. You can instead require credit only, allow unrestricted use, or allow unchanged sharing only. The non-commercial option is unavailable for CC0. Legal details identify the exact licence. Image descriptions are optional; a title, format and artist template is used when blank. You may ask the team to change a licence, but permissions already granted cannot be recalled." />
+      </p>
+      <p>
         <UiText id="Profiles may use pseudonyms. Contact and UPI fields are optional and require independent explicit consent before publication. AI-use disclosure does not establish permission. Account export and deletion are available from the dashboard; at deletion you choose removal or anonymisation of published work. Copies already downloaded by others cannot be recalled." />
       </p>
       <p>

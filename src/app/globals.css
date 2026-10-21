@@ -2634,3 +2634,74 @@ html:not([lang="en"]) .page-intro h1 {
     white-space: nowrap;
   }
 }
+
+/* Contribution controls: visible choices, keyboard focus and touch targets. */
+.metadata-field {
+  min-width: 0;
+  position: relative;
+  padding: 16px;
+  border: 2px solid currentColor;
+}
+.metadata-field input:not([type="checkbox"]):not([type="radio"]):not([type="hidden"]) {
+  width: 100%;
+  min-width: 0;
+}
+.metadata-chips,
+.metadata-add {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+.metadata-add input {
+  flex: 1;
+  min-width: 120px !important;
+}
+.metadata-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  border: 2px solid currentColor;
+  padding-left: 8px;
+  max-width: 100%;
+  overflow-wrap: anywhere;
+}
+.metadata-chip button {
+  min-width: 44px;
+  min-height: 44px;
+  border-left: 2px solid currentColor;
+  font-size: 24px;
+  cursor: pointer;
+}
+.category-options,
+.tag-options {
+  max-height: 280px;
+  overflow-y: auto;
+  margin-top: 12px;
+  overscroll-behavior: contain;
+}
+.category-options .checkbox-field {
+  min-height: 44px;
+}
+.tag-options [role="option"] {
+  padding: 12px;
+  border-bottom: 1px solid currentColor;
+  cursor: pointer;
+}
+.tag-options [role="option"].active,
+.tag-options [aria-selected="true"] {
+  outline: 3px solid currentColor;
+  outline-offset: -3px;
+  font-weight: bold;
+}
+.licence-cards {
+  display: grid;
+  gap: 12px;
+}
+.licence-card {
+  border: 2px solid currentColor;
+  padding: 12px;
+  min-height: 60px;
+}
+.licence-card:has(:checked) {
+  box-shadow: 4px 4px 0 currentColor;
+}

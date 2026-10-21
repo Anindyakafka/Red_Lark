@@ -89,7 +89,7 @@ test("signup supports an email link without a password; uploads wait for a verif
 test("admin is gated by fresh MFA and never shows a counterfeit queue", async ({ page }) => {
   await fixtures(page);
   await page.goto("/en/admin/");
-  await expect(page.locator("main [role=alert]")).toContainText("Administrator access");
+  await expect(page).toHaveURL(/\/en\/login\//);
   await expect(page.getByRole("button", { name: "Save decision" })).toHaveCount(0);
 });
 test("contact and takedown keep messages on network/provider failure and expose required URL errors", async ({

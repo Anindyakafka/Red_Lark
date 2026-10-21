@@ -60,3 +60,10 @@ Engineering status and held backend requirements remain in PLAN/CHECKLIST/ITERAT
 The explicit backend hold prevents the remaining required acceptance flows: email/password sessions and verification/reset; account export/deletion; relational schema/roles/RLS tests; server-sanitized pending uploads and private storage; contributor status/dashboard; admin approval/takedown/audit/publishing; persisted contact/takedown with daily-hash limits, retries and provider-delivered acknowledgements. These are future engineering work after authorization, not completed features or requests to supply keys now. Consequently signup -> upload -> approval -> collection and contact -> database -> delivered test email cannot be run in this phase.
 
 Human prerequisites before that work are release of the hold, project/region/retention ownership, approved administrator, verified mail sender/provider and legal decisions. Native review, real artwork permissions, physical print approval and live Netlify configuration remain separate launch prerequisites. The supplied inbox is already configured. This repository has not been pushed or deployed.
+
+## Upload/review repair follow-up (21 October 2026)
+
+- Native-language review: the new Hindi/Bengali/Malayalam upload controls, licence cards, category names and suggested tags are draft translations (`reviewed:false`). Legal explanatory text currently falls back visibly to English.
+- Deploy the repair branch through the normal review/merge flow. Migration 202610210007 was applied to the configured existing project; do not re-provision it. Existing R2/mail/build-hook settings are reused.
+- Real owner admin role and an enrolled authenticator were confirmed read-only. The owner still needs to sign in and verify a fresh code to review at /en/admin/review/. No real identity was granted or modified during the repair.
+- Hosted acceptance uses disposable accounts and real R2/Supabase with intercepted notification/build-hook transports. It does not prove a newly deployed production notification reached an inbox or a production rebuild completed; confirm those after deployment.

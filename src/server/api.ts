@@ -40,7 +40,21 @@ export default async function handler(req: Request): Promise<Response> {
       let account: unknown = null;
       try {
         const who = await identity(req);
-        account = { email: who.user.email, admin: who.admin, aal2: who.aal2, fresh: who.fresh };
+        let pendingCount: number | null = null;
+        if (who.admin && who.fresh) {
+          const count = await who.client
+            .from("works")
+            .select("id", { count: "exact", head: true })
+            .eq("status", "pending");
+          if (!count.error) pendingCount = count.count;
+        }
+        account = {
+          email: who.user.email,
+          admin: who.admin,
+          aal2: who.aal2,
+          fresh: who.fresh,
+          pendingCount,
+        };
       } catch (error) {
         if (!(error instanceof ApiError) || error.status !== 401) throw error;
       }

@@ -1,3 +1,5 @@
+import { normalizeTags } from "../lib/contribution-metadata.ts";
+import { notificationNotice } from "./work-notifications.ts";
 import { checked, requireAdmin, type Identity, service } from "./auth.ts";
 import { ApiError, json, required, text } from "./security.ts";
 import { copyPublic, publicBase, publicUrl, remove, signedRead } from "./storage.ts";
@@ -65,6 +67,25 @@ export async function admin(
     if (work.status === "approved") await requestBuild();
     return json({ ok: true });
   }
+  if (path === "/api/admin/metadata") {
+    let tags: string[];
+    try {
+      tags = normalizeTags(data.tags);
+    } catch {
+      throw new ApiError(422, "invalid_tags");
+    }
+    checked(
+      await who.client.rpc("review_work_metadata", {
+        p_work: text(data, "id", 100, 1),
+        p_title: text(data, "title", 200, 1),
+        p_alt: text(data, "alt", 300),
+        p_format: text(data, "format_slug", 100, 1),
+        p_categories: Array.isArray(data.categories) ? data.categories : [],
+        p_tags: tags,
+      }),
+    );
+    return json({ ok: true });
+  }
   if (path === "/api/admin/queue") {
     checked(await who.client.rpc("audit_admin_access", { p_action: "review_queue" }));
     return json({
@@ -72,9 +93,9 @@ export async function admin(
         await who.client
           .from("works")
           .select(
-            "*,work_files(id,kind,mime,bytes,width,height,dpi),work_categories(category_slug),guest_submissions(contact,upi,contact_public,upi_public)",
+            "*,work_files(id,kind,mime,bytes,width,height,dpi),work_categories(category_slug),work_tags(tags(slug,label,custom)),guest_submissions(contact,upi,contact_public,upi_public)",
           )
-          .in("status", ["pending", "changes_requested", "approved", "taken_down"])
+          .in("status", ["pending", "changes_requested", "rejected", "approved", "taken_down"])
           .order("created_at", { ascending: false }),
       ),
     });
@@ -169,7 +190,7 @@ export async function admin(
         .select("id")
         .single(),
     );
-    return json({ ok: true });
+    return json({ ok: true, mailPending: await notificationNotice(id) });
   }
   buildConfigured();
   if (action === "taken_down") {
@@ -259,6 +280,7 @@ export async function admin(
       .eq("publication_state", "copying");
     throw error;
   }
+  const mailPending = await notificationNotice(id);
   await requestBuild();
-  return json({ ok: true, rebuilding: true });
+  return json({ ok: true, rebuilding: true, mailPending });
 }

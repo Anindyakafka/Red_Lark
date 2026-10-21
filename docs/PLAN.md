@@ -107,3 +107,13 @@ Execution is authorized for M1-M5, M6 CREATE and public M9. The real contact inb
 Public M9 now includes four localized static RSS feeds, trusted MDX placeholders, the complete policy hub, expanded About and accurate current privacy/terms. Round 14 records 37 unit tests, 83 browser passes, 340 validated HTML pages and its Hindi Collection performance failure. Round 15 adds the comprehensive four-locale public review and corrects native heading/landmark/font-loading issues; final evidence is recorded in ITERATIONS/CHECKLIST rather than inheriting an older PASS. The backend milestone statuses remain unchanged.
 
 Final Round 15 public acceptance: 37 unit tests, 88 browser tests, all 336 locale pages broad-axe clean, source/build checks green. Lighthouse three-run medians en 96/97/98 and hi 97/97/96, all other categories 100. Public scope is complete; M6 UPLOAD, M7 and M8 remain explicitly held. M9 final service-policy/end-to-end acceptance remains PARTIAL until those services exist. No secrets, provider resources, push or deployment are required or claimed for this completed public phase.
+
+## Current upload/review repair (21 October 2026)
+
+| Work                                            | Status      | Evidence / next acceptance                                                                                                  |
+| ----------------------------------------------- | ----------- | --------------------------------------------------------------------------------------------------------------------------- |
+| Reproduce five issues                           | PASS        | Five initial failing tests and before screenshots; hosted read-only diagnosis in docs/evidence/upload-repair                |
+| Shared form, metadata and review implementation | IN PROGRESS | First five browser regressions now pass; new local PostgreSQL RLS tests pass; hosted migration and end-to-end checks remain |
+| Full verification and fresh-eyes review         | PENDING     | Expanded keyboard/mobile tests, real services, axe, full build/suite, secret scan                                           |
+
+Round 2 update: migration applied; disposable Supabase/R2 contributor/admin workflow PASS (including three category pages in four locales); 62 unit tests and 14 focused browser tests PASS; mobile screenshot critique led to removal of redundant MFA setup. Final full-suite/performance/secret verification remains IN PROGRESS.
