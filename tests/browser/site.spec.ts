@@ -1,3 +1,4 @@
+import { openOption, addElement } from "./studio-helpers";
 import { test, expect } from "@playwright/test";
 import AxeBuilder from "@axe-core/playwright";
 import { posters, artists, themes, slugify } from "../../src/lib/catalog";
@@ -125,11 +126,15 @@ test("ND gate renders no remix and links to artist", async ({ page }) => {
 test("Studio add text, colour, lock, undo, export, share and local restore", async ({ page }) => {
   await page.goto("/studio/?format=poster-placard");
   await expect(page.locator(".studio-paper")).toBeVisible();
-  await page.getByRole("button", { name: "+ TEXT", exact: true }).click();
+  await addElement(page, "text");
+  await openOption(page, "text");
   await page.getByLabel("Words", { exact: true }).fill("TEST THE PRINT");
+  await openOption(page, "color");
   await page.getByLabel("Ink colour", { exact: true }).fill("#151515");
+  await openOption(page, "color");
   await expect(page.getByLabel("Ink colour", { exact: true })).toHaveValue("#151515");
   const download = page.waitForEvent("download");
+  await openOption(page, "export");
   await page.getByRole("button", { name: "SVG ↓", exact: true }).click();
   const file = await download;
   expect(file.suggestedFilename()).toMatch(/\.svg$/);
@@ -138,6 +143,7 @@ test("Studio add text, colour, lock, undo, export, share and local restore", asy
   await page.reload();
   await expect(page.locator(".studio-paper")).toBeVisible();
   await expect(page.getByRole("status")).toContainText("RESTORED");
+  await openOption(page, "help");
   await page.getByRole("button", { name: "SHARE LINK", exact: true }).click();
   await expect(page.locator(".share-input")).toHaveValue(/#design=/);
 });
@@ -154,8 +160,8 @@ test("mobile browse CTA hidden in Studio; tools and exports are reachable", asyn
   await page.goto("/studio/?format=poster-placard");
   await expect(page.locator(".studio-paper")).toBeVisible();
   await expect(page.locator(".mobile-cta")).toHaveCount(0);
-  await page.getByRole("button", { name: "ELEMENTS", exact: true }).click();
-  await page.getByRole("button", { name: "+ TEXT", exact: true }).click();
+  await addElement(page, "text");
+  await openOption(page, "text");
   await expect(page.getByLabel("Words", { exact: true })).toBeVisible();
 });
 test("unknown URL uses custom 404 with search; metadata and security endpoints exist", async ({

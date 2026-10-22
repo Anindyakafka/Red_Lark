@@ -65,6 +65,48 @@ export function validateScene(input: unknown): input is Scene {
   )
     return false;
   const ids = new Set<string>();
+  const validCredit = (credit: unknown) => {
+    if (!credit || typeof credit !== "object") return false;
+    const c = credit as Record<string, unknown>;
+    return (
+      ["id", "title", "artist", "source"].every(
+        (k) => typeof c[k] === "string" && c[k].length > 0 && c[k].length <= 1500,
+      ) &&
+      typeof c.license === "string" &&
+      [
+        "CC0-1.0",
+        "CC-BY-4.0",
+        "CC-BY-SA-4.0",
+        "CC-BY-NC-4.0",
+        "CC-BY-NC-SA-4.0",
+        "CC-BY-ND-4.0",
+        "CC-BY-NC-ND-4.0",
+      ].includes(c.license)
+    );
+  };
+  if (
+    s.sources &&
+    (!Array.isArray(s.sources) || s.sources.length > 100 || !s.sources.every(validCredit))
+  )
+    return false;
+  if (s.exportCredit) {
+    const c = s.exportCredit;
+    if (
+      typeof c.enabled !== "boolean" ||
+      ![c.x, c.y, c.width, c.fontSize].every((n) => Number.isFinite(n)) ||
+      c.x < 0 ||
+      c.y < 0 ||
+      c.x > 600 ||
+      c.y > 5000 ||
+      c.width < 40 ||
+      c.width > 600 ||
+      c.fontSize < 4 ||
+      c.fontSize > 30 ||
+      !/^#[\da-f]{6}$/i.test(c.color) ||
+      !/^#[\da-f]{6}$/i.test(c.background)
+    )
+      return false;
+  }
   return s.layers.every((l) => {
     if (!l || typeof l !== "object" || typeof l.id !== "string" || !l.id || ids.has(l.id))
       return false;
@@ -99,6 +141,18 @@ export function validateScene(input: unknown): input is Scene {
       (typeof l.image !== "string" ||
         !/^data:image\/png;base64,[A-Za-z0-9+/=]+$/.test(l.image) ||
         l.image.length > 8_000_000)
+    )
+      return false;
+    if (
+      l.crop &&
+      (l.kind !== "image" ||
+        ![l.crop.x, l.crop.y, l.crop.width, l.crop.height].every(Number.isFinite) ||
+        l.crop.x < 0 ||
+        l.crop.y < 0 ||
+        l.crop.width < 0.02 ||
+        l.crop.height < 0.02 ||
+        l.crop.x + l.crop.width > 1.000001 ||
+        l.crop.y + l.crop.height > 1.000001)
     )
       return false;
     if (

@@ -1,5 +1,16 @@
 # Current acceptance checklist
 
+## Studio workspace repair
+
+| Item                                      | Status | Evidence                                                                                                                |
+| ----------------------------------------- | ------ | ----------------------------------------------------------------------------------------------------------------------- |
+| Before-edit audit / measurements          | PASS   | docs/STUDIO_AUDIT.md; docs/evidence/studio-workspace/before.json and PNGs                                               |
+| Attribution metadata / clean editing      | PASS   | tests/studio-workspace.test.ts: source persistence, CC0/SA defaults, editing SVG, UTF-8 PNG attribution/EXIF stripping  |
+| Overlay controls / full feature retention | PASS   | final-browser.json: four locales × 375/768/1440; all panels full axe 0; no reflow                                       |
+| Eight-handle non-destructive crop         | PASS   | Unit pixel/geometry tests; mouse/pen/touch eight handles; keyboard, undo/restore, SVG/PNG/PDF                           |
+| Full viewport pinch/pan                   | PASS   | Real CDP pinch/moving midpoint, wheel/Space/middle, layer drag at zoom, local native-gesture fallback                   |
+| Final regression and real-device limits   | PASS   | 78 unit + 274 unique browser tests; final affected rerun 91/91; build/types/lint pass; real devices/print remain manual |
+
 ## Navigation and admin verification window
 
 | Item                                    | Status | Evidence                                                                                                                             |

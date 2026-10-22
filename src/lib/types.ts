@@ -80,6 +80,8 @@ export interface Layer {
   hidden: boolean;
   image?: string;
   credit?: Credit;
+  /** Normalized region of the retained original image; never replaces image bytes. */
+  crop?: { x: number; y: number; width: number; height: number };
 }
 export const PRESETS = {
   A4: { width: 210, height: 297, unit: "mm" },
@@ -95,6 +97,17 @@ export interface Scene {
   background: string;
   colors: 1 | 2 | 3;
   layers: Layer[];
+  /** Source attribution survives layer deletion and is never an editing layer. */
+  sources?: Credit[];
+  exportCredit?: {
+    enabled: boolean;
+    x: number;
+    y: number;
+    width: number;
+    fontSize: number;
+    color: string;
+    background: string;
+  };
 }
 export interface PosterFile {
   format: "PDF" | "PNG" | "JPEG" | "SVG" | "ZIP";

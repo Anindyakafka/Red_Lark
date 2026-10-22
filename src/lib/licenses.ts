@@ -1,4 +1,6 @@
 import { LICENSES, type Credit, type Poster, type Scene } from "./types";
+export const sourceUrl = (source: string) =>
+  source.startsWith("/") ? `https://redlarkworkshop.com${source}` : source;
 
 export function canRemix(poster: Poster) {
   return (
@@ -17,7 +19,10 @@ export function sourceCredit(poster: Poster, artist: string): Credit {
 export function sceneCredits(scene: Scene): Credit[] {
   return [
     ...new Map(
-      scene.layers.filter((l) => !l.hidden && l.credit).map((l) => [l.credit!.id, l.credit!]),
+      [
+        ...(scene.sources ?? []),
+        ...scene.layers.filter((l) => !l.hidden && l.credit).map((l) => l.credit!),
+      ].map((c) => [c.id, c]),
     ).values(),
   ];
 }
@@ -51,7 +56,7 @@ export function creditLines(scene: Scene) {
     ...(credits.some((c) => LICENSES[c.license].shareAlike)
       ? [`ADAPTATION: ${license} REQUIRED / YOUR ADDITIONS MUST COMPLY`]
       : ["USER ADDITIONS: RIGHTS RETAINED / SOURCE PERMISSIONS REMAIN IN FORCE"]),
-    ...credits.map((c) => `${c.title} / ${c.artist} / ${c.license} / ${c.source}`),
+    ...credits.map((c) => `${c.title} / ${c.artist} / ${c.license} / ${sourceUrl(c.source)}`),
     ...(scene.layers.some((l) => !l.hidden && l.kind === "image" && !l.credit)
       ? ["User image: rights retained by its owner; confirm permission before sharing."]
       : []),

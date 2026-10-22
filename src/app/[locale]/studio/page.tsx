@@ -21,7 +21,11 @@ export default async function Page({ params }: { params: Promise<{ locale: strin
           <UiText id={"THE STUDIO."} />
         </h1>
         <p>
-          <UiText id={"Make it yours. Export it. Keep the credit."} />
+          <UiText
+            id={
+              "Make it yours. Export it. Source credits stay in project metadata; choose the visible credit line at export."
+            }
+          />
         </p>
       </div>
       <StudioClient />

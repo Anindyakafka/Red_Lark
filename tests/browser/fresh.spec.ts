@@ -1,4 +1,5 @@
-﻿import { test, expect } from "@playwright/test";
+import { openOption, addElement } from "./studio-helpers";
+import { test, expect } from "@playwright/test";
 import { posters, artists } from "../../src/lib/catalog";
 import categories from "../../content/categories.json" with { type: "json" };
 test("fresh-eyes clickthrough of poster, artist and category indexes", async ({ page }) => {
@@ -43,7 +44,8 @@ test("fresh-eyes form focus and true empty Studio recovery", async ({ page }) =>
   });
   await page.reload();
   await expect(page.getByText("EMPTY CANVAS", { exact: false })).toBeVisible();
-  await page.getByRole("button", { name: "+ TEXT", exact: true }).click();
+  await addElement(page, "text");
+  await openOption(page, "text");
   await expect(page.getByLabel("Words", { exact: true })).toBeVisible();
 });
 test("curation is empty honestly and font bundle is a real download", async ({ page }) => {
@@ -59,8 +61,11 @@ test("single-ink mode remains single-ink after custom colour and shelf additions
 }) => {
   await page.goto("/studio/?format=poster-placard");
   await expect(page.locator(".studio-paper")).toBeVisible();
+  await openOption(page, "color");
   await page.getByLabel("Print mode").selectOption("1");
+  await openOption(page, "color");
   await page.getByLabel("Ink colour", { exact: true }).fill("#354c44");
-  await page.getByRole("button", { name: "+ RECTANGLE", exact: true }).click();
+  await addElement(page, "rectangle");
+  await openOption(page, "color");
   await expect(page.getByLabel("Separation preview").locator("option")).toHaveCount(2);
 });

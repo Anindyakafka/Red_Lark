@@ -2,6 +2,8 @@
 
 ## Current navigation / admin-session release
 
+Studio workspace release (22 October 2026): confirm whether users may disable the default-on visible attribution line and distribute credit separately. Metadata remains embedded, but printing/reposting can discard it. CC0 defaults off. No legal/policy wording was changed. Review new hi/bn/ml Studio labels/copy, currently English fallbacks with reviewed:false. Test real iOS Safari/Android pinch, pan, crop and double-tap; desktop emulation cannot certify real devices. Print an A4 PDF/PNG test with a rotated crop and SA attribution. Credits already baked into imported raster pixels are retained and cannot safely be erased or separated into editable type automatically.
+
 After merging this release, wait for the Netlify production deployment. Contribute appears beside Open Studio on the landing page; Log in / Sign up appear in the header for signed-out visitors. Contributor accounts remain optional and public signup stays ON.
 
 This release also aligns header languages on one row, balances the landing language picker and removes decorative square brackets throughout the interface. Confirm the production header and landing at phone/desktop widths after Netlify reports Published. No new environment variables or dashboard configuration are required for these UI changes.

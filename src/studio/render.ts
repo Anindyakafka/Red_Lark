@@ -1,14 +1,22 @@
 ﻿import type { Font } from "opentype.js";
 import type { ShapedFont } from "./shaping";
-import { LICENSES } from "@/lib/types";
 import { PRESETS, type FontId, type Layer, type Scene } from "@/lib/types";
-import { creditLines, sceneCredits } from "@/lib/licenses";
+import { creditLines } from "@/lib/licenses";
 import { assertExportable, dimensions } from "./model";
+import { creditSettings, attributionMetadata } from "./attribution";
 export type Fonts = Record<FontId, Font> & { indic?: Record<"hi" | "bn" | "ml", ShapedFont> };
 /** Credits can combine a title and artist in different scripts on the same line. */
-export function creditPaths(text: string, fonts: Fonts, x: number, y: number, width: number) {
+export function creditPaths(
+  text: string,
+  fonts: Fonts,
+  x: number,
+  y: number,
+  width: number,
+  fontSize = 7,
+  color = "#151515",
+) {
   if (!/[\u0900-\u097f\u0980-\u09ff\u0d00-\u0d7f]/.test(text))
-    return textPaths(text, fonts.mono, x, y, 7, width, "#151515");
+    return textPaths(text, fonts.mono, x, y, fontSize, width, color);
   if (!fonts.indic)
     throw new Error("Indic credit fonts are not loaded. Retry after fonts finish loading.");
   const parts =
@@ -38,7 +46,7 @@ export function creditPaths(text: string, fonts: Fonts, x: number, y: number, wi
     };
   });
   const size = Math.min(
-    7,
+    fontSize,
     width /
       Math.max(
         1,
@@ -51,15 +59,15 @@ export function creditPaths(text: string, fonts: Fonts, x: number, y: number, wi
       const left = pen;
       pen += run.width * size;
       if (!run.font || !run.run)
-        return `<path fill="#151515" d="${fonts.mono.getPath(run.text, left, y + 7, size).toPathData(2)}"/>`;
+        return `<path fill="${color}" d="${fonts.mono.getPath(run.text, left, y + fontSize, size).toPathData(2)}"/>`;
       const scale = size / run.font.unitsPerEm;
       let advance = 0;
       return run.run.glyphs
         .map((glyph, index) => {
           const position = run.run.positions[index];
-          const transform = `translate(${left + (advance + position.xOffset) * scale} ${y + 7 - position.yOffset * scale}) scale(${scale} ${-scale})`;
+          const transform = `translate(${left + (advance + position.xOffset) * scale} ${y + fontSize - position.yOffset * scale}) scale(${scale} ${-scale})`;
           advance += position.xAdvance;
-          return `<g fill="#151515" transform="${transform}"><path d="${glyph.path.toSVG()}"/></g>`;
+          return `<g fill="${color}" transform="${transform}"><path d="${glyph.path.toSVG()}"/></g>`;
         })
         .join("");
     })
@@ -177,25 +185,46 @@ export function layerMarkup(l: Layer, fonts: Fonts) {
       inner = marks.join("");
       break;
     }
-    case "image":
-      inner = `<image href="${xml(l.image ?? "")}" width="${w}" height="${h}" preserveAspectRatio="xMidYMid meet"/>`;
+    case "image": {
+      const c = l.crop ?? { x: 0, y: 0, width: 1, height: 1 };
+      inner = `<svg width="${w}" height="${h}" viewBox="${c.x} ${c.y} ${c.width} ${c.height}" preserveAspectRatio="none" overflow="hidden"><image href="${xml(l.image ?? "")}" width="1" height="1" preserveAspectRatio="none"/></svg>`;
       break;
+    }
   }
   return `<g transform="translate(${l.x} ${l.y}) rotate(${l.rotation} ${w / 2} ${h / 2})">${inner}</g>`;
 }
-export function sceneSvg(scene: Scene, fonts: Fonts, separation?: string) {
-  const license = assertExportable(scene);
+export function sceneSvg(scene: Scene, fonts: Fonts, separation?: string, editing = false) {
+  assertExportable(scene);
   const { width, height } = dimensions(scene);
   const preset = PRESETS[scene.preset];
-  const lines = creditLines(scene).flatMap((line) => line.match(/.{1,110}/g) ?? []);
-  const stripHeight = Math.max(27, lines.length * 10 + 10);
-  const stripTop = height - stripHeight;
+  const settings = creditSettings(scene);
+  const columns = Math.max(10, Math.floor(settings.width / (settings.fontSize * 0.62)));
+  const lines = creditLines(scene).flatMap(
+    (line) => line.match(new RegExp(`.{1,${columns}}`, "gu")) ?? [],
+  );
   const layers = scene.layers
     .filter((l) => !l.hidden && (!separation || l.color === separation))
     .map((l) => layerMarkup(separation ? { ...l, color: "#151515" } : l, fonts))
     .join("");
-  const credits = lines
-    .map((line, i) => creditPaths(line, fonts, 10, stripTop + 5 + i * 10, width - 20))
-    .join("");
-  return `<svg xmlns="http://www.w3.org/2000/svg" width="${preset.width}${preset.unit}" height="${preset.height}${preset.unit}" viewBox="0 0 ${width} ${height}"><title>Red Lark Workshop composition</title><metadata>${xml(JSON.stringify({ sourceLicense: license, adaptationLicense: sceneCredits(scene).some((c) => LICENSES[c.license].shareAlike) ? license : "User additions: rights retained", credits: creditLines(scene), preset: scene.preset, rasterPpi: preset.unit === "mm" ? 300 : undefined }))}</metadata><defs><clipPath id="artboard"><rect width="${width}" height="${stripTop}"/></clipPath></defs><rect width="${width}" height="${height}" fill="${separation ? "#ffffff" : scene.background}"/><g clip-path="url(#artboard)">${layers}</g><rect y="${stripTop}" width="${width}" height="${stripHeight}" fill="#f3f0e6"/><path d="M0 ${stripTop}H${width}" stroke="#151515"/>${credits}</svg>`;
+  const credits =
+    !editing && settings.enabled
+      ? lines
+          .map((line, i) =>
+            creditPaths(
+              line,
+              fonts,
+              settings.x + 4,
+              settings.y + 4 + i * settings.fontSize * 1.5,
+              settings.width - 8,
+              settings.fontSize,
+              settings.color,
+            ),
+          )
+          .join("")
+      : "";
+  const credit =
+    !editing && settings.enabled
+      ? `<g data-export-credit="true"><rect x="${settings.x}" y="${settings.y}" width="${settings.width}" height="${lines.length * settings.fontSize * 1.5 + 8}" fill="${settings.background}"/>${credits}</g>`
+      : "";
+  return `<svg xmlns="http://www.w3.org/2000/svg" width="${preset.width}${preset.unit}" height="${preset.height}${preset.unit}" viewBox="0 0 ${width} ${height}"><title>Red Lark Workshop composition</title><metadata>${xml(JSON.stringify(attributionMetadata(scene)))}</metadata><defs><clipPath id="artboard"><rect width="${width}" height="${height}"/></clipPath></defs><rect width="${width}" height="${height}" fill="${separation ? "#ffffff" : scene.background}"/><g clip-path="url(#artboard)">${layers}${credit}</g></svg>`;
 }

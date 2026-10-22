@@ -1,9 +1,11 @@
 "use client";
+import "./workspace.css";
 import { Link } from "@/i18n/client";
 
-import { UiText } from "@/i18n/client";
+import { UiText, useI18n } from "@/i18n/client";
+import { OptionPanel, PANELS, type PanelId } from "./option-panel";
 
-import { useCallback, useEffect, useReducer, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useReducer, useRef, useState } from "react";
 import opentype from "opentype.js";
 import { PRESETS, type Layer, type Scene, type PresetId } from "@/lib/types";
 import { posters, artistFor } from "@/lib/catalog";
@@ -23,10 +25,24 @@ import { migrateLocalDrafts } from "@/lib/storage";
 import { createShapedFont } from "./shaping";
 import imageLibrary from "../../content/studio/images.json";
 import captionLibrary from "../../content/studio/captions.json";
+import artworkFormats from "../../content/formats.json";
+import { cleanTemplate, creditRequired, creditSettings } from "./attribution";
+import { useImageCrop } from "./use-image-crop";
+import { CropOverlay } from "./crop-overlay";
+import { CropControls } from "./crop-controls";
+import { useViewport } from "./use-viewport";
+import { cropImageFrame, localPoint, worldPoint } from "./geometry";
 
 const KEY = "redlark.studio.v2";
 const PALETTE = ["#151515", "#e32219", "#f3f0e6"];
 function verifySources(scene: Scene) {
+  scene = cleanTemplate(scene);
+  scene.sources = scene.sources?.map((credit) => {
+    const poster = posters.find((p) => p.slug === credit.id);
+    if (!poster || !canRemix(poster))
+      throw new Error("A source in this design is not approved for remix.");
+    return sourceCredit(poster, artistFor(poster.artist).name);
+  });
   for (const layer of scene.layers) {
     if (!layer.credit) continue;
     const poster = posters.find((p) => p.slug === layer.credit?.id);
@@ -38,7 +54,14 @@ function verifySources(scene: Scene) {
   assertExportable(scene);
   return scene;
 }
-export default function Studio() {
+export default function Studio({
+  format,
+  onFormatChange,
+}: {
+  format: string;
+  onFormatChange: (value: string) => void;
+}) {
+  const { t } = useI18n();
   const [history, dispatch] = useReducer(reducer, { past: [], present: freshScene(), future: [] });
   const scene = history.present;
   const [fonts, setFonts] = useState<Fonts | null>(null);
@@ -49,16 +72,37 @@ export default function Studio() {
   const [failure, setFailure] = useState("");
   const [busy, setBusy] = useState(false);
   const [storageAvailable, setStorageAvailable] = useState(true);
-  const [zoom, setZoom] = useState(1);
   const [pan, setPan] = useState(false);
   const [snap, setSnap] = useState(true);
-  const [mobileTab, setMobileTab] = useState("canvas");
+  const [panel, setPanel] = useState<PanelId | null>(null);
+  const panelOpener = useRef<HTMLElement | null>(null);
+  function togglePanel(id: PanelId, opener: HTMLElement) {
+    if (crop.session) {
+      setStatus(t("Apply or cancel the current crop first."));
+      requestAnimationFrame(() =>
+        document.querySelector<HTMLButtonElement>(".crop-actions button")?.focus(),
+      );
+      return;
+    }
+    panelOpener.current = opener;
+    setPanel((current) => (current === id ? null : id));
+  }
+  function closePanel(restoreFocus = false) {
+    const previous = panel;
+    setPanel(null);
+    if (restoreFocus && previous)
+      requestAnimationFrame(() =>
+        (panelOpener.current?.isConnected
+          ? panelOpener.current
+          : document.getElementById("studio-trigger-" + previous)
+        )?.focus({ preventScroll: true }),
+      );
+  }
   const [shareLink, setShareLink] = useState("");
   const [separation, setSeparation] = useState("");
   const [liveLayer, setLiveLayer] = useState<Layer | null>(null);
   const [shelfQuery, setShelfQuery] = useState("");
   const svgRef = useRef<SVGSVGElement>(null);
-  const scrollRef = useRef<HTMLDivElement>(null);
   const restoreRef = useRef<Scene | null>(null);
   const dragRef = useRef<{
     id: string;
@@ -67,17 +111,40 @@ export default function Studio() {
     layer: Layer;
     mode: "move" | "resize" | "rotate";
   } | null>(null);
-  const pointers = useRef(new Map<number, { x: number; y: number }>());
-  const pinchDistance = useRef(0);
-  const panStart = useRef<{ x: number; y: number; left: number; top: number } | null>(null);
   const uploadRef = useRef<HTMLInputElement>(null);
   const selectedLayer = scene.layers.find((l) => l.id === selected);
   const dim = dimensions(scene);
+  const viewport = useViewport(dim.width, dim.height, Boolean(fonts));
+  const zoom = viewport.view.zoom;
+  const scrollRef = viewport.ref;
+  const setZoom = viewport.setZoom;
+  const liveLayerRef = useRef<Layer | null>(null);
   const commit = useCallback((next: Scene) => {
     setAutosaveEnabled(true);
-    dispatch({ type: "commit", scene: next });
+    dispatch({ type: "commit", scene: cleanTemplate(next) });
     setShareLink("");
   }, []);
+  const crop = useImageCrop(scene, selectedLayer, commit, point);
+  function beginCrop() {
+    if (!selectedLayer || selectedLayer.kind !== "image") return;
+    crop.start();
+    setPanel(null);
+    const frame = cropImageFrame(selectedLayer);
+    const corners = [
+      { x: frame.x, y: frame.y },
+      { x: frame.x + frame.width, y: frame.y },
+      { x: frame.x, y: frame.y + frame.height },
+      { x: frame.x + frame.width, y: frame.y + frame.height },
+    ].map((p) => worldPoint(selectedLayer, p));
+    const left = Math.min(0, ...corners.map((p) => p.x)),
+      top = Math.min(0, ...corners.map((p) => p.y));
+    viewport.fitBounds({
+      x: left,
+      y: top,
+      width: Math.max(dim.width, ...corners.map((p) => p.x)) - left,
+      height: Math.max(dim.height, ...corners.map((p) => p.y)) - top,
+    });
+  }
   useEffect(() => {
     let cancelled = false;
     async function init() {
@@ -164,12 +231,17 @@ export default function Studio() {
             layer.image = image.data;
             layer.x = 0;
             layer.y = 0;
-            layer.width = 210;
-            layer.height = Math.min(297, (210 * image.height) / image.width);
+            const canvas = dimensions(chosen),
+              scale = Math.min(canvas.width / image.width, canvas.height / image.height);
+            layer.width = image.width * scale;
+            layer.height = image.height * scale;
+            layer.x = (canvas.width - layer.width) / 2;
+            layer.y = (canvas.height - layer.height) / 2;
             layer.name = poster.title;
             chosen.layers.push(layer);
           }
           const credit = sourceCredit(poster, artistFor(poster.artist).name);
+          chosen = cleanTemplate(chosen, credit);
           chosen.layers = chosen.layers.map((l) => ({ ...l, credit }));
           setStatus(
             `REMIX READY ${poster.title} / ${poster.license}. Source credits are retained.`,
@@ -257,7 +329,13 @@ export default function Studio() {
     if (!selectedLayer || selectedLayer.locked) return;
     commit({ ...scene, layers: scene.layers.filter((l) => l.id !== selected) });
     setSelected(null);
-  }, [scene, selected, selectedLayer, commit]);
+    if (panel === "layers")
+      requestAnimationFrame(() =>
+        document
+          .querySelector<HTMLButtonElement>("#studio-option-layers .studio-panel-heading button")
+          ?.focus({ preventScroll: true }),
+      );
+  }, [scene, selected, selectedLayer, commit, panel]);
   const duplicate = useCallback(() => {
     if (!selectedLayer || scene.layers.length >= 80) return;
     const copy = {
@@ -273,9 +351,28 @@ export default function Studio() {
   }, [selectedLayer, scene, commit]);
   useEffect(() => {
     const key = (event: KeyboardEvent) => {
+      if (event.key === "Escape" && crop.session) {
+        event.preventDefault();
+        crop.cancel();
+        scrollRef.current?.focus({ preventScroll: true });
+        return;
+      }
       const element = event.target as HTMLElement;
       if (["INPUT", "SELECT", "TEXTAREA"].includes(element.tagName) || element.isContentEditable)
         return;
+      if (crop.session) {
+        if (
+          event.key.startsWith("Arrow") ||
+          event.key === "Delete" ||
+          event.key === "Backspace" ||
+          event.ctrlKey ||
+          event.metaKey
+        ) {
+          event.preventDefault();
+          setStatus(t("Apply or cancel the current crop first."));
+        }
+        return;
+      }
       if ((event.ctrlKey || event.metaKey) && event.key.toLowerCase() === "z") {
         event.preventDefault();
         dispatch({ type: event.shiftKey ? "redo" : "undo" });
@@ -306,7 +403,7 @@ export default function Studio() {
     };
     window.addEventListener("keydown", key);
     return () => window.removeEventListener("keydown", key);
-  }, [selectedLayer, patch, duplicate, remove]);
+  }, [selectedLayer, patch, duplicate, remove, crop, scrollRef, t]);
   function add(kind: Layer["kind"]) {
     if (scene.layers.length >= 80) {
       setFailure("LIMIT This Studio supports up to 80 layers.");
@@ -317,7 +414,7 @@ export default function Studio() {
     if (!inks.includes(layer.color) && inks.length >= scene.colors) layer.color = inks[0];
     commit({ ...scene, layers: [...scene.layers, layer] });
     setSelected(layer.id);
-    setMobileTab("controls");
+    setPanel(kind === "text" ? "text" : "layers");
   }
   function addSource(slug: string) {
     if (scene.layers.length >= 80) {
@@ -376,7 +473,7 @@ export default function Studio() {
       if (fonts) sceneSvg(next, fonts);
       commit(next);
       setSelected(layer.id);
-      setMobileTab("controls");
+      setPanel("text");
     } catch (error) {
       setFailure(String(error));
     }
@@ -389,7 +486,7 @@ export default function Studio() {
     [layers[i], layers[next]] = [layers[next], layers[i]];
     commit({ ...scene, layers });
   }
-  function point(e: React.PointerEvent) {
+  function point(e: { clientX: number; clientY: number }) {
     const svg = svgRef.current!;
     const p = svg.createSVGPoint();
     p.x = e.clientX;
@@ -402,53 +499,31 @@ export default function Studio() {
     layer: Layer,
     mode: "move" | "resize" | "rotate" = "move",
   ) {
-    if (pan || layer.locked) return;
+    if (pan || layer.locked || crop.session || viewport.overridesLayer(e) || viewport.isPanning())
+      return;
     e.stopPropagation();
     setSelected(layer.id);
     const p = point(e);
     dragRef.current = { id: layer.id, startX: p.x, startY: p.y, layer, mode };
-    svgRef.current?.setPointerCapture(e.pointerId);
   }
   function down(e: React.PointerEvent) {
-    pointers.current.set(e.pointerId, { x: e.clientX, y: e.clientY });
-    if (pointers.current.size === 2) {
+    if (viewport.down(e, pan)) {
       dragRef.current = null;
+      liveLayerRef.current = null;
       setLiveLayer(null);
-      const ps = [...pointers.current.values()];
-      pinchDistance.current = Math.hypot(ps[0].x - ps[1].x, ps[0].y - ps[1].y);
-      svgRef.current?.setPointerCapture(e.pointerId);
-    }
-    if (pan && scrollRef.current) {
-      panStart.current = {
-        x: e.clientX,
-        y: e.clientY,
-        left: scrollRef.current.scrollLeft,
-        top: scrollRef.current.scrollTop,
-      };
-      svgRef.current?.setPointerCapture(e.pointerId);
+      crop.end(true);
     }
   }
   function move(e: React.PointerEvent) {
-    if (pointers.current.has(e.pointerId))
-      pointers.current.set(e.pointerId, { x: e.clientX, y: e.clientY });
-    if (pointers.current.size === 2) {
-      const ps = [...pointers.current.values()];
-      const distance = Math.hypot(ps[0].x - ps[1].x, ps[0].y - ps[1].y);
-      if (pinchDistance.current)
-        setZoom((z) => Math.max(0.5, Math.min(2.5, (z * distance) / pinchDistance.current)));
-      pinchDistance.current = distance;
-      return;
-    }
-    if (panStart.current && scrollRef.current) {
-      scrollRef.current.scrollLeft = panStart.current.left - e.clientX + panStart.current.x;
-      scrollRef.current.scrollTop = panStart.current.top - e.clientY + panStart.current.y;
-      return;
-    }
+    if (viewport.move(e)) return;
+    if (crop.move(e)) return;
     const d = dragRef.current;
     if (!d) return;
     const p = point(e);
-    const dx = p.x - d.startX,
-      dy = p.y - d.startY;
+    const localStart = localPoint(d.layer, { x: d.startX, y: d.startY });
+    const localNow = localPoint(d.layer, p);
+    const dx = d.mode === "resize" ? localNow.x - localStart.x : p.x - d.startX,
+      dy = d.mode === "resize" ? localNow.y - localStart.y : p.y - d.startY;
     let l = { ...d.layer };
     const snapTo = (n: number) => (snap ? Math.round(n / 10) * 10 : Math.round(n));
     if (d.mode === "move")
@@ -477,21 +552,27 @@ export default function Studio() {
           ),
         ),
       );
+    if (d.mode === "resize") {
+      const center = worldPoint(d.layer, { x: l.width / 2, y: l.height / 2 });
+      l.x = center.x - l.width / 2;
+      l.y = center.y - l.height / 2;
+    }
+    liveLayerRef.current = l;
     setLiveLayer(l);
   }
+
   function end(e: React.PointerEvent, cancel = false) {
-    pointers.current.delete(e.pointerId);
-    if (pointers.current.size < 2) pinchDistance.current = 0;
-    if (dragRef.current && liveLayer && !cancel)
+    const gesture = viewport.end(e, cancel);
+    crop.end(cancel || gesture);
+    const live = liveLayerRef.current;
+    if (!gesture && dragRef.current && live && !cancel)
       commit({
         ...scene,
-        layers: scene.layers.map((l) => (l.id === liveLayer.id ? liveLayer : l)),
+        layers: scene.layers.map((layer) => (layer.id === live.id ? live : layer)),
       });
     dragRef.current = null;
+    liveLayerRef.current = null;
     setLiveLayer(null);
-    panStart.current = null;
-    if (svgRef.current?.hasPointerCapture(e.pointerId))
-      svgRef.current.releasePointerCapture(e.pointerId);
   }
   async function upload(file: File | undefined) {
     if (!file) return;
@@ -511,8 +592,8 @@ export default function Studio() {
         ...newLayer("image"),
         image: image.data,
         name: "Local image (metadata stripped)",
-        width: 350,
-        height: (350 * image.height) / image.width,
+        width: Math.max(10, Math.min(350, (500 * image.width) / image.height)),
+        height: Math.max(10, Math.min(500, (350 * image.height) / image.width)),
       };
       commit({ ...scene, layers: [...scene.layers, layer] });
       setSelected(layer.id);
@@ -528,6 +609,14 @@ export default function Studio() {
   }
   async function exportNow(format: Parameters<typeof exportFile>[2]) {
     if (!fonts) return;
+    if (crop.session) {
+      setPanel(null);
+      setStatus(t("Apply or cancel the current crop first."));
+      requestAnimationFrame(() =>
+        document.querySelector<HTMLButtonElement>(".crop-actions button")?.focus(),
+      );
+      return;
+    }
     setBusy(true);
     setFailure("");
     setStatus(`EXPORTING ${format} Preparing your file…`);
@@ -581,6 +670,22 @@ export default function Studio() {
   const inks = [
     ...new Set(scene.layers.filter((l) => !l.hidden && l.kind !== "image").map((l) => l.color)),
   ];
+  const displayScene = useMemo(
+    () =>
+      liveLayer
+        ? { ...scene, layers: scene.layers.map((l) => (l.id === liveLayer.id ? liveLayer : l)) }
+        : scene,
+    [scene, liveLayer],
+  );
+  const body = useMemo(
+    () =>
+      fonts
+        ? sceneSvg(displayScene, fonts, separation, true)
+            .replace(/^<svg[^>]*>/, "")
+            .replace(/<\/svg>$/, "")
+        : "",
+    [displayScene, fonts, separation],
+  );
   if (!fonts)
     return (
       <div className="studio-loading" role="status">
@@ -593,55 +698,50 @@ export default function Studio() {
         </Link>
       </div>
     );
-  const displayScene = liveLayer
-    ? { ...scene, layers: scene.layers.map((l) => (l.id === liveLayer.id ? liveLayer : l)) }
-    : scene;
-  const body = sceneSvg(displayScene, fonts, separation)
-    .replace(/^<svg[^>]*>/, "")
-    .replace(/<\/svg>$/, "");
   return (
-    <section className="studio-workspace" aria-label="Poster-making Studio">
+    <section className="studio-workspace studio-compact" aria-label="Poster-making Studio">
       <div className="studio-toolbar">
         <div>
           <button
             onClick={() => dispatch({ type: "undo" })}
-            disabled={!history.past.length || busy}
+            disabled={!history.past.length || busy || Boolean(crop.session)}
           >
             <UiText id={"UNDO"} />
           </button>
           <button
             onClick={() => dispatch({ type: "redo" })}
-            disabled={!history.future.length || busy}
+            disabled={!history.future.length || busy || Boolean(crop.session)}
           >
             <UiText id={"REDO"} />
           </button>
-          <button onClick={fresh} disabled={busy}>
-            <UiText id={"START FRESH"} />
-          </button>
-          <button
-            onClick={() => {
-              if (restoreRef.current) {
-                commit(structuredClone(restoreRef.current));
-                setStatus("RESTORED The draft saved when you opened this session.");
-              }
-            }}
-            disabled={!restoreRef.current || busy}
-          >
-            <UiText id={"RESTORE"} />
-          </button>
         </div>
-        <div>
-          <button onClick={() => void share()} disabled={busy}>
-            <UiText id={"SHARE LINK"} />
-          </button>
-          <button className="accent" onClick={() => void exportNow("PDF")} disabled={busy}>
-            <UiText id={"EXPORT PDF ↓"} />
-          </button>
-          <button className="accent" onClick={() => void exportNow("PNG")} disabled={busy}>
-            <UiText id="Download for Free" /> ↓
-          </button>
-        </div>
+        <span className="studio-selection">
+          {selectedLayer?.name ?? <UiText id="Choose a layer, or add an element." />}
+        </span>
+        <button
+          className="accent"
+          data-studio-option="export"
+          aria-expanded={panel === "export"}
+          aria-controls="studio-option-export"
+          onClick={(event) => togglePanel("export", event.currentTarget)}
+        >
+          <UiText id="EXPORT" />
+        </button>
       </div>
+      <nav className="studio-options" aria-label={t("Studio options")}>
+        {PANELS.map((option) => (
+          <button
+            key={option.id}
+            id={"studio-trigger-" + option.id}
+            data-studio-option={option.id}
+            aria-controls={"studio-option-" + option.id}
+            aria-expanded={panel === option.id}
+            onClick={(event) => togglePanel(option.id, event.currentTarget)}
+          >
+            <UiText id={option.label} />
+          </button>
+        ))}
+      </nav>
       {failure && (
         <p role="alert" className="studio-notice failure">
           {failure}
@@ -669,31 +769,412 @@ export default function Studio() {
           />
         </label>
       )}
-      <div className="studio-grid">
-        <aside
-          className={`studio-panel shelf ${mobileTab === "elements" ? "mobile-open" : ""}`}
-          aria-labelledby="studio-elements-heading"
-        >
-          <h2 id="studio-elements-heading">
-            <UiText id={"01 ELEMENTS"} />
-          </h2>
-          <div className="element-buttons">
-            {(
-              [
-                "text",
-                "rectangle",
-                "circle",
-                "star",
-                "arrow",
-                "halftone",
-                "grain",
-              ] as Layer["kind"][]
-            ).map((kind) => (
-              <button key={kind} onClick={() => add(kind)} disabled={busy}>
-                + {kind.toUpperCase()}
-              </button>
+
+      <div className="studio-stage">
+        <div className="canvas-panel mobile-open">
+          <div className="canvas-controls">
+            <label>
+              <UiText id={"Zoom"} />
+              <input
+                type="range"
+                min=".25"
+                max="4"
+                step="any"
+                value={zoom}
+                onChange={(e) => setZoom(Number(e.target.value))}
+              />
+              <span>{Math.round(zoom * 100)}%</span>
+            </label>
+            <button aria-pressed={pan} onClick={() => setPan(!pan)}>
+              {pan ? "PAN ON" : "PAN"}
+            </button>
+            <button aria-pressed={snap} onClick={() => setSnap(!snap)}>
+              {snap ? "SNAP ON" : "SNAP OFF"}
+            </button>
+            <button aria-label={t("Zoom out")} onClick={() => setZoom(zoom / 1.2)}>
+              −
+            </button>
+            <button aria-label={t("Zoom in")} onClick={() => setZoom(zoom * 1.2)}>
+              +
+            </button>
+            <button onClick={viewport.fit}>
+              <UiText id="FIT" />
+            </button>
+          </div>
+          <div
+            className="canvas-scroll"
+            ref={scrollRef}
+            tabIndex={0}
+            role="region"
+            aria-label="Canvas viewport"
+            data-zoom={zoom}
+            data-pan-x={viewport.view.x}
+            data-pan-y={viewport.view.y}
+            onPointerDownCapture={down}
+            onPointerMove={move}
+            onPointerUp={(e) => end(e)}
+            onPointerCancel={(e) => end(e, true)}
+            onDoubleClick={(e) => {
+              e.preventDefault();
+              viewport.fit();
+            }}
+            onContextMenu={(e) => e.preventDefault()}
+            onAuxClick={(e) => e.preventDefault()}
+          >
+            <div
+              className="paper-wrap"
+              style={{
+                width: viewport.base.width,
+                height: viewport.base.height,
+                transform: `translate(${viewport.view.x}px, ${viewport.view.y}px) scale(${zoom})`,
+              }}
+            >
+              <svg
+                ref={svgRef}
+                className="studio-paper"
+                viewBox={`0 0 ${dim.width} ${dim.height}`}
+                role={crop.session ? "group" : "img"}
+                aria-label="Poster canvas. Choose a layer in the layer list to edit with labelled controls or arrow keys."
+                onPointerDown={() => {
+                  if (!pan && !crop.session) setSelected(null);
+                }}
+              >
+                <g dangerouslySetInnerHTML={{ __html: body }} />
+                {displayScene.layers
+                  .filter((l) => !l.hidden && !crop.session)
+                  .map((l) => (
+                    <g
+                      key={l.id}
+                      data-layer-id={l.id}
+                      transform={`translate(${l.x} ${l.y}) rotate(${l.rotation} ${l.width / 2} ${l.height / 2})`}
+                      onPointerDown={(e) => startDrag(e, l)}
+                    >
+                      <rect
+                        width={l.width}
+                        height={l.height}
+                        fill="transparent"
+                        stroke={selected === l.id ? "#151515" : "none"}
+                        strokeWidth={selected === l.id ? 3 : 0}
+                        strokeDasharray={selected === l.id ? "9 5" : undefined}
+                      />
+                      {selected === l.id && !l.locked && (
+                        <>
+                          <rect
+                            x={l.width - 6 / ((viewport.base.width / dim.width) * zoom)}
+                            y={l.height - 6 / ((viewport.base.width / dim.width) * zoom)}
+                            width={12 / ((viewport.base.width / dim.width) * zoom)}
+                            height={12 / ((viewport.base.width / dim.width) * zoom)}
+                            fill="#f3f0e6"
+                            stroke="#151515"
+                            strokeWidth="3"
+                            pointerEvents="none"
+                          />
+                          <rect
+                            data-layer-action="resize"
+                            x={l.width - 22 / ((viewport.base.width / dim.width) * zoom)}
+                            y={l.height - 22 / ((viewport.base.width / dim.width) * zoom)}
+                            width={44 / ((viewport.base.width / dim.width) * zoom)}
+                            height={44 / ((viewport.base.width / dim.width) * zoom)}
+                            fill="transparent"
+                            onPointerDown={(e) => startDrag(e, l, "resize")}
+                          />
+                          <circle
+                            cx={l.width / 2}
+                            cy={-28 / ((viewport.base.width / dim.width) * zoom)}
+                            r={7 / ((viewport.base.width / dim.width) * zoom)}
+                            fill="#f3f0e6"
+                            stroke="#151515"
+                            strokeWidth="3"
+                            pointerEvents="none"
+                          />
+                          <circle
+                            data-layer-action="rotate"
+                            cx={l.width / 2}
+                            cy={-28 / ((viewport.base.width / dim.width) * zoom)}
+                            r={22 / ((viewport.base.width / dim.width) * zoom)}
+                            fill="transparent"
+                            onPointerDown={(e) => startDrag(e, l, "rotate")}
+                          />
+                        </>
+                      )}
+                    </g>
+                  ))}
+                {crop.session && (
+                  <CropOverlay
+                    layer={crop.session.layer}
+                    draft={crop.session.draft}
+                    scale={(viewport.base.width / dim.width) * zoom}
+                    start={(e, handle) => {
+                      if (!pan && !viewport.overridesLayer(e) && !viewport.isPanning())
+                        crop.pointerStart(e, handle);
+                    }}
+                    nudge={crop.nudge}
+                  />
+                )}
+              </svg>
+            </div>
+          </div>
+          {!scene.layers.length && (
+            <p className="studio-empty">
+              <UiText id="EMPTY CANVAS Add an element from the shelf." />
+            </p>
+          )}
+        </div>
+        <CropControls
+          crop={crop}
+          onDone={() => scrollRef.current?.focus({ preventScroll: true })}
+        />
+        {panel && <div className="studio-panel-scrim" aria-hidden="true" />}
+        <OptionPanel id="text" open={panel === "text"} close={closePanel}>
+          <button onClick={() => add("text")} disabled={busy}>
+            + TEXT
+          </button>
+          {selectedLayer?.kind === "text" ? (
+            <fieldset disabled={selectedLayer.locked || busy}>
+              <legend>{selectedLayer.name}</legend>{" "}
+              {selectedLayer.kind === "text" && (
+                <>
+                  <label className="control">
+                    <UiText id={"Words"} />
+                    <textarea
+                      aria-label="Words"
+                      rows={4}
+                      maxLength={1500}
+                      value={selectedLayer.text}
+                      onChange={(e) => patch({ text: e.target.value })}
+                    />
+                  </label>
+                  <label className="control">
+                    <UiText id={"Font"} />
+                    <select
+                      value={selectedLayer.font}
+                      onChange={(e) => patch({ font: e.target.value as Layer["font"] })}
+                    >
+                      <option value="display">
+                        <UiText id={"Bebas Neue / condensed"} />
+                      </option>
+                      <option value="mono">
+                        <UiText id={"IBM Plex Mono"} />
+                      </option>
+                    </select>
+                  </label>
+                  <label className="control">
+                    <UiText id={"Type size"} />
+                    <input
+                      type="number"
+                      min={6}
+                      max={600}
+                      value={selectedLayer.fontSize}
+                      onChange={(e) =>
+                        patch({ fontSize: Math.max(6, Math.min(600, Number(e.target.value))) })
+                      }
+                    />
+                  </label>
+                </>
+              )}
+            </fieldset>
+          ) : (
+            <p>
+              <UiText id="Select a text layer or add text to edit words and fonts." />
+            </p>
+          )}
+        </OptionPanel>
+        <OptionPanel id="color" open={panel === "color"} close={closePanel}>
+          {selectedLayer && selectedLayer.kind !== "image" ? (
+            <fieldset disabled={selectedLayer.locked || busy}>
+              <legend>{selectedLayer.name}</legend>
+              <label className="control">
+                <UiText id={"Ink colour"} />
+                <input
+                  aria-label="Ink colour"
+                  type="color"
+                  value={selectedLayer.color}
+                  onChange={(e) => patch({ color: e.target.value })}
+                />
+              </label>
+              <div className="swatches">
+                {PALETTE.slice(0, scene.colors).map((ink, i) => (
+                  <button
+                    style={{ background: ink, color: ink === "#151515" ? "#f3f0e6" : "#151515" }}
+                    key={ink}
+                    aria-label={`Ink ${i + 1}: ${ink}`}
+                    aria-pressed={selectedLayer.color === ink}
+                    onClick={() => patch({ color: ink })}
+                  >
+                    {selectedLayer.color === ink ? "✓" : String(i + 1)}
+                  </button>
+                ))}
+              </div>
+            </fieldset>
+          ) : (
+            <p>
+              <UiText id="Choose a shape or text layer to change its ink." />
+            </p>
+          )}
+          <div className="ink-preview">
+            <label>
+              <UiText id={"Print mode"} />
+              <select
+                value={scene.colors}
+                onChange={(e) => {
+                  const colors = Number(e.target.value) as 1 | 2 | 3;
+                  const allowed = PALETTE.slice(0, colors);
+                  commit({
+                    ...scene,
+                    colors,
+                    layers: scene.layers.map((l) => ({
+                      ...l,
+                      color: allowed.includes(l.color) ? l.color : allowed[0],
+                    })),
+                  });
+                }}
+              >
+                <option value={1}>
+                  <UiText id={"1 ink"} />
+                </option>
+                <option value={2}>
+                  <UiText id={"2 inks"} />
+                </option>
+                <option value={3}>
+                  <UiText id={"3 inks"} />
+                </option>
+              </select>
+            </label>
+            <label>
+              <UiText id={"Separation preview"} />
+              <select value={separation} onChange={(e) => setSeparation(e.target.value)}>
+                <option value="">
+                  <UiText id={"Composite"} />
+                </option>
+                {inks.map((ink, i) => (
+                  <option value={ink} key={ink}>
+                    <UiText id={"Ink"} />
+                    {i + 1} / {ink}
+                  </option>
+                ))}
+              </select>
+            </label>
+          </div>
+          <p className="small">
+            <UiText id="Uncalibrated riso/screenprint preview, not a press-ready plate. Uploaded images remain full colour." />
+          </p>
+        </OptionPanel>
+        <OptionPanel id="layers" open={panel === "layers"} close={closePanel}>
+          <div className="layer-list">
+            {[...scene.layers].reverse().map((l, i) => (
+              <div className={selected === l.id ? "layer selected" : "layer"} key={l.id}>
+                <button
+                  className="layer-name"
+                  aria-pressed={selected === l.id}
+                  onClick={() => {
+                    setSelected(l.id);
+                    setPanel("layers");
+                  }}
+                >
+                  {l.name} {l.hidden ? "HIDDEN" : ""}
+                </button>
+                <div>
+                  <button
+                    aria-label={`${l.locked ? "Unlock" : "Lock"} ${l.name}`}
+                    aria-pressed={l.locked}
+                    onClick={() =>
+                      commit({
+                        ...scene,
+                        layers: scene.layers.map((v) =>
+                          v.id === l.id ? { ...v, locked: !v.locked } : v,
+                        ),
+                      })
+                    }
+                  >
+                    {l.locked ? "LOCKED" : "LOCK"}
+                  </button>
+                  <button
+                    aria-label={`${l.hidden ? "Show" : "Hide"} ${l.name}`}
+                    aria-pressed={l.hidden}
+                    onClick={() =>
+                      commit({
+                        ...scene,
+                        layers: scene.layers.map((v) =>
+                          v.id === l.id ? { ...v, hidden: !v.hidden } : v,
+                        ),
+                      })
+                    }
+                  >
+                    {l.hidden ? "SHOW" : "HIDE"}
+                  </button>
+                  <button
+                    disabled={i === 0 || l.locked}
+                    aria-label={`Bring ${l.name} forward`}
+                    onClick={() => reorder(l.id, 1)}
+                  >
+                    ↑
+                  </button>
+                  <button
+                    disabled={i === scene.layers.length - 1 || l.locked}
+                    aria-label={`Send ${l.name} back`}
+                    onClick={() => reorder(l.id, -1)}
+                  >
+                    ↓
+                  </button>
+                </div>
+              </div>
             ))}
           </div>
+          {selectedLayer && (
+            <fieldset disabled={selectedLayer.locked || busy}>
+              <legend>{selectedLayer.name}</legend>
+              <label className="control">
+                <UiText id={"Layer name"} />
+                <input
+                  maxLength={100}
+                  value={selectedLayer.name}
+                  onChange={(e) => patch({ name: e.target.value })}
+                />
+              </label>
+              <div className="coordinate-grid">
+                {(["x", "y", "width", "height", "rotation"] as const).map((key) => (
+                  <label className="control" key={key}>
+                    {key}
+                    <input
+                      type="number"
+                      value={selectedLayer[key]}
+                      min={
+                        key === "rotation" ? -180 : key === "width" || key === "height" ? 10 : -1000
+                      }
+                      max={key === "rotation" ? 180 : 2000}
+                      onChange={(e) => {
+                        const n = Number(e.target.value);
+                        if (Number.isFinite(n))
+                          patch({
+                            [key]: Math.max(
+                              key === "rotation"
+                                ? -180
+                                : key === "width" || key === "height"
+                                  ? 10
+                                  : -1000,
+                              Math.min(key === "rotation" ? 180 : 2000, n),
+                            ),
+                          });
+                      }}
+                    />
+                  </label>
+                ))}
+              </div>
+              <button onClick={duplicate}>
+                <UiText id={"DUPLICATE"} />
+              </button>
+              <button className="remove" onClick={remove}>
+                <UiText id={"REMOVE LAYER"} />
+              </button>
+            </fieldset>
+          )}
+        </OptionPanel>
+        <OptionPanel id="images" open={panel === "images"} close={closePanel}>
+          {selectedLayer?.kind === "image" && (
+            <button disabled={selectedLayer.locked || busy} onClick={beginCrop}>
+              <UiText id="Crop image" />
+            </button>
+          )}
           <input
             type="file"
             accept="image/png,image/jpeg,image/webp,image/avif"
@@ -762,255 +1243,45 @@ export default function Studio() {
                 </button>
               ))}
           </div>
-          <h3>
-            <UiText id={"LAYERS TOP FIRST"} />
-          </h3>
-          <div className="layer-list">
-            {[...scene.layers].reverse().map((l, i) => (
-              <div className={selected === l.id ? "layer selected" : "layer"} key={l.id}>
-                <button
-                  className="layer-name"
-                  aria-pressed={selected === l.id}
-                  onClick={() => {
-                    setSelected(l.id);
-                    setMobileTab("controls");
-                  }}
-                >
-                  {l.name} {l.hidden ? "HIDDEN" : ""}
+        </OptionPanel>
+        <OptionPanel id="shapes" open={panel === "shapes"} close={closePanel}>
+          <div className="element-buttons">
+            {(["rectangle", "circle", "star", "arrow", "halftone", "grain"] as Layer["kind"][]).map(
+              (kind) => (
+                <button key={kind} onClick={() => add(kind)} disabled={busy}>
+                  + {kind.toUpperCase()}
                 </button>
-                <div>
-                  <button
-                    aria-label={`${l.locked ? "Unlock" : "Lock"} ${l.name}`}
-                    aria-pressed={l.locked}
-                    onClick={() =>
-                      commit({
-                        ...scene,
-                        layers: scene.layers.map((v) =>
-                          v.id === l.id ? { ...v, locked: !v.locked } : v,
-                        ),
-                      })
-                    }
-                  >
-                    {l.locked ? "LOCKED" : "LOCK"}
-                  </button>
-                  <button
-                    aria-label={`${l.hidden ? "Show" : "Hide"} ${l.name}`}
-                    aria-pressed={l.hidden}
-                    onClick={() =>
-                      commit({
-                        ...scene,
-                        layers: scene.layers.map((v) =>
-                          v.id === l.id ? { ...v, hidden: !v.hidden } : v,
-                        ),
-                      })
-                    }
-                  >
-                    {l.hidden ? "SHOW" : "HIDE"}
-                  </button>
-                  <button
-                    disabled={i === 0 || l.locked}
-                    aria-label={`Bring ${l.name} forward`}
-                    onClick={() => reorder(l.id, 1)}
-                  >
-                    ↑
-                  </button>
-                  <button
-                    disabled={i === scene.layers.length - 1 || l.locked}
-                    aria-label={`Send ${l.name} back`}
-                    onClick={() => reorder(l.id, -1)}
-                  >
-                    ↓
-                  </button>
-                </div>
-              </div>
-            ))}
+              ),
+            )}
           </div>
-        </aside>
-        <div className={`canvas-panel ${mobileTab === "canvas" ? "mobile-open" : ""}`}>
-          <div className="canvas-controls">
-            <label>
-              <UiText id={"Paper"} />
-              <select
-                aria-label="Paper preset"
-                value={scene.preset}
-                onChange={(e) => commit({ ...scene, preset: e.target.value as PresetId })}
-              >
-                {Object.keys(PRESETS).map((p) => (
-                  <option key={p}>{p}</option>
-                ))}
-              </select>
-            </label>
-            <label>
-              <UiText id={"Zoom"} />
-              <input
-                type="range"
-                min=".5"
-                max="2.5"
-                step=".1"
-                value={zoom}
-                onChange={(e) => setZoom(Number(e.target.value))}
-              />
-              <span>{Math.round(zoom * 100)}%</span>
-            </label>
-            <button aria-pressed={pan} onClick={() => setPan(!pan)}>
-              {pan ? "PAN ON" : "PAN"}
-            </button>
-            <button aria-pressed={snap} onClick={() => setSnap(!snap)}>
-              {snap ? "SNAP ON" : "SNAP OFF"}
-            </button>
-            <button
-              onClick={() => {
-                setZoom(1);
-                if (scrollRef.current) {
-                  scrollRef.current.scrollLeft = 0;
-                  scrollRef.current.scrollTop = 0;
-                }
-              }}
+        </OptionPanel>
+        <OptionPanel id="paper" open={panel === "paper"} close={closePanel}>
+          <label className="control">
+            <UiText id="Choose format" />
+            <select
+              aria-label={t("Artwork format")}
+              value={format}
+              onChange={(event) => onFormatChange(event.target.value)}
             >
-              <UiText id={"FIT"} />
-            </button>
-          </div>
-          <div
-            className="canvas-scroll"
-            ref={scrollRef}
-            tabIndex={0}
-            role="region"
-            aria-label="Canvas viewport"
-          >
-            <div
-              className="paper-wrap"
-              style={{ width: `${zoom * 100}%`, maxWidth: `${520 * zoom}px` }}
+              {artworkFormats.map((item) => (
+                <option key={item.slug} value={item.slug}>
+                  {item.label}
+                </option>
+              ))}
+            </select>
+          </label>
+          <label>
+            <UiText id={"Paper"} />
+            <select
+              aria-label="Paper preset"
+              value={scene.preset}
+              onChange={(e) => commit({ ...scene, preset: e.target.value as PresetId })}
             >
-              <svg
-                ref={svgRef}
-                className="studio-paper"
-                viewBox={`0 0 ${dim.width} ${dim.height}`}
-                role="img"
-                aria-label="Poster canvas. Choose a layer in the layer list to edit with labelled controls or arrow keys."
-                onPointerDownCapture={down}
-                onPointerDown={() => {
-                  if (!pan) setSelected(null);
-                }}
-                onPointerMove={move}
-                onPointerUp={(e) => end(e)}
-                onPointerCancel={(e) => end(e, true)}
-              >
-                <g dangerouslySetInnerHTML={{ __html: body }} />
-                {displayScene.layers
-                  .filter((l) => !l.hidden)
-                  .map((l) => (
-                    <g
-                      key={l.id}
-                      transform={`translate(${l.x} ${l.y}) rotate(${l.rotation} ${l.width / 2} ${l.height / 2})`}
-                      onPointerDown={(e) => startDrag(e, l)}
-                    >
-                      <rect
-                        width={l.width}
-                        height={l.height}
-                        fill="transparent"
-                        stroke={selected === l.id ? "#151515" : "none"}
-                        strokeWidth={selected === l.id ? 3 : 0}
-                        strokeDasharray={selected === l.id ? "9 5" : undefined}
-                      />
-                      {selected === l.id && !l.locked && (
-                        <>
-                          <rect
-                            x={l.width - 12}
-                            y={l.height - 12}
-                            width="24"
-                            height="24"
-                            fill="#f3f0e6"
-                            stroke="#151515"
-                            strokeWidth="3"
-                            onPointerDown={(e) => startDrag(e, l, "resize")}
-                          />
-                          <circle
-                            cx={l.width / 2}
-                            cy="-25"
-                            r="12"
-                            fill="#f3f0e6"
-                            stroke="#151515"
-                            strokeWidth="3"
-                            onPointerDown={(e) => startDrag(e, l, "rotate")}
-                          />
-                        </>
-                      )}
-                    </g>
-                  ))}
-              </svg>
-            </div>
-          </div>
-          <p className="small">
-            <UiText
-              id={
-                "Drag / resize at the lower-right handle / rotate above. Use layer controls on any device. Two fingers zoom; Pan moves the viewport."
-              }
-            />
-          </p>
-          <div className="ink-preview">
-            <label>
-              <UiText id={"Print mode"} />
-              <select
-                value={scene.colors}
-                onChange={(e) => {
-                  const colors = Number(e.target.value) as 1 | 2 | 3;
-                  const allowed = PALETTE.slice(0, colors);
-                  commit({
-                    ...scene,
-                    colors,
-                    layers: scene.layers.map((l) => ({
-                      ...l,
-                      color: allowed.includes(l.color) ? l.color : allowed[0],
-                    })),
-                  });
-                }}
-              >
-                <option value={1}>
-                  <UiText id={"1 ink"} />
-                </option>
-                <option value={2}>
-                  <UiText id={"2 inks"} />
-                </option>
-                <option value={3}>
-                  <UiText id={"3 inks"} />
-                </option>
-              </select>
-            </label>
-            <label>
-              <UiText id={"Separation preview"} />
-              <select value={separation} onChange={(e) => setSeparation(e.target.value)}>
-                <option value="">
-                  <UiText id={"Composite"} />
-                </option>
-                {inks.map((ink, i) => (
-                  <option value={ink} key={ink}>
-                    <UiText id={"Ink"} />
-                    {i + 1} / {ink}
-                  </option>
-                ))}
-              </select>
-            </label>
-          </div>
-          <p className="small">
-            <UiText
-              id={
-                "Uncalibrated riso/screenprint preview, not a press-ready plate. Uploaded images remain full colour."
-              }
-            />
-          </p>
-          {!scene.layers.length && (
-            <div className="notice">
-              <UiText id={"EMPTY CANVAS Add an element from the shelf."} />
-            </div>
-          )}
-        </div>
-        <aside
-          className={`studio-panel properties ${mobileTab === "controls" ? "mobile-open" : ""}`}
-          aria-labelledby="studio-controls-heading"
-        >
-          <h2 id="studio-controls-heading">
-            <UiText id={"02 CONTROLS"} />
-          </h2>
+              {Object.keys(PRESETS).map((p) => (
+                <option key={p}>{p}</option>
+              ))}
+            </select>
+          </label>
           <label className="control">
             <UiText id={"Paper colour"} />
             <input
@@ -1019,135 +1290,101 @@ export default function Studio() {
               onChange={(e) => commit({ ...scene, background: e.target.value })}
             />
           </label>
-          {selectedLayer ? (
-            <fieldset disabled={selectedLayer.locked || busy}>
-              <legend>
-                {selectedLayer.name} {selectedLayer.locked ? "LOCKED" : ""}
-              </legend>
-              <label className="control">
-                <UiText id={"Layer name"} />
-                <input
-                  maxLength={100}
-                  value={selectedLayer.name}
-                  onChange={(e) => patch({ name: e.target.value })}
-                />
-              </label>
-              {selectedLayer.kind === "text" && (
-                <>
-                  <label className="control">
-                    <UiText id={"Words"} />
-                    <textarea
-                      aria-label="Words"
-                      rows={4}
-                      maxLength={1500}
-                      value={selectedLayer.text}
-                      onChange={(e) => patch({ text: e.target.value })}
-                    />
-                  </label>
-                  <label className="control">
-                    <UiText id={"Font"} />
-                    <select
-                      value={selectedLayer.font}
-                      onChange={(e) => patch({ font: e.target.value as Layer["font"] })}
-                    >
-                      <option value="display">
-                        <UiText id={"Bebas Neue / condensed"} />
-                      </option>
-                      <option value="mono">
-                        <UiText id={"IBM Plex Mono"} />
-                      </option>
-                    </select>
-                  </label>
-                  <label className="control">
-                    <UiText id={"Type size"} />
-                    <input
-                      type="number"
-                      min={6}
-                      max={600}
-                      value={selectedLayer.fontSize}
-                      onChange={(e) =>
-                        patch({ fontSize: Math.max(6, Math.min(600, Number(e.target.value))) })
-                      }
-                    />
-                  </label>
-                </>
-              )}
-              <label className="control">
-                <UiText id={"Ink colour"} />
-                <input
-                  aria-label="Ink colour"
-                  type="color"
-                  value={selectedLayer.color}
-                  onChange={(e) => patch({ color: e.target.value })}
-                />
-              </label>
-              <div className="swatches">
-                {PALETTE.slice(0, scene.colors).map((ink, i) => (
-                  <button
-                    style={{ background: ink, color: ink === "#151515" ? "#f3f0e6" : "#151515" }}
-                    key={ink}
-                    aria-label={`Ink ${i + 1}: ${ink}`}
-                    aria-pressed={selectedLayer.color === ink}
-                    onClick={() => patch({ color: ink })}
-                  >
-                    {selectedLayer.color === ink ? "✓" : String(i + 1)}
-                  </button>
-                ))}
-              </div>
-              <div className="coordinate-grid">
-                {(["x", "y", "width", "height", "rotation"] as const).map((key) => (
-                  <label className="control" key={key}>
-                    {key}
-                    <input
-                      type="number"
-                      value={selectedLayer[key]}
-                      min={
-                        key === "rotation" ? -180 : key === "width" || key === "height" ? 10 : -1000
-                      }
-                      max={key === "rotation" ? 180 : 2000}
-                      onChange={(e) => {
-                        const n = Number(e.target.value);
-                        if (Number.isFinite(n))
-                          patch({
-                            [key]: Math.max(
-                              key === "rotation"
-                                ? -180
-                                : key === "width" || key === "height"
-                                  ? 10
-                                  : -1000,
-                              Math.min(key === "rotation" ? 180 : 2000, n),
-                            ),
-                          });
-                      }}
-                    />
-                  </label>
-                ))}
-              </div>
-              <button onClick={duplicate}>
-                <UiText id={"DUPLICATE"} />
-              </button>
-              <button className="remove" onClick={remove}>
-                <UiText id={"REMOVE LAYER"} />
-              </button>
-              {selectedLayer.credit && (
-                <p className="small">
-                  <UiText id={"SOURCE:"} />
-                  {selectedLayer.credit.title}
-                  <br />
-                  {selectedLayer.credit.artist}
-                  <br />
-                  {selectedLayer.credit.license}
-                </p>
-              )}
-            </fieldset>
-          ) : (
-            <p>
-              <UiText id={"Choose a layer, or add an element."} />
+        </OptionPanel>
+        <OptionPanel id="export" open={panel === "export"} close={closePanel}>
+          <button className="accent" disabled={busy} onClick={() => void exportNow("PNG")}>
+            <UiText id="Download for Free" /> ↓
+          </button>
+          <label className="control">
+            <span>
+              <UiText id="Add credit line" />
+            </span>
+            <input
+              type="checkbox"
+              checked={creditSettings(scene).enabled}
+              onChange={(e) =>
+                commit({
+                  ...scene,
+                  exportCredit: { ...creditSettings(scene), enabled: e.target.checked },
+                })
+              }
+            />
+          </label>
+          <p className="small">
+            <UiText id="Attribution stays in export metadata. The credit line appears only in exported files, never on the editing canvas." />
+          </p>
+          {creditRequired(scene) && !creditSettings(scene).enabled && (
+            <p className="notice" role="status">
+              <UiText id="This source requires attribution. Metadata can be lost when printing or reposting. Provide the full credit with your distribution if you turn the visible line off." />
             </p>
           )}
-          <h3>
-            <UiText id={"EXPORT"} />
-          </h3>
+          {creditSettings(scene).enabled && (
+            <div className="coordinate-grid">
+              {(["x", "y", "width", "fontSize"] as const).map((key) => (
+                <label className="control" key={key}>
+                  <UiText
+                    id={
+                      {
+                        x: "Credit x",
+                        y: "Credit y",
+                        width: "Credit line width",
+                        fontSize: "Credit type size",
+                      }[key]
+                    }
+                  />
+                  <input
+                    type="number"
+                    min={key === "width" ? 40 : key === "fontSize" ? 4 : 0}
+                    max={
+                      key === "fontSize"
+                        ? 30
+                        : key === "y"
+                          ? dim.height - 10
+                          : key === "x"
+                            ? 560
+                            : 600
+                    }
+                    value={creditSettings(scene)[key]}
+                    onChange={(e) => {
+                      const value = Number(e.target.value),
+                        min = key === "width" ? 40 : key === "fontSize" ? 4 : 0,
+                        max =
+                          key === "fontSize"
+                            ? 30
+                            : key === "y"
+                              ? dim.height - 10
+                              : key === "x"
+                                ? 560
+                                : 600;
+                      if (Number.isFinite(value))
+                        commit({
+                          ...scene,
+                          exportCredit: {
+                            ...creditSettings(scene),
+                            [key]: Math.max(min, Math.min(max, value)),
+                          },
+                        });
+                    }}
+                  />
+                </label>
+              ))}
+              {(["color", "background"] as const).map((key) => (
+                <label className="control" key={key}>
+                  <UiText id={key === "color" ? "Credit ink colour" : "Credit paper colour"} />
+                  <input
+                    type="color"
+                    value={creditSettings(scene)[key]}
+                    onChange={(e) =>
+                      commit({
+                        ...scene,
+                        exportCredit: { ...creditSettings(scene), [key]: e.target.value },
+                      })
+                    }
+                  />
+                </label>
+              ))}
+            </div>
+          )}
           <div className="export-buttons">
             {(["PDF", "PNG", "SVG", "TILED", "SEPARATIONS"] as const).map((format) => (
               <button key={format} disabled={busy} onClick={() => void exportNow(format)}>
@@ -1164,9 +1401,43 @@ export default function Studio() {
           <p className="small">
             <UiText
               id={
-                "PNG uses 300 PPI for paper presets; Social is 1080 × 1350 px. PDF/SVG have outlined vector type. Credit strip is automatic."
+                "PNG uses 300 PPI for paper presets; Social is 1080 × 1350 px. PDF/SVG have outlined vector type. Source attribution is embedded in every export."
               }
             />
+          </p>
+
+          <details>
+            <summary>
+              <UiText id="Export preview" />
+            </summary>
+            <div
+              className="studio-export-preview"
+              dangerouslySetInnerHTML={{ __html: panel === "export" ? sceneSvg(scene, fonts) : "" }}
+            />
+          </details>
+        </OptionPanel>
+        <OptionPanel id="help" open={panel === "help"} close={closePanel}>
+          <div className="project-actions">
+            <button onClick={fresh} disabled={busy}>
+              <UiText id={"START FRESH"} />
+            </button>
+            <button
+              onClick={() => {
+                if (restoreRef.current) {
+                  commit(structuredClone(restoreRef.current));
+                  setStatus("RESTORED The draft saved when you opened this session.");
+                }
+              }}
+              disabled={!restoreRef.current || busy}
+            >
+              <UiText id={"RESTORE"} />
+            </button>
+            <button onClick={() => void share()} disabled={busy}>
+              <UiText id={"SHARE LINK"} />
+            </button>
+          </div>
+          <p className="small">
+            <UiText id="Source credits are project metadata, not editing layers. All exports include attribution metadata." />
           </p>
           <details>
             <summary>
@@ -1185,18 +1456,11 @@ export default function Studio() {
               />
             </p>
           </details>
-        </aside>
+          <p className="small">
+            <UiText id="Two fingers pinch or pan anywhere in the canvas viewport. Ctrl/Cmd + wheel zooms. Space + drag or middle drag pans. Double-click or double-tap fits the sheet." />
+          </p>
+        </OptionPanel>
       </div>
-      <nav className="studio-mobile-toolbar" aria-label="Studio mobile tools">
-        {["elements", "canvas", "controls"].map((tab) => (
-          <button key={tab} aria-pressed={mobileTab === tab} onClick={() => setMobileTab(tab)}>
-            {tab.toUpperCase()}
-          </button>
-        ))}
-        <button onClick={() => void exportNow("PDF")} disabled={busy}>
-          <UiText id={"EXPORT"} />
-        </button>
-      </nav>
     </section>
   );
 }
