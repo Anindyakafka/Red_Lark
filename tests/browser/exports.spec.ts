@@ -1,3 +1,4 @@
+import { openOption, closeOptions, addElement } from "./studio-helpers";
 import fs from "node:fs/promises";
 import { test, expect } from "@playwright/test";
 import { posters } from "../../src/lib/catalog";
@@ -6,6 +7,7 @@ test("PDF, 300-PPI PNG, A4 tiles and ink preview ZIP are real files", async ({ p
   test.setTimeout(120000);
   await page.goto("/studio/?format=poster-placard");
   await expect(page.locator(".studio-paper")).toBeVisible();
+  await openOption(page, "paper");
   await page.getByLabel("Paper preset").selectOption("A4");
   for (const [name, extension, signature] of [
     ["PDF ↓", ".pdf", "%PDF"],
@@ -14,6 +16,7 @@ test("PDF, 300-PPI PNG, A4 tiles and ink preview ZIP are real files", async ({ p
     ["INK PREVIEWS ZIP", ".zip", "PK"],
   ]) {
     const waiting = page.waitForEvent("download");
+    await openOption(page, "export");
     await page.getByRole("button", { name, exact: true }).click();
     const download = await waiting;
     expect(download.suggestedFilename()).toContain(extension);
@@ -42,6 +45,7 @@ test("uploads are locally re-encoded, metadata discarded, and cannot enter share
   });
   await page.goto("/studio/?format=poster-placard");
   await expect(page.locator(".studio-paper")).toBeVisible();
+  await openOption(page, "images");
   await page
     .getByLabel("Import a local image")
     .setInputFiles("public/posters/a-future-we-share/A3.png");
@@ -56,6 +60,7 @@ test("uploads are locally re-encoded, metadata discarded, and cannot enter share
   expect(bytes.includes(Buffer.from("eXIf"))).toBe(false);
   expect(bytes.readUInt32BE(16)).toBeLessThanOrEqual(1800);
   expect(bytes.readUInt32BE(20)).toBeLessThanOrEqual(1800);
+  await openOption(page, "help");
   await page.getByRole("button", { name: "SHARE LINK", exact: true }).click();
   await expect(page.locator("main [role=alert]")).toContainText("exclude uploaded images");
   expect(network).toEqual([]);
@@ -64,25 +69,36 @@ test("uploads are locally re-encoded, metadata discarded, and cannot enter share
 test("keyboard edit, lock, hide, reorder, remove and undo work", async ({ page }) => {
   await page.goto("/studio/?format=poster-placard");
   await expect(page.locator(".studio-paper")).toBeVisible();
-  await page.getByRole("button", { name: "+ RECTANGLE", exact: true }).click();
+  await addElement(page, "rectangle");
   const x = page.getByLabel("x", { exact: true });
   await expect(x).toHaveValue("50");
+  await closeOptions(page);
   await page.locator(".canvas-scroll").focus();
   await page.keyboard.press("ArrowRight");
   await expect(x).toHaveValue("51");
+  await openOption(page, "layers");
   await page.getByRole("button", { name: "Lock rectangle", exact: true }).click();
   await expect(x).toBeDisabled();
+  await closeOptions(page);
   await page.locator(".canvas-scroll").focus();
   await page.keyboard.press("ArrowRight");
   await expect(x).toHaveValue("51");
+  await openOption(page, "layers");
   await page.getByRole("button", { name: "Unlock rectangle", exact: true }).click();
+  await openOption(page, "layers");
   await page.getByRole("button", { name: "Hide rectangle", exact: true }).click();
+  await openOption(page, "layers");
   await expect(page.getByRole("button", { name: "Show rectangle", exact: true })).toBeVisible();
+  await openOption(page, "layers");
   await page.getByRole("button", { name: "Show rectangle", exact: true }).click();
+  await openOption(page, "layers");
   await page.getByRole("button", { name: "Send rectangle back", exact: true }).click();
+  await openOption(page, "layers");
   await page.getByRole("button", { name: "REMOVE LAYER", exact: true }).click();
+  await openOption(page, "layers");
   await expect(page.getByRole("button", { name: "Lock rectangle", exact: true })).toHaveCount(0);
   await page.getByRole("button", { name: "UNDO", exact: true }).click();
+  await openOption(page, "layers");
   await expect(page.getByRole("button", { name: "Lock rectangle", exact: true })).toBeVisible();
 });
 

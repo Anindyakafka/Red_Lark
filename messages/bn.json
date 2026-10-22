@@ -923,6 +923,14 @@
     "Choose a shape or text layer to change its ink.": "Choose a shape or text layer to change its ink.",
     "Export preview": "Export preview",
     "Source credits are project metadata, not editing layers. All exports include attribution metadata.": "Source credits are project metadata, not editing layers. All exports include attribution metadata.",
-    "Two fingers pinch or pan anywhere in the canvas viewport. Ctrl/Cmd + wheel zooms. Space + drag or middle drag pans. Double-click or double-tap fits the sheet.": "Two fingers pinch or pan anywhere in the canvas viewport. Ctrl/Cmd + wheel zooms. Space + drag or middle drag pans. Double-click or double-tap fits the sheet."
+    "Two fingers pinch or pan anywhere in the canvas viewport. Ctrl/Cmd + wheel zooms. Space + drag or middle drag pans. Double-click or double-tap fits the sheet.": "Two fingers pinch or pan anywhere in the canvas viewport. Ctrl/Cmd + wheel zooms. Space + drag or middle drag pans. Double-click or double-tap fits the sheet.",
+    "Studio options": "Studio options",
+    "Zoom in": "Zoom in",
+    "Zoom out": "Zoom out",
+    "Image crop controls": "Image crop controls",
+    "Credit line width": "Credit line width",
+    "Credit type size": "Credit type size",
+    "Credit ink colour": "Credit ink colour",
+    "Credit paper colour": "Credit paper colour"
   }
 }

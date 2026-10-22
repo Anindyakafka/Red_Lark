@@ -1,3 +1,4 @@
+import { openOption, addElement } from "./studio-helpers";
 import fs from "node:fs/promises";
 import { test, expect } from "@playwright/test";
 import { posters } from "../../src/lib/catalog";
@@ -13,8 +14,10 @@ test("all paper presets declare the right PDF boxes; A2 PNG dimensions are high 
     ["A2", 420, 594],
     ["18x24", 457.2, 609.6],
   ]) {
+    await openOption(page, "paper");
     await page.getByLabel("Paper preset").selectOption(String(preset));
     const waiting = page.waitForEvent("download");
+    await openOption(page, "export");
     await page.getByRole("button", { name: "PDF ↓", exact: true }).click();
     const download = await waiting;
     const bytes = await fs.readFile((await download.path())!);
@@ -23,8 +26,10 @@ test("all paper presets declare the right PDF boxes; A2 PNG dimensions are high 
     expect(Number(box![1])).toBeCloseTo((Number(width) / 25.4) * 72, 1);
     expect(Number(box![2])).toBeCloseTo((Number(height) / 25.4) * 72, 1);
   }
+  await openOption(page, "paper");
   await page.getByLabel("Paper preset").selectOption("A2");
   const pending = page.waitForEvent("download");
+  await openOption(page, "export");
   await page.getByRole("button", { name: "PNG / 300 PPI", exact: true }).click();
   const output = await pending;
   const bytes = await fs.readFile((await output.path())!);
@@ -60,23 +65,30 @@ test("touch pinch changes zoom and mobile controls stay usable", async ({ browse
     ],
   });
   await cdp.send("Input.dispatchTouchEvent", { type: "touchEnd", touchPoints: [] });
-  await expect(page.locator(".paper-wrap")).not.toHaveAttribute("style", /width: 100%/);
-  await page.getByRole("button", { name: "ELEMENTS", exact: true }).click();
-  await page.getByRole("button", { name: "+ RECTANGLE", exact: true }).click();
+  await expect
+    .poll(async () => Number(await page.locator(".canvas-scroll").getAttribute("data-zoom")))
+    .toBeGreaterThan(1);
+  await addElement(page, "rectangle");
+  await openOption(page, "layers");
   await expect(page.getByLabel("width", { exact: true })).toBeVisible();
   await context.close();
 });
 test("bad remix source, print modes and shared source credits are handled", async ({ page }) => {
   await page.goto("/studio/?remix=missing-source");
   await expect(page.locator("main [role=alert]")).toContainText("REMIX BLOCKED");
+  await openOption(page, "help");
   await page.getByRole("button", { name: "START FRESH", exact: true }).click();
   await expect(page.locator(".studio-paper")).toBeVisible();
+  await openOption(page, "color");
   await page.getByLabel("Print mode").selectOption("1");
+  await openOption(page, "color");
   await expect(page.getByLabel("Separation preview").locator("option")).toHaveCount(2);
+  await openOption(page, "color");
   await page.getByLabel("Separation preview").selectOption({ index: 1 });
   await expect(page.locator(".studio-paper metadata")).toContainText("USER ADDITIONS");
   await page.goto(`/studio/?remix=${posters[0].slug}`);
   await expect(page.locator(".studio-paper")).toBeVisible();
+  await openOption(page, "help");
   await page.getByRole("button", { name: "SHARE LINK", exact: true }).click();
   const link = await page.locator(".share-input").inputValue();
   const other = await page.context().newPage();

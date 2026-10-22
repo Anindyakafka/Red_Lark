@@ -206,19 +206,22 @@ export function sceneSvg(scene: Scene, fonts: Fonts, separation?: string, editin
     .filter((l) => !l.hidden && (!separation || l.color === separation))
     .map((l) => layerMarkup(separation ? { ...l, color: "#151515" } : l, fonts))
     .join("");
-  const credits = lines
-    .map((line, i) =>
-      creditPaths(
-        line,
-        fonts,
-        settings.x + 4,
-        settings.y + 4 + i * settings.fontSize * 1.5,
-        settings.width - 8,
-        settings.fontSize,
-        settings.color,
-      ),
-    )
-    .join("");
+  const credits =
+    !editing && settings.enabled
+      ? lines
+          .map((line, i) =>
+            creditPaths(
+              line,
+              fonts,
+              settings.x + 4,
+              settings.y + 4 + i * settings.fontSize * 1.5,
+              settings.width - 8,
+              settings.fontSize,
+              settings.color,
+            ),
+          )
+          .join("")
+      : "";
   const credit =
     !editing && settings.enabled
       ? `<g data-export-credit="true"><rect x="${settings.x}" y="${settings.y}" width="${settings.width}" height="${lines.length * settings.fontSize * 1.5 + 8}" fill="${settings.background}"/>${credits}</g>`

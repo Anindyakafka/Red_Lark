@@ -1,8 +1,9 @@
 "use client";
 import { useEffect, useRef } from "react";
-import { UiText } from "@/i18n/client";
+import { UiText, useI18n } from "@/i18n/client";
 import type { useImageCrop } from "./use-image-crop";
 export function CropControls({ crop }: { crop: ReturnType<typeof useImageCrop> }) {
+  const { t } = useI18n();
   const ref = useRef<HTMLDivElement>(null),
     active = Boolean(crop.session);
   useEffect(() => {
@@ -12,7 +13,7 @@ export function CropControls({ crop }: { crop: ReturnType<typeof useImageCrop> }
   const session = crop.session;
   if (!session) return null;
   return (
-    <div ref={ref} className="crop-toolbar" role="region" aria-label="Image crop controls">
+    <div ref={ref} className="crop-toolbar" role="region" aria-label={t("Image crop controls")}>
       <strong>
         <UiText id="Crop image" />
       </strong>

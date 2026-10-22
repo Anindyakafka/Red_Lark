@@ -2,10 +2,10 @@
 import "./workspace.css";
 import { Link } from "@/i18n/client";
 
-import { UiText } from "@/i18n/client";
+import { UiText, useI18n } from "@/i18n/client";
 import { OptionPanel, PANELS, type PanelId } from "./option-panel";
 
-import { useCallback, useEffect, useReducer, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useReducer, useRef, useState } from "react";
 import opentype from "opentype.js";
 import { PRESETS, type Layer, type Scene, type PresetId } from "@/lib/types";
 import { posters, artistFor } from "@/lib/catalog";
@@ -29,6 +29,8 @@ import { cleanTemplate, creditRequired, creditSettings } from "./attribution";
 import { useImageCrop } from "./use-image-crop";
 import { CropOverlay } from "./crop-overlay";
 import { CropControls } from "./crop-controls";
+import { useViewport } from "./use-viewport";
+import { cropImageFrame, localPoint, worldPoint } from "./geometry";
 
 const KEY = "redlark.studio.v2";
 const PALETTE = ["#151515", "#e32219", "#f3f0e6"];
@@ -52,6 +54,7 @@ function verifySources(scene: Scene) {
   return scene;
 }
 export default function Studio() {
+  const { t } = useI18n();
   const [history, dispatch] = useReducer(reducer, { past: [], present: freshScene(), future: [] });
   const scene = history.present;
   const [fonts, setFonts] = useState<Fonts | null>(null);
@@ -62,7 +65,6 @@ export default function Studio() {
   const [failure, setFailure] = useState("");
   const [busy, setBusy] = useState(false);
   const [storageAvailable, setStorageAvailable] = useState(true);
-  const [zoom, setZoom] = useState(1);
   const [pan, setPan] = useState(false);
   const [snap, setSnap] = useState(true);
   const [panel, setPanel] = useState<PanelId | null>(null);
@@ -82,7 +84,6 @@ export default function Studio() {
   const [liveLayer, setLiveLayer] = useState<Layer | null>(null);
   const [shelfQuery, setShelfQuery] = useState("");
   const svgRef = useRef<SVGSVGElement>(null);
-  const scrollRef = useRef<HTMLDivElement>(null);
   const restoreRef = useRef<Scene | null>(null);
   const dragRef = useRef<{
     id: string;
@@ -91,18 +92,40 @@ export default function Studio() {
     layer: Layer;
     mode: "move" | "resize" | "rotate";
   } | null>(null);
-  const pointers = useRef(new Map<number, { x: number; y: number }>());
-  const pinchDistance = useRef(0);
-  const panStart = useRef<{ x: number; y: number; left: number; top: number } | null>(null);
   const uploadRef = useRef<HTMLInputElement>(null);
   const selectedLayer = scene.layers.find((l) => l.id === selected);
   const dim = dimensions(scene);
+  const viewport = useViewport(dim.width, dim.height, Boolean(fonts));
+  const zoom = viewport.view.zoom;
+  const scrollRef = viewport.ref;
+  const setZoom = viewport.setZoom;
+  const liveLayerRef = useRef<Layer | null>(null);
   const commit = useCallback((next: Scene) => {
     setAutosaveEnabled(true);
     dispatch({ type: "commit", scene: cleanTemplate(next) });
     setShareLink("");
   }, []);
   const crop = useImageCrop(scene, selectedLayer, commit, point);
+  function beginCrop() {
+    if (!selectedLayer || selectedLayer.kind !== "image") return;
+    crop.start();
+    setPanel(null);
+    const frame = cropImageFrame(selectedLayer);
+    const corners = [
+      { x: frame.x, y: frame.y },
+      { x: frame.x + frame.width, y: frame.y },
+      { x: frame.x, y: frame.y + frame.height },
+      { x: frame.x + frame.width, y: frame.y + frame.height },
+    ].map((p) => worldPoint(selectedLayer, p));
+    const left = Math.min(0, ...corners.map((p) => p.x)),
+      top = Math.min(0, ...corners.map((p) => p.y));
+    viewport.fitBounds({
+      x: left,
+      y: top,
+      width: Math.max(dim.width, ...corners.map((p) => p.x)) - left,
+      height: Math.max(dim.height, ...corners.map((p) => p.y)) - top,
+    });
+  }
   useEffect(() => {
     let cancelled = false;
     async function init() {
@@ -189,8 +212,12 @@ export default function Studio() {
             layer.image = image.data;
             layer.x = 0;
             layer.y = 0;
-            layer.width = 210;
-            layer.height = Math.min(297, (210 * image.height) / image.width);
+            const canvas = dimensions(chosen),
+              scale = Math.min(canvas.width / image.width, canvas.height / image.height);
+            layer.width = image.width * scale;
+            layer.height = image.height * scale;
+            layer.x = (canvas.width - layer.width) / 2;
+            layer.y = (canvas.height - layer.height) / 2;
             layer.name = poster.title;
             chosen.layers.push(layer);
           }
@@ -434,55 +461,31 @@ export default function Studio() {
     layer: Layer,
     mode: "move" | "resize" | "rotate" = "move",
   ) {
-    if (pan || layer.locked || crop.session) return;
+    if (pan || layer.locked || crop.session || viewport.overridesLayer(e) || viewport.isPanning())
+      return;
     e.stopPropagation();
     setSelected(layer.id);
     const p = point(e);
     dragRef.current = { id: layer.id, startX: p.x, startY: p.y, layer, mode };
-    svgRef.current?.setPointerCapture(e.pointerId);
   }
   function down(e: React.PointerEvent) {
-    pointers.current.set(e.pointerId, { x: e.clientX, y: e.clientY });
-    if (pointers.current.size === 2) {
-      crop.end(true);
+    if (viewport.down(e, pan)) {
       dragRef.current = null;
+      liveLayerRef.current = null;
       setLiveLayer(null);
-      const ps = [...pointers.current.values()];
-      pinchDistance.current = Math.hypot(ps[0].x - ps[1].x, ps[0].y - ps[1].y);
-      svgRef.current?.setPointerCapture(e.pointerId);
-    }
-    if (pan && scrollRef.current) {
-      panStart.current = {
-        x: e.clientX,
-        y: e.clientY,
-        left: scrollRef.current.scrollLeft,
-        top: scrollRef.current.scrollTop,
-      };
-      svgRef.current?.setPointerCapture(e.pointerId);
+      crop.end(true);
     }
   }
   function move(e: React.PointerEvent) {
-    if (pointers.current.has(e.pointerId))
-      pointers.current.set(e.pointerId, { x: e.clientX, y: e.clientY });
-    if (pointers.current.size === 2) {
-      const ps = [...pointers.current.values()];
-      const distance = Math.hypot(ps[0].x - ps[1].x, ps[0].y - ps[1].y);
-      if (pinchDistance.current)
-        setZoom((z) => Math.max(0.5, Math.min(2.5, (z * distance) / pinchDistance.current)));
-      pinchDistance.current = distance;
-      return;
-    }
-    if (panStart.current && scrollRef.current) {
-      scrollRef.current.scrollLeft = panStart.current.left - e.clientX + panStart.current.x;
-      scrollRef.current.scrollTop = panStart.current.top - e.clientY + panStart.current.y;
-      return;
-    }
+    if (viewport.move(e)) return;
     if (crop.move(e)) return;
     const d = dragRef.current;
     if (!d) return;
     const p = point(e);
-    const dx = p.x - d.startX,
-      dy = p.y - d.startY;
+    const localStart = localPoint(d.layer, { x: d.startX, y: d.startY });
+    const localNow = localPoint(d.layer, p);
+    const dx = d.mode === "resize" ? localNow.x - localStart.x : p.x - d.startX,
+      dy = d.mode === "resize" ? localNow.y - localStart.y : p.y - d.startY;
     let l = { ...d.layer };
     const snapTo = (n: number) => (snap ? Math.round(n / 10) * 10 : Math.round(n));
     if (d.mode === "move")
@@ -511,22 +514,27 @@ export default function Studio() {
           ),
         ),
       );
+    if (d.mode === "resize") {
+      const center = worldPoint(d.layer, { x: l.width / 2, y: l.height / 2 });
+      l.x = center.x - l.width / 2;
+      l.y = center.y - l.height / 2;
+    }
+    liveLayerRef.current = l;
     setLiveLayer(l);
   }
+
   function end(e: React.PointerEvent, cancel = false) {
-    crop.end(cancel);
-    pointers.current.delete(e.pointerId);
-    if (pointers.current.size < 2) pinchDistance.current = 0;
-    if (dragRef.current && liveLayer && !cancel)
+    const gesture = viewport.end(e, cancel);
+    crop.end(cancel || gesture);
+    const live = liveLayerRef.current;
+    if (!gesture && dragRef.current && live && !cancel)
       commit({
         ...scene,
-        layers: scene.layers.map((l) => (l.id === liveLayer.id ? liveLayer : l)),
+        layers: scene.layers.map((layer) => (layer.id === live.id ? live : layer)),
       });
     dragRef.current = null;
+    liveLayerRef.current = null;
     setLiveLayer(null);
-    panStart.current = null;
-    if (svgRef.current?.hasPointerCapture(e.pointerId))
-      svgRef.current.releasePointerCapture(e.pointerId);
   }
   async function upload(file: File | undefined) {
     if (!file) return;
@@ -546,8 +554,8 @@ export default function Studio() {
         ...newLayer("image"),
         image: image.data,
         name: "Local image (metadata stripped)",
-        width: 350,
-        height: (350 * image.height) / image.width,
+        width: Math.max(10, Math.min(350, (500 * image.width) / image.height)),
+        height: Math.max(10, Math.min(500, (350 * image.height) / image.width)),
       };
       commit({ ...scene, layers: [...scene.layers, layer] });
       setSelected(layer.id);
@@ -616,6 +624,22 @@ export default function Studio() {
   const inks = [
     ...new Set(scene.layers.filter((l) => !l.hidden && l.kind !== "image").map((l) => l.color)),
   ];
+  const displayScene = useMemo(
+    () =>
+      liveLayer
+        ? { ...scene, layers: scene.layers.map((l) => (l.id === liveLayer.id ? liveLayer : l)) }
+        : scene,
+    [scene, liveLayer],
+  );
+  const body = useMemo(
+    () =>
+      fonts
+        ? sceneSvg(displayScene, fonts, separation, true)
+            .replace(/^<svg[^>]*>/, "")
+            .replace(/<\/svg>$/, "")
+        : "",
+    [displayScene, fonts, separation],
+  );
   if (!fonts)
     return (
       <div className="studio-loading" role="status">
@@ -628,12 +652,6 @@ export default function Studio() {
         </Link>
       </div>
     );
-  const displayScene = liveLayer
-    ? { ...scene, layers: scene.layers.map((l) => (l.id === liveLayer.id ? liveLayer : l)) }
-    : scene;
-  const body = sceneSvg(displayScene, fonts, separation, true)
-    .replace(/^<svg[^>]*>/, "")
-    .replace(/<\/svg>$/, "");
   return (
     <section className="studio-workspace studio-compact" aria-label="Poster-making Studio">
       <div className="studio-toolbar">
@@ -664,7 +682,7 @@ export default function Studio() {
           <UiText id="EXPORT" />
         </button>
       </div>
-      <nav className="studio-options" aria-label="Studio options">
+      <nav className="studio-options" aria-label={t("Studio options")}>
         {PANELS.map((option) => (
           <button
             key={option.id}
@@ -713,9 +731,9 @@ export default function Studio() {
               <UiText id={"Zoom"} />
               <input
                 type="range"
-                min=".5"
-                max="2.5"
-                step=".1"
+                min=".25"
+                max="4"
+                step="any"
                 value={zoom}
                 onChange={(e) => setZoom(Number(e.target.value))}
               />
@@ -727,16 +745,14 @@ export default function Studio() {
             <button aria-pressed={snap} onClick={() => setSnap(!snap)}>
               {snap ? "SNAP ON" : "SNAP OFF"}
             </button>
-            <button
-              onClick={() => {
-                setZoom(1);
-                if (scrollRef.current) {
-                  scrollRef.current.scrollLeft = 0;
-                  scrollRef.current.scrollTop = 0;
-                }
-              }}
-            >
-              <UiText id={"FIT"} />
+            <button aria-label={t("Zoom out")} onClick={() => setZoom(zoom / 1.2)}>
+              −
+            </button>
+            <button aria-label={t("Zoom in")} onClick={() => setZoom(zoom * 1.2)}>
+              +
+            </button>
+            <button onClick={viewport.fit}>
+              <UiText id="FIT" />
             </button>
           </div>
           <div
@@ -745,10 +761,27 @@ export default function Studio() {
             tabIndex={0}
             role="region"
             aria-label="Canvas viewport"
+            data-zoom={zoom}
+            data-pan-x={viewport.view.x}
+            data-pan-y={viewport.view.y}
+            onPointerDownCapture={down}
+            onPointerMove={move}
+            onPointerUp={(e) => end(e)}
+            onPointerCancel={(e) => end(e, true)}
+            onDoubleClick={(e) => {
+              e.preventDefault();
+              viewport.fit();
+            }}
+            onContextMenu={(e) => e.preventDefault()}
+            onAuxClick={(e) => e.preventDefault()}
           >
             <div
               className="paper-wrap"
-              style={{ width: `${zoom * 100}%`, maxWidth: `${520 * zoom}px` }}
+              style={{
+                width: viewport.base.width,
+                height: viewport.base.height,
+                transform: `translate(${viewport.view.x}px, ${viewport.view.y}px) scale(${zoom})`,
+              }}
             >
               <svg
                 ref={svgRef}
@@ -756,13 +789,9 @@ export default function Studio() {
                 viewBox={`0 0 ${dim.width} ${dim.height}`}
                 role={crop.session ? "group" : "img"}
                 aria-label="Poster canvas. Choose a layer in the layer list to edit with labelled controls or arrow keys."
-                onPointerDownCapture={down}
                 onPointerDown={() => {
                   if (!pan && !crop.session) setSelected(null);
                 }}
-                onPointerMove={move}
-                onPointerUp={(e) => end(e)}
-                onPointerCancel={(e) => end(e, true)}
               >
                 <g dangerouslySetInnerHTML={{ __html: body }} />
                 {displayScene.layers
@@ -770,6 +799,7 @@ export default function Studio() {
                   .map((l) => (
                     <g
                       key={l.id}
+                      data-layer-id={l.id}
                       transform={`translate(${l.x} ${l.y}) rotate(${l.rotation} ${l.width / 2} ${l.height / 2})`}
                       onPointerDown={(e) => startDrag(e, l)}
                     >
@@ -784,22 +814,39 @@ export default function Studio() {
                       {selected === l.id && !l.locked && (
                         <>
                           <rect
-                            x={l.width - 12}
-                            y={l.height - 12}
-                            width="24"
-                            height="24"
+                            x={l.width - 6 / ((viewport.base.width / dim.width) * zoom)}
+                            y={l.height - 6 / ((viewport.base.width / dim.width) * zoom)}
+                            width={12 / ((viewport.base.width / dim.width) * zoom)}
+                            height={12 / ((viewport.base.width / dim.width) * zoom)}
                             fill="#f3f0e6"
                             stroke="#151515"
                             strokeWidth="3"
+                            pointerEvents="none"
+                          />
+                          <rect
+                            data-layer-action="resize"
+                            x={l.width - 22 / ((viewport.base.width / dim.width) * zoom)}
+                            y={l.height - 22 / ((viewport.base.width / dim.width) * zoom)}
+                            width={44 / ((viewport.base.width / dim.width) * zoom)}
+                            height={44 / ((viewport.base.width / dim.width) * zoom)}
+                            fill="transparent"
                             onPointerDown={(e) => startDrag(e, l, "resize")}
                           />
                           <circle
                             cx={l.width / 2}
-                            cy="-25"
-                            r="12"
+                            cy={-28 / ((viewport.base.width / dim.width) * zoom)}
+                            r={7 / ((viewport.base.width / dim.width) * zoom)}
                             fill="#f3f0e6"
                             stroke="#151515"
                             strokeWidth="3"
+                            pointerEvents="none"
+                          />
+                          <circle
+                            data-layer-action="rotate"
+                            cx={l.width / 2}
+                            cy={-28 / ((viewport.base.width / dim.width) * zoom)}
+                            r={22 / ((viewport.base.width / dim.width) * zoom)}
+                            fill="transparent"
                             onPointerDown={(e) => startDrag(e, l, "rotate")}
                           />
                         </>
@@ -810,12 +857,10 @@ export default function Studio() {
                   <CropOverlay
                     layer={crop.session.layer}
                     draft={crop.session.draft}
-                    scale={Math.hypot(
-                      svgRef.current?.getScreenCTM()?.a ?? 1,
-                      svgRef.current?.getScreenCTM()?.b ?? 0,
-                    )}
+                    scale={(viewport.base.width / dim.width) * zoom}
                     start={(e, handle) => {
-                      if (!pan) crop.pointerStart(e, handle);
+                      if (!pan && !viewport.overridesLayer(e) && !viewport.isPanning())
+                        crop.pointerStart(e, handle);
                     }}
                     nudge={crop.nudge}
                   />
@@ -1077,13 +1122,7 @@ export default function Studio() {
         </OptionPanel>
         <OptionPanel id="images" open={panel === "images"} close={closePanel}>
           {selectedLayer?.kind === "image" && (
-            <button
-              disabled={selectedLayer.locked || busy}
-              onClick={() => {
-                crop.start();
-                setPanel(null);
-              }}
-            >
+            <button disabled={selectedLayer.locked || busy} onClick={beginCrop}>
               <UiText id="Crop image" />
             </button>
           )}
@@ -1190,6 +1229,9 @@ export default function Studio() {
           </label>
         </OptionPanel>
         <OptionPanel id="export" open={panel === "export"} close={closePanel}>
+          <button className="accent" disabled={busy} onClick={() => void exportNow("PNG")}>
+            <UiText id="Download for Free" /> ↓
+          </button>
           <label className="control">
             <span>
               <UiText id="Add credit line" />
@@ -1217,7 +1259,16 @@ export default function Studio() {
             <div className="coordinate-grid">
               {(["x", "y", "width", "fontSize"] as const).map((key) => (
                 <label className="control" key={key}>
-                  <UiText id={`Credit ${key}`} />
+                  <UiText
+                    id={
+                      {
+                        x: "Credit x",
+                        y: "Credit y",
+                        width: "Credit line width",
+                        fontSize: "Credit type size",
+                      }[key]
+                    }
+                  />
                   <input
                     type="number"
                     min={key === "width" ? 40 : key === "fontSize" ? 4 : 0}
@@ -1256,7 +1307,7 @@ export default function Studio() {
               ))}
               {(["color", "background"] as const).map((key) => (
                 <label className="control" key={key}>
-                  <UiText id={`Credit ${key}`} />
+                  <UiText id={key === "color" ? "Credit ink colour" : "Credit paper colour"} />
                   <input
                     type="color"
                     value={creditSettings(scene)[key]}
