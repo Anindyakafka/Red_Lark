@@ -68,7 +68,6 @@ test("honeypot and export failure show honest recoverable errors", async ({ page
     e.value = "spam";
   });
   await page.getByLabel("YOUR MESSAGE").fill("A meaningful test message.");
-  await openOption(page, "layers");
   await page.getByRole("button", { name: "Send message" }).click();
   await expect(page.locator("main [role=alert]")).toContainText("spam check");
   await page.goto("/studio/?format=poster-placard");

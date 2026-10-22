@@ -99,23 +99,19 @@ test("contact required/reply errors, stored provider failure and confirmed recei
     }),
   );
   await page.goto("/contact/");
-  await openOption(page, "layers");
   await page.getByRole("button", { name: "Send message", exact: true }).click();
   await expect(page.locator("#message")).toBeFocused();
   await page.getByLabel("YOUR MESSAGE").fill("A meaningful test message for the archive.");
   await page.getByLabel("REPLY EMAIL").fill("wrong");
-  await openOption(page, "layers");
   await page.getByRole("button", { name: "Send message", exact: true }).click();
   await expect(page.locator("#reply-error")).toBeVisible();
   await page.getByLabel("REPLY EMAIL").fill("");
-  await openOption(page, "layers");
   await page.getByRole("button", { name: "Send message", exact: true }).click();
   await expect(page.locator("main [role=alert]")).toContainText("saved");
   await expect(page.getByLabel("YOUR MESSAGE")).toHaveValue(
     "A meaningful test message for the archive.",
   );
   fail = false;
-  await openOption(page, "layers");
   await page.getByRole("button", { name: "Send message", exact: true }).click();
   await expect(page.getByRole("heading", { name: "Message received" })).toBeVisible();
 });

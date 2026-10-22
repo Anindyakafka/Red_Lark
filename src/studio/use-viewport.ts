@@ -105,12 +105,49 @@ export function useViewport(width: number, height: number, enabled: boolean) {
         setView(next);
       }
     };
-    const prevent = (e: Event) => {
+    let nativeGesture: { start: View; point: Point } | null = null;
+    const nativePinch = (e: Event) => {
       if (e.cancelable) e.preventDefault();
+      if (e.type === "gestureend") {
+        nativeGesture = null;
+        return;
+      }
+      // Safari trackpads may emit GestureEvent instead of ctrl-wheel. Touch Pointer Events win.
+      if (points.current.size >= 2) {
+        nativeGesture = null;
+        return;
+      }
+      const event = e as Event & { scale?: number; clientX?: number; clientY?: number },
+        bounds = el.getBoundingClientRect();
+      const midpoint = {
+        x:
+          typeof event.clientX === "number" &&
+          event.clientX >= bounds.left &&
+          event.clientX <= bounds.right
+            ? event.clientX - bounds.left - el.clientLeft
+            : el.clientWidth / 2,
+        y:
+          typeof event.clientY === "number" &&
+          event.clientY >= bounds.top &&
+          event.clientY <= bounds.bottom
+            ? event.clientY - bounds.top - el.clientTop
+            : el.clientHeight / 2,
+      };
+      if (e.type === "gesturestart") nativeGesture = { start: current.current, point: midpoint };
+      else if (
+        nativeGesture &&
+        typeof event.scale === "number" &&
+        Number.isFinite(event.scale) &&
+        event.scale > 0
+      ) {
+        const next = gestureView(nativeGesture.start, nativeGesture.point, midpoint, event.scale);
+        current.current = next;
+        setView(next);
+      }
     };
     el.addEventListener("wheel", wheel, { passive: false });
     for (const name of ["gesturestart", "gesturechange", "gestureend"])
-      el.addEventListener(name, prevent, { passive: false });
+      el.addEventListener(name, nativePinch, { passive: false });
     const keydown = (e: KeyboardEvent) => {
       const target = e.target as HTMLElement;
       if (
@@ -129,6 +166,7 @@ export function useViewport(width: number, height: number, enabled: boolean) {
       points.current.clear();
       gesture.current = null;
       hovered.current = false;
+      nativeGesture = null;
     };
     const enter = () => {
         hovered.current = true;
@@ -145,7 +183,7 @@ export function useViewport(width: number, height: number, enabled: boolean) {
       observer.disconnect();
       el.removeEventListener("wheel", wheel);
       for (const name of ["gesturestart", "gesturechange", "gestureend"])
-        el.removeEventListener(name, prevent);
+        el.removeEventListener(name, nativePinch);
       window.removeEventListener("keydown", keydown);
       window.removeEventListener("keyup", keyup);
       window.removeEventListener("blur", blur);

@@ -25,7 +25,7 @@ export function OptionPanel({
   close: (restoreFocus?: boolean) => void;
   children: ReactNode;
 }) {
-  const ref = useRef<HTMLElement>(null);
+  const ref = useRef<HTMLDivElement>(null);
   const closeRef = useRef(close);
   useEffect(() => {
     closeRef.current = close;
@@ -34,7 +34,7 @@ export function OptionPanel({
     if (!open) return;
     const root = ref.current;
     root
-      ?.querySelector<HTMLElement>("button,input,select,textarea,[tabindex='0']")
+      ?.querySelector<HTMLElement>("button,input,select,textarea,summary,[tabindex='0']")
       ?.focus({ preventScroll: true });
     const outside = (e: PointerEvent) => {
       const target = e.target;
@@ -49,7 +49,7 @@ export function OptionPanel({
     return () => document.removeEventListener("pointerdown", outside);
   }, [open]);
   return (
-    <aside
+    <div
       ref={ref}
       id={`studio-option-${id}`}
       hidden={!open}
@@ -66,7 +66,7 @@ export function OptionPanel({
         if (e.key === "Tab") {
           const focusable = Array.from(
             ref.current?.querySelectorAll<HTMLElement>(
-              "button:not(:disabled),input:not(:disabled),textarea:not(:disabled),select:not(:disabled),a[href],[tabindex='0']",
+              "button:not(:disabled),input:not(:disabled),textarea:not(:disabled),select:not(:disabled),summary,a[href],[tabindex='0']",
             ) ?? [],
           ).filter((el) => el.getClientRects().length);
           const first = focusable[0],
@@ -90,6 +90,6 @@ export function OptionPanel({
         </button>
       </div>
       <div className="studio-panel-body">{children}</div>
-    </aside>
+    </div>
   );
 }

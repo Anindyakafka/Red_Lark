@@ -30,7 +30,6 @@ test("fresh-eyes form focus and true empty Studio recovery", async ({ page }) =>
   await page.getByRole("button", { name: "Email me a sign-in link", exact: true }).click();
   await expect(page.locator("#auth-email")).toBeFocused();
   await page.goto("/contact/");
-  await openOption(page, "layers");
   await page.getByRole("button", { name: "Send message" }).click();
   await expect(page.locator("#message")).toBeFocused();
   await page.goto("/studio/?format=poster-placard");

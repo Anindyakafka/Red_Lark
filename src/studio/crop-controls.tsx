@@ -2,7 +2,13 @@
 import { useEffect, useRef } from "react";
 import { UiText, useI18n } from "@/i18n/client";
 import type { useImageCrop } from "./use-image-crop";
-export function CropControls({ crop }: { crop: ReturnType<typeof useImageCrop> }) {
+export function CropControls({
+  crop,
+  onDone,
+}: {
+  crop: ReturnType<typeof useImageCrop>;
+  onDone: () => void;
+}) {
   const { t } = useI18n();
   const ref = useRef<HTMLDivElement>(null),
     active = Boolean(crop.session);
@@ -43,10 +49,21 @@ export function CropControls({ crop }: { crop: ReturnType<typeof useImageCrop> }
         <UiText id="Lock crop ratio" />
       </label>
       <div className="crop-actions">
-        <button onClick={crop.apply} className="accent">
+        <button
+          onClick={() => {
+            crop.apply();
+            onDone();
+          }}
+          className="accent"
+        >
           <UiText id="Apply crop" />
         </button>
-        <button onClick={crop.cancel}>
+        <button
+          onClick={() => {
+            crop.cancel();
+            onDone();
+          }}
+        >
           <UiText id="Cancel crop" />
         </button>
         <button onClick={crop.reset}>

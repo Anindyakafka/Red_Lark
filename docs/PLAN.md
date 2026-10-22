@@ -2,14 +2,14 @@
 
 ## Studio workspace repair — 22 October 2026
 
-| Problem                            | Status      | Acceptance                                                                                                                                                  |
-| ---------------------------------- | ----------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| Audit before editing               | PASS        | docs/STUDIO_AUDIT.md; running desktop/tablet/phone screenshots and measured controls                                                                        |
-| Clean canvas / attribution exports | IMPLEMENTED | Separate canvas/export renderer, persistent source metadata, opt-in CC0/default-on attribution credit, PNG/PDF/SVG metadata; focused tests + typecheck pass |
-| Compact accessible options         | IMPLEMENTED | One overlay at a time, keyboard/focus/outside dismissal, no canvas reflow; retain every audited feature                                                     |
-| Non-destructive crop               | IMPLEMENTED | Eight handles, move/ratios/numeric controls, rotated geometry and export/local persistence                                                                  |
-| Viewport gestures                  | IMPLEMENTED | Midpoint zoom, viewport pan, wheel/keyboard/touch, fit and consistent coordinates                                                                           |
-| Final verification                 | PENDING     | Existing + new tests, 1440/tablet/375 screenshots, all locales/themes, blank/CC0/SA exports and no-JS Collection                                            |
+| Problem                            | Status | Acceptance                                                                                                                                                  |
+| ---------------------------------- | ------ | ----------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Audit before editing               | PASS   | docs/STUDIO_AUDIT.md; running desktop/tablet/phone screenshots and measured controls                                                                        |
+| Clean canvas / attribution exports | PASS   | Separate canvas/export renderer, persistent source metadata, opt-in CC0/default-on attribution credit, PNG/PDF/SVG metadata; focused tests + typecheck pass |
+| Compact accessible options         | PASS   | One overlay at a time, keyboard/focus/outside dismissal, no canvas reflow; retain every audited feature                                                     |
+| Non-destructive crop               | PASS   | Eight handles, move/ratios/numeric controls, rotated geometry and export/local persistence                                                                  |
+| Viewport gestures                  | PASS   | Midpoint zoom, viewport pan, wheel/keyboard/touch, fit and consistent coordinates                                                                           |
+| Final verification                 | PASS   | 78 unit + 274 unique browser tests; final 91/91 rerun; viewed 1440/768/375 screenshots; full details in STUDIO_REPORT.md                                    |
 
 ## Contribution navigation and one-day admin verification
 

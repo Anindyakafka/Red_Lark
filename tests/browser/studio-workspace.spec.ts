@@ -64,10 +64,7 @@ for (const locale of ["en", "hi", "bn", "ml"])
         await openOption(page, id);
         expect(await page.locator(".studio-option-panel:visible").count()).toBe(1);
         expect(await viewport.boundingBox()).toEqual(before);
-        expect(
-          (await new AxeBuilder({ page }).withTags(["wcag2a", "wcag2aa", "wcag21aa"]).analyze())
-            .violations,
-        ).toEqual([]);
+        expect((await new AxeBuilder({ page }).analyze()).violations).toEqual([]);
         await page.keyboard.press("Escape");
         await expect(page.locator(`#studio-option-${id}`)).toBeHidden();
         await expect(page.locator(`#studio-trigger-${id}`)).toBeFocused();

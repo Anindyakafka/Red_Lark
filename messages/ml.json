@@ -931,6 +931,9 @@
     "Credit line width": "Credit line width",
     "Credit type size": "Credit type size",
     "Credit ink colour": "Credit ink colour",
-    "Credit paper colour": "Credit paper colour"
+    "Credit paper colour": "Credit paper colour",
+    "Artwork format": "Artwork format",
+    "Apply or cancel the crop before exporting.": "Apply or cancel the crop before exporting.",
+    "Apply or cancel the current crop first.": "Apply or cancel the current crop first."
   }
 }

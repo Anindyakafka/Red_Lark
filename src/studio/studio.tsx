@@ -25,6 +25,7 @@ import { migrateLocalDrafts } from "@/lib/storage";
 import { createShapedFont } from "./shaping";
 import imageLibrary from "../../content/studio/images.json";
 import captionLibrary from "../../content/studio/captions.json";
+import artworkFormats from "../../content/formats.json";
 import { cleanTemplate, creditRequired, creditSettings } from "./attribution";
 import { useImageCrop } from "./use-image-crop";
 import { CropOverlay } from "./crop-overlay";
@@ -53,7 +54,13 @@ function verifySources(scene: Scene) {
   assertExportable(scene);
   return scene;
 }
-export default function Studio() {
+export default function Studio({
+  format,
+  onFormatChange,
+}: {
+  format: string;
+  onFormatChange: (value: string) => void;
+}) {
   const { t } = useI18n();
   const [history, dispatch] = useReducer(reducer, { past: [], present: freshScene(), future: [] });
   const scene = history.present;
@@ -68,7 +75,16 @@ export default function Studio() {
   const [pan, setPan] = useState(false);
   const [snap, setSnap] = useState(true);
   const [panel, setPanel] = useState<PanelId | null>(null);
-  function togglePanel(id: PanelId) {
+  const panelOpener = useRef<HTMLElement | null>(null);
+  function togglePanel(id: PanelId, opener: HTMLElement) {
+    if (crop.session) {
+      setStatus(t("Apply or cancel the current crop first."));
+      requestAnimationFrame(() =>
+        document.querySelector<HTMLButtonElement>(".crop-actions button")?.focus(),
+      );
+      return;
+    }
+    panelOpener.current = opener;
     setPanel((current) => (current === id ? null : id));
   }
   function closePanel(restoreFocus = false) {
@@ -76,7 +92,10 @@ export default function Studio() {
     setPanel(null);
     if (restoreFocus && previous)
       requestAnimationFrame(() =>
-        document.getElementById("studio-trigger-" + previous)?.focus({ preventScroll: true }),
+        (panelOpener.current?.isConnected
+          ? panelOpener.current
+          : document.getElementById("studio-trigger-" + previous)
+        )?.focus({ preventScroll: true }),
       );
   }
   const [shareLink, setShareLink] = useState("");
@@ -310,7 +329,13 @@ export default function Studio() {
     if (!selectedLayer || selectedLayer.locked) return;
     commit({ ...scene, layers: scene.layers.filter((l) => l.id !== selected) });
     setSelected(null);
-  }, [scene, selected, selectedLayer, commit]);
+    if (panel === "layers")
+      requestAnimationFrame(() =>
+        document
+          .querySelector<HTMLButtonElement>("#studio-option-layers .studio-panel-heading button")
+          ?.focus({ preventScroll: true }),
+      );
+  }, [scene, selected, selectedLayer, commit, panel]);
   const duplicate = useCallback(() => {
     if (!selectedLayer || scene.layers.length >= 80) return;
     const copy = {
@@ -329,12 +354,25 @@ export default function Studio() {
       if (event.key === "Escape" && crop.session) {
         event.preventDefault();
         crop.cancel();
-        svgRef.current?.focus();
+        scrollRef.current?.focus({ preventScroll: true });
         return;
       }
       const element = event.target as HTMLElement;
       if (["INPUT", "SELECT", "TEXTAREA"].includes(element.tagName) || element.isContentEditable)
         return;
+      if (crop.session) {
+        if (
+          event.key.startsWith("Arrow") ||
+          event.key === "Delete" ||
+          event.key === "Backspace" ||
+          event.ctrlKey ||
+          event.metaKey
+        ) {
+          event.preventDefault();
+          setStatus(t("Apply or cancel the current crop first."));
+        }
+        return;
+      }
       if ((event.ctrlKey || event.metaKey) && event.key.toLowerCase() === "z") {
         event.preventDefault();
         dispatch({ type: event.shiftKey ? "redo" : "undo" });
@@ -365,7 +403,7 @@ export default function Studio() {
     };
     window.addEventListener("keydown", key);
     return () => window.removeEventListener("keydown", key);
-  }, [selectedLayer, patch, duplicate, remove, crop]);
+  }, [selectedLayer, patch, duplicate, remove, crop, scrollRef, t]);
   function add(kind: Layer["kind"]) {
     if (scene.layers.length >= 80) {
       setFailure("LIMIT This Studio supports up to 80 layers.");
@@ -571,6 +609,14 @@ export default function Studio() {
   }
   async function exportNow(format: Parameters<typeof exportFile>[2]) {
     if (!fonts) return;
+    if (crop.session) {
+      setPanel(null);
+      setStatus(t("Apply or cancel the current crop first."));
+      requestAnimationFrame(() =>
+        document.querySelector<HTMLButtonElement>(".crop-actions button")?.focus(),
+      );
+      return;
+    }
     setBusy(true);
     setFailure("");
     setStatus(`EXPORTING ${format} Preparing your file…`);
@@ -658,13 +704,13 @@ export default function Studio() {
         <div>
           <button
             onClick={() => dispatch({ type: "undo" })}
-            disabled={!history.past.length || busy}
+            disabled={!history.past.length || busy || Boolean(crop.session)}
           >
             <UiText id={"UNDO"} />
           </button>
           <button
             onClick={() => dispatch({ type: "redo" })}
-            disabled={!history.future.length || busy}
+            disabled={!history.future.length || busy || Boolean(crop.session)}
           >
             <UiText id={"REDO"} />
           </button>
@@ -677,7 +723,7 @@ export default function Studio() {
           data-studio-option="export"
           aria-expanded={panel === "export"}
           aria-controls="studio-option-export"
-          onClick={() => togglePanel("export")}
+          onClick={(event) => togglePanel("export", event.currentTarget)}
         >
           <UiText id="EXPORT" />
         </button>
@@ -690,7 +736,7 @@ export default function Studio() {
             data-studio-option={option.id}
             aria-controls={"studio-option-" + option.id}
             aria-expanded={panel === option.id}
-            onClick={() => togglePanel(option.id)}
+            onClick={(event) => togglePanel(option.id, event.currentTarget)}
           >
             <UiText id={option.label} />
           </button>
@@ -874,7 +920,10 @@ export default function Studio() {
             </p>
           )}
         </div>
-        <CropControls crop={crop} />
+        <CropControls
+          crop={crop}
+          onDone={() => scrollRef.current?.focus({ preventScroll: true })}
+        />
         {panel && <div className="studio-panel-scrim" aria-hidden="true" />}
         <OptionPanel id="text" open={panel === "text"} close={closePanel}>
           <button onClick={() => add("text")} disabled={busy}>
@@ -1207,6 +1256,20 @@ export default function Studio() {
           </div>
         </OptionPanel>
         <OptionPanel id="paper" open={panel === "paper"} close={closePanel}>
+          <label className="control">
+            <UiText id="Choose format" />
+            <select
+              aria-label={t("Artwork format")}
+              value={format}
+              onChange={(event) => onFormatChange(event.target.value)}
+            >
+              {artworkFormats.map((item) => (
+                <option key={item.slug} value={item.slug}>
+                  {item.label}
+                </option>
+              ))}
+            </select>
+          </label>
           <label>
             <UiText id={"Paper"} />
             <select

@@ -66,14 +66,14 @@ export function StudioClient() {
       </section>
     );
   return (
-    <>
-      <p className="studio-format-label">
-        <UiText id="Format" />: {formats.find((item) => item.slug === format)?.label}{" "}
-        <button onClick={() => setFormat(null)}>
-          <UiText id="Choose format" />
-        </button>
-      </p>
-      <Studio />
-    </>
+    <Studio
+      format={format}
+      onFormatChange={(value: string) => {
+        setFormat(value);
+        const url = new URL(location.href);
+        url.searchParams.set("format", value);
+        history.replaceState(null, "", url);
+      }}
+    />
   );
 }
