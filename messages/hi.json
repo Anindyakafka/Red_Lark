@@ -874,6 +874,17 @@
     "Accept staff invitation": "Accept staff invitation",
     "Accept this invitation only if you expected staff access from the team. Opening this page does not verify your email or create a session.": "Accept this invitation only if you expected staff access from the team. Opening this page does not verify your email or create a session.",
     "This invitation is invalid, expired or already used. Use the newest invitation. If your email is already verified, sign in or request a password reset; otherwise ask the team to reissue it.": "This invitation is invalid, expired or already used. Use the newest invitation. If your email is already verified, sign in or request a password reset; otherwise ask the team to reissue it.",
-    "Admin verification lasts up to 24 hours in this signed-in browser. Signing out or using another browser requires verification again.": "Admin verification lasts up to 24 hours in this signed-in browser. Signing out or using another browser requires verification again."
+    "Admin verification lasts up to 24 hours in this signed-in browser. Signing out or using another browser requires verification again.": "Admin verification lasts up to 24 hours in this signed-in browser. Signing out or using another browser requires verification again.",
+    "Add credit line": "Add credit line",
+    "Attribution stays in export metadata. The credit line appears only in exported files, never on the editing canvas.": "Attribution stays in export metadata. The credit line appears only in exported files, never on the editing canvas.",
+    "This source requires attribution. Metadata can be lost when printing or reposting. Provide the full credit with your distribution if you turn the visible line off.": "This source requires attribution. Metadata can be lost when printing or reposting. Provide the full credit with your distribution if you turn the visible line off.",
+    "Credit x": "Credit x",
+    "Credit y": "Credit y",
+    "Credit width": "Credit width",
+    "Credit fontSize": "Credit fontSize",
+    "Credit color": "Credit color",
+    "Credit background": "Credit background",
+    "Make it yours. Export it. Source credits stay in project metadata; choose the visible credit line at export.": "Make it yours. Export it. Source credits stay in project metadata; choose the visible credit line at export.",
+    "PNG uses 300 PPI for paper presets; Social is 1080 × 1350 px. PDF/SVG have outlined vector type. Source attribution is embedded in every export.": "PNG uses 300 PPI for paper presets; Social is 1080 × 1350 px. PDF/SVG have outlined vector type. Source attribution is embedded in every export."
   }
 }

@@ -23,10 +23,18 @@ import { migrateLocalDrafts } from "@/lib/storage";
 import { createShapedFont } from "./shaping";
 import imageLibrary from "../../content/studio/images.json";
 import captionLibrary from "../../content/studio/captions.json";
+import { cleanTemplate, creditRequired, creditSettings } from "./attribution";
 
 const KEY = "redlark.studio.v2";
 const PALETTE = ["#151515", "#e32219", "#f3f0e6"];
 function verifySources(scene: Scene) {
+  scene = cleanTemplate(scene);
+  scene.sources = scene.sources?.map((credit) => {
+    const poster = posters.find((p) => p.slug === credit.id);
+    if (!poster || !canRemix(poster))
+      throw new Error("A source in this design is not approved for remix.");
+    return sourceCredit(poster, artistFor(poster.artist).name);
+  });
   for (const layer of scene.layers) {
     if (!layer.credit) continue;
     const poster = posters.find((p) => p.slug === layer.credit?.id);
@@ -75,7 +83,7 @@ export default function Studio() {
   const dim = dimensions(scene);
   const commit = useCallback((next: Scene) => {
     setAutosaveEnabled(true);
-    dispatch({ type: "commit", scene: next });
+    dispatch({ type: "commit", scene: cleanTemplate(next) });
     setShareLink("");
   }, []);
   useEffect(() => {
@@ -170,6 +178,7 @@ export default function Studio() {
             chosen.layers.push(layer);
           }
           const credit = sourceCredit(poster, artistFor(poster.artist).name);
+          chosen = cleanTemplate(chosen, credit);
           chosen.layers = chosen.layers.map((l) => ({ ...l, credit }));
           setStatus(
             `REMIX READY ${poster.title} / ${poster.license}. Source credits are retained.`,
@@ -596,7 +605,7 @@ export default function Studio() {
   const displayScene = liveLayer
     ? { ...scene, layers: scene.layers.map((l) => (l.id === liveLayer.id ? liveLayer : l)) }
     : scene;
-  const body = sceneSvg(displayScene, fonts, separation)
+  const body = sceneSvg(displayScene, fonts, separation, true)
     .replace(/^<svg[^>]*>/, "")
     .replace(/<\/svg>$/, "");
   return (
@@ -1148,6 +1157,87 @@ export default function Studio() {
           <h3>
             <UiText id={"EXPORT"} />
           </h3>
+          <label className="control">
+            <span>
+              <UiText id="Add credit line" />
+            </span>
+            <input
+              type="checkbox"
+              checked={creditSettings(scene).enabled}
+              onChange={(e) =>
+                commit({
+                  ...scene,
+                  exportCredit: { ...creditSettings(scene), enabled: e.target.checked },
+                })
+              }
+            />
+          </label>
+          <p className="small">
+            <UiText id="Attribution stays in export metadata. The credit line appears only in exported files, never on the editing canvas." />
+          </p>
+          {creditRequired(scene) && !creditSettings(scene).enabled && (
+            <p className="notice" role="status">
+              <UiText id="This source requires attribution. Metadata can be lost when printing or reposting. Provide the full credit with your distribution if you turn the visible line off." />
+            </p>
+          )}
+          {creditSettings(scene).enabled && (
+            <div className="coordinate-grid">
+              {(["x", "y", "width", "fontSize"] as const).map((key) => (
+                <label className="control" key={key}>
+                  <UiText id={`Credit ${key}`} />
+                  <input
+                    type="number"
+                    min={key === "width" ? 40 : key === "fontSize" ? 4 : 0}
+                    max={
+                      key === "fontSize"
+                        ? 30
+                        : key === "y"
+                          ? dim.height - 10
+                          : key === "x"
+                            ? 560
+                            : 600
+                    }
+                    value={creditSettings(scene)[key]}
+                    onChange={(e) => {
+                      const value = Number(e.target.value),
+                        min = key === "width" ? 40 : key === "fontSize" ? 4 : 0,
+                        max =
+                          key === "fontSize"
+                            ? 30
+                            : key === "y"
+                              ? dim.height - 10
+                              : key === "x"
+                                ? 560
+                                : 600;
+                      if (Number.isFinite(value))
+                        commit({
+                          ...scene,
+                          exportCredit: {
+                            ...creditSettings(scene),
+                            [key]: Math.max(min, Math.min(max, value)),
+                          },
+                        });
+                    }}
+                  />
+                </label>
+              ))}
+              {(["color", "background"] as const).map((key) => (
+                <label className="control" key={key}>
+                  <UiText id={`Credit ${key}`} />
+                  <input
+                    type="color"
+                    value={creditSettings(scene)[key]}
+                    onChange={(e) =>
+                      commit({
+                        ...scene,
+                        exportCredit: { ...creditSettings(scene), [key]: e.target.value },
+                      })
+                    }
+                  />
+                </label>
+              ))}
+            </div>
+          )}
           <div className="export-buttons">
             {(["PDF", "PNG", "SVG", "TILED", "SEPARATIONS"] as const).map((format) => (
               <button key={format} disabled={busy} onClick={() => void exportNow(format)}>
@@ -1164,7 +1254,7 @@ export default function Studio() {
           <p className="small">
             <UiText
               id={
-                "PNG uses 300 PPI for paper presets; Social is 1080 × 1350 px. PDF/SVG have outlined vector type. Credit strip is automatic."
+                "PNG uses 300 PPI for paper presets; Social is 1080 × 1350 px. PDF/SVG have outlined vector type. Source attribution is embedded in every export."
               }
             />
           </p>

@@ -1,5 +1,11 @@
 # Numbered rebuild rounds
 
+## Studio workspace — Round 1 audit and attribution
+
+Inspected the running JavaScript editor at 1440/768/375 and viewed before screenshots. Both sidebars were permanently open on desktop (495 px total); grid stretched to 2239 px; phone replaced the canvas when controls opened. Credit injection comes from the shared sceneSvg renderer plus the known placeholder-edition template marker. Crop does not exist; pinch only attaches to SVG and has no midpoint anchoring. Audit written before application edits.
+
+Separated canvas rendering from export-only credit, retained project-level sources through deletion/save/share, kept default-on attribution/default-off CC0, added positioning/colour/type-size controls and Unicode PNG/PDF/SVG metadata. A PNG unit fixture contained pre-existing EXIF; the metadata helper now removes old EXIF/text/time chunks before writing the new attribution, and all 22 focused Studio/licence/privacy/Indic tests and typecheck pass. Browser export/layout regression will run after the chrome and gesture changes. New non-English labels are explicit English fallbacks with reviewed:false; legal/policy and Appendix A text are unchanged.
+
 ## Account pages P9 critique — 21 October 2026
 
 Guest contribution replaces the account wall. Work metadata validation and sanitization/PDF generation are shared with account uploads. Random per-work receipt secrets are returned only to the submitter, stored hashed, never put in query strings/localStorage/analytics, and expire after 90 days. RLS denies receipt access to anon/contributors; server checks its exact work before signing, completion or status. Admin review still requires role/fresh MFA. Optional private contact fields remain separate from public consent.

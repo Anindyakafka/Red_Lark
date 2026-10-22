@@ -1,5 +1,16 @@
 # Current acceptance checklist
 
+## Studio workspace repair
+
+| Item                                      | Status      | Evidence                                                                                                               |
+| ----------------------------------------- | ----------- | ---------------------------------------------------------------------------------------------------------------------- |
+| Before-edit audit / measurements          | PASS        | docs/STUDIO_AUDIT.md; docs/evidence/studio-workspace/before.json and PNGs                                              |
+| Attribution metadata / clean editing      | PASS (unit) | tests/studio-workspace.test.ts: source persistence, CC0/SA defaults, editing SVG, UTF-8 PNG attribution/EXIF stripping |
+| Overlay controls / full feature retention | PENDING     | Desktop/mobile/keyboard/a11y checks follow implementation                                                              |
+| Eight-handle non-destructive crop         | PENDING     | Geometry/export and pointer/keyboard tests follow implementation                                                       |
+| Full viewport pinch/pan                   | PENDING     | Pointer/CDP-touch/wheel/midpoint and no-layer-conflict checks follow implementation                                    |
+| Final regression and real-device limits   | PENDING     | Full local checks; real-device iOS/Android must be reported separately                                                 |
+
 ## Navigation and admin verification window
 
 | Item                                    | Status | Evidence                                                                                                                             |

@@ -4,6 +4,7 @@ import { assertExportable } from "./model";
 import { sceneSvg, type Fonts } from "./render";
 import { track } from "@/lib/analytics";
 import { strToU8, zipSync } from "fflate";
+import { attributionMetadata } from "./attribution";
 
 function download(blob: Blob, name: string) {
   const url = URL.createObjectURL(blob);
@@ -64,7 +65,7 @@ function crc32(bytes: Uint8Array) {
   }
   return (crc ^ 0xffffffff) >>> 0;
 }
-export async function pngAt300Ppi(blob: Blob) {
+export async function pngAt300Ppi(blob: Blob, metadata?: string, physical = true) {
   const bytes = new Uint8Array(await blob.arrayBuffer());
   const chunk = new Uint8Array(21);
   const view = new DataView(chunk.buffer);
@@ -74,14 +75,26 @@ export async function pngAt300Ppi(blob: Blob) {
   view.setUint32(12, 11811);
   chunk[16] = 1;
   view.setUint32(17, crc32(chunk.slice(4, 17)));
-  const parts: BlobPart[] = [bytes.slice(0, 33), chunk];
+  const parts: BlobPart[] = [bytes.slice(0, 33), ...(physical ? [chunk] : [])];
   const reader = new DataView(bytes.buffer);
   for (let at = 33; at + 12 <= bytes.length;) {
     const length = reader.getUint32(at);
     const end = at + length + 12;
     if (end > bytes.length) throw new Error("Invalid PNG chunk during export.");
     const type = new TextDecoder().decode(bytes.slice(at + 4, at + 8));
-    if (type !== "pHYs") parts.push(bytes.slice(at, end));
+    if (type === "IEND" && metadata) {
+      // Uncompressed UTF-8 iTXt: keyword, flag, method, language, translated keyword, text.
+      const data = new Uint8Array([...strToU8("Attribution"), 0, 0, 0, 0, 0, ...strToU8(metadata)]);
+      const textChunk = new Uint8Array(data.length + 12);
+      const textView = new DataView(textChunk.buffer);
+      textView.setUint32(0, data.length);
+      textChunk.set(strToU8("iTXt"), 4);
+      textChunk.set(data, 8);
+      textView.setUint32(data.length + 8, crc32(textChunk.slice(4, data.length + 8)));
+      parts.push(textChunk);
+    }
+    if (!["eXIf", "tEXt", "iTXt", "zTXt", "tIME"].includes(type) && (type !== "pHYs" || !physical))
+      parts.push(bytes.slice(at, end));
     at = end;
   }
   return new Blob(parts, { type: "image/png" });
@@ -91,14 +104,18 @@ export async function exportFile(
   fonts: Fonts,
   format: "SVG" | "PNG" | "PDF" | "TILED" | "SEPARATIONS",
 ) {
-  const license = assertExportable(scene);
+  assertExportable(scene);
   const base = `redlark-${scene.preset.toLowerCase()}`;
   const svg = sceneSvg(scene, fonts);
   if (format === "SVG") download(new Blob([svg], { type: "image/svg+xml" }), `${base}.svg`);
   else if (format === "PNG") {
     const image = await raster(scene, fonts);
     download(
-      PRESETS[scene.preset].unit === "mm" ? await pngAt300Ppi(image) : image,
+      await pngAt300Ppi(
+        image,
+        JSON.stringify(attributionMetadata(scene)),
+        PRESETS[scene.preset].unit === "mm",
+      ),
       `${base}${scene.preset === "Social" ? "" : "-300ppi"}.png`,
     );
   } else if (format === "SEPARATIONS") {
@@ -107,7 +124,7 @@ export async function exportFile(
     ];
     const files: Record<string, Uint8Array> = {
       "README.txt": strToU8(
-        `Uncalibrated one-ink composition previews, not press-ready plates.\n${license}\nCredits are on every sheet.\n`,
+        `Uncalibrated one-ink composition previews, not press-ready plates.\n${JSON.stringify(attributionMetadata(scene), null, 2)}\n`,
       ),
     };
     inks.forEach((ink, i) => {
@@ -158,8 +175,11 @@ export async function exportFile(
     } else await pdf.svg(node, { x: 0, y: 0, width, height });
     pdf.setProperties({
       title: "Red Lark Workshop composition",
-      subject: `Source permissions: ${license}. See credit strip for adaptation and user-image rights.`,
-      author: "See source credit strip",
+      subject: JSON.stringify(attributionMetadata(scene)),
+      author:
+        attributionMetadata(scene)
+          .sources.map((c) => c.artist)
+          .join("; ") || "User composition",
       keywords: "Red Lark Workshop, browser-only, outlined vector type",
     });
     download(pdf.output("blob"), `${base}${format === "TILED" ? "-a4-tiles" : ""}.pdf`);

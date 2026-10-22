@@ -17,7 +17,10 @@ export function sourceCredit(poster: Poster, artist: string): Credit {
 export function sceneCredits(scene: Scene): Credit[] {
   return [
     ...new Map(
-      scene.layers.filter((l) => !l.hidden && l.credit).map((l) => [l.credit!.id, l.credit!]),
+      [
+        ...(scene.sources ?? []),
+        ...scene.layers.filter((l) => !l.hidden && l.credit).map((l) => l.credit!),
+      ].map((c) => [c.id, c]),
     ).values(),
   ];
 }

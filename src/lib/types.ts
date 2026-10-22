@@ -95,6 +95,17 @@ export interface Scene {
   background: string;
   colors: 1 | 2 | 3;
   layers: Layer[];
+  /** Source attribution survives layer deletion and is never an editing layer. */
+  sources?: Credit[];
+  exportCredit?: {
+    enabled: boolean;
+    x: number;
+    y: number;
+    width: number;
+    fontSize: number;
+    color: string;
+    background: string;
+  };
 }
 export interface PosterFile {
   format: "PDF" | "PNG" | "JPEG" | "SVG" | "ZIP";
