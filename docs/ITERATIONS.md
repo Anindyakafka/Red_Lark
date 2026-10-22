@@ -6,6 +6,12 @@ Inspected the running JavaScript editor at 1440/768/375 and viewed before screen
 
 Separated canvas rendering from export-only credit, retained project-level sources through deletion/save/share, kept default-on attribution/default-off CC0, added positioning/colour/type-size controls and Unicode PNG/PDF/SVG metadata. A PNG unit fixture contained pre-existing EXIF; the metadata helper now removes old EXIF/text/time chunks before writing the new attribution, and all 22 focused Studio/licence/privacy/Indic tests and typecheck pass. Browser export/layout regression will run after the chrome and gesture changes. New non-English labels are explicit English fallbacks with reviewed:false; legal/policy and Appendix A text are unchanged.
 
+## Studio workspace — Round 2 compact options
+
+Moved all audited controls into eight option groups; retained shape/texture, image and caption libraries, layer order/lock/hide, transform/text/font/ink controls, paper/background, print separations, all five exports, credits, project recovery/share and shortcuts. Only undo/redo/export, compact option buttons and zoom/pan/snap/fit remain above the full-width canvas. One modal-style overlay drawer/bottom sheet opens at a time, with focus capture/return, Tab bounds, outside-pointer/toggle/Escape dismissal. Panel coordinates are independent of the canvas layout.
+
+Live-development checks exercised every panel at 1440/768/375: all 24 panel states have axe 0, and opening any panel leaves the canvas viewport rectangle exactly unchanged. Viewed closed desktop and open mobile Layers captures: the canvas stays visible behind the sheet; the permanent 495 px sidebar allocation is gone. Export preview is generated only when its panel opens. Typecheck and lint passed before crop integration. Next: implement the previously absent crop tool and unify viewport gestures, then update the existing interaction tests to navigate the new controls.
+
 ## Account pages P9 critique — 21 October 2026
 
 Guest contribution replaces the account wall. Work metadata validation and sanitization/PDF generation are shared with account uploads. Random per-work receipt secrets are returned only to the submitter, stored hashed, never put in query strings/localStorage/analytics, and expire after 90 days. RLS denies receipt access to anon/contributors; server checks its exact work before signing, completion or status. Admin review still requires role/fresh MFA. Optional private contact fields remain separate from public consent.

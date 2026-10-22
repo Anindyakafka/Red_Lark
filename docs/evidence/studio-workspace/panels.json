@@ -1,0 +1,20 @@
+[
+  {
+    "width": 1440,
+    "noReflow": true,
+    "allEightPanelsAccessible": true,
+    "axe": 0
+  },
+  {
+    "width": 768,
+    "noReflow": true,
+    "allEightPanelsAccessible": true,
+    "axe": 0
+  },
+  {
+    "width": 375,
+    "noReflow": true,
+    "allEightPanelsAccessible": true,
+    "axe": 0
+  }
+]

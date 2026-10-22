@@ -1,7 +1,9 @@
 "use client";
+import "./workspace.css";
 import { Link } from "@/i18n/client";
 
 import { UiText } from "@/i18n/client";
+import { OptionPanel, PANELS, type PanelId } from "./option-panel";
 
 import { useCallback, useEffect, useReducer, useRef, useState } from "react";
 import opentype from "opentype.js";
@@ -60,7 +62,18 @@ export default function Studio() {
   const [zoom, setZoom] = useState(1);
   const [pan, setPan] = useState(false);
   const [snap, setSnap] = useState(true);
-  const [mobileTab, setMobileTab] = useState("canvas");
+  const [panel, setPanel] = useState<PanelId | null>(null);
+  function togglePanel(id: PanelId) {
+    setPanel((current) => (current === id ? null : id));
+  }
+  function closePanel(restoreFocus = false) {
+    const previous = panel;
+    setPanel(null);
+    if (restoreFocus && previous)
+      requestAnimationFrame(() =>
+        document.getElementById("studio-trigger-" + previous)?.focus({ preventScroll: true }),
+      );
+  }
   const [shareLink, setShareLink] = useState("");
   const [separation, setSeparation] = useState("");
   const [liveLayer, setLiveLayer] = useState<Layer | null>(null);
@@ -326,7 +339,7 @@ export default function Studio() {
     if (!inks.includes(layer.color) && inks.length >= scene.colors) layer.color = inks[0];
     commit({ ...scene, layers: [...scene.layers, layer] });
     setSelected(layer.id);
-    setMobileTab("controls");
+    setPanel(kind === "text" ? "text" : "layers");
   }
   function addSource(slug: string) {
     if (scene.layers.length >= 80) {
@@ -385,7 +398,7 @@ export default function Studio() {
       if (fonts) sceneSvg(next, fonts);
       commit(next);
       setSelected(layer.id);
-      setMobileTab("controls");
+      setPanel("text");
     } catch (error) {
       setFailure(String(error));
     }
@@ -609,7 +622,7 @@ export default function Studio() {
     .replace(/^<svg[^>]*>/, "")
     .replace(/<\/svg>$/, "");
   return (
-    <section className="studio-workspace" aria-label="Poster-making Studio">
+    <section className="studio-workspace studio-compact" aria-label="Poster-making Studio">
       <div className="studio-toolbar">
         <div>
           <button
@@ -624,33 +637,34 @@ export default function Studio() {
           >
             <UiText id={"REDO"} />
           </button>
-          <button onClick={fresh} disabled={busy}>
-            <UiText id={"START FRESH"} />
-          </button>
-          <button
-            onClick={() => {
-              if (restoreRef.current) {
-                commit(structuredClone(restoreRef.current));
-                setStatus("RESTORED The draft saved when you opened this session.");
-              }
-            }}
-            disabled={!restoreRef.current || busy}
-          >
-            <UiText id={"RESTORE"} />
-          </button>
         </div>
-        <div>
-          <button onClick={() => void share()} disabled={busy}>
-            <UiText id={"SHARE LINK"} />
-          </button>
-          <button className="accent" onClick={() => void exportNow("PDF")} disabled={busy}>
-            <UiText id={"EXPORT PDF ↓"} />
-          </button>
-          <button className="accent" onClick={() => void exportNow("PNG")} disabled={busy}>
-            <UiText id="Download for Free" /> ↓
-          </button>
-        </div>
+        <span className="studio-selection">
+          {selectedLayer?.name ?? <UiText id="Choose a layer, or add an element." />}
+        </span>
+        <button
+          className="accent"
+          data-studio-option="export"
+          aria-expanded={panel === "export"}
+          aria-controls="studio-option-export"
+          onClick={() => togglePanel("export")}
+        >
+          <UiText id="EXPORT" />
+        </button>
       </div>
+      <nav className="studio-options" aria-label="Studio options">
+        {PANELS.map((option) => (
+          <button
+            key={option.id}
+            id={"studio-trigger-" + option.id}
+            data-studio-option={option.id}
+            aria-controls={"studio-option-" + option.id}
+            aria-expanded={panel === option.id}
+            onClick={() => togglePanel(option.id)}
+          >
+            <UiText id={option.label} />
+          </button>
+        ))}
+      </nav>
       {failure && (
         <p role="alert" className="studio-notice failure">
           {failure}
@@ -678,177 +692,10 @@ export default function Studio() {
           />
         </label>
       )}
-      <div className="studio-grid">
-        <aside
-          className={`studio-panel shelf ${mobileTab === "elements" ? "mobile-open" : ""}`}
-          aria-labelledby="studio-elements-heading"
-        >
-          <h2 id="studio-elements-heading">
-            <UiText id={"01 ELEMENTS"} />
-          </h2>
-          <div className="element-buttons">
-            {(
-              [
-                "text",
-                "rectangle",
-                "circle",
-                "star",
-                "arrow",
-                "halftone",
-                "grain",
-              ] as Layer["kind"][]
-            ).map((kind) => (
-              <button key={kind} onClick={() => add(kind)} disabled={busy}>
-                + {kind.toUpperCase()}
-              </button>
-            ))}
-          </div>
-          <input
-            type="file"
-            accept="image/png,image/jpeg,image/webp,image/avif"
-            ref={uploadRef}
-            className="sr-only"
-            aria-label="Import a local image"
-            onChange={(e) => void upload(e.target.files?.[0])}
-          />
-          <button onClick={() => uploadRef.current?.click()} disabled={busy}>
-            <UiText id={"IMPORT IMAGE"} />
-          </button>
-          <p className="small">
-            <UiText
-              id={
-                "Local only. EXIF/GPS stripped on import. Images downsample to 1,800 px; use high-resolution vector elements for large prints."
-              }
-            />
-          </p>
-          <h3>
-            <UiText id={"Image Code"} />
-          </h3>
-          <label className="control">
-            <UiText id={"Find an element"} />
-            <input
-              value={shelfQuery}
-              onChange={(e) => setShelfQuery(e.target.value)}
-              placeholder="Search source titles"
-            />
-          </label>
-          <div className="source-shelf">
-            {imageLibrary
-              .map((asset) => posters.find((p) => p.slug === asset.workSlug))
-              .filter((p): p is NonNullable<typeof p> => Boolean(p))
-              .filter(
-                (p) =>
-                  canRemix(p) &&
-                  `${p.imageCode} ${p.title} ${p.titleOriginal ?? ""}`
-                    .normalize("NFC")
-                    .toLowerCase()
-                    .includes(shelfQuery.normalize("NFC").toLowerCase()),
-              )
-              .slice(0, 8)
-              .map((p) => (
-                <button key={p.slug} onClick={() => addSource(p.slug)}>
-                  + {p.imageCode} / {p.title}
-                  <span>{p.license}</span>
-                </button>
-              ))}
-          </div>
-          <h3>
-            <UiText id="Caption Code" />
-          </h3>
-          <div className="caption-shelf">
-            {captionLibrary
-              .filter((caption) => {
-                const poster = posters.find((work) => work.slug === caption.workSlug);
-                return (
-                  poster &&
-                  canRemix(poster) &&
-                  `${caption.code} ${caption.text}`.toLowerCase().includes(shelfQuery.toLowerCase())
-                );
-              })
-              .map((caption) => (
-                <button key={caption.code} onClick={() => addCaption(caption.code)}>
-                  + {caption.code} / {caption.text.replaceAll("\n", " ")}
-                </button>
-              ))}
-          </div>
-          <h3>
-            <UiText id={"LAYERS TOP FIRST"} />
-          </h3>
-          <div className="layer-list">
-            {[...scene.layers].reverse().map((l, i) => (
-              <div className={selected === l.id ? "layer selected" : "layer"} key={l.id}>
-                <button
-                  className="layer-name"
-                  aria-pressed={selected === l.id}
-                  onClick={() => {
-                    setSelected(l.id);
-                    setMobileTab("controls");
-                  }}
-                >
-                  {l.name} {l.hidden ? "HIDDEN" : ""}
-                </button>
-                <div>
-                  <button
-                    aria-label={`${l.locked ? "Unlock" : "Lock"} ${l.name}`}
-                    aria-pressed={l.locked}
-                    onClick={() =>
-                      commit({
-                        ...scene,
-                        layers: scene.layers.map((v) =>
-                          v.id === l.id ? { ...v, locked: !v.locked } : v,
-                        ),
-                      })
-                    }
-                  >
-                    {l.locked ? "LOCKED" : "LOCK"}
-                  </button>
-                  <button
-                    aria-label={`${l.hidden ? "Show" : "Hide"} ${l.name}`}
-                    aria-pressed={l.hidden}
-                    onClick={() =>
-                      commit({
-                        ...scene,
-                        layers: scene.layers.map((v) =>
-                          v.id === l.id ? { ...v, hidden: !v.hidden } : v,
-                        ),
-                      })
-                    }
-                  >
-                    {l.hidden ? "SHOW" : "HIDE"}
-                  </button>
-                  <button
-                    disabled={i === 0 || l.locked}
-                    aria-label={`Bring ${l.name} forward`}
-                    onClick={() => reorder(l.id, 1)}
-                  >
-                    ↑
-                  </button>
-                  <button
-                    disabled={i === scene.layers.length - 1 || l.locked}
-                    aria-label={`Send ${l.name} back`}
-                    onClick={() => reorder(l.id, -1)}
-                  >
-                    ↓
-                  </button>
-                </div>
-              </div>
-            ))}
-          </div>
-        </aside>
-        <div className={`canvas-panel ${mobileTab === "canvas" ? "mobile-open" : ""}`}>
+
+      <div className="studio-stage">
+        <div className="canvas-panel mobile-open">
           <div className="canvas-controls">
-            <label>
-              <UiText id={"Paper"} />
-              <select
-                aria-label="Paper preset"
-                value={scene.preset}
-                onChange={(e) => commit({ ...scene, preset: e.target.value as PresetId })}
-              >
-                {Object.keys(PRESETS).map((p) => (
-                  <option key={p}>{p}</option>
-                ))}
-              </select>
-            </label>
             <label>
               <UiText id={"Zoom"} />
               <input
@@ -949,13 +796,99 @@ export default function Studio() {
               </svg>
             </div>
           </div>
-          <p className="small">
-            <UiText
-              id={
-                "Drag / resize at the lower-right handle / rotate above. Use layer controls on any device. Two fingers zoom; Pan moves the viewport."
-              }
-            />
-          </p>
+          {!scene.layers.length && (
+            <p className="studio-empty">
+              <UiText id="EMPTY CANVAS Add an element from the shelf." />
+            </p>
+          )}
+        </div>
+        {panel && <div className="studio-panel-scrim" aria-hidden="true" />}
+        <OptionPanel id="text" open={panel === "text"} close={closePanel}>
+          <button onClick={() => add("text")} disabled={busy}>
+            + TEXT
+          </button>
+          {selectedLayer?.kind === "text" ? (
+            <fieldset disabled={selectedLayer.locked || busy}>
+              <legend>{selectedLayer.name}</legend>{" "}
+              {selectedLayer.kind === "text" && (
+                <>
+                  <label className="control">
+                    <UiText id={"Words"} />
+                    <textarea
+                      aria-label="Words"
+                      rows={4}
+                      maxLength={1500}
+                      value={selectedLayer.text}
+                      onChange={(e) => patch({ text: e.target.value })}
+                    />
+                  </label>
+                  <label className="control">
+                    <UiText id={"Font"} />
+                    <select
+                      value={selectedLayer.font}
+                      onChange={(e) => patch({ font: e.target.value as Layer["font"] })}
+                    >
+                      <option value="display">
+                        <UiText id={"Bebas Neue / condensed"} />
+                      </option>
+                      <option value="mono">
+                        <UiText id={"IBM Plex Mono"} />
+                      </option>
+                    </select>
+                  </label>
+                  <label className="control">
+                    <UiText id={"Type size"} />
+                    <input
+                      type="number"
+                      min={6}
+                      max={600}
+                      value={selectedLayer.fontSize}
+                      onChange={(e) =>
+                        patch({ fontSize: Math.max(6, Math.min(600, Number(e.target.value))) })
+                      }
+                    />
+                  </label>
+                </>
+              )}
+            </fieldset>
+          ) : (
+            <p>
+              <UiText id="Select a text layer or add text to edit words and fonts." />
+            </p>
+          )}
+        </OptionPanel>
+        <OptionPanel id="color" open={panel === "color"} close={closePanel}>
+          {selectedLayer && selectedLayer.kind !== "image" ? (
+            <fieldset disabled={selectedLayer.locked || busy}>
+              <legend>{selectedLayer.name}</legend>
+              <label className="control">
+                <UiText id={"Ink colour"} />
+                <input
+                  aria-label="Ink colour"
+                  type="color"
+                  value={selectedLayer.color}
+                  onChange={(e) => patch({ color: e.target.value })}
+                />
+              </label>
+              <div className="swatches">
+                {PALETTE.slice(0, scene.colors).map((ink, i) => (
+                  <button
+                    style={{ background: ink, color: ink === "#151515" ? "#f3f0e6" : "#151515" }}
+                    key={ink}
+                    aria-label={`Ink ${i + 1}: ${ink}`}
+                    aria-pressed={selectedLayer.color === ink}
+                    onClick={() => patch({ color: ink })}
+                  >
+                    {selectedLayer.color === ink ? "✓" : String(i + 1)}
+                  </button>
+                ))}
+              </div>
+            </fieldset>
+          ) : (
+            <p>
+              <UiText id="Choose a shape or text layer to change its ink." />
+            </p>
+          )}
           <div className="ink-preview">
             <label>
               <UiText id={"Print mode"} />
@@ -1001,38 +934,73 @@ export default function Studio() {
             </label>
           </div>
           <p className="small">
-            <UiText
-              id={
-                "Uncalibrated riso/screenprint preview, not a press-ready plate. Uploaded images remain full colour."
-              }
-            />
+            <UiText id="Uncalibrated riso/screenprint preview, not a press-ready plate. Uploaded images remain full colour." />
           </p>
-          {!scene.layers.length && (
-            <div className="notice">
-              <UiText id={"EMPTY CANVAS Add an element from the shelf."} />
-            </div>
-          )}
-        </div>
-        <aside
-          className={`studio-panel properties ${mobileTab === "controls" ? "mobile-open" : ""}`}
-          aria-labelledby="studio-controls-heading"
-        >
-          <h2 id="studio-controls-heading">
-            <UiText id={"02 CONTROLS"} />
-          </h2>
-          <label className="control">
-            <UiText id={"Paper colour"} />
-            <input
-              type="color"
-              value={scene.background}
-              onChange={(e) => commit({ ...scene, background: e.target.value })}
-            />
-          </label>
-          {selectedLayer ? (
+        </OptionPanel>
+        <OptionPanel id="layers" open={panel === "layers"} close={closePanel}>
+          <div className="layer-list">
+            {[...scene.layers].reverse().map((l, i) => (
+              <div className={selected === l.id ? "layer selected" : "layer"} key={l.id}>
+                <button
+                  className="layer-name"
+                  aria-pressed={selected === l.id}
+                  onClick={() => {
+                    setSelected(l.id);
+                    setPanel("layers");
+                  }}
+                >
+                  {l.name} {l.hidden ? "HIDDEN" : ""}
+                </button>
+                <div>
+                  <button
+                    aria-label={`${l.locked ? "Unlock" : "Lock"} ${l.name}`}
+                    aria-pressed={l.locked}
+                    onClick={() =>
+                      commit({
+                        ...scene,
+                        layers: scene.layers.map((v) =>
+                          v.id === l.id ? { ...v, locked: !v.locked } : v,
+                        ),
+                      })
+                    }
+                  >
+                    {l.locked ? "LOCKED" : "LOCK"}
+                  </button>
+                  <button
+                    aria-label={`${l.hidden ? "Show" : "Hide"} ${l.name}`}
+                    aria-pressed={l.hidden}
+                    onClick={() =>
+                      commit({
+                        ...scene,
+                        layers: scene.layers.map((v) =>
+                          v.id === l.id ? { ...v, hidden: !v.hidden } : v,
+                        ),
+                      })
+                    }
+                  >
+                    {l.hidden ? "SHOW" : "HIDE"}
+                  </button>
+                  <button
+                    disabled={i === 0 || l.locked}
+                    aria-label={`Bring ${l.name} forward`}
+                    onClick={() => reorder(l.id, 1)}
+                  >
+                    ↑
+                  </button>
+                  <button
+                    disabled={i === scene.layers.length - 1 || l.locked}
+                    aria-label={`Send ${l.name} back`}
+                    onClick={() => reorder(l.id, -1)}
+                  >
+                    ↓
+                  </button>
+                </div>
+              </div>
+            ))}
+          </div>
+          {selectedLayer && (
             <fieldset disabled={selectedLayer.locked || busy}>
-              <legend>
-                {selectedLayer.name} {selectedLayer.locked ? "LOCKED" : ""}
-              </legend>
+              <legend>{selectedLayer.name}</legend>
               <label className="control">
                 <UiText id={"Layer name"} />
                 <input
@@ -1041,68 +1009,6 @@ export default function Studio() {
                   onChange={(e) => patch({ name: e.target.value })}
                 />
               </label>
-              {selectedLayer.kind === "text" && (
-                <>
-                  <label className="control">
-                    <UiText id={"Words"} />
-                    <textarea
-                      aria-label="Words"
-                      rows={4}
-                      maxLength={1500}
-                      value={selectedLayer.text}
-                      onChange={(e) => patch({ text: e.target.value })}
-                    />
-                  </label>
-                  <label className="control">
-                    <UiText id={"Font"} />
-                    <select
-                      value={selectedLayer.font}
-                      onChange={(e) => patch({ font: e.target.value as Layer["font"] })}
-                    >
-                      <option value="display">
-                        <UiText id={"Bebas Neue / condensed"} />
-                      </option>
-                      <option value="mono">
-                        <UiText id={"IBM Plex Mono"} />
-                      </option>
-                    </select>
-                  </label>
-                  <label className="control">
-                    <UiText id={"Type size"} />
-                    <input
-                      type="number"
-                      min={6}
-                      max={600}
-                      value={selectedLayer.fontSize}
-                      onChange={(e) =>
-                        patch({ fontSize: Math.max(6, Math.min(600, Number(e.target.value))) })
-                      }
-                    />
-                  </label>
-                </>
-              )}
-              <label className="control">
-                <UiText id={"Ink colour"} />
-                <input
-                  aria-label="Ink colour"
-                  type="color"
-                  value={selectedLayer.color}
-                  onChange={(e) => patch({ color: e.target.value })}
-                />
-              </label>
-              <div className="swatches">
-                {PALETTE.slice(0, scene.colors).map((ink, i) => (
-                  <button
-                    style={{ background: ink, color: ink === "#151515" ? "#f3f0e6" : "#151515" }}
-                    key={ink}
-                    aria-label={`Ink ${i + 1}: ${ink}`}
-                    aria-pressed={selectedLayer.color === ink}
-                    onClick={() => patch({ color: ink })}
-                  >
-                    {selectedLayer.color === ink ? "✓" : String(i + 1)}
-                  </button>
-                ))}
-              </div>
               <div className="coordinate-grid">
                 {(["x", "y", "width", "height", "rotation"] as const).map((key) => (
                   <label className="control" key={key}>
@@ -1138,25 +1044,113 @@ export default function Studio() {
               <button className="remove" onClick={remove}>
                 <UiText id={"REMOVE LAYER"} />
               </button>
-              {selectedLayer.credit && (
-                <p className="small">
-                  <UiText id={"SOURCE:"} />
-                  {selectedLayer.credit.title}
-                  <br />
-                  {selectedLayer.credit.artist}
-                  <br />
-                  {selectedLayer.credit.license}
-                </p>
-              )}
             </fieldset>
-          ) : (
-            <p>
-              <UiText id={"Choose a layer, or add an element."} />
-            </p>
           )}
+        </OptionPanel>
+        <OptionPanel id="images" open={panel === "images"} close={closePanel}>
+          <input
+            type="file"
+            accept="image/png,image/jpeg,image/webp,image/avif"
+            ref={uploadRef}
+            className="sr-only"
+            aria-label="Import a local image"
+            onChange={(e) => void upload(e.target.files?.[0])}
+          />
+          <button onClick={() => uploadRef.current?.click()} disabled={busy}>
+            <UiText id={"IMPORT IMAGE"} />
+          </button>
+          <p className="small">
+            <UiText
+              id={
+                "Local only. EXIF/GPS stripped on import. Images downsample to 1,800 px; use high-resolution vector elements for large prints."
+              }
+            />
+          </p>
           <h3>
-            <UiText id={"EXPORT"} />
+            <UiText id={"Image Code"} />
           </h3>
+          <label className="control">
+            <UiText id={"Find an element"} />
+            <input
+              value={shelfQuery}
+              onChange={(e) => setShelfQuery(e.target.value)}
+              placeholder="Search source titles"
+            />
+          </label>
+          <div className="source-shelf">
+            {imageLibrary
+              .map((asset) => posters.find((p) => p.slug === asset.workSlug))
+              .filter((p): p is NonNullable<typeof p> => Boolean(p))
+              .filter(
+                (p) =>
+                  canRemix(p) &&
+                  `${p.imageCode} ${p.title} ${p.titleOriginal ?? ""}`
+                    .normalize("NFC")
+                    .toLowerCase()
+                    .includes(shelfQuery.normalize("NFC").toLowerCase()),
+              )
+              .slice(0, 8)
+              .map((p) => (
+                <button key={p.slug} onClick={() => addSource(p.slug)}>
+                  + {p.imageCode} / {p.title}
+                  <span>{p.license}</span>
+                </button>
+              ))}
+          </div>
+          <h3>
+            <UiText id="Caption Code" />
+          </h3>
+          <div className="caption-shelf">
+            {captionLibrary
+              .filter((caption) => {
+                const poster = posters.find((work) => work.slug === caption.workSlug);
+                return (
+                  poster &&
+                  canRemix(poster) &&
+                  `${caption.code} ${caption.text}`.toLowerCase().includes(shelfQuery.toLowerCase())
+                );
+              })
+              .map((caption) => (
+                <button key={caption.code} onClick={() => addCaption(caption.code)}>
+                  + {caption.code} / {caption.text.replaceAll("\n", " ")}
+                </button>
+              ))}
+          </div>
+        </OptionPanel>
+        <OptionPanel id="shapes" open={panel === "shapes"} close={closePanel}>
+          <div className="element-buttons">
+            {(["rectangle", "circle", "star", "arrow", "halftone", "grain"] as Layer["kind"][]).map(
+              (kind) => (
+                <button key={kind} onClick={() => add(kind)} disabled={busy}>
+                  + {kind.toUpperCase()}
+                </button>
+              ),
+            )}
+          </div>
+        </OptionPanel>
+        <OptionPanel id="paper" open={panel === "paper"} close={closePanel}>
+          <label>
+            <UiText id={"Paper"} />
+            <select
+              aria-label="Paper preset"
+              value={scene.preset}
+              onChange={(e) => commit({ ...scene, preset: e.target.value as PresetId })}
+            >
+              {Object.keys(PRESETS).map((p) => (
+                <option key={p}>{p}</option>
+              ))}
+            </select>
+          </label>
+          <label className="control">
+            <UiText id={"Paper colour"} />
+            <input
+              type="color"
+              value={scene.background}
+              onChange={(e) => commit({ ...scene, background: e.target.value })}
+            />
+          </label>
+        </OptionPanel>
+        <OptionPanel id="export" open={panel === "export"} close={closePanel}>
           <label className="control">
             <span>
               <UiText id="Add credit line" />
@@ -1258,6 +1252,40 @@ export default function Studio() {
               }
             />
           </p>
+
+          <details>
+            <summary>
+              <UiText id="Export preview" />
+            </summary>
+            <div
+              className="studio-export-preview"
+                dangerouslySetInnerHTML={{ __html: panel === "export" ? sceneSvg(scene, fonts) : "" }}
+            />
+          </details>
+        </OptionPanel>
+        <OptionPanel id="help" open={panel === "help"} close={closePanel}>
+          <div className="project-actions">
+            <button onClick={fresh} disabled={busy}>
+              <UiText id={"START FRESH"} />
+            </button>
+            <button
+              onClick={() => {
+                if (restoreRef.current) {
+                  commit(structuredClone(restoreRef.current));
+                  setStatus("RESTORED The draft saved when you opened this session.");
+                }
+              }}
+              disabled={!restoreRef.current || busy}
+            >
+              <UiText id={"RESTORE"} />
+            </button>
+            <button onClick={() => void share()} disabled={busy}>
+              <UiText id={"SHARE LINK"} />
+            </button>
+          </div>
+          <p className="small">
+            <UiText id="Source credits are project metadata, not editing layers. All exports include attribution metadata." />
+          </p>
           <details>
             <summary>
               <UiText id={"CREDITS / SHORTCUTS"} />
@@ -1275,18 +1303,11 @@ export default function Studio() {
               />
             </p>
           </details>
-        </aside>
+          <p className="small">
+            <UiText id="Two fingers pinch or pan anywhere in the canvas viewport. Ctrl/Cmd + wheel zooms. Space + drag or middle drag pans. Double-click or double-tap fits the sheet." />
+          </p>
+        </OptionPanel>
       </div>
-      <nav className="studio-mobile-toolbar" aria-label="Studio mobile tools">
-        {["elements", "canvas", "controls"].map((tab) => (
-          <button key={tab} aria-pressed={mobileTab === tab} onClick={() => setMobileTab(tab)}>
-            {tab.toUpperCase()}
-          </button>
-        ))}
-        <button onClick={() => void exportNow("PDF")} disabled={busy}>
-          <UiText id={"EXPORT"} />
-        </button>
-      </nav>
     </section>
   );
 }
