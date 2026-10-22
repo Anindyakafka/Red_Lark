@@ -144,6 +144,18 @@ export function validateScene(input: unknown): input is Scene {
     )
       return false;
     if (
+      l.crop &&
+      (l.kind !== "image" ||
+        ![l.crop.x, l.crop.y, l.crop.width, l.crop.height].every(Number.isFinite) ||
+        l.crop.x < 0 ||
+        l.crop.y < 0 ||
+        l.crop.width < 0.02 ||
+        l.crop.height < 0.02 ||
+        l.crop.x + l.crop.width > 1.000001 ||
+        l.crop.y + l.crop.height > 1.000001)
+    )
+      return false;
+    if (
       l.credit &&
       (typeof l.credit.id !== "string" ||
         typeof l.credit.artist !== "string" ||

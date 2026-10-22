@@ -26,6 +26,9 @@ import { createShapedFont } from "./shaping";
 import imageLibrary from "../../content/studio/images.json";
 import captionLibrary from "../../content/studio/captions.json";
 import { cleanTemplate, creditRequired, creditSettings } from "./attribution";
+import { useImageCrop } from "./use-image-crop";
+import { CropOverlay } from "./crop-overlay";
+import { CropControls } from "./crop-controls";
 
 const KEY = "redlark.studio.v2";
 const PALETTE = ["#151515", "#e32219", "#f3f0e6"];
@@ -99,6 +102,7 @@ export default function Studio() {
     dispatch({ type: "commit", scene: cleanTemplate(next) });
     setShareLink("");
   }, []);
+  const crop = useImageCrop(scene, selectedLayer, commit, point);
   useEffect(() => {
     let cancelled = false;
     async function init() {
@@ -295,6 +299,12 @@ export default function Studio() {
   }, [selectedLayer, scene, commit]);
   useEffect(() => {
     const key = (event: KeyboardEvent) => {
+      if (event.key === "Escape" && crop.session) {
+        event.preventDefault();
+        crop.cancel();
+        svgRef.current?.focus();
+        return;
+      }
       const element = event.target as HTMLElement;
       if (["INPUT", "SELECT", "TEXTAREA"].includes(element.tagName) || element.isContentEditable)
         return;
@@ -328,7 +338,7 @@ export default function Studio() {
     };
     window.addEventListener("keydown", key);
     return () => window.removeEventListener("keydown", key);
-  }, [selectedLayer, patch, duplicate, remove]);
+  }, [selectedLayer, patch, duplicate, remove, crop]);
   function add(kind: Layer["kind"]) {
     if (scene.layers.length >= 80) {
       setFailure("LIMIT This Studio supports up to 80 layers.");
@@ -411,7 +421,7 @@ export default function Studio() {
     [layers[i], layers[next]] = [layers[next], layers[i]];
     commit({ ...scene, layers });
   }
-  function point(e: React.PointerEvent) {
+  function point(e: { clientX: number; clientY: number }) {
     const svg = svgRef.current!;
     const p = svg.createSVGPoint();
     p.x = e.clientX;
@@ -424,7 +434,7 @@ export default function Studio() {
     layer: Layer,
     mode: "move" | "resize" | "rotate" = "move",
   ) {
-    if (pan || layer.locked) return;
+    if (pan || layer.locked || crop.session) return;
     e.stopPropagation();
     setSelected(layer.id);
     const p = point(e);
@@ -434,6 +444,7 @@ export default function Studio() {
   function down(e: React.PointerEvent) {
     pointers.current.set(e.pointerId, { x: e.clientX, y: e.clientY });
     if (pointers.current.size === 2) {
+      crop.end(true);
       dragRef.current = null;
       setLiveLayer(null);
       const ps = [...pointers.current.values()];
@@ -466,6 +477,7 @@ export default function Studio() {
       scrollRef.current.scrollTop = panStart.current.top - e.clientY + panStart.current.y;
       return;
     }
+    if (crop.move(e)) return;
     const d = dragRef.current;
     if (!d) return;
     const p = point(e);
@@ -502,6 +514,7 @@ export default function Studio() {
     setLiveLayer(l);
   }
   function end(e: React.PointerEvent, cancel = false) {
+    crop.end(cancel);
     pointers.current.delete(e.pointerId);
     if (pointers.current.size < 2) pinchDistance.current = 0;
     if (dragRef.current && liveLayer && !cancel)
@@ -741,11 +754,11 @@ export default function Studio() {
                 ref={svgRef}
                 className="studio-paper"
                 viewBox={`0 0 ${dim.width} ${dim.height}`}
-                role="img"
+                role={crop.session ? "group" : "img"}
                 aria-label="Poster canvas. Choose a layer in the layer list to edit with labelled controls or arrow keys."
                 onPointerDownCapture={down}
                 onPointerDown={() => {
-                  if (!pan) setSelected(null);
+                  if (!pan && !crop.session) setSelected(null);
                 }}
                 onPointerMove={move}
                 onPointerUp={(e) => end(e)}
@@ -753,7 +766,7 @@ export default function Studio() {
               >
                 <g dangerouslySetInnerHTML={{ __html: body }} />
                 {displayScene.layers
-                  .filter((l) => !l.hidden)
+                  .filter((l) => !l.hidden && !crop.session)
                   .map((l) => (
                     <g
                       key={l.id}
@@ -793,6 +806,20 @@ export default function Studio() {
                       )}
                     </g>
                   ))}
+                {crop.session && (
+                  <CropOverlay
+                    layer={crop.session.layer}
+                    draft={crop.session.draft}
+                    scale={Math.hypot(
+                      svgRef.current?.getScreenCTM()?.a ?? 1,
+                      svgRef.current?.getScreenCTM()?.b ?? 0,
+                    )}
+                    start={(e, handle) => {
+                      if (!pan) crop.pointerStart(e, handle);
+                    }}
+                    nudge={crop.nudge}
+                  />
+                )}
               </svg>
             </div>
           </div>
@@ -802,6 +829,7 @@ export default function Studio() {
             </p>
           )}
         </div>
+        <CropControls crop={crop} />
         {panel && <div className="studio-panel-scrim" aria-hidden="true" />}
         <OptionPanel id="text" open={panel === "text"} close={closePanel}>
           <button onClick={() => add("text")} disabled={busy}>
@@ -1048,6 +1076,17 @@ export default function Studio() {
           )}
         </OptionPanel>
         <OptionPanel id="images" open={panel === "images"} close={closePanel}>
+          {selectedLayer?.kind === "image" && (
+            <button
+              disabled={selectedLayer.locked || busy}
+              onClick={() => {
+                crop.start();
+                setPanel(null);
+              }}
+            >
+              <UiText id="Crop image" />
+            </button>
+          )}
           <input
             type="file"
             accept="image/png,image/jpeg,image/webp,image/avif"
@@ -1259,7 +1298,7 @@ export default function Studio() {
             </summary>
             <div
               className="studio-export-preview"
-                dangerouslySetInnerHTML={{ __html: panel === "export" ? sceneSvg(scene, fonts) : "" }}
+              dangerouslySetInnerHTML={{ __html: panel === "export" ? sceneSvg(scene, fonts) : "" }}
             />
           </details>
         </OptionPanel>

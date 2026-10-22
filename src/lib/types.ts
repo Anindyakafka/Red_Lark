@@ -80,6 +80,8 @@ export interface Layer {
   hidden: boolean;
   image?: string;
   credit?: Credit;
+  /** Normalized region of the retained original image; never replaces image bytes. */
+  crop?: { x: number; y: number; width: number; height: number };
 }
 export const PRESETS = {
   A4: { width: 210, height: 297, unit: "mm" },

@@ -185,9 +185,11 @@ export function layerMarkup(l: Layer, fonts: Fonts) {
       inner = marks.join("");
       break;
     }
-    case "image":
-      inner = `<image href="${xml(l.image ?? "")}" width="${w}" height="${h}" preserveAspectRatio="xMidYMid meet"/>`;
+    case "image": {
+      const c = l.crop ?? { x: 0, y: 0, width: 1, height: 1 };
+      inner = `<svg width="${w}" height="${h}" viewBox="${c.x} ${c.y} ${c.width} ${c.height}" preserveAspectRatio="none" overflow="hidden"><image href="${xml(l.image ?? "")}" width="1" height="1" preserveAspectRatio="none"/></svg>`;
       break;
+    }
   }
   return `<g transform="translate(${l.x} ${l.y}) rotate(${l.rotation} ${w / 2} ${h / 2})">${inner}</g>`;
 }
