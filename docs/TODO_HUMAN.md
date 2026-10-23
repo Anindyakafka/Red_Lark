@@ -1,5 +1,11 @@
 ﻿# Human prerequisites for RED LARK WORKSHOP
 
+## Approved contribution publication — 23 October 2026
+
+Merge the artist-metadata repair and wait for Netlify production to report Published. The approval hook already worked; duplicate Anonymous contributor titles broke the build. No reupload, reapproval or new configuration is needed. Confirm the newest work in Collection and its item page after deployment.
+
+Separate dependency follow-up: npm audit reports one critical production dependency finding for Next.js 16.4.0. Schedule a verified patched-version upgrade; this metadata repair does not change versions or resolve the advisory.
+
 ## Current navigation / admin-session release
 
 Studio workspace release (22 October 2026): confirm whether users may disable the default-on visible attribution line and distribute credit separately. Metadata remains embedded, but printing/reposting can discard it. CC0 defaults off. No legal/policy wording was changed. Review new hi/bn/ml Studio labels/copy, currently English fallbacks with reviewed:false. Test real iOS Safari/Android pinch, pan, crop and double-tap; desktop emulation cannot certify real devices. Print an A4 PDF/PNG test with a rotated crop and SA attribution. Credits already baked into imported raster pixels are retained and cannot safely be erased or separated into editable type automatically.

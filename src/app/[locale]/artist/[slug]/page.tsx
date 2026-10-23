@@ -6,6 +6,7 @@ import { Collection } from "@/components/archive";
 import { artists, posters } from "@/lib/catalog";
 import { pageMeta } from "@/lib/metadata";
 import { ArtistContact } from "@/components/artist-contact";
+import { artistMetadataTitle } from "@/lib/artist-metadata";
 export const dynamicParams = false;
 export function generateStaticParams() {
   return artists.map((a) => ({ slug: a.id }));
@@ -13,7 +14,7 @@ export function generateStaticParams() {
 async function baseGenerateMetadata({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params;
   const a = artists.find((a) => a.id === slug);
-  return a ? pageMeta(a.name, a.bio, `/artist/${a.id}`) : {};
+  return a ? pageMeta(artistMetadataTitle(a, artists), a.bio, `/artist/${a.id}`) : {};
 }
 export default async function Page({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params;

@@ -1,5 +1,13 @@
 # Numbered rebuild rounds
 
+## Artist publication — Round 1 diagnosis and repair, 23 October 2026
+
+Public read-only checks found both approved works and reachable previews, but the newest work was absent from live Collection with a 404 item page. The supplied Netlify log proves the approval hook ran and fetched both works; static validation rejected identical Anonymous contributor artist titles, leaving the previous deploy live.
+
+Duplicate display names now receive their existing public archive IDs in metadata only. Visible artist names, credits, consent and separate identities remain unchanged. No database/storage changes or reapproval. Four-locale title/OG/Twitter regression passes. The initial test fixture lacked required placeholder typing; fixed before final typecheck. All 79 unit/copy/RLS tests, typecheck and lint pass. Real-catalogue production build validates 420 HTML pages and excludes client secrets. Twenty browser checks cover both works' artist/item pages and Collection in all four locales: full axe 0 on all 16 artist/item pages, distinct titles and both works in each Collection. Local success does not claim live deployment.
+
+The first build stopped for a Next.js security reminder; retry passed. npm audit confirms one critical production dependency finding for Next.js 16.4.0; a patched dependency upgrade remains a separate follow-up.
+
 ## Studio workspace — Round 1 audit and attribution
 
 Inspected the running JavaScript editor at 1440/768/375 and viewed before screenshots. Both sidebars were permanently open on desktop (495 px total); grid stretched to 2239 px; phone replaced the canvas when controls opened. Credit injection comes from the shared sceneSvg renderer plus the known placeholder-edition template marker. Crop does not exist; pinch only attaches to SVG and has no midpoint anchoring. Audit written before application edits.
