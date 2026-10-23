@@ -30,7 +30,7 @@ export function StudioClient() {
   if (!checked)
     return (
       <p className="studio-loading" role="status">
-        <UiText id="Checking local Studio options…" />
+        <UiText id="Checking local Workshop options…" />
       </p>
     );
   if (!format)
@@ -58,7 +58,7 @@ export function StudioClient() {
           ))}
         </div>
         <p>
-          <UiText id="All formats use the same private editor. Choose paper or social dimensions inside the Studio." />
+          <UiText id="All types use the same private editor. Choose paper or social dimensions inside the Workshop." />
         </p>
         <p>
           <UiText id="(Featured tools: Rotate and adjust size and colour of text and image.)" />

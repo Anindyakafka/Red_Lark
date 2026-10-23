@@ -35,7 +35,7 @@ export default function Page() {
       <p>
         <UiText
           id={
-            "The Studio excludes NoDerivatives works, including CC BY-NC-ND, from bases and elements. ND licences restrict distribution of adapted material; ask the artist about additional permissions. Such works may be offered as downloads under their stated terms. Non-commercial restrictions and attribution requirements remain attached to sources."
+            "The Workshop excludes NoDerivatives works, including CC BY-NC-ND, from bases and elements. ND licences restrict distribution of adapted material; ask the artist about additional permissions. Such works may be offered as downloads under their stated terms. Non-commercial restrictions and attribution requirements remain attached to sources."
           }
         />
       </p>
@@ -45,7 +45,7 @@ export default function Page() {
       <p>
         <UiText
           id={
-            "Studio exports compose a source-credit strip and licence metadata from every visible source element. ShareAlike sources impose their licence on adaptations. The exporter rejects incompatible ShareAlike combinations and combinations of CC BY-SA with non-commercial sources. Do not remove required credits. Images you upload remain subject to their owners’ rights."
+            "Workshop exports compose a source-credit strip and licence metadata from every visible source element. ShareAlike sources impose their licence on adaptations. The exporter rejects incompatible ShareAlike combinations and combinations of CC BY-SA with non-commercial sources. Do not remove required credits. Images you upload remain subject to their owners’ rights."
           }
         />
       </p>

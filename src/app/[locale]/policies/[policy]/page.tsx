@@ -5,7 +5,10 @@ import { isLocale } from "@/i18n/config";
 import { pageMeta } from "@/lib/metadata";
 import { localizeMetadata } from "@/i18n/metadata";
 import { Link, UiText } from "@/i18n/client";
-const identifiers = ["ai-policy", ...Object.keys(policies.articles)];
+const identifiers = [
+  "ai-policy",
+  ...Object.keys(policies.articles).filter((policy) => policy !== "takedown"),
+];
 export const dynamicParams = false;
 export function generateStaticParams() {
   return identifiers.map((policy) => ({ policy }));
@@ -68,7 +71,7 @@ export default async function Policy({
       )}
       <p>
         <Link className="underlined" href="/contact">
-          <UiText id="Contact / takedown" /> ↗
+          <UiText id="Contact" /> ↗
         </Link>
       </p>
       <Link className="button" href="/policies">

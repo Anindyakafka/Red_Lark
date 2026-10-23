@@ -32,7 +32,7 @@ test("fresh-eyes form focus and true empty Studio recovery", async ({ page }) =>
   await page.goto("/contact/");
   await page.getByRole("button", { name: "Send message" }).click();
   await expect(page.locator("#message")).toBeFocused();
-  await page.goto("/studio/?format=poster-placard");
+  await page.goto("/workshop/?format=poster-placard");
   await expect(page.locator(".studio-paper")).toBeVisible();
   await page.evaluate(() => {
     const raw = JSON.parse(
@@ -59,7 +59,7 @@ test("curation is empty honestly and font bundle is a real download", async ({ p
 test("single-ink mode remains single-ink after custom colour and shelf additions", async ({
   page,
 }) => {
-  await page.goto("/studio/?format=poster-placard");
+  await page.goto("/workshop/?format=poster-placard");
   await expect(page.locator(".studio-paper")).toBeVisible();
   await openOption(page, "color");
   await page.getByLabel("Print mode").selectOption("1");

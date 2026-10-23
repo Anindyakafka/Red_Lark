@@ -33,7 +33,7 @@ export async function generateMetadata({ params }: { params: Promise<{ locale: s
     ...localizeMetadata(
       pageMeta(
         "Contributor account",
-        "Manage your contributions, private profile, uploads and account security. The archive and Studio are open without an account.",
+        "Manage your contributions, private profile, uploads and account security. The archive and Workshop are open without an account.",
         "/account",
       ),
       (await params).locale,

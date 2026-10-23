@@ -20,11 +20,18 @@ export default function Page() {
             <UiText id="Find a poster. Read the small print. Take it to a wall." />
           </p>
         </div>
-        <Link className="button accent" href="/studio">
-          <UiText id="Open Studio" /> ↗
+        <Link className="button accent" href="/workshop">
+          <UiText id="Open Workshop" /> ↗
         </Link>
       </section>
-      <Collection posters={posters} />
+      <p className="content-width">
+        <Link className="underlined" href="/archive">
+          <UiText id="Browse the full Archive" />
+        </Link>
+      </p>
+      <Collection
+        posters={posters.filter((poster) => (poster.archiveStatus || "usable") === "usable")}
+      />
     </>
   );
 }

@@ -5,7 +5,7 @@ import { pageMeta } from "@/lib/metadata";
 import { analyticsConfiguration } from "@/lib/analytics";
 const baseMetadata = pageMeta(
   "Privacy draft",
-  "Plain-language draft covering browser-local Studio designs, optional contributor and staff accounts, private uploads, contact mail, necessary cookies and optional cookieless analytics.",
+  "Plain-language draft covering browser-local Workshop designs, optional contributor and staff accounts, private uploads, contact mail, necessary cookies and optional cookieless analytics.",
   "/privacy",
 );
 export default function Page() {
@@ -18,7 +18,7 @@ export default function Page() {
       <h1>
         <UiText id={"HOW WE HANDLE DATA."} />
       </h1>
-      <Link className="button accent" href="/studio" prefetch={false}>
+      <Link className="button accent" href="/workshop" prefetch={false}>
         <UiText id={"OPEN PRIVATE STUDIO ↗"} />
       </Link>
       <p>
@@ -34,7 +34,7 @@ export default function Page() {
       <p>
         <UiText
           id={
-            "Studio designs and images imported into the Studio stay in your browser. The separate contribution Upload flow sends an image privately to Cloudflare R2 for sanitization and review; Supabase stores account and contribution metadata, not artwork files. Original quarantine uploads expire after processing or cleanup; sanitized files remain private until approval. We do not request geolocation, fingerprint devices or assign tracking identifiers. Application rate limits store only salted, daily-rotating hashes, removed after expiry; infrastructure-provider logging needs owner review."
+            "Workshop designs and images imported into the Workshop stay in your browser. The separate contribution Upload flow sends an image privately to Cloudflare R2 for sanitization and review; Supabase stores account and contribution metadata, not artwork files. Original quarantine uploads expire after processing or cleanup; sanitized files remain private until approval. We do not request geolocation, fingerprint devices or assign tracking identifiers. Application rate limits store only salted, daily-rotating hashes, removed after expiry; infrastructure-provider logging needs owner review."
           }
         />
       </p>
@@ -45,12 +45,12 @@ export default function Page() {
         <UiText id="Guest contributions do not create an account. We store the artwork, review details and any optional contact or UPI fields you choose to provide. Each field is published only with its own explicit consent. A private status link contains a random secret in its URL fragment; only a hash is stored in the database. Anyone holding the link can read that submission's status and feedback. Links expire after 90 days; scheduled cleanup removes expired receipt/contact records and abandoned draft files. Submitted artwork remains subject to review and the takedown policy. Save the link yourself: we do not email it or save it in localStorage." />
       </p>
       <p>
-        <UiText id="Browsing, downloading, the Studio and guest submissions need no account. An optional account lets you manage your contributions. Supabase handles email/password and magic-link authentication. Necessary HttpOnly, Secure, SameSite=Lax cookies keep sessions and protect forms; they are not tracking cookies. Server-stored authentication tokens are encrypted. Administration requires TOTP and recent verification." />
+        <UiText id="Browsing, downloading, the Workshop and guest submissions need no account. An optional account lets you manage your contributions. Supabase handles email/password and magic-link authentication. Necessary HttpOnly, Secure, SameSite=Lax cookies keep sessions and protect forms; they are not tracking cookies. Server-stored authentication tokens are encrypted. Administration requires TOTP and recent verification." />
       </p>
       <p>
         <UiText
           id={
-            "The Studio autosaves your current draft in localStorage on this browser. Collection bookmarks also stay locally. These are necessary for the features you choose, not advertising or tracking. Clear a draft with “Start fresh” and clear bookmarks from the collection; clearing browser data also removes them. Other users of the same browser profile may access them."
+            "The Workshop autosaves your current draft in localStorage on this browser. Collection bookmarks also stay locally. These are necessary for the features you choose, not advertising or tracking. Clear a draft with “Start fresh” and clear bookmarks from the collection; clearing browser data also removes them. Other users of the same browser profile may access them."
           }
         />
       </p>
@@ -60,7 +60,7 @@ export default function Page() {
       <p>
         <UiText
           id={
-            "Images are decoded and re-encoded as PNG locally before use. Original EXIF and GPS metadata are discarded. We do not retain original file bytes. The visible contents of an image can still identify people or places. Shared URL designs exclude image uploads, and the Studio tells you when a design cannot be shared by link."
+            "Images are decoded and re-encoded as PNG locally before use. Original EXIF and GPS metadata are discarded. We do not retain original file bytes. The visible contents of an image can still identify people or places. Shared URL designs exclude image uploads, and the Workshop tells you when a design cannot be shared by link."
           }
         />
       </p>
@@ -89,7 +89,7 @@ export default function Page() {
       </h2>
       <p>
         {analytics
-          ? "This build is configured for a same-origin proxy to cookieless, self-hosted Plausible analytics. It respects Do Not Track and sends only page views, poster-download and Studio-export events; no design content, query strings, URL fragments or persistent identifiers."
+          ? "This build is configured for a same-origin proxy to cookieless, self-hosted Plausible analytics. It respects Do Not Track and sends only page views, poster-download and Workshop-export events; no design content, query strings, URL fragments or persistent identifiers."
           : "Analytics is disabled in this build. No third-party trackers, remote fonts, embeds, advertising cookies or analytics scripts load."}
       </p>
       <p>

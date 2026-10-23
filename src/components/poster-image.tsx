@@ -1,6 +1,7 @@
 import Image from "next/image";
 import { preload } from "react-dom";
 import type { Poster } from "@/lib/types";
+import { UiText } from "@/i18n/client";
 export function PosterImage({
   poster,
   priority = false,
@@ -10,6 +11,15 @@ export function PosterImage({
   priority?: boolean;
   large?: boolean;
 }) {
+  if (poster.kind === "writing")
+    return (
+      <div className="text-card-preview" role="img" aria-label={poster.alt}>
+        <span>
+          <UiText id="Writing" />
+        </span>
+        <strong>{poster.title}</strong>
+      </div>
+    );
   if (poster.preview.startsWith("https://files.redlarkworkshop.com/"))
     return (
       <Image

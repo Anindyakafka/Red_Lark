@@ -5,7 +5,7 @@ import { posters } from "../../src/lib/catalog";
 
 test("PDF, 300-PPI PNG, A4 tiles and ink preview ZIP are real files", async ({ page }) => {
   test.setTimeout(120000);
-  await page.goto("/studio/?format=poster-placard");
+  await page.goto("/workshop/?format=poster-placard");
   await expect(page.locator(".studio-paper")).toBeVisible();
   await openOption(page, "paper");
   await page.getByLabel("Paper preset").selectOption("A4");
@@ -43,7 +43,7 @@ test("uploads are locally re-encoded, metadata discarded, and cannot enter share
   page.on("request", (r) => {
     if (r.method() === "POST") network.push(r.url());
   });
-  await page.goto("/studio/?format=poster-placard");
+  await page.goto("/workshop/?format=poster-placard");
   await expect(page.locator(".studio-paper")).toBeVisible();
   await openOption(page, "images");
   await page
@@ -67,7 +67,7 @@ test("uploads are locally re-encoded, metadata discarded, and cannot enter share
 });
 
 test("keyboard edit, lock, hide, reorder, remove and undo work", async ({ page }) => {
-  await page.goto("/studio/?format=poster-placard");
+  await page.goto("/workshop/?format=poster-placard");
   await expect(page.locator(".studio-paper")).toBeVisible();
   await addElement(page, "rectangle");
   const x = page.getByLabel("x", { exact: true });

@@ -18,7 +18,7 @@ test("language negotiation respects quality, regional variants, exclusions and E
   assert.equal(chooseLocale("fr;q=1,hi-IN;q=.8,en;q=.5"), "hi");
   assert.equal(chooseLocale("ml;q=0,bn;q=.4"), "bn");
   assert.equal(chooseLocale("de,fr"), "en");
-  assert.equal(localePath("ml", "/studio/?remix=a"), "/ml/studio/?remix=a");
+  assert.equal(localePath("ml", "/workshop/?remix=a"), "/ml/workshop/?remix=a");
   assert.equal(localePath("hi", "/bn/collection/"), "/bn/collection/");
 });
 test("edge language redirect uses no cookie and does not vary cache by an identifier", async () => {

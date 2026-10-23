@@ -35,6 +35,7 @@ test("canonical inventories, category membership, artwork format and native sear
       "Stencil",
       "Sticker",
       "Zine",
+      "Writing",
     ],
   );
   const selected = filterPosters(posters, {

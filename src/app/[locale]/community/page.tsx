@@ -8,7 +8,7 @@ import { posters } from "@/lib/catalog";
 import { Collection } from "@/components/archive";
 const baseMetadata = pageMeta(
   "Community",
-  "A curated gallery for reviewed Studio-made posters. Upload your work privately without an account for human review.",
+  "A curated gallery for reviewed Workshop-made posters. Upload your work privately without an account for human review.",
   "/community",
 );
 export default function Page() {
@@ -17,9 +17,9 @@ export default function Page() {
       <PageIntro
         index="09"
         title="A WALL WE SHARE."
-        description="A curated gallery for Studio-made prints, with consent, credit and context."
+        description="A curated gallery for Workshop-made prints, with consent, credit and context."
         action="Submit a creation"
-        href="/submit"
+        href="/contribute"
       />
       {curated.length ? (
         <Collection
@@ -39,7 +39,7 @@ export default function Page() {
               id={"No invented community posts. Make a print, then propose it for human review."}
             />
           </p>
-          <Link className="button" href="/studio" prefetch={false}>
+          <Link className="button" href="/workshop" prefetch={false}>
             <UiText id={"MAKE A POSTER ↗"} />
           </Link>
         </section>

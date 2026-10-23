@@ -26,12 +26,18 @@ export function Header() {
           ["Collection", "/collection"],
           ["Categories", "/categories"],
           ["Artists", "/artists"],
-          ["Studio", "/studio"],
+          ["Workshop", "/workshop"],
+          ["Contribute", "/contribute"],
           ["Community", "/community"],
           ["Blog", "/blog"],
           ["About", "/about"],
         ].map(([name, href]) => (
-          <Link key={href} href={href} prefetch={false}>
+          <Link
+            key={href}
+            href={href}
+            prefetch={false}
+            className={name === "Contribute" ? "nav-contribute" : undefined}
+          >
             <UiText id={name} />
           </Link>
         ))}
@@ -58,11 +64,14 @@ export function Footer() {
         <Link prefetch={false} href="/login">
           <UiText id="Staff login" />
         </Link>
-        <Link prefetch={false} href="/submit">
-          <UiText id={"Submit a poster"} />
+        <Link prefetch={false} href="/contribute">
+          <UiText id={"Contribute"} />
         </Link>
         <Link prefetch={false} href="/contact">
-          <UiText id={"Contact / takedown"} />
+          <UiText id={"Contact"} />
+        </Link>
+        <Link prefetch={false} href="/archive">
+          <UiText id={"Archive"} />
         </Link>
         <Link prefetch={false} href="/privacy">
           <UiText id={"How we handle data"} />

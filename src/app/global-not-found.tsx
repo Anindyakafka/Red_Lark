@@ -8,7 +8,7 @@ export default function GlobalNotFound() {
         <meta name="robots" content="noindex" />
         <meta
           name="description"
-          content="This page is not in the archive. Search the collection or open the free Studio."
+          content="This page is not in the archive. Search the collection or open the free Workshop."
         />
       </head>
       <body>

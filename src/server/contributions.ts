@@ -332,6 +332,11 @@ export async function workValues(data: Record<string, unknown>, client: Identity
     source,
     ai_use: ai,
     ai_disclosure: text(data, "ai_disclosure", 2000),
+    details_missing:
+      !text(data, "artist_name", 120) ||
+      !text(data, "caption", 5000) ||
+      !text(data, "alt", 300) ||
+      !text(data, "source", 1000),
   };
   return { id, slug, values, categories };
 }

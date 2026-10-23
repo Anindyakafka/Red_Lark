@@ -156,6 +156,8 @@ export interface Poster {
   placeholder: boolean;
   preview: string;
   dominantColor: string;
+  /** Collection records are usable; retained records remain visible only in the historical Archive. */
+  archiveStatus?: "usable" | "archive-only";
   studioLayers?: Scene;
   // Approved, owned R2 raster base, fetched and re-encoded locally by the Studio.
   remixImage?: string;

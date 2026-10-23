@@ -17,7 +17,7 @@ export default function Page() {
         title="CREDIT THE HANDS."
         description="Artists make the work. An archive should make their names visible."
         action="Submit artwork"
-        href="/submit"
+        href="/contribute"
       />
       <div className="content-width index-grid">
         {artists.map((a) => (

@@ -5,9 +5,9 @@ import { pageMeta } from "@/lib/metadata";
 import { PrintInstructions } from "@/components/print-instructions";
 import { isLocale } from "@/i18n/config";
 const baseMetadata = pageMeta(
-  "Studio",
-  "Make a poster privately in your browser. Remix eligible originals, edit layers, save locally, and export outlined SVG/PDF or 300-PPI PNG.",
-  "/studio",
+  "Workshop",
+  "Use the private in-browser Workshop to make a poster, remix eligible originals, save locally, and export outlined SVG/PDF or 300-PPI PNG.",
+  "/workshop",
 );
 export default async function Page({ params }: { params: Promise<{ locale: string }> }) {
   const language = (await params).locale;
@@ -18,7 +18,7 @@ export default async function Page({ params }: { params: Promise<{ locale: strin
           <UiText id={"10 YOUR BROWSER IS THE WORKSHOP / NO LOGIN REQUIRED"} />
         </p>
         <h1>
-          <UiText id={"THE STUDIO."} />
+          <UiText id={"THE WORKSHOP."} />
         </h1>
         <p>
           <UiText
@@ -31,7 +31,7 @@ export default async function Page({ params }: { params: Promise<{ locale: strin
       <StudioClient />
       <noscript>
         <p className="notice">
-          <UiText id="The editor needs JavaScript to keep your design in this browser. Print files in the Collection work without JavaScript." />
+          <UiText id="The Workshop editor needs JavaScript to keep your design in this browser. Print files in the Collection work without JavaScript." />
         </p>
       </noscript>
       <div className="content-width">

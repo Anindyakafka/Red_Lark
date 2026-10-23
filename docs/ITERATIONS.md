@@ -1,5 +1,11 @@
 # Numbered rebuild rounds
 
+## Public simplification — round 1
+
+The first pass exposed two release-blocking details: the shortened landing still mounted the full collection controls, and Archive-only work could still link to a normal item page. The landing now renders a compact card-only preview and Archive-only cards are view-only. The header has enough links to wrap on narrow laptop widths, so it switches to horizontal scrolling at 1100px.
+
+TypeScript, ESLint, Prettier, all 82 unit/RLS/copy tests, the production build, static-export validation and client-secret scan pass. The archive database backfill and non-raster Writing ingestion remain deliberately marked partial.
+
 ## Artist publication — Round 1 diagnosis and repair, 23 October 2026
 
 Public read-only checks found both approved works and reachable previews, but the newest work was absent from live Collection with a 404 item page. The supplied Netlify log proves the approval hook ran and fetched both works; static validation rejected identical Anonymous contributor artist titles, leaving the previous deploy live.

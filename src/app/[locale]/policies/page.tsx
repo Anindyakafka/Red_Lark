@@ -19,11 +19,6 @@ const pages = [
     "Rights, optional public contact and honest declarations.",
   ],
   [
-    "Takedown & artist removal",
-    "/policies/takedown",
-    "Corrections, removal requests and the pending response schedule.",
-  ],
-  [
     "Privacy",
     "/privacy",
     "Browser storage, necessary authentication cookies, private uploads, contact messages and public-field consent.",
@@ -60,7 +55,7 @@ export async function generateMetadata({ params }: { params: Promise<{ locale: s
   return localizeMetadata(
     pageMeta(
       "Policies",
-      "AI-use policy, licensing, credit, contributor guidelines, privacy, terms and takedown information. Draft - needs legal review.",
+      "AI-use policy, licensing, credit, contributor guidelines, privacy and terms. Draft - needs legal review.",
       "/policies",
     ),
     (await params).locale,
