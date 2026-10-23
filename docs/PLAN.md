@@ -1,5 +1,14 @@
 # RED LARK WORKSHOP: staged implementation plan
 
+## Approved-work publication repair — 23 October 2026
+
+| Work                          | Status  | Acceptance                                                                                                                          |
+| ----------------------------- | ------- | ----------------------------------------------------------------------------------------------------------------------------------- |
+| Diagnose missing contribution | PASS    | Public RPC and R2 image present; live Collection missing work and poster 404; supplied Netlify log confirms duplicate artist titles |
+| Repair artist metadata        | PASS    | Existing public archive IDs distinguish duplicate names; visible names/credits remain unchanged                                     |
+| Verification                  | PASS    | 79 unit tests, typecheck/lint; real two-work build validates 420 HTML pages; 20 locale browser checks, axe 0                        |
+| Production recovery           | PENDING | Merge repair and wait for successful Netlify deployment; no reupload or reapproval                                                  |
+
 ## Studio workspace repair — 22 October 2026
 
 | Problem                            | Status | Acceptance                                                                                                                                                  |

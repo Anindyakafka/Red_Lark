@@ -1,5 +1,15 @@
 # Current acceptance checklist
 
+## Approved-work publication repair
+
+| Item                   | Status  | Evidence                                                                                                                                                                                         |
+| ---------------------- | ------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| Root cause             | PASS    | 22 October 21:01 IST Netlify rejected duplicate Anonymous contributor artist titles after fetching both approved works                                                                           |
+| Unique artist metadata | PASS    | artist-metadata.ts and artist-metadata.test.ts: public archive IDs in title/OG/Twitter across four locales; credit unchanged                                                                     |
+| Real publication build | PASS    | PUBLIC_CATALOGUE_ENABLED=1; two approved works; 420 HTML pages pass metadata/link/alt and client-secret validation                                                                               |
+| Regression             | PASS    | 79 unit/copy/RLS tests, typecheck/lint; docs/evidence/artist-publication/browser.json: 20 checks in four locales, 16 artist/item pages with full axe 0 and both works present in each Collection |
+| Live publication       | PENDING | Merge and successful production deployment required                                                                                                                                              |
+
 ## Studio workspace repair
 
 | Item                                      | Status | Evidence                                                                                                                |
