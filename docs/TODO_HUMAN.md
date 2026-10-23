@@ -2,7 +2,7 @@
 
 ## Simplification release follow-up — 23 October 2026
 
-- The archive-history and Writing/CC0 migrations were applied on 23 October 2026. Existing already-published records were not backfilled because the database’s update guard rejects that direct operation; future publications are tracked. Connect the static public-catalogue build to the sanitized archive source before calling `/archive` a complete historical record.
+- The archive-history, Writing/CC0 and static Archive snapshot migrations were applied on 23 October 2026. Netlify builds now merge the sanitized archive-only source. Existing already-published records were not backfilled because the database’s update guard rejects that direct operation; review and approve a dedicated safe backfill before calling `/archive` a complete historical record.
 - Team decision recorded: quick contributions default to **CC0 1.0**, so anyone may use them for any purpose. The contributor must still confirm they have the right to share the work.
 - Writing contributions accept `.txt`, Markdown and `.docx`; raw documents stay private and are converted to sanitized plain text for the normal review queue.
 

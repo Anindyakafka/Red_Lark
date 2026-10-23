@@ -24,6 +24,6 @@
 
 ## Ambiguities deliberately not guessed
 
-- Archive visibility uses the supplied default: only works that were ever approved/published. "Archive only" includes retired/non-usable approved records; it does **not** expose pending, rejected, removed or unsafe uploads.
+- Archive visibility uses the supplied default: only works that were ever approved/published. "Archive only" includes retired/non-usable records that were previously published; it never exposes pending, never-published or unsafe uploads.
 - Quick uploads cannot safely receive an invented licence. The current implementation will continue requiring a licence until the owner chooses a documented default (recommended candidate: CC BY-SA 4.0, only if you explicitly want every quick contribution licensed that way).
 - Legal body references to takedown/removal are listed for review. Only obvious public-page labels/links will be removed automatically.

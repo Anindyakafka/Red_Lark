@@ -3,7 +3,7 @@ import Image from "next/image";
 import { Preferences } from "./preferences";
 import { REPO_URL } from "@/config/site";
 import { AccountNavigation } from "./account-navigation";
-import { posters } from "@/lib/catalog";
+import { publicPosters } from "@/lib/catalog";
 export function Header() {
   return (
     <header className="site-header">
@@ -52,7 +52,7 @@ export function Footer() {
         <Link className="footer-mark" href="/">
           <UiText id={"RED LARK WORKSHOP 01"} />
         </Link>
-        {posters.every((poster) => poster.placeholder) && (
+        {publicPosters.every((poster) => poster.placeholder) && (
           <p>
             <UiText id={"Original placeholder studies, 2026."} />
             <br />

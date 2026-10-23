@@ -73,6 +73,12 @@ test("real Postgres RLS: every table, ownership, roles, MFA and bootstrap", asyn
         .public_catalogue.length,
       1,
     );
+    assert.equal(
+      (await db.query<{ archive_catalogue: unknown[] }>("select public.archive_catalogue()"))
+        .rows[0].archive_catalogue.length,
+      0,
+      "the historical snapshot does not expose ordinary live records twice",
+    );
     assert.equal((await db.query("select id from public.works")).rows.length, 1);
     assert.equal((await db.query("select public_key from public.work_files")).rows.length, 1);
     await assert.rejects(db.query("select object_key from public.work_files"));
@@ -178,6 +184,23 @@ test("real Postgres RLS: every table, ownership, roles, MFA and bootstrap", asyn
       db.query("select public.audit_admin_operation('retry_publish')"),
       "retrying publication also requires fresh TOTP",
     );
+    await as("service_role");
+    await db.query(
+      "update public.works set archive_status='archive_only',status='rejected',publication_state='private',public_preview_url='https://files.redlarkworkshop.com/works/test/preview.webp' where id=$1",
+      [approved],
+    );
+    await as("anon");
+    const archive = (
+      await db.query<{
+        archive_catalogue: { slug: string; archive_status: string; contact?: string }[];
+      }>("select public.archive_catalogue()")
+    ).rows[0].archive_catalogue;
+    assert.deepEqual(
+      archive.map((work) => [work.slug, work.archive_status]),
+      [[approved, "archive-only"]],
+      "a formerly published archive-only record remains in the limited historical snapshot",
+    );
+    assert.equal("contact" in archive[0], false, "historical snapshots omit contact fields");
     await as("service_role");
     await assert.rejects(
       db.query("select public.bootstrap_admin('admin@example.invalid')"),

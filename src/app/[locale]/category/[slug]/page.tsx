@@ -2,7 +2,7 @@ import { notFound } from "next/navigation";
 import categories from "../../../../../content/categories.json";
 import { PageIntro } from "@/components/page-intro";
 import { Collection } from "@/components/archive";
-import { posters } from "@/lib/catalog";
+import { publicPosters } from "@/lib/catalog";
 import { pageMeta } from "@/lib/metadata";
 import { localizeMetadata } from "@/i18n/metadata";
 export const dynamicParams = false;
@@ -20,7 +20,7 @@ export default async function Category({ params }: { params: Promise<{ slug: str
         title={c.label}
         description={`Free political graphics filed under ${c.label}. Original placeholders are marked.`}
       />
-      <Collection posters={posters.filter((p) => p.categories?.includes(c.slug))} />
+      <Collection posters={publicPosters.filter((p) => p.categories?.includes(c.slug))} />
     </>
   );
 }

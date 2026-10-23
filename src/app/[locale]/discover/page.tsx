@@ -3,7 +3,7 @@ import { localizeMetadata } from "@/i18n/metadata";
 import { Link } from "@/i18n/client";
 import { PageIntro } from "@/components/page-intro";
 import { PosterImage } from "@/components/poster-image";
-import { posters } from "@/lib/catalog";
+import { publicPosters } from "@/lib/catalog";
 import categories from "../../../../content/categories.json";
 import { pageMeta } from "@/lib/metadata";
 const baseMetadata = pageMeta(
@@ -21,7 +21,9 @@ export default function Page() {
       />
       <div className="content-width">
         {categories
-          .filter((category) => posters.some((poster) => poster.categories.includes(category.slug)))
+          .filter((category) =>
+            publicPosters.some((poster) => poster.categories.includes(category.slug)),
+          )
           .slice(0, 3)
           .map((category) => (
             <section className="discover-rail" key={category.slug}>
@@ -32,7 +34,7 @@ export default function Page() {
                 </Link>
               </div>
               <div className="rail-grid">
-                {posters
+                {publicPosters
                   .filter((p) => p.categories.includes(category.slug))
                   .slice(0, 3)
                   .map((p) => (

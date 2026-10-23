@@ -2,7 +2,7 @@ import { UiText } from "@/i18n/client";
 import { localizeMetadata } from "@/i18n/metadata";
 import { Link } from "@/i18n/client";
 import { PageIntro } from "@/components/page-intro";
-import { artists, posters } from "@/lib/catalog";
+import { publicArtists, publicPosters } from "@/lib/catalog";
 import { pageMeta } from "@/lib/metadata";
 const baseMetadata = pageMeta(
   "Artists",
@@ -20,7 +20,7 @@ export default function Page() {
         href="/contribute"
       />
       <div className="content-width index-grid">
-        {artists.map((a) => (
+        {publicArtists.map((a) => (
           <article className="index-card" key={a.id}>
             <span className="label">{a.placeholder ? "PLACEHOLDER CREDIT" : "ARTIST"}</span>
             <h2>
@@ -28,7 +28,7 @@ export default function Page() {
             </h2>
             <p>{a.bio}</p>
             <p className="label">
-              {posters.filter((p) => p.artist === a.id).length}
+              {publicPosters.filter((p) => p.artist === a.id).length}
               <UiText id={"PRINT STUDIES"} />
             </p>
           </article>

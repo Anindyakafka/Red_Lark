@@ -1,5 +1,5 @@
 import type { MetadataRoute } from "next";
-import { posters, artists, themes, slugify } from "@/lib/catalog";
+import { publicPosters, publicArtists, themes, slugify } from "@/lib/catalog";
 import { siteUrl } from "@/lib/metadata";
 import { locales, localePath } from "@/i18n/config";
 import categories from "../../content/categories.json";
@@ -26,10 +26,10 @@ export default function sitemap(): MetadataRoute.Sitemap {
     "/contact",
     "/privacy",
     "/terms",
-    ...posters.map((p) => `/poster/${p.slug}`),
+    ...publicPosters.map((p) => `/poster/${p.slug}`),
     ...blogPosts("en").map((post) => `/blog/${post.slug}`),
     ...categories.map((c) => `/category/${c.slug}`),
-    ...artists.map((a) => `/artist/${a.id}`),
+    ...publicArtists.map((a) => `/artist/${a.id}`),
     ...themes.map((t) => `/theme/${slugify(t)}`),
   ].flatMap((p) =>
     locales.map((locale) => ({

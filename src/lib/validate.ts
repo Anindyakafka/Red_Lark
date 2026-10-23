@@ -23,6 +23,7 @@ export function validateArtist(artist: Artist): string[] {
 }
 export function validatePoster(p: Poster, artists: Artist[]): string[] {
   const errors: string[] = [];
+  const archiveOnly = p.archiveStatus === "archive-only";
   if (
     !Array.isArray(p.categories) ||
     p.categories.some((slug) => !categories.some((c) => c.slug === slug))
@@ -83,6 +84,8 @@ export function validatePoster(p: Poster, artists: Artist[]): string[] {
       errors.push("Derivatives forbidden: remixable must be false");
   }
   if (p.remixable && !p.allowsDerivatives) errors.push("Remix cannot bypass the derivative gate");
+  if (archiveOnly && p.remixable)
+    errors.push("Archive-only records cannot expose remix source material");
   if (
     p.remixImage &&
     !/^https:\/\/files\.redlarkworkshop\.com\/works\/[a-z0-9-]+\/[a-f0-9-]+\.png$/.test(
@@ -101,7 +104,8 @@ export function validatePoster(p: Poster, artists: Artist[]): string[] {
     !Array.isArray(p.movements)
   )
     errors.push("Missing language/theme/movement arrays");
-  if (!Array.isArray(p.formats) || !p.formats.length) errors.push("Missing downloads");
+  if (!Array.isArray(p.formats) || (!archiveOnly && !p.formats.length))
+    errors.push("Missing downloads");
   for (const file of p.formats ?? [])
     if (
       (!file.path?.startsWith("/") &&

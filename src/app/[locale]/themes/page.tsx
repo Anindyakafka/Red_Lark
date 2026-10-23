@@ -2,7 +2,7 @@ import { UiText } from "@/i18n/client";
 import { localizeMetadata } from "@/i18n/metadata";
 import { Link } from "@/i18n/client";
 import { PageIntro } from "@/components/page-intro";
-import { themes, movements, posters, slugify } from "@/lib/catalog";
+import { themes, movements, publicPosters, slugify } from "@/lib/catalog";
 import { pageMeta } from "@/lib/metadata";
 const baseMetadata = pageMeta(
   "Themes and movements",
@@ -22,7 +22,7 @@ export default function Page() {
           <Link className="index-card" href={`/theme/${slugify(t)}`} key={t}>
             <p className="label">
               <UiText id={"THEME /"} />
-              {posters.filter((p) => p.themes.includes(t)).length}
+              {publicPosters.filter((p) => p.themes.includes(t)).length}
               <UiText id={"POSTERS"} />
             </p>
             <h2>{t} ↗</h2>

@@ -4,7 +4,7 @@ import { Link } from "@/i18n/client";
 import { PageIntro } from "@/components/page-intro";
 import { pageMeta } from "@/lib/metadata";
 import curated from "../../../../content/community.json" with { type: "json" };
-import { posters } from "@/lib/catalog";
+import { publicPosters } from "@/lib/catalog";
 import { Collection } from "@/components/archive";
 const baseMetadata = pageMeta(
   "Community",
@@ -23,7 +23,7 @@ export default function Page() {
       />
       {curated.length ? (
         <Collection
-          posters={posters.filter((p) => (curated as string[]).includes(p.slug))}
+          posters={publicPosters.filter((p) => (curated as string[]).includes(p.slug))}
           heading="REVIEWED COMMUNITY PRINTS"
         />
       ) : (

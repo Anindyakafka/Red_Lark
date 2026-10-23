@@ -2,7 +2,7 @@ import { UiText } from "@/i18n/client";
 import { localizeMetadata } from "@/i18n/metadata";
 import { Link } from "@/i18n/client";
 import { notFound } from "next/navigation";
-import { posters, posterFor, artistFor, fileSize } from "@/lib/catalog";
+import { publicPosters, posterFor, artistFor, fileSize } from "@/lib/catalog";
 import { pageMeta } from "@/lib/metadata";
 import { PosterImage } from "@/components/poster-image";
 import { LicenseGate } from "@/components/license-gate";
@@ -13,7 +13,7 @@ import { isLocale } from "@/i18n/config";
 import categories from "../../../../../content/categories.json";
 export const dynamicParams = false;
 export function generateStaticParams() {
-  return posters.map((p) => ({ slug: p.slug }));
+  return publicPosters.map((p) => ({ slug: p.slug }));
 }
 async function baseGenerateMetadata({ params }: { params: Promise<{ slug: string }> }) {
   const p = posterFor((await params).slug);
@@ -222,7 +222,7 @@ export default async function Page({
           <UiText id="More by the artist" />
         </h2>
         <div className="rail-grid">
-          {posters
+          {publicPosters
             .filter((work) => work.artist === artist.id && work.slug !== p.slug)
             .slice(0, 4)
             .map((work) => (

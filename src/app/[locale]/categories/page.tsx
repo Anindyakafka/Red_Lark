@@ -1,7 +1,7 @@
 import categories from "../../../../content/categories.json";
 import { PageIntro } from "@/components/page-intro";
 import { Link, UiText } from "@/i18n/client";
-import { posters } from "@/lib/catalog";
+import { publicPosters } from "@/lib/catalog";
 import { pageMeta } from "@/lib/metadata";
 import { localizeMetadata } from "@/i18n/metadata";
 export default function Categories() {
@@ -22,7 +22,7 @@ export default function Categories() {
               <span>{String(index + 1).padStart(2, "0")}</span>
               <span className="category-label">{category.label}</span>
               <span>
-                {posters.filter((poster) => poster.categories.includes(category.slug)).length}
+                {publicPosters.filter((poster) => poster.categories.includes(category.slug)).length}
               </span>
             </Link>
           ))}
