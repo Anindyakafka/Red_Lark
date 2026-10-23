@@ -10,6 +10,7 @@ import { getSignedUrl } from "@aws-sdk/s3-request-presigner";
 import sharp from "sharp";
 export { printPdf } from "./print.ts";
 import { ApiError, required, sha256 } from "./security.ts";
+import { isWritingMime, sanitizeWriting, WRITING_MIMES } from "./text-upload.ts";
 
 export const MAX_UPLOAD = 25 * 1024 * 1024;
 export function r2() {
@@ -40,7 +41,9 @@ export function publicUrl(key: string) {
 }
 export async function signedUpload(key: string, mime: string, bytes: number) {
   if (
-    !["image/jpeg", "image/png"].includes(mime) ||
+    !["image/jpeg", "image/png", ...WRITING_MIMES].includes(
+      mime as (typeof WRITING_MIMES)[number],
+    ) ||
     !Number.isSafeInteger(bytes) ||
     bytes < 1 ||
     bytes > MAX_UPLOAD
@@ -104,7 +107,10 @@ export async function quarantine(key: string, bytes: number, mime: string) {
     parts.push(part);
   }
   if (total !== bytes) throw new ApiError(422, "invalid_file");
-  return sanitize(Buffer.concat(parts), mime);
+  const input = Buffer.concat(parts);
+  if (isWritingMime(mime))
+    return { kind: "writing" as const, ...(await sanitizeWriting(input, mime)) };
+  return { kind: "image" as const, ...(await sanitize(input, mime)) };
 }
 export async function sanitize(input: Buffer, claimed: string) {
   const png = input.subarray(0, 8).equals(Buffer.from([137, 80, 78, 71, 13, 10, 26, 10]));

@@ -34,18 +34,6 @@ included_files = ["public/fonts/**/*.ttf"]
   status = 301
   force = true
 
-[[redirects]]
-  from = "/:locale/policies/takedown/*"
-  to = "/:locale/policies/"
-  status = 301
-  force = true
-
-[[redirects]]
-  from = "/:locale/takedown/*"
-  to = "/:locale/contact/"
-  status = 301
-  force = true
-
 # Private route shells; API authorization is independent of these rewrites.
 
 [[redirects]]

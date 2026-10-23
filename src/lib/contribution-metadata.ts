@@ -57,6 +57,13 @@ export function normalizeTags(input: unknown): string[] {
 
 export const licenceChoices = [
   {
+    id: "free",
+    label: "Anyone can use it for anything, no credit needed.",
+    summary: "Anyone can use it for anything",
+    regular: "CC0-1.0",
+    nc: "CC0-1.0",
+  },
+  {
     id: "open",
     label: "Share it and let others remix it, as long as remixes stay open too. Recommended.",
     summary: "Share and remix, keep it open",
@@ -69,13 +76,6 @@ export const licenceChoices = [
     summary: "Share and remix, credit me",
     regular: "CC-BY-4.0",
     nc: "CC-BY-NC-4.0",
-  },
-  {
-    id: "free",
-    label: "Anyone can use it for anything, no credit needed.",
-    summary: "Anyone can use it for anything",
-    regular: "CC0-1.0",
-    nc: "CC0-1.0",
   },
   {
     id: "unchanged",

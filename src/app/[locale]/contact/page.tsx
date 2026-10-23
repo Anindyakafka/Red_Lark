@@ -22,7 +22,7 @@ export default function Page() {
         href="/privacy"
       />
       <div className="content-width form-layout">
-        <HandoffForm kind="contact" email={email} />
+        <HandoffForm />
         <aside aria-labelledby="contact-address-heading">
           <h2 id="contact-address-heading">
             <UiText id={"CONTACT ADDRESS"} />

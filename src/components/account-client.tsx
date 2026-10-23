@@ -10,6 +10,22 @@ import { AdminRecords } from "./admin-records";
 import { DescriptionField, TagsField, CategoriesField, LicenceField } from "./contribution-fields";
 import { imageDescription, licenceSummary, normalizeTags } from "@/lib/contribution-metadata";
 
+const allowedUploadMimes = [
+  "image/jpeg",
+  "image/png",
+  "text/plain",
+  "text/markdown",
+  "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+];
+function uploadMime(file: File) {
+  if (allowedUploadMimes.includes(file.type)) return file.type;
+  if (/\.md$/i.test(file.name)) return "text/markdown";
+  if (/\.txt$/i.test(file.name)) return "text/plain";
+  if (/\.docx$/i.test(file.name))
+    return "application/vnd.openxmlformats-officedocument.wordprocessingml.document";
+  return file.type;
+}
+
 const errors: Record<string, string> = {
   invitation_expired:
     "This invitation is invalid, expired or already used. Use the newest invitation. If your email is already verified, sign in or request a password reset; otherwise ask the team to reissue it.",
@@ -896,7 +912,7 @@ export function UploadPanel({
   const guestDraft = useRef<{ id: string; token: string } | null>(null);
   const [chosenFormat, setChosenFormat] = useState(initialWork?.format_slug || "poster-placard");
   const [completed, setCompleted] = useState(false);
-  const [chosenLicence, setChosenLicence] = useState("CC-BY-SA-4.0");
+  const [chosenLicence, setChosenLicence] = useState("CC0-1.0");
   const [uploadProfile, setUploadProfile] = useState<Profile | null>(null);
   const uploadForm = useRef<HTMLFormElement>(null);
   const [fieldErrors, setFieldErrors] = useState<Record<string, string>>({});
@@ -958,7 +974,7 @@ export function UploadPanel({
       !(file instanceof File) ||
       !file.size ||
       file.size > 25 * 1024 * 1024 ||
-      !["image/jpeg", "image/png"].includes(file.type)
+      !allowedUploadMimes.includes(uploadMime(file))
     )
       next.file = t(errorMessage("invalid_file"));
     if (data.get("contact") && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(String(data.get("contact"))))
@@ -1017,17 +1033,23 @@ export function UploadPanel({
         {
           token,
           work_id: created.id,
-          mime: file.type,
+          mime: uploadMime(file),
           bytes: file.size,
         },
       );
       const sent = await fetch(signed.url, {
         method: "PUT",
-        headers: { "Content-Type": file.type },
+        headers: { "Content-Type": uploadMime(file) },
         body: file,
       });
       if (!sent.ok) throw new Error("network_error");
-      setStatus(t("Stripping image metadata and generating print files…"));
+      setStatus(
+        t(
+          uploadMime(file).startsWith("image/")
+            ? "Stripping image metadata and generating print files…"
+            : "Sanitizing writing and generating a review preview…",
+        ),
+      );
       const processed = await api<{ warning: string | null; dpiA4?: number; dpiA2: number }>(
         guestMode ? "guest/complete" : "upload/complete",
         {
@@ -1048,7 +1070,7 @@ export function UploadPanel({
       setStatus(
         `${submitted.mailPending ? t("Email delivery is pending. The action was saved and delivery will retry.") + " " : ""}${t("Submission saved for review.")}${processed.dpiA4 ? ` ${t("Estimated full-sheet resolution")}: A4 ${processed.dpiA4} DPI / A2 ${processed.dpiA2} DPI.` : ""}${processed.warning ? ` ${t("Resolution warning: the image may look soft at A2. No artificial resolution is promised.")}` : ""}`,
       );
-      setChosenLicence(String(data.get("licence_id") || "CC-BY-SA-4.0"));
+      setChosenLicence(String(data.get("licence_id") || "CC0-1.0"));
       setCompleted(true);
       window.dispatchEvent(new Event("redlark:session"));
       onSaved?.();
@@ -1143,20 +1165,21 @@ export function UploadPanel({
               id="quick-file"
               name="file"
               type="file"
-              accept="image/jpeg,image/png"
+              accept="image/jpeg,image/png,text/plain,text/markdown,.md,.docx"
               required
               aria-invalid={!!fieldErrors.file}
               aria-describedby={fieldErrors.file ? "upload-file-error" : undefined}
             />
             {fieldError("file")}
           </label>
-          <input type="hidden" name="licence_id" value="CC-BY-SA-4.0" />
+          <input type="hidden" name="licence_id" value="CC0-1.0" />
           <input type="hidden" name="ai_use" value="none" />
           <p>
             {t(
-              "Quick contributions use CC BY-SA 4.0 unless you add details. Staff will flag missing details for review.",
+              "Quick contributions use CC0: anyone may use them for any purpose. Staff will flag missing details for review.",
             )}
           </p>
+          <p>{t("Images: JPEG or PNG. Writing: TXT, Markdown or DOCX, up to 25 MB.")}</p>
           <label className="checkbox-field">
             <input
               type="checkbox"
@@ -1331,12 +1354,12 @@ export function UploadPanel({
             />
           </label>
           <label className="form-field" htmlFor="upload-file">
-            {t("JPEG or PNG, maximum 25 MB")}
+            {t("JPEG, PNG, TXT, Markdown or DOCX, maximum 25 MB")}
             <input
               id="upload-file"
               name="file"
               type="file"
-              accept="image/jpeg,image/png"
+              accept="image/jpeg,image/png,text/plain,text/markdown,.md,.docx"
               required
               aria-invalid={!!fieldErrors.file}
               aria-describedby={fieldErrors.file ? "upload-file-error" : undefined}
@@ -1345,7 +1368,7 @@ export function UploadPanel({
           </label>
           <p>
             {t(
-              "Uploads are private until review. EXIF/GPS metadata is stripped on import. A4/A2 print PDFs and a WebP preview are generated. Low resolution produces a warning, not a rejection.",
+              "Uploads are private until review. Image EXIF/GPS metadata is stripped; writing files are converted to plain text without document markup. A4/A2 print PDFs and a WebP preview are generated. Low resolution produces a warning, not a rejection.",
             )}
           </p>
           <label className="checkbox-field">
@@ -1497,7 +1520,7 @@ function GuestSubmissionStatus({ token }: { token: string }) {
 export function AdminPanel({
   view = "queue",
 }: {
-  view?: "queue" | "review" | "messages" | "takedowns" | "users" | "audit";
+  view?: "queue" | "review" | "messages" | "users" | "audit";
 }) {
   const router = useRouter();
   const { t, locale } = useI18n(),
@@ -1558,10 +1581,7 @@ export function AdminPanel({
       if (view === "queue" || view === "review") {
         const result = await api<{ works: Work[] }>("admin/queue");
         setWorks(result.works);
-      } else
-        setRecords(
-          await api(`admin/${view === "messages" || view === "takedowns" ? "inbox" : view}`),
-        );
+      } else setRecords(await api(`admin/${view === "messages" ? "inbox" : view}`));
     });
     // The view is fixed by the static route; server authorization is checked for every request.
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -1600,7 +1620,6 @@ export function AdminPanel({
       <nav className="button-row" aria-label={t("Administration")}>
         <Link href="/admin/review">{t("Review queue")}</Link>
         <Link href="/admin/messages">{t("Messages")}</Link>
-        <Link href="/admin/takedowns">{t("Takedowns")}</Link>
         <Link href="/admin/users">{t("Contributors")}</Link>
         <Link href="/admin/audit">{t("Audit log")}</Link>
       </nav>
@@ -1634,7 +1653,7 @@ export function AdminPanel({
           }}
         />
       )}
-      {records !== null && (view === "messages" || view === "takedowns") && (
+      {records !== null && view === "messages" && (
         <form
           method="post"
           className="handoff-form backend-panel"
@@ -1673,13 +1692,11 @@ export function AdminPanel({
             value={statusFilter}
             onChange={(e) => setStatusFilter(e.target.value)}
           >
-            {["pending", "changes_requested", "rejected", "approved", "taken_down", "all"].map(
-              (v) => (
-                <option key={v} value={v}>
-                  {t(v === "pending" ? "Pending review" : v === "all" ? "All" : v)}
-                </option>
-              ),
-            )}
+            {["pending", "changes_requested", "rejected", "approved", "all"].map((v) => (
+              <option key={v} value={v}>
+                {t(v === "pending" ? "Pending review" : v === "all" ? "All" : v)}
+              </option>
+            ))}
           </select>
         </label>
       )}

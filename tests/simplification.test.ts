@@ -5,17 +5,17 @@ import formats from "../content/formats.json";
 import { filterPosters, emptyFilters } from "../src/lib/query";
 import { posters } from "../src/lib/catalog";
 
-test("Workshop, Contribute and policy legacy URLs have permanent Netlify redirects", () => {
+test("Workshop and Contribute legacy URLs have permanent Netlify redirects", () => {
   const config = fs.readFileSync("netlify.toml", "utf8");
   for (const [from, to] of [
     ["/:locale/studio/*", "/:locale/workshop/:splat"],
     ["/:locale/submit/*", "/:locale/contribute/:splat"],
-    ["/:locale/policies/takedown/*", "/:locale/policies/"],
   ]) {
     assert.ok(config.includes(`from = "${from}"`));
     assert.ok(config.includes(`to = "${to}"`));
   }
-  assert.equal((config.match(/status = 301/g) || []).length >= 4, true);
+  assert.equal((config.match(/status = 301/g) || []).length >= 2, true);
+  assert.equal(config.includes("/:locale/takedown/*"), false);
 });
 
 test("Writing is a Type and existing kind filtering remains stable", () => {

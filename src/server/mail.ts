@@ -4,7 +4,6 @@ const topics = [
   "General",
   "Contribute/Join the network",
   "Commission a design",
-  "Takedown",
   "Report a problem",
 ];
 export function mailFrom() {
@@ -117,7 +116,7 @@ export async function deliver(messageId: string) {
   }
   if (failed) throw new ApiError(503, "mail_delivery_pending");
 }
-export async function contact(req: Request, data: Record<string, unknown>, takedown: boolean) {
+export async function contact(req: Request, data: Record<string, unknown>) {
   await limit(req, "contact", 8);
   if (
     text(data, "website", 200) ||
@@ -128,10 +127,8 @@ export async function contact(req: Request, data: Record<string, unknown>, taked
     throw new ApiError(422, "spam_check_failed");
   const reply = email(data, "reply", true),
     message = text(data, "message", 3000, 10),
-    topic = takedown ? "Takedown" : text(data, "topic", 80, 1);
+    topic = text(data, "topic", 80, 1);
   if (!topics.includes(topic)) throw new ApiError(422, "invalid_topic");
-  const workUrl = takedown ? text(data, "work_url", 1000, 8) : "";
-  if (takedown && !/^https:\/\//.test(workUrl)) throw new ApiError(422, "invalid_work_url");
   const key = text(data, "submission_key", 36, 36);
   if (!/^[a-f0-9-]{36}$/.test(key)) throw new ApiError(422, "invalid_receipt");
   const id = checked(
@@ -141,7 +138,7 @@ export async function contact(req: Request, data: Record<string, unknown>, taked
       p_body: message,
       p_email: reply,
       p_locale: locale(data.locale),
-      p_work_url: workUrl,
+      p_work_url: "",
     }),
   );
   try {

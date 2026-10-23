@@ -258,7 +258,7 @@ export function CategoriesField({ initial = [] }: { initial?: string[] }) {
   );
 }
 
-export function LicenceField({ initial = "CC-BY-SA-4.0" }: { initial?: string }) {
+export function LicenceField({ initial = "CC0-1.0" }: { initial?: string }) {
   const { t } = useI18n();
   const id = useId();
   const [choice, setChoice] = useState<string>(

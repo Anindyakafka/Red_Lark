@@ -116,7 +116,7 @@ export async function admin(
             .select(
               "*,work_files(id,kind,mime,bytes,width,height,dpi),work_categories(category_slug),work_tags(tags(slug,label,custom)),work_notifications(state,event,created_at),guest_submissions(contact,upi,contact_public,upi_public)",
             )
-            .in("status", ["pending", "changes_requested", "rejected", "approved", "taken_down"])
+            .in("status", ["pending", "changes_requested", "rejected", "approved"])
             .order("created_at", { ascending: false }),
         ),
       ),
@@ -144,13 +144,6 @@ export async function admin(
       messages: checked(
         await who.client
           .from("messages")
-          .select("*")
-          .order("created_at", { ascending: false })
-          .limit(100),
-      ),
-      takedowns: checked(
-        await who.client
-          .from("takedown_requests")
           .select("*")
           .order("created_at", { ascending: false })
           .limit(100),
@@ -205,18 +198,12 @@ export async function admin(
         .select("id")
         .single(),
     );
-    checked(
-      await who.client
-        .from("takedown_requests")
-        .update({ status: "resolved" })
-        .eq("message_id", text(data, "id", 100, 1)),
-    );
     return json({ ok: true });
   }
   if (path !== "/api/admin/review") throw new ApiError(404, "not_found");
   const id = text(data, "id", 100, 1),
     action = text(data, "action", 40, 1);
-  if (!["approve", "changes_requested", "rejected", "taken_down"].includes(action))
+  if (!["approve", "changes_requested", "rejected"].includes(action))
     throw new ApiError(422, "invalid_action");
   const reason = text(data, "reason", 3000, action === "approve" ? 0 : 10);
   const work = checked(await who.client.from("works").select("*").eq("id", id).single());
@@ -235,32 +222,6 @@ export async function admin(
     return json({ ok: true, mailPending: await notificationNotice(id) });
   }
   buildConfigured();
-  if (action === "taken_down") {
-    if (!["approved", "taken_down"].includes(work.status))
-      throw new ApiError(409, "invalid_transition");
-    checked(
-      await who.client
-        .from("works")
-        .update({ status: "taken_down", publication_state: "removing", feedback: reason })
-        .eq("id", id),
-    );
-    const files = checked(
-      await who.client.from("work_files").select("id,public_key").eq("work_id", id),
-    );
-    for (const file of files)
-      if (file.public_key) {
-        await remove(file.public_key, true);
-        checked(await service().from("work_files").update({ public_key: null }).eq("id", file.id));
-      }
-    checked(
-      await who.client
-        .from("works")
-        .update({ publication_state: "private", public_url: null, public_preview_url: null })
-        .eq("id", id),
-    );
-    await requestBuild();
-    return json({ ok: true, rebuilding: true });
-  }
   if (
     action !== "approve" ||
     !["pending", "approved"].includes(work.status) ||
@@ -288,7 +249,15 @@ export async function admin(
   const copied: { id: string; key: string }[] = [];
   try {
     for (const file of files) {
-      const key = `works/${work.slug}/${file.id}.${file.mime === "image/png" ? "png" : file.mime === "image/webp" ? "webp" : "pdf"}`;
+      const extension =
+        file.mime === "image/png"
+          ? "png"
+          : file.mime === "image/webp"
+            ? "webp"
+            : file.mime === "text/plain"
+              ? "txt"
+              : "pdf";
+      const key = `works/${work.slug}/${file.id}.${extension}`;
       await copyPublic(file.object_key, key, file.mime);
       copied.push({ id: file.id, key });
     }

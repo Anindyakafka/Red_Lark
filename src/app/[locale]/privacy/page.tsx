@@ -42,7 +42,7 @@ export default function Page() {
         <UiText id={"LOCAL STORAGE."} />
       </h2>
       <p>
-        <UiText id="Guest contributions do not create an account. We store the artwork, review details and any optional contact or UPI fields you choose to provide. Each field is published only with its own explicit consent. A private status link contains a random secret in its URL fragment; only a hash is stored in the database. Anyone holding the link can read that submission's status and feedback. Links expire after 90 days; scheduled cleanup removes expired receipt/contact records and abandoned draft files. Submitted artwork remains subject to review and the takedown policy. Save the link yourself: we do not email it or save it in localStorage." />
+        <UiText id="Guest contributions do not create an account. We store the artwork, review details and any optional contact or UPI fields you choose to provide. Each field is published only with its own explicit consent. A private status link contains a random secret in its URL fragment; only a hash is stored in the database. Anyone holding the link can read that submission's status and feedback. Links expire after 90 days; scheduled cleanup removes expired receipt/contact records and abandoned draft files. Submitted artwork remains subject to review. Save the link yourself: we do not email it or save it in localStorage." />
       </p>
       <p>
         <UiText id="Browsing, downloading, the Workshop and guest submissions need no account. An optional account lets you manage your contributions. Supabase handles email/password and magic-link authentication. Necessary HttpOnly, Secure, SameSite=Lax cookies keep sessions and protect forms; they are not tracking cookies. Server-stored authentication tokens are encrypted. Administration requires TOTP and recent verification." />
@@ -80,7 +80,7 @@ export default function Page() {
       <p>
         <UiText
           id={
-            "Contact and takedown messages are validated and stored privately in Supabase Postgres. Resend sends the team notification and, if you provide an optional reply address, an acknowledgement. Failed delivery remains in a retry queue. An accepted email request is not proof of inbox delivery. Do not supply unnecessary personal details."
+            "Contact messages are validated and stored privately in Supabase Postgres. Resend sends the team notification and, if you provide an optional reply address, an acknowledgement. Failed delivery remains in a retry queue. An accepted email request is not proof of inbox delivery. Do not supply unnecessary personal details."
           }
         />
       </p>
@@ -100,7 +100,7 @@ export default function Page() {
         />
       </p>
       <h2>
-        <UiText id={"CONTACT / REMOVAL."} />
+        <UiText id={"CONTACT."} />
       </h2>
       <p>
         <UiText id="Artist public contact email and UPI ID are optional and require separate consent for each field. Public details can be copied by visitors. Ask the team to change or remove them; website removal cannot recall other people’s copies or automatically erase repository history. Opening a UPI link uses your chosen payment app; this website does not process a payment." />

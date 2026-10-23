@@ -2,10 +2,9 @@
 
 ## Simplification release follow-up — 23 October 2026
 
-- Apply `supabase/migrations/202610230001_archive_history.sql` in the production project only after reviewing its history-retention policy. Then connect the static public-catalogue build to the sanitized archive source before calling `/archive` a complete historical record.
-- Confirm the quick-contribution default licence **CC BY-SA 4.0**. It is stated in the form and requires right-to-share consent; change it before public launch if the organisation wants a different default.
-- Decide the policy and safe processing model for text/Writing contributions (`.txt`, Markdown and office-document conversion). The current private upload pipeline intentionally accepts JPEG/PNG only.
-- Review `docs/LEGAL_TEXT_REVIEW.md` before removing or rewriting private takedown, retention and removal operations.
+- The archive-history and Writing/CC0 migrations were applied on 23 October 2026. Existing already-published records were not backfilled because the database’s update guard rejects that direct operation; future publications are tracked. Connect the static public-catalogue build to the sanitized archive source before calling `/archive` a complete historical record.
+- Team decision recorded: quick contributions default to **CC0 1.0**, so anyone may use them for any purpose. The contributor must still confirm they have the right to share the work.
+- Writing contributions accept `.txt`, Markdown and `.docx`; raw documents stay private and are converted to sanitized plain text for the normal review queue.
 
 ## Approved contribution publication — 23 October 2026
 

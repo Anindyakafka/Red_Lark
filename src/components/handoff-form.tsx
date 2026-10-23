@@ -2,12 +2,7 @@
 import { useRef, useState, type FormEvent } from "react";
 import { Link, useI18n } from "@/i18n/client";
 import { api, errorMessage } from "./account-client";
-export function HandoffForm({
-  kind = "contact",
-}: {
-  kind?: "contact" | "takedown";
-  email?: string;
-}) {
+export function HandoffForm() {
   const { t, locale } = useI18n(),
     form = useRef<HTMLFormElement>(null);
   const [errors, setErrors] = useState<Record<string, string>>({}),
@@ -26,8 +21,6 @@ export function HandoffForm({
       next.message = t("Use between 10 and 3,000 characters.");
     if (reply && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(reply))
       next.reply = t("Enter a valid reply address, or leave it blank.");
-    if (kind === "takedown" && !/^https:\/\//.test(String(data.get("work_url") || "")))
-      next.work_url = t("Provide an HTTPS link to the work.");
     setErrors(next);
     setFailure("");
     if (Object.keys(next).length) {
@@ -43,7 +36,7 @@ export function HandoffForm({
     if (!receipt.current) receipt.current = crypto.randomUUID();
     setBusy(true);
     try {
-      await api(kind === "takedown" ? "takedown" : "contact", {
+      await api("contact", {
         ...Object.fromEntries(data),
         message,
         reply,
@@ -108,36 +101,21 @@ export function HandoffForm({
           <input name="website" tabIndex={-1} autoComplete="off" />
         </label>
       </div>
-      {kind === "contact" ? (
-        <label className="form-field" htmlFor="topic">
-          {t("Topic")}
-          <select id="topic" name="topic">
-            {[
-              "General",
-              "Contribute/Join the network",
-              "Commission a design",
-              "Takedown",
-              "Report a problem",
-            ].map((topic) => (
-              <option key={topic} value={topic}>
-                {t(topic)}
-              </option>
-            ))}
-          </select>
-        </label>
-      ) : (
-        <label className="form-field" htmlFor="work_url">
-          {t("Artwork URL")}
-          <input
-            id="work_url"
-            name="work_url"
-            type="url"
-            aria-invalid={!!errors.work_url}
-            aria-describedby={errors.work_url ? "work_url-error" : undefined}
-          />
-          {fieldError("work_url")}
-        </label>
-      )}
+      <label className="form-field" htmlFor="topic">
+        {t("Topic")}
+        <select id="topic" name="topic">
+          {[
+            "General",
+            "Contribute/Join the network",
+            "Commission a design",
+            "Report a problem",
+          ].map((topic) => (
+            <option key={topic} value={topic}>
+              {t(topic)}
+            </option>
+          ))}
+        </select>
+      </label>
       <label className="form-field" htmlFor="message">
         {t("YOUR MESSAGE")} ({t("required, 10–3,000 characters")})
         <textarea

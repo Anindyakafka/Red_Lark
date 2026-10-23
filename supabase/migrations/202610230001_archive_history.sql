@@ -5,8 +5,6 @@ alter table public.works add column if not exists archive_status text not null d
 alter table public.works add column if not exists was_published boolean not null default false;
 alter table public.works add column if not exists details_missing boolean not null default false;
 
-update public.works set was_published=true where status='approved' and publication_state='published';
-
 create or replace function private.mark_published_history() returns trigger language plpgsql security definer set search_path='' as $$
 begin
   if new.status='approved' and new.publication_state='published' then new.was_published=true; end if;
