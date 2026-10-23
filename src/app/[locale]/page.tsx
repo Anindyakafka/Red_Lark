@@ -4,7 +4,7 @@ import { Collection } from "@/components/archive";
 import { UiText } from "@/i18n/client";
 import { isLocale } from "@/i18n/config";
 import { localizeMetadata } from "@/i18n/metadata";
-import { posters } from "@/lib/catalog";
+import { publicPosters } from "@/lib/catalog";
 import { pageMeta } from "@/lib/metadata";
 
 const baseMetadata = pageMeta(
@@ -16,7 +16,7 @@ const baseMetadata = pageMeta(
 export default async function Home({ params }: { params: Promise<{ locale: string }> }) {
   const language = (await params).locale;
   const locale = isLocale(language) ? language : "en";
-  const preview = posters
+  const preview = publicPosters
     .filter((poster) => (poster.archiveStatus || "usable") === "usable")
     .sort((a, b) => (b.createdAt || String(b.year)).localeCompare(a.createdAt || String(a.year)))
     .slice(0, 10);
@@ -43,7 +43,7 @@ export default async function Home({ params }: { params: Promise<{ locale: strin
           </div>
         </div>
         <div className="poster-wall" aria-label="Original CC0 placeholder studies">
-          {[posters[0], posters[7], posters[12]].map((poster, index) => (
+          {[publicPosters[0], publicPosters[7], publicPosters[12]].map((poster, index) => (
             <NextLink
               prefetch={false}
               className={`wall-print wall-print-${index}`}

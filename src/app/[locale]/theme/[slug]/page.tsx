@@ -2,7 +2,7 @@ import { localizeMetadata } from "@/i18n/metadata";
 import { notFound } from "next/navigation";
 import { PageIntro } from "@/components/page-intro";
 import { Collection } from "@/components/archive";
-import { themes, posters, slugify } from "@/lib/catalog";
+import { themes, publicPosters, slugify } from "@/lib/catalog";
 import { pageMeta } from "@/lib/metadata";
 export const dynamicParams = false;
 export function generateStaticParams() {
@@ -32,7 +32,7 @@ export default async function Page({ params }: { params: Promise<{ slug: string 
         action="Open Workshop"
         href="/workshop"
       />
-      <Collection posters={posters.filter((p) => p.themes.includes(t))} />
+      <Collection posters={publicPosters.filter((p) => p.themes.includes(t))} />
     </>
   );
 }
