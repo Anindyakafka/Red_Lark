@@ -68,7 +68,7 @@ export default async function Policy({
       )}
       <p>
         <Link className="underlined" href="/contact">
-          <UiText id="Contact / takedown" /> ↗
+          <UiText id="Contact" /> ↗
         </Link>
       </p>
       <Link className="button" href="/policies">

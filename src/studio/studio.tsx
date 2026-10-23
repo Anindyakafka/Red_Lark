@@ -260,7 +260,7 @@ export default function Studio({
         setReady(true);
       } catch (error) {
         if (!cancelled) {
-          setFailure(error instanceof Error ? error.message : "The Studio could not load.");
+          setFailure(error instanceof Error ? error.message : "The Workshop could not load.");
           setStatus(
             "LOAD FAILED Your existing local draft is preserved. Restore it or choose Start fresh.",
           );
@@ -406,7 +406,7 @@ export default function Studio({
   }, [selectedLayer, patch, duplicate, remove, crop, scrollRef, t]);
   function add(kind: Layer["kind"]) {
     if (scene.layers.length >= 80) {
-      setFailure("LIMIT This Studio supports up to 80 layers.");
+      setFailure("LIMIT This Workshop supports up to 80 layers.");
       return;
     }
     const layer = newLayer(kind);
@@ -418,7 +418,7 @@ export default function Studio({
   }
   function addSource(slug: string) {
     if (scene.layers.length >= 80) {
-      setFailure("LIMIT This Studio supports up to 80 layers.");
+      setFailure("LIMIT This Workshop supports up to 80 layers.");
       return;
     }
     const p = posters.find((p) => p.slug === slug);
@@ -699,7 +699,7 @@ export default function Studio({
       </div>
     );
   return (
-    <section className="studio-workspace studio-compact" aria-label="Poster-making Studio">
+    <section className="studio-workspace studio-compact" aria-label="Poster-making Workshop">
       <div className="studio-toolbar">
         <div>
           <button
@@ -728,7 +728,7 @@ export default function Studio({
           <UiText id="EXPORT" />
         </button>
       </div>
-      <nav className="studio-options" aria-label={t("Studio options")}>
+      <nav className="studio-options" aria-label={t("Workshop options")}>
         {PANELS.map((option) => (
           <button
             key={option.id}

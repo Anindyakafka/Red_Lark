@@ -232,8 +232,7 @@ export default async function handler(req: Request): Promise<Response> {
         : undefined;
       return json({ ok: true, inbox: true }, 200, headers);
     }
-    if (path === "/api/contact" || path === "/api/takedown")
-      return await (await import("./mail.ts")).contact(req, data, path.endsWith("takedown"));
+    if (path === "/api/contact") return await (await import("./mail.ts")).contact(req, data);
     if (path.startsWith("/api/guest/"))
       return await (await import("./guest.ts")).guest(req, path, data);
     const who = await identity(req);

@@ -17,18 +17,10 @@ export function AdminRecords({
     [error, setError] = useState("");
   if (!records || typeof records !== "object") return null;
   const data = records as Record<string, unknown>;
-  const key =
-    view === "messages"
-      ? "messages"
-      : view === "takedowns"
-        ? "takedowns"
-        : view === "users"
-          ? "profiles"
-          : "audit";
+  const key = view === "messages" ? "messages" : view === "users" ? "profiles" : "audit";
   const rows = Array.isArray(data[key]) ? (data[key] as Record<string, unknown>[]) : [];
   const labels: Record<string, string> = {
     id: "Reference",
-    message_id: "Message reference",
     body: "Message",
     email: "Email",
     status: "Status",
@@ -37,7 +29,6 @@ export function AdminRecords({
     action: "Action",
     actor_id: "Actor",
     target_id: "Target",
-    work_url: "Artwork URL",
     topic: "Topic",
     contact: "Contact",
     upi: "UPI ID",

@@ -26,7 +26,7 @@ export default async function Service({ params }: { params: Promise<{ service: s
       <PageIntro
         index="ACCOUNT"
         title={services[service as keyof typeof services]}
-        description="Browsing, downloading, the Studio and guest submissions need no account. An optional account lets you manage your contributions."
+        description="Browsing, downloading, the Workshop and guest submissions need no account. An optional account lets you manage your contributions."
         action="Browse collection"
         href="/collection"
       />
@@ -56,7 +56,7 @@ export async function generateMetadata({
     ...localizeMetadata(
       pageMeta(
         services[service as keyof typeof services] ?? "Unavailable service",
-        `${services[service as keyof typeof services]} for contributors and staff. Browse, contribute and use the Studio without signing in.`,
+        `${services[service as keyof typeof services]} for contributors and staff. Browse, contribute and use the Workshop without signing in.`,
         `/${service}`,
       ),
       locale,

@@ -67,7 +67,7 @@ export function BrowseCTA() {
     ].some((p) => path.startsWith(p));
   return browse ? (
     <aside className="mobile-cta">
-      <Link href="/studio" prefetch={false}>
+      <Link href="/workshop" prefetch={false}>
         <UiText id={"OPEN STUDIO ↗"} />
       </Link>
     </aside>

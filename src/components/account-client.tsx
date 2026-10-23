@@ -10,6 +10,22 @@ import { AdminRecords } from "./admin-records";
 import { DescriptionField, TagsField, CategoriesField, LicenceField } from "./contribution-fields";
 import { imageDescription, licenceSummary, normalizeTags } from "@/lib/contribution-metadata";
 
+const allowedUploadMimes = [
+  "image/jpeg",
+  "image/png",
+  "text/plain",
+  "text/markdown",
+  "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+];
+function uploadMime(file: File) {
+  if (allowedUploadMimes.includes(file.type)) return file.type;
+  if (/\.md$/i.test(file.name)) return "text/markdown";
+  if (/\.txt$/i.test(file.name)) return "text/plain";
+  if (/\.docx$/i.test(file.name))
+    return "application/vnd.openxmlformats-officedocument.wordprocessingml.document";
+  return file.type;
+}
+
 const errors: Record<string, string> = {
   invitation_expired:
     "This invitation is invalid, expired or already used. Use the newest invitation. If your email is already verified, sign in or request a password reset; otherwise ask the team to reissue it.",
@@ -251,7 +267,7 @@ export function AuthForm({
         </noscript>
         <p>
           {t(
-            "Browsing, downloading, the Studio and guest submissions need no account. An optional account lets you manage your contributions.",
+            "Browsing, downloading, the Workshop and guest submissions need no account. An optional account lets you manage your contributions.",
           )}
         </p>
         {mode !== "reset-password" && (
@@ -591,7 +607,7 @@ export function AccountPanel({
         <Link className="button accent" href="/login">
           {t("Sign in")}
         </Link>
-        <Link className="button" href="/submit">
+        <Link className="button" href="/contribute">
           {t("Contribute without an account")}
         </Link>
       </section>
@@ -895,9 +911,8 @@ export function UploadPanel({
   const [started] = useState(() => Date.now());
   const guestDraft = useRef<{ id: string; token: string } | null>(null);
   const [chosenFormat, setChosenFormat] = useState(initialWork?.format_slug || "poster-placard");
-  const [step, setStep] = useState(0);
   const [completed, setCompleted] = useState(false);
-  const [chosenLicence, setChosenLicence] = useState("CC-BY-SA-4.0");
+  const [chosenLicence, setChosenLicence] = useState("CC0-1.0");
   const [uploadProfile, setUploadProfile] = useState<Profile | null>(null);
   const uploadForm = useRef<HTMLFormElement>(null);
   const [fieldErrors, setFieldErrors] = useState<Record<string, string>>({});
@@ -939,6 +954,14 @@ export function UploadPanel({
     event.preventDefault();
     const data = new FormData(event.currentTarget),
       file = data.get("file");
+    if (file instanceof File && !String(data.get("title") || "").trim())
+      data.set(
+        "title",
+        file.name.replace(/\.[^.]+$/, "").replace(/[._-]+/g, " ") || "Untitled contribution",
+      );
+    if (!String(data.get("format_slug") || "")) data.set("format_slug", "poster-placard");
+    if (!data.getAll("languages").length) data.append("languages", "English");
+    if (!String(data.get("ai_use") || "")) data.set("ai_use", "none");
     const next: Record<string, string> = {};
     let tags: string[] = [];
     try {
@@ -946,13 +969,12 @@ export function UploadPanel({
     } catch {
       next.tags = t("Choose up to 10 tags, each 30 characters or fewer.");
     }
-    if (!String(data.get("title") || "").trim()) next.title = t("Enter a title.");
     if (String(data.get("alt") || "").length > 300) next.alt = t("Use at most 300 characters.");
     if (
       !(file instanceof File) ||
       !file.size ||
       file.size > 25 * 1024 * 1024 ||
-      !["image/jpeg", "image/png"].includes(file.type)
+      !allowedUploadMimes.includes(uploadMime(file))
     )
       next.file = t(errorMessage("invalid_file"));
     if (data.get("contact") && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(String(data.get("contact"))))
@@ -961,7 +983,6 @@ export function UploadPanel({
       next.upi = t("Enter a valid UPI ID, or leave it blank.");
     if (!data.has("permission"))
       next.permission = t("Confirm you have permission to share this work.");
-    if (!data.getAll("languages").length) next.languages = t("Choose at least one language.");
     if (data.get("source") && !/^https:\/\//.test(String(data.get("source"))))
       next.source = t(
         "Provide an HTTPS source link, or leave it blank for your own original work.",
@@ -1003,7 +1024,7 @@ export function UploadPanel({
         : await api<{ id: string }>("account/work", details);
       if (guestMode && "token" in created) {
         guestDraft.current = created as { id: string; token: string };
-        setReceipt(`${location.origin}/${locale}/submit/#submission=${created.token}`);
+        setReceipt(`${location.origin}/${locale}/contribute/#submission=${created.token}`);
       }
       const token = guestDraft.current?.token;
       setStatus(t("Uploading privately…"));
@@ -1012,17 +1033,23 @@ export function UploadPanel({
         {
           token,
           work_id: created.id,
-          mime: file.type,
+          mime: uploadMime(file),
           bytes: file.size,
         },
       );
       const sent = await fetch(signed.url, {
         method: "PUT",
-        headers: { "Content-Type": file.type },
+        headers: { "Content-Type": uploadMime(file) },
         body: file,
       });
       if (!sent.ok) throw new Error("network_error");
-      setStatus(t("Stripping image metadata and generating print files…"));
+      setStatus(
+        t(
+          uploadMime(file).startsWith("image/")
+            ? "Stripping image metadata and generating print files…"
+            : "Sanitizing writing and generating a review preview…",
+        ),
+      );
       const processed = await api<{ warning: string | null; dpiA4?: number; dpiA2: number }>(
         guestMode ? "guest/complete" : "upload/complete",
         {
@@ -1043,7 +1070,7 @@ export function UploadPanel({
       setStatus(
         `${submitted.mailPending ? t("Email delivery is pending. The action was saved and delivery will retry.") + " " : ""}${t("Submission saved for review.")}${processed.dpiA4 ? ` ${t("Estimated full-sheet resolution")}: A4 ${processed.dpiA4} DPI / A2 ${processed.dpiA2} DPI.` : ""}${processed.warning ? ` ${t("Resolution warning: the image may look soft at A2. No artificial resolution is promised.")}` : ""}`,
       );
-      setChosenLicence(String(data.get("licence_id") || "CC-BY-SA-4.0"));
+      setChosenLicence(String(data.get("licence_id") || "CC0-1.0"));
       setCompleted(true);
       window.dispatchEvent(new Event("redlark:session"));
       onSaved?.();
@@ -1058,7 +1085,7 @@ export function UploadPanel({
           {t(
             access === "loading"
               ? "Checking your session…"
-              : "Browsing, downloading, the Studio and guest submissions need no account. An optional account lets you manage your contributions.",
+              : "Browsing, downloading, the Workshop and guest submissions need no account. An optional account lets you manage your contributions.",
           )}
         </p>
         {access !== "loading" && (
@@ -1075,7 +1102,7 @@ export function UploadPanel({
         <Link className="button" href="/login">
           {t("Sign in")}
         </Link>
-        <Link className="button" href="/submit">
+        <Link className="button" href="/contribute">
           {t("Contribute without an account")}
         </Link>
       </section>
@@ -1103,7 +1130,7 @@ export function UploadPanel({
       <h2>{t("UPLOAD YOUR OWN ART AND DESIGN")}</h2>
       <p>
         {t(
-          "Browsing, downloading, the Studio and guest submissions need no account. An optional account lets you manage your contributions.",
+          "Browsing, downloading, the Workshop and guest submissions need no account. An optional account lets you manage your contributions.",
         )}
       </p>
       <p>{t("Fill the details: (Recommended but not mandatory)")}</p>
@@ -1115,234 +1142,271 @@ export function UploadPanel({
         </p>
       )}
       {receipt && <GuestReceipt link={receipt} />}
-      <ol className="wizard-steps">
-        <li aria-current={step === 0 ? "step" : undefined}>{t("Choose format")}</li>
-        <li aria-current={step === 1 ? "step" : undefined}>{t("Fill the details:")}</li>
-        <li>{t("Upload")}</li>
-      </ol>
-      {step === 0 && (
-        <div className="format-picker">
-          {formats.map((format) => (
-            <button
-              key={format.slug}
-              className="button"
-              onClick={() => {
-                setChosenFormat(format.slug);
-                setStep(1);
-              }}
-            >
-              {t(format.label)}
-            </button>
-          ))}
-        </div>
-      )}
-      <form
-        method="post"
-        hidden={step === 0}
-        key={initialWork?.id || "new"}
-        ref={uploadForm}
-        className="handoff-form"
-        noValidate
-        onSubmit={upload}
-      >
+      <form method="post" className="handoff-form quick-contribution" noValidate onSubmit={upload}>
         <label className="honeypot" aria-hidden="true">
           Website
           <input name="website" tabIndex={-1} autoComplete="off" />
         </label>
-        {initialWork && <input type="hidden" name="id" value={initialWork.id} />}
-        <button type="button" className="button" onClick={() => setStep(0)}>
-          {t("Choose format")}
-        </button>
-        {works.some((w) => ["draft", "changes_requested"].includes(w.status)) && (
-          <label className="form-field" htmlFor="upload-id">
-            {t("Revise an existing draft")}
-            <select id="upload-id" name="id">
-              <option value="">{t("New contribution")}</option>
-              {works
-                .filter((w) => ["draft", "changes_requested"].includes(w.status))
-                .map((w) => (
-                  <option value={w.id} key={w.id}>
-                    {w.title}
-                  </option>
-                ))}
+        <fieldset>
+          <legend>{t("What are you sharing?")}</legend>
+          <label className="form-field" htmlFor="quick-type">
+            {t("Type")}
+            <select id="quick-type" name="format_slug" defaultValue="poster-placard">
+              {formats.map((format) => (
+                <option value={format.slug} key={format.slug}>
+                  {t(format.label)}
+                </option>
+              ))}
             </select>
           </label>
-        )}
-        {(
-          [
-            ["title", "Title", true],
-            ["artist_name", "Artist name", false],
-            ["caption", "Caption", false],
-            ["source", "Source URL (optional for your own original work)", false],
-          ] as const
-        ).map(([name, label, required]) => (
-          <label className="form-field" htmlFor={`upload-${name}`} key={name}>
-            {t(label)}
-            {required ? ` (${t("required")})` : ""}
+          <label className="form-field" htmlFor="quick-file">
+            {t("Choose a file")}
             <input
-              id={`upload-${name}`}
-              name={name}
-              type={name === "source" ? "url" : "text"}
-              defaultValue={
-                initialWork?.[name] ||
-                (name === "artist_name" ? uploadProfile?.artist_name : "") ||
-                ""
-              }
-              aria-invalid={!!fieldErrors[name]}
-              aria-describedby={fieldErrors[name] ? "upload-" + name + "-error" : undefined}
-              required={required}
+              id="quick-file"
+              name="file"
+              type="file"
+              accept="image/jpeg,image/png,text/plain,text/markdown,.md,.docx"
+              required
+              aria-invalid={!!fieldErrors.file}
+              aria-describedby={fieldErrors.file ? "upload-file-error" : undefined}
             />
-            {fieldError(name)}
+            {fieldError("file")}
           </label>
-        ))}
-        {(
-          [
-            ["contact", "Contact"],
-            ["upi", "UPI ID"],
-          ] as const
-        ).map(([name, label]) => (
-          <label className="form-field" htmlFor={`upload-${name}`} key={name}>
-            {t(label)} ({t("Recommended but not mandatory")})
+          <input type="hidden" name="licence_id" value="CC0-1.0" />
+          <input type="hidden" name="ai_use" value="none" />
+          <p>
+            {t(
+              "Quick contributions use CC0: anyone may use them for any purpose. Staff will flag missing details for review.",
+            )}
+          </p>
+          <p>{t("Images: JPEG or PNG. Writing: TXT, Markdown or DOCX, up to 25 MB.")}</p>
+          <label className="checkbox-field">
             <input
-              id={`upload-${name}`}
-              name={name}
-              type={name === "contact" ? "email" : "text"}
-              defaultValue={uploadProfile?.[name] || ""}
-              aria-invalid={!!fieldErrors[name]}
-              aria-describedby={fieldErrors[name] ? `upload-${name}-error` : undefined}
+              type="checkbox"
+              name="permission"
+              required
+              aria-invalid={!!fieldErrors.permission}
+              aria-describedby={fieldErrors.permission ? "upload-permission-error" : undefined}
             />
-            {fieldError(name)}
+            {t("I have the right to share this work and agree to the site licence terms.")}
           </label>
-        ))}
-        {!guestMode && (
-          <>
-            <label className="checkbox-field">
-              <input
-                type="checkbox"
-                name="profile_contact_public"
-                defaultChecked={uploadProfile?.contact_public || false}
-              />
-              {t("Allow my contact email to be public")}
-            </label>
-            <label className="checkbox-field">
-              <input
-                type="checkbox"
-                name="profile_upi_public"
-                defaultChecked={uploadProfile?.upi_public || false}
-              />
-              {t("Allow my UPI ID to be public")}
-            </label>
-          </>
-        )}
-        <label className="form-field" htmlFor="upload-format">
-          {t("Choose format")}
-          <select
-            id="upload-format"
-            name="format_slug"
-            value={chosenFormat}
-            onChange={(event) => setChosenFormat(event.target.value)}
-          >
-            {formats.map((f) => (
-              <option value={f.slug} key={f.slug}>
-                {t(f.label)}
-              </option>
-            ))}
-          </select>
-        </label>
-        <DescriptionField inputId="upload-alt" initial={initialWork?.alt} />
-        <TagsField initial={initialWork?.tags} />
-        {fieldError("tags")}
-        <LicenceField initial={initialWork?.licence_id} />
-        <fieldset aria-describedby={fieldErrors.languages ? "upload-languages-error" : undefined}>
-          <legend>{t("Languages (required)")}</legend>
-          {["English", "Hindi", "Bengali", "Malayalam"].map((l) => (
-            <label className="checkbox-field" key={l}>
-              <input
-                type="checkbox"
-                name="languages"
-                value={l}
-                defaultChecked={initialWork ? initialWork.languages.includes(l) : l === "English"}
-                aria-invalid={!!fieldErrors.languages}
-                aria-describedby={fieldErrors.languages ? "upload-languages-error" : undefined}
-              />
-              {t(l)}
-            </label>
-          ))}
-          {fieldError("languages")}
+          {fieldError("permission")}
+          <button className="button accent" disabled={action.busy}>
+            {t(action.busy ? "Working…" : "Contribute")}
+          </button>
         </fieldset>
-        <CategoriesField
-          initial={(initialWork?.work_categories || []).map((c) => c.category_slug)}
-        />
-        <label className="form-field" htmlFor="upload-ai">
-          {t("AI-use declaration")}
-          <select id="upload-ai" name="ai_use" defaultValue={initialWork?.ai_use || "none"}>
-            <option value="none">{t("None")}</option>
-            <option value="minimal-assisted">{t("Minimal-assisted")}</option>
-            <option value="generated">{t("Generated")}</option>
-          </select>
-        </label>
-        <label className="form-field" htmlFor="upload-ai-disclosure">
-          {t("Explain any AI use")}
-          <textarea
-            id="upload-ai-disclosure"
-            name="ai_disclosure"
-            maxLength={2000}
-            defaultValue={initialWork?.ai_disclosure || ""}
-          />
-        </label>
-        <label className="form-field" htmlFor="upload-file">
-          {t("JPEG or PNG, maximum 25 MB")}
-          <input
-            id="upload-file"
-            name="file"
-            type="file"
-            accept="image/jpeg,image/png"
-            required
-            aria-invalid={!!fieldErrors.file}
-            aria-describedby={fieldErrors.file ? "upload-file-error" : undefined}
-          />
-          {fieldError("file")}
-        </label>
+      </form>
+      <details className="optional-contribution-details">
+        <summary>{t("Add details (optional)")}</summary>
         <p>
           {t(
-            "Uploads are private until review. EXIF/GPS metadata is stripped on import. A4/A2 print PDFs and a WebP preview are generated. Low resolution produces a warning, not a rejection.",
+            "Use this form to add credit, licence, language, categories, description and contact choices before uploading.",
           )}
         </p>
-        <label className="checkbox-field">
-          <input type="checkbox" name="contact_consent" />
-          {t("Publish my consented profile contact with this work")}
-        </label>
-        <label className="checkbox-field">
-          <input type="checkbox" name="upi_consent" />
-          {t("Publish my consented profile UPI with this work")}
-        </label>
-        <label className="checkbox-field">
-          <input
-            type="checkbox"
-            name="permission"
-            required
-            aria-invalid={!!fieldErrors.permission}
-            aria-describedby={fieldErrors.permission ? "upload-permission-error" : undefined}
+        <form
+          method="post"
+          key={initialWork?.id || "new"}
+          ref={uploadForm}
+          className="handoff-form"
+          noValidate
+          onSubmit={upload}
+        >
+          <label className="honeypot" aria-hidden="true">
+            Website
+            <input name="website" tabIndex={-1} autoComplete="off" />
+          </label>
+          {initialWork && <input type="hidden" name="id" value={initialWork.id} />}
+          {works.some((w) => ["draft", "changes_requested"].includes(w.status)) && (
+            <label className="form-field" htmlFor="upload-id">
+              {t("Revise an existing draft")}
+              <select id="upload-id" name="id">
+                <option value="">{t("New contribution")}</option>
+                {works
+                  .filter((w) => ["draft", "changes_requested"].includes(w.status))
+                  .map((w) => (
+                    <option value={w.id} key={w.id}>
+                      {w.title}
+                    </option>
+                  ))}
+              </select>
+            </label>
+          )}
+          {(
+            [
+              ["title", "Title", false],
+              ["artist_name", "Artist name", false],
+              ["caption", "Caption", false],
+              ["source", "Source URL (optional for your own original work)", false],
+            ] as const
+          ).map(([name, label, required]) => (
+            <label className="form-field" htmlFor={`upload-${name}`} key={name}>
+              {t(label)}
+              {required ? ` (${t("required")})` : ""}
+              <input
+                id={`upload-${name}`}
+                name={name}
+                type={name === "source" ? "url" : "text"}
+                defaultValue={
+                  initialWork?.[name] ||
+                  (name === "artist_name" ? uploadProfile?.artist_name : "") ||
+                  ""
+                }
+                aria-invalid={!!fieldErrors[name]}
+                aria-describedby={fieldErrors[name] ? "upload-" + name + "-error" : undefined}
+                required={required}
+              />
+              {fieldError(name)}
+            </label>
+          ))}
+          {(
+            [
+              ["contact", "Contact"],
+              ["upi", "UPI ID"],
+            ] as const
+          ).map(([name, label]) => (
+            <label className="form-field" htmlFor={`upload-${name}`} key={name}>
+              {t(label)} ({t("Recommended but not mandatory")})
+              <input
+                id={`upload-${name}`}
+                name={name}
+                type={name === "contact" ? "email" : "text"}
+                defaultValue={uploadProfile?.[name] || ""}
+                aria-invalid={!!fieldErrors[name]}
+                aria-describedby={fieldErrors[name] ? `upload-${name}-error` : undefined}
+              />
+              {fieldError(name)}
+            </label>
+          ))}
+          {!guestMode && (
+            <>
+              <label className="checkbox-field">
+                <input
+                  type="checkbox"
+                  name="profile_contact_public"
+                  defaultChecked={uploadProfile?.contact_public || false}
+                />
+                {t("Allow my contact email to be public")}
+              </label>
+              <label className="checkbox-field">
+                <input
+                  type="checkbox"
+                  name="profile_upi_public"
+                  defaultChecked={uploadProfile?.upi_public || false}
+                />
+                {t("Allow my UPI ID to be public")}
+              </label>
+            </>
+          )}
+          <label className="form-field" htmlFor="upload-format">
+            {t("Type")}
+            <select
+              id="upload-format"
+              name="format_slug"
+              value={chosenFormat}
+              onChange={(event) => setChosenFormat(event.target.value)}
+            >
+              {formats.map((f) => (
+                <option value={f.slug} key={f.slug}>
+                  {t(f.label)}
+                </option>
+              ))}
+            </select>
+          </label>
+          <DescriptionField inputId="upload-alt" initial={initialWork?.alt} />
+          <TagsField initial={initialWork?.tags} />
+          {fieldError("tags")}
+          <LicenceField initial={initialWork?.licence_id} />
+          <fieldset aria-describedby={fieldErrors.languages ? "upload-languages-error" : undefined}>
+            <legend>{t("Languages (required)")}</legend>
+            {["English", "Hindi", "Bengali", "Malayalam"].map((l) => (
+              <label className="checkbox-field" key={l}>
+                <input
+                  type="checkbox"
+                  name="languages"
+                  value={l}
+                  defaultChecked={initialWork ? initialWork.languages.includes(l) : l === "English"}
+                  aria-invalid={!!fieldErrors.languages}
+                  aria-describedby={fieldErrors.languages ? "upload-languages-error" : undefined}
+                />
+                {t(l)}
+              </label>
+            ))}
+            {fieldError("languages")}
+          </fieldset>
+          <CategoriesField
+            initial={(initialWork?.work_categories || []).map((c) => c.category_slug)}
           />
-          {fieldError("permission")}
-          {t(
-            "I created this work or have explicit permission to share it. Publication requires review.",
-          )}
-        </label>
-        {!!Object.keys(fieldErrors).length && (
-          <p role="alert">
-            {t("Check the highlighted fields. Errors are written beside each field.")}
+          <label className="form-field" htmlFor="upload-ai">
+            {t("AI-use declaration")}
+            <select id="upload-ai" name="ai_use" defaultValue={initialWork?.ai_use || "none"}>
+              <option value="none">{t("None")}</option>
+              <option value="minimal-assisted">{t("Minimal-assisted")}</option>
+              <option value="generated">{t("Generated")}</option>
+            </select>
+          </label>
+          <label className="form-field" htmlFor="upload-ai-disclosure">
+            {t("Explain any AI use")}
+            <textarea
+              id="upload-ai-disclosure"
+              name="ai_disclosure"
+              maxLength={2000}
+              defaultValue={initialWork?.ai_disclosure || ""}
+            />
+          </label>
+          <label className="form-field" htmlFor="upload-file">
+            {t("JPEG, PNG, TXT, Markdown or DOCX, maximum 25 MB")}
+            <input
+              id="upload-file"
+              name="file"
+              type="file"
+              accept="image/jpeg,image/png,text/plain,text/markdown,.md,.docx"
+              required
+              aria-invalid={!!fieldErrors.file}
+              aria-describedby={fieldErrors.file ? "upload-file-error" : undefined}
+            />
+            {fieldError("file")}
+          </label>
+          <p>
+            {t(
+              "Uploads are private until review. Image EXIF/GPS metadata is stripped; writing files are converted to plain text without document markup. A4/A2 print PDFs and a WebP preview are generated. Low resolution produces a warning, not a rejection.",
+            )}
           </p>
-        )}
-        <Alert text={action.failure} />
-        <p role="status" aria-live="polite">
-          {status}
-        </p>
-        <button className="button accent" disabled={action.busy}>
-          {t(action.busy ? "Working…" : "Upload")}
-        </button>
-        <p>{t("Note: Your artwork will be featured after the website admin review")}</p>
-      </form>
+          <label className="checkbox-field">
+            <input type="checkbox" name="contact_consent" />
+            {t("Publish my consented profile contact with this work")}
+          </label>
+          <label className="checkbox-field">
+            <input type="checkbox" name="upi_consent" />
+            {t("Publish my consented profile UPI with this work")}
+          </label>
+          <label className="checkbox-field">
+            <input
+              type="checkbox"
+              name="permission"
+              required
+              aria-invalid={!!fieldErrors.permission}
+              aria-describedby={fieldErrors.permission ? "upload-permission-error" : undefined}
+            />
+            {fieldError("permission")}
+            {t(
+              "I created this work or have explicit permission to share it. Publication requires review.",
+            )}
+          </label>
+          {!!Object.keys(fieldErrors).length && (
+            <p role="alert">
+              {t("Check the highlighted fields. Errors are written beside each field.")}
+            </p>
+          )}
+          <Alert text={action.failure} />
+          <p role="status" aria-live="polite">
+            {status}
+          </p>
+          <button className="button accent" disabled={action.busy}>
+            {t(action.busy ? "Working…" : "Upload")}
+          </button>
+          <p>{t("Note: Your artwork will be featured after the website admin review")}</p>
+        </form>
+      </details>
     </section>
   );
 }
@@ -1456,7 +1520,7 @@ function GuestSubmissionStatus({ token }: { token: string }) {
 export function AdminPanel({
   view = "queue",
 }: {
-  view?: "queue" | "review" | "messages" | "takedowns" | "users" | "audit";
+  view?: "queue" | "review" | "messages" | "users" | "audit";
 }) {
   const router = useRouter();
   const { t, locale } = useI18n(),
@@ -1517,10 +1581,7 @@ export function AdminPanel({
       if (view === "queue" || view === "review") {
         const result = await api<{ works: Work[] }>("admin/queue");
         setWorks(result.works);
-      } else
-        setRecords(
-          await api(`admin/${view === "messages" || view === "takedowns" ? "inbox" : view}`),
-        );
+      } else setRecords(await api(`admin/${view === "messages" ? "inbox" : view}`));
     });
     // The view is fixed by the static route; server authorization is checked for every request.
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -1559,7 +1620,6 @@ export function AdminPanel({
       <nav className="button-row" aria-label={t("Administration")}>
         <Link href="/admin/review">{t("Review queue")}</Link>
         <Link href="/admin/messages">{t("Messages")}</Link>
-        <Link href="/admin/takedowns">{t("Takedowns")}</Link>
         <Link href="/admin/users">{t("Contributors")}</Link>
         <Link href="/admin/audit">{t("Audit log")}</Link>
       </nav>
@@ -1593,7 +1653,7 @@ export function AdminPanel({
           }}
         />
       )}
-      {records !== null && (view === "messages" || view === "takedowns") && (
+      {records !== null && view === "messages" && (
         <form
           method="post"
           className="handoff-form backend-panel"
@@ -1632,13 +1692,11 @@ export function AdminPanel({
             value={statusFilter}
             onChange={(e) => setStatusFilter(e.target.value)}
           >
-            {["pending", "changes_requested", "rejected", "approved", "taken_down", "all"].map(
-              (v) => (
-                <option key={v} value={v}>
-                  {t(v === "pending" ? "Pending review" : v === "all" ? "All" : v)}
-                </option>
-              ),
-            )}
+            {["pending", "changes_requested", "rejected", "approved", "all"].map((v) => (
+              <option key={v} value={v}>
+                {t(v === "pending" ? "Pending review" : v === "all" ? "All" : v)}
+              </option>
+            ))}
           </select>
         </label>
       )}
@@ -1763,7 +1821,7 @@ export function AdminPanel({
                 </label>
                 <DescriptionField initial={work.alt} fallback={work} />
                 <label className="form-field" htmlFor={"review-format-" + work.id}>
-                  {t("Choose format")}
+                  {t("Choose type")}
                   <select
                     id={"review-format-" + work.id}
                     name="format_slug"

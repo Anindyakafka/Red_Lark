@@ -38,5 +38,9 @@
   {
     "slug": "zine",
     "label": "Zine"
+  },
+  {
+    "slug": "writing",
+    "label": "Writing"
   }
 ]

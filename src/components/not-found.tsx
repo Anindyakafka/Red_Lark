@@ -34,8 +34,8 @@ export default function NotFound() {
         <Link className="button accent" href="/collection">
           <UiText id={"COLLECTION ↗"} />
         </Link>
-        <Link className="button" href="/studio" prefetch={false}>
-          <UiText id={"OPEN STUDIO ↗"} />
+        <Link className="button" href="/workshop" prefetch={false}>
+          <UiText id={"OPEN WORKSHOP ↗"} />
         </Link>
       </div>
     </section>

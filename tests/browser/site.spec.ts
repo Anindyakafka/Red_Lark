@@ -8,9 +8,9 @@ const paths = [
   "/discover/",
   "/artists/",
   "/themes/",
-  "/studio/",
+  "/workshop/",
   "/community/",
-  "/submit/",
+  "/contribute/",
   "/about/",
   "/contact/",
   "/privacy/",
@@ -30,7 +30,7 @@ for (const path of paths)
     expect(r?.status()).toBe(200);
     await expect(page.locator("h1")).toHaveCount(1);
     await page.evaluate(() => document.fonts.ready);
-    if (path === "/studio/") {
+    if (path === "/workshop/") {
       await page.getByRole("button", { name: "Poster/Placard", exact: true }).click();
       await expect(page.locator(".studio-paper")).toBeVisible();
     }
@@ -53,13 +53,13 @@ test("all specified breakpoints have no horizontal document overflow", async ({ 
       "/",
       "/collection/",
       `/poster/${posters[0].slug}/`,
-      "/studio/",
+      "/workshop/",
       "/privacy/",
-      "/submit/",
+      "/contribute/",
       "/404/",
     ]) {
       await page.goto(path);
-      if (path === "/studio/") {
+      if (path === "/workshop/") {
         await page.getByRole("button", { name: "Poster/Placard", exact: true }).click();
         await expect(page.locator(".studio-paper")).toBeVisible();
       }
@@ -124,7 +124,7 @@ test("ND gate renders no remix and links to artist", async ({ page }) => {
   await expect(page.getByRole("link", { name: /artist/ })).toBeVisible();
 });
 test("Studio add text, colour, lock, undo, export, share and local restore", async ({ page }) => {
-  await page.goto("/studio/?format=poster-placard");
+  await page.goto("/workshop/?format=poster-placard");
   await expect(page.locator(".studio-paper")).toBeVisible();
   await addElement(page, "text");
   await openOption(page, "text");
@@ -157,7 +157,7 @@ test("mobile browse CTA hidden in Studio; tools and exports are reachable", asyn
   await page.setViewportSize({ width: 390, height: 844 });
   await page.goto("/collection/");
   await expect(page.locator(".mobile-cta")).toBeVisible();
-  await page.goto("/studio/?format=poster-placard");
+  await page.goto("/workshop/?format=poster-placard");
   await expect(page.locator(".studio-paper")).toBeVisible();
   await expect(page.locator(".mobile-cta")).toHaveCount(0);
   await addElement(page, "text");

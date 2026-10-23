@@ -21,6 +21,19 @@
   external_node_modules = ["sharp", "pdfkit"]
 included_files = ["public/fonts/**/*.ttf"]
 
+# Legacy public names preserve bookmarks without keeping duplicate canonical pages.
+[[redirects]]
+  from = "/:locale/studio/*"
+  to = "/:locale/workshop/:splat"
+  status = 301
+  force = true
+
+[[redirects]]
+  from = "/:locale/submit/*"
+  to = "/:locale/contribute/:splat"
+  status = 301
+  force = true
+
 # Private route shells; API authorization is independent of these rewrites.
 
 [[redirects]]

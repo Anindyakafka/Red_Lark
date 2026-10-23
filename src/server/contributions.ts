@@ -293,7 +293,7 @@ export async function workValues(data: Record<string, unknown>, client: Identity
   const title = text(data, "title", 200, 1),
     alt = text(data, "alt", 300),
     format = text(data, "format_slug", 100, 1),
-    licence = text(data, "licence_id", 100) || "CC-BY-SA-4.0";
+    licence = text(data, "licence_id", 100) || "CC0-1.0";
   const reference = checked(
     await client.from("licences").select("derivatives").eq("id", licence).single(),
   );
@@ -332,6 +332,11 @@ export async function workValues(data: Record<string, unknown>, client: Identity
     source,
     ai_use: ai,
     ai_disclosure: text(data, "ai_disclosure", 2000),
+    details_missing:
+      !text(data, "artist_name", 120) ||
+      !text(data, "caption", 5000) ||
+      !text(data, "alt", 300) ||
+      !text(data, "source", 1000),
   };
   return { id, slug, values, categories };
 }
@@ -348,13 +353,22 @@ export async function processUpload(
     const prefix = `sanitized/${work.id}/${randomUUID()}`;
     const credit = `${work.artist_name} | ${work.licence_id} | ${work.source}`;
     const outputs = [
-      { kind: "sanitized", key: `${prefix}.png`, buffer: clean.buffer, mime: "image/png" },
+      {
+        kind: "sanitized",
+        key: `${prefix}.${clean.kind === "writing" ? "txt" : "png"}`,
+        buffer: clean.kind === "writing" ? clean.text : clean.buffer,
+        mime: clean.kind === "writing" ? "text/plain" : "image/png",
+      },
       { kind: "preview", key: `${prefix}.webp`, buffer: clean.preview, mime: "image/webp" },
       ...(await Promise.all(
         (["a4", "a2"] as const).map(async (size) => ({
           kind: `pdf-${size}`,
           key: `${prefix}-${size}.pdf`,
-          buffer: await printPdf(clean.buffer, size, credit),
+          buffer: await printPdf(
+            clean.kind === "writing" ? clean.preview : clean.buffer,
+            size,
+            credit,
+          ),
           mime: "application/pdf",
         })),
       )),

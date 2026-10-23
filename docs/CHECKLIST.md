@@ -1,5 +1,19 @@
 # Current acceptance checklist
 
+## Public simplification — 23 October 2026
+
+| Check                                      | Status  | Evidence                                                                                   | Note                                                                                     |
+| ------------------------------------------ | ------- | ------------------------------------------------------------------------------------------ | ---------------------------------------------------------------------------------------- |
+| Workshop public rename and legacy redirect | PASS    | `netlify.toml`, `src/app/[locale]/workshop/page.tsx`, `tests/simplification.test.ts`       | `/studio` redirects permanently; technical editor module names remain internal.          |
+| Type terminology and Writing catalogue     | PASS    | `content/formats.json`, `src/components/collection.tsx`, `src/components/poster-image.tsx` | `kind` remains the stable URL/data parameter.                                            |
+| Historical Archive public shell            | PASS    | `src/app/[locale]/archive/page.tsx`, `src/components/historical-archive.tsx`               | Archive-only cards are view-only and never link to downloads.                            |
+| Historical Archive database backfill       | PARTIAL | `supabase/migrations/202610230001_archive_history.sql`                                     | Applied. Future publications are tracked; existing records were not directly backfilled. |
+| Takedown workflow removal                  | PASS    | contact, mail, admin and policy sources                                                    | No public/private endpoint, route, policy article or admin view remains.                 |
+| Contribute-first guest upload              | PASS    | `src/app/[locale]/contribute/page.tsx`, `src/components/account-client.tsx`                | Right-to-share consent is required; quick uploads default to CC0.                        |
+| Writing file/text contribution pipeline    | PASS    | `src/server/text-upload.ts`, `tests/text-upload.test.ts`                                   | TXT/Markdown/DOCX sanitize to plain text and follow private review.                      |
+| Compact landing preview                    | PASS    | `src/app/[locale]/page.tsx`, `src/components/collection.tsx`                               | Exactly ten newest usable works, without the full filter interface.                      |
+| Simplification verification                | PASS    | typecheck, lint, test, build                                                               | 83 unit tests; static export and client-secret audits pass.                              |
+
 ## Approved-work publication repair
 
 | Item                   | Status  | Evidence                                                                                                                                                                                         |

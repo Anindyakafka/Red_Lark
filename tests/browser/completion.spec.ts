@@ -6,7 +6,7 @@ test("all paper presets declare the right PDF boxes; A2 PNG dimensions are high 
   page,
 }) => {
   test.setTimeout(120000);
-  await page.goto("/studio/?format=poster-placard");
+  await page.goto("/workshop/?format=poster-placard");
   await expect(page.locator(".studio-paper")).toBeVisible();
   for (const [preset, width, height] of [
     ["A4", 210, 297],
@@ -74,7 +74,7 @@ test("touch pinch changes zoom and mobile controls stay usable", async ({ browse
   await context.close();
 });
 test("bad remix source, print modes and shared source credits are handled", async ({ page }) => {
-  await page.goto("/studio/?remix=missing-source");
+  await page.goto("/workshop/?remix=missing-source");
   await expect(page.locator("main [role=alert]")).toContainText("REMIX BLOCKED");
   await openOption(page, "help");
   await page.getByRole("button", { name: "START FRESH", exact: true }).click();

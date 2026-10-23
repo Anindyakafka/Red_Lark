@@ -14,10 +14,12 @@ export function Collection({
   posters,
   initialTheme = "",
   heading = "THE COLLECTION",
+  compact = false,
 }: {
   posters: Poster[];
   initialTheme?: string;
   heading?: string;
+  compact?: boolean;
 }) {
   const [filters, setFilters] = useState<Filters>({ ...emptyFilters, theme: initialTheme });
   const [draft, setDraft] = useState("");
@@ -93,7 +95,7 @@ export function Collection({
   }[] = [
     {
       key: "kind",
-      label: "Format",
+      label: "Type",
       values: formats.map((f) => ({ value: f.slug, label: f.label })),
     },
     {
@@ -129,159 +131,169 @@ export function Collection({
   ];
   return (
     <section id="collection" className="collection" aria-label="Poster collection">
-      <div className="collection-heading">
-        <h2>{heading}</h2>
-        <Link href="/search/image/" className="label">
-          <UiText id={"IMAGE SEARCH COMING SOON"} />
-        </Link>
-      </div>
-      <p className="license-note">
-        <strong>
-          <UiText id={"PLEASE READ BEFORE USING"} />
-        </strong>
-        <UiText
-          id={
-            "Free to download does not mean free to change. Check the licence and credit on every poster. Original placeholders are CC0; contributions keep their own licences."
-          }
-        />
-      </p>
-      <form
-        onSubmit={search}
-        className="search-form"
-        role="search"
-        aria-labelledby="archive-search-label"
-        noValidate
-      >
-        <label htmlFor="archive-search" id="archive-search-label" className="label">
-          <UiText id={"SEARCH THE ARCHIVE"} />
-        </label>
-        <div>
-          <input
-            id="archive-search"
-            type="search"
-            placeholder="Words, themes, artists, languages…"
-            value={draft}
-            onChange={(e) => {
-              setDraft(e.target.value);
-              if (error) setError("");
-            }}
-            aria-invalid={!!error}
-            aria-describedby={error ? "search-error" : undefined}
-          />
-          <button type="submit">
-            <UiText id={"SEARCH ↗"} />
-          </button>
+      {!compact && heading && (
+        <div className="collection-heading">
+          <h2>{heading}</h2>
+          <Link href="/search/image/" className="label">
+            <UiText id={"IMAGE SEARCH COMING SOON"} />
+          </Link>
         </div>
-        {error && (
-          <p id="search-error" role="alert">
-            <UiText id={error} />
-          </p>
-        )}
-      </form>
-      <div className="filter-bar">
-        <button
-          className="filter-all"
-          aria-pressed={!Object.entries(filters).some(([k, v]) => k !== "sort" && Boolean(v))}
-          onClick={() => {
-            setFilters({ ...emptyFilters, theme: initialTheme });
-            setDraft("");
-            setError("");
-            const url = new URL(location.href);
-            for (const key of [
-              "q",
-              "category",
-              "kind",
-              "language",
-              "artist",
-              "license",
-              "color",
-              "sort",
-              "saved",
-            ])
-              url.searchParams.delete(key);
-            history.replaceState(null, "", url);
-          }}
+      )}
+      {!compact && (
+        <p className="license-note">
+          <strong>
+            <UiText id={"PLEASE READ BEFORE USING"} />
+          </strong>
+          <UiText
+            id={
+              "Free to download does not mean free to change. Check the licence and credit on every poster. Original placeholders are CC0; contributions keep their own licences."
+            }
+          />
+        </p>
+      )}
+      {!compact && (
+        <form
+          onSubmit={search}
+          className="search-form"
+          role="search"
+          aria-labelledby="archive-search-label"
+          noValidate
         >
-          <UiText id={"ALL (Uncategorized)"} />
-        </button>
-        {facets.map((f) => (
-          <label className="facet" key={f.key}>
+          <label htmlFor="archive-search" id="archive-search-label" className="label">
+            <UiText id={"SEARCH THE ARCHIVE"} />
+          </label>
+          <div>
+            <input
+              id="archive-search"
+              type="search"
+              placeholder="Words, themes, artists, languages…"
+              value={draft}
+              onChange={(e) => {
+                setDraft(e.target.value);
+                if (error) setError("");
+              }}
+              aria-invalid={!!error}
+              aria-describedby={error ? "search-error" : undefined}
+            />
+            <button type="submit">
+              <UiText id={"SEARCH ↗"} />
+            </button>
+          </div>
+          {error && (
+            <p id="search-error" role="alert">
+              <UiText id={error} />
+            </p>
+          )}
+        </form>
+      )}
+      {!compact && (
+        <div className="filter-bar">
+          <button
+            className="filter-all"
+            aria-pressed={!Object.entries(filters).some(([k, v]) => k !== "sort" && Boolean(v))}
+            onClick={() => {
+              setFilters({ ...emptyFilters, theme: initialTheme });
+              setDraft("");
+              setError("");
+              const url = new URL(location.href);
+              for (const key of [
+                "q",
+                "category",
+                "kind",
+                "language",
+                "artist",
+                "license",
+                "color",
+                "sort",
+                "saved",
+              ])
+                url.searchParams.delete(key);
+              history.replaceState(null, "", url);
+            }}
+          >
+            <UiText id={"ALL (Uncategorized)"} />
+          </button>
+          {facets.map((f) => (
+            <label className="facet" key={f.key}>
+              <span className="sr-only">
+                <UiText id={f.label} />
+              </span>
+              <select
+                aria-label={f.label}
+                value={String(filters[f.key])}
+                onChange={(e) => set(f.key, e.target.value)}
+              >
+                <option value="">
+                  <UiText id={f.label} />
+                </option>
+                {f.values.map((v) => (
+                  <option value={v.value} key={v.value}>
+                    <UiText id={v.label} />
+                  </option>
+                ))}
+              </select>
+            </label>
+          ))}
+          <label className="facet">
             <span className="sr-only">
-              <UiText id={f.label} />
+              <UiText id={"Sort"} />
             </span>
             <select
-              aria-label={f.label}
-              value={String(filters[f.key])}
-              onChange={(e) => set(f.key, e.target.value)}
+              aria-label="Sort"
+              value={filters.sort}
+              onChange={(e) => set("sort", e.target.value)}
             >
-              <option value="">
-                <UiText id={f.label} />
+              <option value="newest">
+                <UiText id={"Newest"} />
               </option>
-              {f.values.map((v) => (
-                <option value={v.value} key={v.value}>
-                  <UiText id={v.label} />
-                </option>
-              ))}
+              <option value="oldest">
+                <UiText id={"Oldest"} />
+              </option>
+              <option value="az">
+                <UiText id={"A–Z"} />
+              </option>
+              <option value="za">
+                <UiText id={"Z–A"} />
+              </option>
             </select>
           </label>
-        ))}
-        <label className="facet">
-          <span className="sr-only">
-            <UiText id={"Sort"} />
-          </span>
-          <select
-            aria-label="Sort"
-            value={filters.sort}
-            onChange={(e) => set("sort", e.target.value)}
-          >
-            <option value="newest">
-              <UiText id={"Newest"} />
-            </option>
-            <option value="oldest">
-              <UiText id={"Oldest"} />
-            </option>
-            <option value="az">
-              <UiText id={"A–Z"} />
-            </option>
-            <option value="za">
-              <UiText id={"Z–A"} />
-            </option>
-          </select>
-        </label>
-        <button aria-pressed={filters.saved} onClick={() => set("saved", !filters.saved)}>
-          {filters.saved ? "SAVED ONLY" : "SAVED"}
-        </button>
-        <strong className="result-count" aria-live="polite">
-          {results.length}
-          <UiText id={"POSTERS"} />
-        </strong>
-      </div>
-      <p className="hydration-status" role="status">
-        {saved.length > 0 && (
-          <button
-            className="clear-bookmarks"
-            onClick={() => {
-              setSaved([]);
-              try {
-                localStorage.removeItem("redlark.saved.v1");
-                setStorageNotice("All local bookmarks cleared.");
-              } catch {
-                setStorageNotice(
-                  "Bookmarks cleared for this visit; browser storage is unavailable.",
-                );
-              }
-            }}
-          >
-            <UiText id={"CLEAR"} />
-            {saved.length}
-            <UiText id={"LOCAL BOOKMARKS]"} />
+          <button aria-pressed={filters.saved} onClick={() => set("saved", !filters.saved)}>
+            {filters.saved ? "SAVED ONLY" : "SAVED"}
           </button>
-        )}
-        {hydrated
-          ? `${results.length} posters ready. Check each licence before reuse.`
-          : "Loading collection…"}
-      </p>
-      {storageNotice && (
+          <strong className="result-count" aria-live="polite">
+            {results.length}
+            <UiText id={"WORKS"} />
+          </strong>
+        </div>
+      )}
+      {!compact && (
+        <p className="hydration-status" role="status">
+          {saved.length > 0 && (
+            <button
+              className="clear-bookmarks"
+              onClick={() => {
+                setSaved([]);
+                try {
+                  localStorage.removeItem("redlark.saved.v1");
+                  setStorageNotice("All local bookmarks cleared.");
+                } catch {
+                  setStorageNotice(
+                    "Bookmarks cleared for this visit; browser storage is unavailable.",
+                  );
+                }
+              }}
+            >
+              <UiText id={"CLEAR"} />
+              {saved.length}
+              <UiText id={"LOCAL BOOKMARKS]"} />
+            </button>
+          )}
+          {hydrated
+            ? `${results.length} posters ready. Check each licence before reuse.`
+            : "Loading collection…"}
+        </p>
+      )}
+      {!compact && storageNotice && (
         <p role="status" className="notice">
           <UiText id={storageNotice} />
         </p>
@@ -348,15 +360,17 @@ export function Collection({
           </button>
         </div>
       )}
-      <noscript>
-        <p>
-          <UiText
-            id={
-              "Search and filters need JavaScript. The archive and download pages are still available."
-            }
-          />
-        </p>
-      </noscript>
+      {!compact && (
+        <noscript>
+          <p>
+            <UiText
+              id={
+                "Search and filters need JavaScript. The archive and download pages are still available."
+              }
+            />
+          </p>
+        </noscript>
+      )}
     </section>
   );
 }

@@ -90,7 +90,7 @@ export default async function Page({
           </div>
           <div>
             <dt>
-              <UiText id="Format" />
+              <UiText id="Type" />
             </dt>
             <dd>{[...new Set(p.formats.map((file) => file.format))].join(" / ")}</dd>
           </div>
@@ -212,7 +212,7 @@ export default async function Page({
               "This is an invented placeholder credit; no donation link is available."
             )}
           </p>
-          <Link className="underlined" href="/submit">
+          <Link className="underlined" href="/contribute">
             <UiText id={"Send us how you used it / propose a contribution ↗"} />
           </Link>
         </section>

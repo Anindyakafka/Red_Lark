@@ -4,7 +4,7 @@ import { Link } from "@/i18n/client";
 import { pageMeta } from "@/lib/metadata";
 const baseMetadata = pageMeta(
   "Terms and licence rules draft",
-  "Draft rules for artwork reuse, derivatives, ShareAlike credits, submissions, artist removal and limitations of print exports.",
+  "Draft rules for artwork reuse, derivatives, ShareAlike credits, submissions and limitations of print exports.",
   "/terms",
 );
 export default function Page() {
@@ -35,7 +35,7 @@ export default function Page() {
       <p>
         <UiText
           id={
-            "The Studio excludes NoDerivatives works, including CC BY-NC-ND, from bases and elements. ND licences restrict distribution of adapted material; ask the artist about additional permissions. Such works may be offered as downloads under their stated terms. Non-commercial restrictions and attribution requirements remain attached to sources."
+            "The Workshop excludes NoDerivatives works, including CC BY-NC-ND, from bases and elements. ND licences restrict distribution of adapted material; ask the artist about additional permissions. Such works may be offered as downloads under their stated terms. Non-commercial restrictions and attribution requirements remain attached to sources."
           }
         />
       </p>
@@ -45,7 +45,7 @@ export default function Page() {
       <p>
         <UiText
           id={
-            "Studio exports compose a source-credit strip and licence metadata from every visible source element. ShareAlike sources impose their licence on adaptations. The exporter rejects incompatible ShareAlike combinations and combinations of CC BY-SA with non-commercial sources. Do not remove required credits. Images you upload remain subject to their owners’ rights."
+            "Workshop exports compose a source-credit strip and licence metadata from every visible source element. ShareAlike sources impose their licence on adaptations. The exporter rejects incompatible ShareAlike combinations and combinations of CC BY-SA with non-commercial sources. Do not remove required credits. Images you upload remain subject to their owners’ rights."
           }
         />
       </p>
@@ -72,20 +72,6 @@ export default function Page() {
         <UiText
           id={
             "Do not use this service to infringe rights, expose private information, threaten people, or distribute unlawful material. Keep identifying details out of designs where their publication could put people at risk."
-          }
-        />
-      </p>
-      <h2>
-        <UiText id={"ARTIST REMOVAL / TAKEDOWN."} />
-      </h2>
-      <p>
-        <UiText id={"Use"} />{" "}
-        <Link className="underlined" href="/contact">
-          <UiText id={"the contact page"} />
-        </Link>{" "}
-        <UiText
-          id={
-            "with a poster URL and your concern. The project should review credit, permission and removal requests promptly. A real monitored inbox is a launch prerequisite."
           }
         />
       </p>

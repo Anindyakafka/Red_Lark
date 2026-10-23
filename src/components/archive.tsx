@@ -7,6 +7,7 @@ export function Collection({
   posters: Poster[];
   initialTheme?: string;
   heading?: string;
+  compact?: boolean;
 }) {
   const summaries = posters.map((p) => {
     const copy = { ...p };

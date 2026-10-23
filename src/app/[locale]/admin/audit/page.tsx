@@ -9,7 +9,7 @@ export default function Page() {
       <PageIntro
         index="ADMIN"
         title="Audit log"
-        description="Browsing, downloading, the Studio and guest submissions need no account. An optional account lets you manage your contributions."
+        description="Browsing, downloading, the Workshop and guest submissions need no account. An optional account lets you manage your contributions."
         action="Account security"
         href="/account/settings"
       />

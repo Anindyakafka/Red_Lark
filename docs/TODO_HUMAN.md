@@ -1,5 +1,11 @@
 ﻿# Human prerequisites for RED LARK WORKSHOP
 
+## Simplification release follow-up — 23 October 2026
+
+- The archive-history and Writing/CC0 migrations were applied on 23 October 2026. Existing already-published records were not backfilled because the database’s update guard rejects that direct operation; future publications are tracked. Connect the static public-catalogue build to the sanitized archive source before calling `/archive` a complete historical record.
+- Team decision recorded: quick contributions default to **CC0 1.0**, so anyone may use them for any purpose. The contributor must still confirm they have the right to share the work.
+- Writing contributions accept `.txt`, Markdown and `.docx`; raw documents stay private and are converted to sanitized plain text for the normal review queue.
+
 ## Approved contribution publication — 23 October 2026
 
 Merge the artist-metadata repair and wait for Netlify production to report Published. The approval hook already worked; duplicate Anonymous contributor titles broke the build. No reupload, reapproval or new configuration is needed. Confirm the newest work in Collection and its item page after deployment.

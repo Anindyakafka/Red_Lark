@@ -7,7 +7,7 @@ import { landingCopy } from "@/lib/landing-copy";
 import { isLocale } from "@/i18n/config";
 const baseMetadata = pageMeta(
   "About Red Lark Workshop",
-  "Red Lark Workshop is a free open archive for protest posters and a private poster-making Studio. Learn how to print, remix responsibly and support artists.",
+  "Red Lark Workshop is a free open archive for protest posters and a private poster-making Workshop. Learn how to print, remix responsibly and support artists.",
   "/about",
 );
 export default async function Page({ params }: { params: Promise<{ locale: string }> }) {
@@ -19,8 +19,8 @@ export default async function Page({ params }: { params: Promise<{ locale: strin
         index="08"
         title="ART IN PUBLIC."
         description="Red Lark Workshop is a free print archive and a space to make your own poster."
-        action="Open Studio"
-        href="/studio"
+        action="Open Workshop"
+        href="/workshop"
       />
       <article className="prose">
         <h2>{copy.aboutHeading}</h2>
@@ -47,7 +47,7 @@ export default async function Page({ params }: { params: Promise<{ locale: strin
         <p>
           <UiText
             id={
-              "Our Studio runs in your browser. Reuse approved elements, add your words, and export a print. A finished poster’s licence may forbid modification even when its download is free. We respect that rule."
+              "Our Workshop runs in your browser. Reuse approved elements, add your words, and export a print. A finished poster’s licence may forbid modification even when its download is free. We respect that rule."
             }
           />
         </p>
@@ -84,11 +84,11 @@ export default async function Page({ params }: { params: Promise<{ locale: strin
         <p>
           <UiText
             id={
-              "Studio PDFs preserve vectors and outline fonts. Colour-separation views are composition previews, not calibrated press plates. Inspect a sample print before a large run."
+              "Workshop PDFs preserve vectors and outline fonts. Colour-separation views are composition previews, not calibrated press plates. Inspect a sample print before a large run."
             }
           />
         </p>
-        <Link className="button accent" href="/submit">
+        <Link className="button accent" href="/contribute">
           <UiText id={"SUBMIT A POSTER ↗"} />
         </Link>
         <h2>

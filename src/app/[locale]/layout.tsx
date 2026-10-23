@@ -31,7 +31,7 @@ export const metadata: Metadata = {
     template: "%s | Red Lark Workshop",
   },
   description:
-    "Find an original protest poster, read its licence, download a print file, or make your own in a private browser-only Studio.",
+    "Find an original protest poster, read its licence, download a print file, or make your own in a private browser-only Workshop.",
   manifest: "/site.webmanifest",
   icons: {
     icon: [

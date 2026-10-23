@@ -25,17 +25,6 @@
         "Check print dimensions, credit strips and one sample print. A 300 DPI label alone does not establish adequate image detail. Avoid unnecessary identifying information in the artwork or proposal.",
         "Contributions can be submitted without an account and are uploaded privately for metadata removal and human review. Optional accounts provide a contribution dashboard. Nothing is published automatically. NoDerivatives work may be downloaded under its licence but is never offered for Studio remix."
       ]
-    },
-    "takedown": {
-      "title": "Takedown & artist removal",
-      "description": "Request a credit correction or removal with the work URL and a short explanation of the concern.",
-      "paragraphs": [
-        "Use Contact and include the work URL, the credit or permission concern, and the correction or removal you are requesting. Share only what the team needs to understand the issue. Do not send unnecessary identity documents or private addresses.",
-        "The dedicated takedown form stores your request privately for the review team and attempts a team notification and acknowledgement email. If delivery fails, the saved case remains available for retry. Email is also available as a fallback.",
-        "SLA PLACEHOLDER A monitored response schedule and escalation process have not yet been agreed. The team must publish the real process after legal and operational review; no response deadline is promised by this draft.",
-        "The team can review attribution, permission and removal from current public pages through its publishing process. Cached pages, repository history and copies already downloaded may remain elsewhere; do not assume a request erases every copy.",
-        "Account deletion, private case tracking and administrative review tools are implemented. Their retention, anonymisation and removal rules remain subject to India-specific legal review."
-      ]
     }
   }
 }

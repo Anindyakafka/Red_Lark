@@ -29,8 +29,8 @@ export default async function Page({ params }: { params: Promise<{ slug: string 
         index="THEME"
         title={`${t.toUpperCase()}.`}
         description="Shared subjects. Individual voices. Check the licence before reusing."
-        action="Open Studio"
-        href="/studio"
+        action="Open Workshop"
+        href="/workshop"
       />
       <Collection posters={posters.filter((p) => p.themes.includes(t))} />
     </>

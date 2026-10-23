@@ -6,9 +6,9 @@ import { ContactAddress } from "@/components/contact-address";
 import { pageMeta } from "@/lib/metadata";
 import { CONTACT_EMAIL } from "@/config/site";
 const baseMetadata = pageMeta(
-  "Submit a poster",
-  "Upload an original poster or Studio creation privately for human review. Explicit licence and artist credit are required; publication is never automatic.",
-  "/submit",
+  "Contribute",
+  "Share artwork or writing privately for human review. Your contribution is never published automatically.",
+  "/contribute",
 );
 export default function Page() {
   const email = CONTACT_EMAIL;
@@ -16,8 +16,8 @@ export default function Page() {
     <>
       <PageIntro
         index="06"
-        title="ADD YOUR VOICE."
-        description="Propose a poster, or tell us how you used a print. We review every contribution."
+        title="CONTRIBUTE."
+        description="Share artwork or writing. We review every contribution."
         action="Read licence rules"
         href="/terms"
       />
@@ -25,19 +25,19 @@ export default function Page() {
         <UploadPanel />
         <aside aria-labelledby="submission-guidance-heading">
           <h2 id="submission-guidance-heading">
-            <UiText id={"BEFORE YOU SUBMIT"} />
+            <UiText id={"BEFORE YOU CONTRIBUTE"} />
           </h2>
           <p>
             <UiText
               id={
-                "Nothing enters the archive without explicit permission, a source and artist credit. Finished artwork with a NoDerivatives licence cannot enter the remix library."
+                "Nothing enters the Collection without human review. A licence and credit let us decide what can be reused; unfinished details are flagged for staff follow-up."
               }
             />
           </p>
           <p>
             <UiText
               id={
-                "Browsing, downloading, the Studio and guest submissions need no account. An optional account lets you manage your contributions."
+                "Browsing, downloading, the Workshop and guest submissions need no account. An optional account lets you manage your contributions."
               }
             />
           </p>
