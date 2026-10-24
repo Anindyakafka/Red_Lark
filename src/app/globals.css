@@ -2196,6 +2196,30 @@ html:not([lang="en"]) h3 {
   font-size: 16px;
   line-height: 1.9;
 }
+.landing-preview {
+  padding: 64px 3% 72px;
+  border-bottom: 3px solid var(--line);
+}
+.landing-preview-heading {
+  display: flex;
+  justify-content: center;
+  margin: 0 0 30px;
+  text-align: center;
+}
+.landing-preview-heading h2 {
+  margin: 0;
+  font-size: clamp(42px, 6vw, 85px);
+  line-height: 0.95;
+}
+.landing-preview .collection {
+  padding: 0;
+}
+.landing-preview > .button {
+  display: flex;
+  width: min(250px, 100%);
+  margin: 32px auto 0;
+  text-align: center;
+}
 .policy-link {
   text-underline-offset: 5px;
   text-decoration-thickness: 2px;
@@ -2359,6 +2383,9 @@ html:not([lang="en"]) h3 {
   flex-direction: column;
   justify-content: space-between;
   text-decoration: none;
+}
+body:has(.mobile-cta) main {
+  padding-bottom: calc(72px + env(safe-area-inset-bottom));
 }
 .format-grid strong {
   font-family: var(--font-display), Impact, var(--font-indic);
