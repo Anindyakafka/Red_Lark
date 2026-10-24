@@ -1,10 +1,12 @@
 import Image from "next/image";
 import NextLink from "next/link";
 import { Collection } from "@/components/archive";
+import { LandingBlocks } from "@/components/landing-copy";
 import { UiText } from "@/i18n/client";
 import { isLocale } from "@/i18n/config";
 import { localizeMetadata } from "@/i18n/metadata";
 import { publicPosters } from "@/lib/catalog";
+import { landingCopy } from "@/lib/landing-copy";
 import { pageMeta } from "@/lib/metadata";
 
 const baseMetadata = pageMeta(
@@ -16,6 +18,7 @@ const baseMetadata = pageMeta(
 export default async function Home({ params }: { params: Promise<{ locale: string }> }) {
   const language = (await params).locale;
   const locale = isLocale(language) ? language : "en";
+  const copy = landingCopy(locale);
   const preview = publicPosters
     .filter((poster) => (poster.archiveStatus || "usable") === "usable")
     .sort((a, b) => (b.createdAt || String(b.year)).localeCompare(a.createdAt || String(a.year)))
@@ -32,13 +35,13 @@ export default async function Home({ params }: { params: Promise<{ locale: strin
           </h1>
           <div className="hero-ctas">
             <NextLink prefetch={false} className="button accent" href={`/${locale}/collection/`}>
-              <UiText id="Browse collection" /> ↗
+              <UiText id="Browse collection" />
             </NextLink>
             <NextLink prefetch={false} className="button" href={`/${locale}/workshop/`}>
-              <UiText id="Open Workshop" /> ↗
+              <UiText id="Open Workshop" />
             </NextLink>
             <NextLink prefetch={false} className="button" href={`/${locale}/contribute/`}>
-              <UiText id="Contribute" /> ↗
+              <UiText id="Contribute" />
             </NextLink>
           </div>
         </div>
@@ -64,28 +67,16 @@ export default async function Home({ params }: { params: Promise<{ locale: strin
           <span className="wall-caption">CC0 PLACEHOLDER STUDIES / 2026</span>
         </div>
       </section>
-      <section className="prose landing-about">
-        <p className="label">ABOUT</p>
-        <h2>
-          <UiText id="RED LARK WORKSHOP" />
-        </h2>
-        <p>
-          <UiText id="A free multilingual archive and Workshop for political graphics in India. Browse work, print it where permitted, or make your own in your browser." />
-        </p>
-        <NextLink prefetch={false} className="underlined" href={`/${locale}/about/`}>
-          <UiText id="Learn more" /> ↗
-        </NextLink>
-      </section>
+      <LandingBlocks copy={copy} locale={locale} />
       <section className="landing-preview">
-        <div className="section-heading">
-          <p className="label">COLLECTION</p>
+        <div className="landing-preview-heading">
           <h2>
-            <UiText id="NEWEST USABLE WORKS" />
+            <UiText id="COLLECTION" />
           </h2>
         </div>
         <Collection posters={preview} compact />
         <NextLink prefetch={false} className="button accent" href={`/${locale}/collection/`}>
-          <UiText id="See more" /> ↗
+          <UiText id="See more" />
         </NextLink>
       </section>
     </>
