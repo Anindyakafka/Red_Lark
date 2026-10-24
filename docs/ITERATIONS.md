@@ -474,4 +474,8 @@ The RLS fixture proves anonymous callers receive no archive records by default, 
 
 The landing route had replaced the canonical narrative with a teaser and a generic “Learn more” link. Restored the full About, objectives and generative-AI policy blocks after the hero. The visible About label no longer repeats the wordmark, while the canonical source heading remains available to assistive technology and the copy-verification test. The Collection now uses one centered heading and a centered “See more” action; decorative arrows were removed from landing CTAs and the mobile Workshop action.
 
+## Landing hierarchy correction - Round 2 critique
+
+The previous round restored more of the narrative than requested. The landing now keeps the complete canonical About text in its original simple section, without a duplicate wordmark or a “Learn more” prompt, and moves directly to the centered Collection preview. Objectives and the generative-AI policy remain available on their dedicated content pages instead of interrupting the home-page flow.
+
 Viewed revised desktop and 390px screenshots. At both widths the Collection heading and action are centered, the grid aligns to its container, and the page has no horizontal overflow. The mobile fixed action now reserves safe-area space and no longer covers the final About text. Typecheck, lint, copy test, format check and static build pass.

@@ -17,10 +17,8 @@ export function LandingBlocks({ copy, locale }: { copy: LandingCopy; locale: Loc
     <div className="landing-narrative">
       <section className="landing-about" id="about">
         <div>
-          <p className="label">ABOUT</p>
-          <h2 className="sr-only" data-copy="aboutHeading">
-            {copy.aboutHeading}
-          </h2>
+          <p className="label">01 / ABOUT</p>
+          <h2 data-copy="aboutHeading">{copy.aboutHeading}</h2>
         </div>
         <div>
           <p data-copy="about">{copy.about}</p>
