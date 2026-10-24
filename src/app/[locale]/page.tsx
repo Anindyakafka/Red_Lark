@@ -1,7 +1,6 @@
 import Image from "next/image";
 import NextLink from "next/link";
 import { Collection } from "@/components/archive";
-import { LandingBlocks } from "@/components/landing-copy";
 import { UiText } from "@/i18n/client";
 import { isLocale } from "@/i18n/config";
 import { localizeMetadata } from "@/i18n/metadata";
@@ -67,7 +66,10 @@ export default async function Home({ params }: { params: Promise<{ locale: strin
           <span className="wall-caption">CC0 PLACEHOLDER STUDIES / 2026</span>
         </div>
       </section>
-      <LandingBlocks copy={copy} locale={locale} />
+      <section className="prose landing-about">
+        <p className="label">ABOUT</p>
+        <p data-copy="about">{copy.about}</p>
+      </section>
       <section className="landing-preview">
         <div className="landing-preview-heading">
           <h2>

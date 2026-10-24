@@ -9,7 +9,7 @@
 | Historical Archive        | PARTIAL | Localized `/archive` has filters, timeline/grid and pagination. The static build now merges the sanitized `archive_catalogue()` snapshot; only the explicit historic backfill remains. |
 | Takedown workflow removal | PASS    | Dedicated page, policy article, endpoint and private admin workflow removed.                                                                                                           |
 | Contribute-first upload   | PASS    | Guest quick upload is first, needs right-to-share consent, defaults to CC0 and flags missing details. Images and reviewed Writing uploads are supported.                               |
-| Landing hierarchy         | PASS    | Hero is followed by the complete canonical About, objectives and AI-policy narrative, then a centered compact ten-work Collection preview.                                               |
+| Landing hierarchy         | PASS    | Hero is followed by the complete canonical About text without a teaser link, then a centered compact ten-work Collection preview.                                                      |
 | Navigation                | PASS    | Contribute is a high-visibility CTA; navigation scrolls below 1100px instead of wrapping.                                                                                              |
 
 ## Approved-work publication repair — 23 October 2026

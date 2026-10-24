@@ -18,28 +18,19 @@ test("landing category destinations and localized policy hubs resolve accessibly
     expect(result.violations).toEqual([]);
   }
 });
-test("landing renders the canonical blocks in order, controls and exact inventories", async ({
-  page,
-}) => {
+test("landing renders the complete About text and collection", async ({ page }) => {
   await page.goto("/en/");
-  for (const key of ["aboutHeading", "about", "objectivesHeading", "aiHeading", "ai"] as const)
-    await expect(page.locator(`[data-copy="${key}"]`)).toHaveText(copy[key]);
-  await expect(page.locator('[data-copy="objective"]')).toHaveText(copy.objectives);
-  await expect(page.locator('[data-copy="policyLink"]')).toHaveText([
-    copy.policyLink,
-    copy.policyLink,
-  ]);
-  await expect(page.locator(".category-grid a")).toHaveCount(28);
-  await expect(page.locator(".format-grid a")).toHaveCount(10);
-  await expect(page.getByRole("searchbox", { name: "SEARCH BOX", exact: true })).toBeVisible();
-  await expect(page.locator(".language-choice a")).toHaveCount(4);
+  await expect(page.locator('[data-copy="about"]')).toHaveText(copy.about);
+  await expect(page.locator(".landing-preview-heading h2")).toHaveText("COLLECTION");
+  await expect(page.locator(".landing-about [data-copy='aboutHeading']")).toHaveCount(0);
+  await expect(page.locator(".landing-objectives, .landing-ai")).toHaveCount(0);
 });
 test("English landing remains complete without JavaScript", async ({ browser }) => {
   const context = await browser.newContext({ javaScriptEnabled: false });
   const page = await context.newPage();
   await page.goto("http://localhost:3000/en/");
   await expect(page.locator('[data-copy="about"]')).toHaveText(copy.about);
-  await expect(page.locator('[data-copy="ai"]')).toHaveText(copy.ai);
+  await expect(page.locator(".landing-objectives, .landing-ai")).toHaveCount(0);
   await expect(page.locator('.hero-ctas a[href="/en/collection/"]')).toBeVisible();
   await context.close();
 });
