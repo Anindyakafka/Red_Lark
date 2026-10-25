@@ -1,6 +1,6 @@
 import test from "node:test";
 import assert from "node:assert/strict";
-import { guest } from "../src/server/guest.ts";
+import { GUEST_START_DAILY_LIMIT, guest } from "../src/server/guest.ts";
 import { sha256, ApiError } from "../src/server/security.ts";
 
 process.env.SUPABASE_URL = "https://project.example.invalid";
@@ -14,6 +14,10 @@ const response = (value: unknown, status = 200) =>
     status,
     headers: { "Content-Type": "application/json" },
   });
+
+test("guest contribution intake allows a small collective's daily batch", () => {
+  assert.equal(GUEST_START_DAILY_LIMIT, 30);
+});
 
 test("guest receipts are hashed and bound to one work; status never exposes private contact or storage", async () => {
   const old = globalThis.fetch;

@@ -5,10 +5,15 @@ import { ApiError, email, json, opaque, sha256, text } from "./security.ts";
 import { privateBucket, publicBucket, signedUpload } from "./storage.ts";
 import { processUpload, workValues } from "./contributions.ts";
 
+// This is per network address and resets at UTC midnight. It leaves room for
+// a workshop or collective sharing a connection while retaining a bounded
+// anonymous intake surface alongside the honeypot and fill-time checks.
+export const GUEST_START_DAILY_LIMIT = 30;
+
 export async function guest(req: Request, path: string, data: Record<string, unknown>) {
   const db = service();
   if (path === "/api/guest/start") {
-    await limit(req, "guest-start", 8);
+    await limit(req, "guest-start", GUEST_START_DAILY_LIMIT);
     const started = Number(data.started);
     if (
       data.website ||

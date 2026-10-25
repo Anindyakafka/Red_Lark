@@ -479,3 +479,7 @@ The landing route had replaced the canonical narrative with a teaser and a gener
 The previous round restored more of the narrative than requested. The landing now keeps the complete canonical About text in its original simple section, without a duplicate wordmark or a “Learn more” prompt, and moves directly to the centered Collection preview. Objectives and the generative-AI policy remain available on their dedicated content pages instead of interrupting the home-page flow.
 
 Viewed revised desktop and 390px screenshots. At both widths the Collection heading and action are centered, the grid aligns to its container, and the page has no horizontal overflow. The mobile fixed action now reserves safe-area space and no longer covers the final About text. Typecheck, lint, copy test, format check and static build pass.
+
+## Guest contribution capacity - Round 1 critique
+
+Nine legitimate uploads from one shared network reached the former eight-draft daily guest-start limit. The rate limit now permits 30 new guest drafts per network address per UTC day. The anonymous-intake protections remain: the server stores only a salted daily address hash, requires a honeypot and a two-second minimum form-fill time, validates file types and sizes, and keeps files private until review.
