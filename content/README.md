@@ -2,7 +2,7 @@
 
 Archive files in this directory require an explicit licence, artist credit, source URL and meaningful alt text. A free download is not permission to make derivatives.
 
-Contributor uploads use the database and may leave the image description blank (maximum 300 characters). Review and public images then receive a deterministic description made from the title, format and artist; no AI service is used. The public-catalogue build applies that fallback before strict poster validation. This exception does not relax the required descriptions on checked-in archive files.
+Contributor uploads use the database and may leave the image description blank (maximum 300 characters). Short supplied descriptions are kept without a minimum character count. Blank or generic "poster" descriptions receive a deterministic description made from the title, format and artist; no AI service is used. The public-catalogue build applies that fallback before poster validation. Checked-in archive files still need a non-blank description.
 
 `posters/*.json` contains one record per poster; `artists/*.json` contains credited artists. Images and print files live in `public/posters/<slug>/`. The 18 seed posters are original CC0 vector/typographic placeholders authored for this rebuild, with openly invented lab credits. No real artist artwork has been downloaded or embedded.
 

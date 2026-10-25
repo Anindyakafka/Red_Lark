@@ -28,7 +28,7 @@ export function imageDescription(work: {
 }): string {
   const format = formats.find((f) => f.slug === work.format_slug)?.label || "Poster";
   const supplied = work.alt?.trim() || "";
-  if (supplied.length >= 15 && !/^poster\.?$/i.test(supplied)) return supplied;
+  if (supplied && !/^poster\.?$/i.test(supplied)) return supplied;
   return `${format} titled "${work.title}" by ${work.artist_name?.trim() || "Anonymous contributor"}`;
 }
 

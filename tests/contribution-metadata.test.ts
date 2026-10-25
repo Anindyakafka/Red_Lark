@@ -50,6 +50,7 @@ test("blank upload descriptions receive deterministic title, format and artist t
     imageDescription({ alt: "A bright red bird in flight.", title: "Title" }),
     "A bright red bird in flight.",
   );
+  assert.equal(imageDescription({ alt: "Choke", title: "Solidarity" }), "Choke");
   assert.equal(
     imageDescription({ alt: "Poster", title: "Solidarity", artist_name: "Workshop" }),
     'Poster titled "Solidarity" by Workshop',

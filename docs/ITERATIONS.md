@@ -487,3 +487,7 @@ Nine legitimate uploads from one shared network reached the former eight-draft d
 ## Review and publication repair - Round 1 critique
 
 An admin could reach the general 100-request account cap while opening a review queue, inspecting files and saving decisions. Administration now bypasses that account cap while retaining fresh-MFA enforcement. The review UI had also offered a take-down decision that the server did not accept. Take-down now removes public R2 objects, clears the public record and triggers a static rebuild; a separate typed-confirmation action permanently removes the work record and every private/public file. The manually deleted approved work titled �this is a poster� was removed from production R2 and the database, and the next deployment rebuilds the public catalogue from the remaining eleven approved records.
+
+## Alt-text threshold correction - Round 1 critique
+
+The 15-character rule blocked approved artwork and replaced short contributor descriptions with generated wording. Removed that threshold from both content validation and the public catalogue. Empty descriptions still receive a title/type/artist fallback; the generic word “poster” still receives that fallback. Focused tests, typecheck, lint, and a production-equivalent build with eleven approved works pass.

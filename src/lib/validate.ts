@@ -118,7 +118,7 @@ export function validatePoster(p: Poster, artists: Artist[]): string[] {
       file.bytes <= 0
     )
       errors.push("Invalid download metadata");
-  if (p.alt?.trim().length < 15 || /^poster\.?$/i.test(p.alt ?? ""))
+  if (/^poster\.?$/i.test(p.alt?.trim() ?? ""))
     errors.push("Alt text must meaningfully describe the artwork");
   for (const url of [p.source, p.artistUrl])
     if (url && !/^(https:\/\/|\/(?!\/))/.test(url)) errors.push("Unsafe source/artist URL");

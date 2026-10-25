@@ -47,6 +47,7 @@ test("validation rejects missing credit/alt/source, conflicting licence flags an
     assert.ok(validatePoster({ ...posters[0], [field]: "" } as Poster, artists).length);
   assert.ok(validatePoster({ ...posters[0], commercialUseAllowed: false }, artists).length);
   assert.ok(validatePoster({ ...posters[0], alt: "poster" }, artists).length);
+  assert.deepEqual(validatePoster({ ...posters[0], alt: "Choke" }, artists), []);
 });
 test("ShareAlike exports carry every unique source and reject incompatible licence mixtures", () => {
   const a = { ...sourceCredit(posters[0], artists[0].name), license: "CC-BY-NC-SA-4.0" as const };
