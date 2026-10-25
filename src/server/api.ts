@@ -236,7 +236,9 @@ export default async function handler(req: Request): Promise<Response> {
     if (path.startsWith("/api/guest/"))
       return await (await import("./guest.ts")).guest(req, path, data);
     const who = await identity(req);
-    await limit(req, "account", 100, who.user.id);
+    // Administration already requires a fresh MFA-backed session. Reviewing a
+    // batch must not consume the ordinary account-request allowance.
+    if (!path.startsWith("/api/admin")) await limit(req, "account", 100, who.user.id);
     if (path === "/api/auth/logout") {
       await who.client.auth.signOut({ scope: "global" });
       checked(await service().from("app_sessions").delete().eq("user_id", who.user.id));

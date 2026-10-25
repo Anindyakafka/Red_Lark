@@ -46,7 +46,14 @@ test("blank upload descriptions receive deterministic title, format and artist t
     }),
     'Poster/Placard titled "Solidarity" by Workshop',
   );
-  assert.equal(imageDescription({ alt: "A red bird.", title: "Title" }), "A red bird.");
+  assert.equal(
+    imageDescription({ alt: "A bright red bird in flight.", title: "Title" }),
+    "A bright red bird in flight.",
+  );
+  assert.equal(
+    imageDescription({ alt: "Poster", title: "Solidarity", artist_name: "Workshop" }),
+    'Poster titled "Solidarity" by Workshop',
+  );
 });
 test("tags strip markup and controls, normalize spacing, deduplicate and retain display labels", () => {
   assert.deepEqual(

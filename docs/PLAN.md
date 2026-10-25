@@ -11,6 +11,7 @@
 | Contribute-first upload   | PASS    | Guest quick upload is first, needs right-to-share consent, defaults to CC0 and flags missing details. Images and reviewed Writing uploads are supported without a guest-upload count limit. |
 | Landing hierarchy         | PASS    | Hero is followed by the complete canonical About text without a teaser link, then a centered compact ten-work Collection preview.                                                           |
 | Navigation                | PASS    | Contribute is a high-visibility CTA; navigation scrolls below 1100px instead of wrapping.                                                                                                   |
+| Review and removal        | PASS    | Admin review actions have no account-request limit. Take-down removes public files and static publication; permanent removal deletes public/private files and the work record.              |
 
 ## Approved-work publication repair — 23 October 2026
 

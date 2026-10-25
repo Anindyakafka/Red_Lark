@@ -54,6 +54,29 @@ export async function admin(
     await requestBuild();
     return json({ ok: true, rebuilding: true });
   }
+  if (path === "/api/admin/remove-work") {
+    if (text(data, "confirm", 20) !== "REMOVE") throw new ApiError(422, "invalid_confirmation");
+    const id = text(data, "id", 100, 1);
+    const work = checked(
+      await who.client
+        .from("works")
+        .select("id,status,publication_state,work_files(object_key,public_key)")
+        .eq("id", id)
+        .single(),
+    );
+    const needsRebuild = work.status === "approved" || work.publication_state === "published";
+    if (needsRebuild) buildConfigured();
+    checked(
+      await who.client.rpc("audit_admin_operation", { p_action: "remove_work", p_target: id }),
+    );
+    for (const file of work.work_files) {
+      if (file.public_key) await remove(file.public_key, true);
+      await remove(file.object_key);
+    }
+    checked(await service().from("works").delete().eq("id", id).select("id").single());
+    if (needsRebuild) await requestBuild();
+    return json({ ok: true, rebuilding: needsRebuild });
+  }
   if (path === "/api/admin/retry-mail") {
     const id = text(data, "id", 100, 1);
     checked(await who.client.from("messages").select("id").eq("id", id).single());
@@ -203,7 +226,7 @@ export async function admin(
   if (path !== "/api/admin/review") throw new ApiError(404, "not_found");
   const id = text(data, "id", 100, 1),
     action = text(data, "action", 40, 1);
-  if (!["approve", "changes_requested", "rejected"].includes(action))
+  if (!["approve", "changes_requested", "rejected", "taken_down"].includes(action))
     throw new ApiError(422, "invalid_action");
   const reason = text(data, "reason", 3000, action === "approve" ? 0 : 10);
   const work = checked(await who.client.from("works").select("*").eq("id", id).single());
@@ -220,6 +243,52 @@ export async function admin(
         .single(),
     );
     return json({ ok: true, mailPending: await notificationNotice(id) });
+  }
+  if (action === "taken_down") {
+    if (work.status !== "approved" || work.publication_state !== "published")
+      throw new ApiError(409, "invalid_transition");
+    buildConfigured();
+    const files = checked(await who.client.from("work_files").select("*").eq("work_id", id));
+    checked(
+      await who.client
+        .from("works")
+        .update({ publication_state: "removing" })
+        .eq("id", id)
+        .eq("status", "approved")
+        .eq("publication_state", "published")
+        .select("id")
+        .single(),
+    );
+    try {
+      for (const file of files) if (file.public_key) await remove(file.public_key, true);
+      checked(
+        await who.client
+          .from("works")
+          .update({
+            status: "taken_down",
+            publication_state: "private",
+            public_url: null,
+            public_preview_url: null,
+            feedback: reason,
+          })
+          .eq("id", id)
+          .eq("status", "approved")
+          .eq("publication_state", "removing")
+          .select("id")
+          .single(),
+      );
+    } catch (error) {
+      await who.client
+        .from("works")
+        .update({ publication_state: "failed" })
+        .eq("id", id)
+        .eq("status", "approved")
+        .eq("publication_state", "removing");
+      throw error;
+    }
+    checked(await who.client.rpc("audit_admin_operation", { p_action: "take_down", p_target: id }));
+    await requestBuild();
+    return json({ ok: true, rebuilding: true });
   }
   buildConfigured();
   if (

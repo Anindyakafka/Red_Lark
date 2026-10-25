@@ -27,10 +27,9 @@ export function imageDescription(work: {
   artist_name?: string;
 }): string {
   const format = formats.find((f) => f.slug === work.format_slug)?.label || "Poster";
-  return (
-    work.alt?.trim() ||
-    `${format} titled "${work.title}" by ${work.artist_name?.trim() || "Anonymous contributor"}`
-  );
+  const supplied = work.alt?.trim() || "";
+  if (supplied.length >= 15 && !/^poster\.?$/i.test(supplied)) return supplied;
+  return `${format} titled "${work.title}" by ${work.artist_name?.trim() || "Anonymous contributor"}`;
 }
 
 export function normalizeTags(input: unknown): string[] {

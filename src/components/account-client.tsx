@@ -1889,7 +1889,7 @@ export function AdminPanel({
                 </button>
               ))}
             </div>
-            {view === "review" && ["pending", "approved", "taken_down"].includes(work.status) && (
+            {view === "review" && ["pending", "approved"].includes(work.status) && (
               <form
                 method="post"
                 className="handoff-form"
@@ -1941,7 +1941,7 @@ export function AdminPanel({
                         <option value="rejected">{t("Reject")}</option>
                       </>
                     )}
-                    {["approved", "taken_down"].includes(work.status) && (
+                    {work.status === "approved" && (
                       <option value="taken_down">{t("Take down")}</option>
                     )}
                   </select>
@@ -1963,6 +1963,54 @@ export function AdminPanel({
                 </label>
                 <button className="button accent" disabled={action.busy}>
                   {t("Save decision")}
+                </button>
+              </form>
+            )}
+            {view === "review" && (
+              <form
+                method="post"
+                className="handoff-form"
+                onSubmit={(event) => {
+                  event.preventDefault();
+                  const data = new FormData(event.currentTarget);
+                  if (data.get("confirm") !== "REMOVE") {
+                    setReviewErrors((previous) => ({
+                      ...previous,
+                      [work.id]: t("Type REMOVE exactly to permanently delete this work."),
+                    }));
+                    requestAnimationFrame(() =>
+                      document.getElementById(`remove-${work.id}`)?.focus(),
+                    );
+                    return;
+                  }
+                  setReviewErrors((previous) => ({ ...previous, [work.id]: "" }));
+                  void action.run(async () => {
+                    await api("admin/remove-work", { id: work.id, confirm: "REMOVE" });
+                    window.dispatchEvent(new Event("redlark:session"));
+                    router.push(`/${locale}/admin/review/`);
+                  });
+                }}
+              >
+                <label className="form-field" htmlFor={`remove-${work.id}`}>
+                  {t(
+                    "Type REMOVE to permanently delete this work and all of its private and public files",
+                  )}
+                  <input
+                    id={`remove-${work.id}`}
+                    name="confirm"
+                    required
+                    pattern="REMOVE"
+                    aria-invalid={!!reviewErrors[work.id]}
+                    aria-describedby={reviewErrors[work.id] ? `remove-${work.id}-error` : undefined}
+                  />
+                  {reviewErrors[work.id] && (
+                    <span className="field-error" id={`remove-${work.id}-error`} role="alert">
+                      {reviewErrors[work.id]}
+                    </span>
+                  )}
+                </label>
+                <button className="button" disabled={action.busy}>
+                  {t("Permanently remove work")}
                 </button>
               </form>
             )}

@@ -483,3 +483,7 @@ Viewed revised desktop and 390px screenshots. At both widths the Collection head
 ## Guest contribution capacity - Round 1 critique
 
 Nine legitimate uploads from one shared network reached the former eight-draft daily guest-start limit. At the owner’s direction, guest contributions now have no count limit. The remaining anonymous-intake protections require a honeypot and a two-second minimum form-fill time, validate file types and sizes, and keep files private until review.
+
+## Review and publication repair - Round 1 critique
+
+An admin could reach the general 100-request account cap while opening a review queue, inspecting files and saving decisions. Administration now bypasses that account cap while retaining fresh-MFA enforcement. The review UI had also offered a take-down decision that the server did not accept. Take-down now removes public R2 objects, clears the public record and triggers a static rebuild; a separate typed-confirmation action permanently removes the work record and every private/public file. The manually deleted approved work titled �this is a poster� was removed from production R2 and the database, and the next deployment rebuilds the public catalogue from the remaining eleven approved records.

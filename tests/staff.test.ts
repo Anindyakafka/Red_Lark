@@ -79,6 +79,15 @@ test("audit filters and decisions validate before database writes; MFA remains m
     (e: unknown) => e instanceof ApiError && e.code === "invalid_reason",
   );
   await assert.rejects(
+    admin(
+      request,
+      "/api/admin/review",
+      { id: "fixture", action: "taken_down", reason: "short" },
+      who,
+    ),
+    (e: unknown) => e instanceof ApiError && e.code === "invalid_reason",
+  );
+  await assert.rejects(
     admin(request, "/api/admin/audit", {}, { ...who, fresh: false }),
     (e: unknown) => e instanceof ApiError && e.code === "fresh_mfa_required",
   );
