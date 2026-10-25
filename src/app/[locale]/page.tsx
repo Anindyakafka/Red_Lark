@@ -68,7 +68,12 @@ export default async function Home({ params }: { params: Promise<{ locale: strin
       </section>
       <section className="prose landing-about">
         <p className="label">ABOUT</p>
-        <p data-copy="about">{copy.about}</p>
+        <div className="landing-about-content">
+          <p data-copy="about">{copy.about}</p>
+          <NextLink prefetch={false} className="landing-about-link" href={`/${locale}/about/`}>
+            <UiText id="Learn more about us" />
+          </NextLink>
+        </div>
       </section>
       <section className="landing-preview">
         <div className="landing-preview-heading">

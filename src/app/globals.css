@@ -2182,19 +2182,37 @@ html:not([lang="en"]) h3 {
 }
 .landing-about {
   display: grid;
-  grid-template-columns: 1fr 1.4fr;
-  gap: 8%;
-  padding: 72px 4%;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 750px);
+  align-items: start;
+  gap: clamp(24px, 4vw, 72px);
+  width: 100%;
+  max-width: none;
+  padding: 18px 4%;
   border-bottom: 3px solid var(--line);
 }
-.landing-about h2 {
-  max-width: 500px;
-  font-size: clamp(42px, 6vw, 85px);
-  line-height: 1.1;
+.landing-about .label {
+  margin: 0;
+}
+.landing-about-content {
+  min-width: 0;
 }
 .landing-about p[data-copy] {
   font-size: 16px;
-  line-height: 1.9;
+  line-height: 1.5;
+  letter-spacing: normal;
+  margin: 0;
+  overflow-wrap: normal;
+}
+html:not([lang="en"]) .landing-about p[data-copy] {
+  line-height: 1.55;
+}
+.landing-about-link {
+  display: inline-block;
+  margin-top: 10px;
+  font-size: 13px;
+  line-height: 1.5;
+  text-decoration: underline;
+  text-underline-offset: 3px;
 }
 .landing-preview {
   padding: 64px 3% 72px;
@@ -2411,7 +2429,7 @@ body:has(.mobile-cta) main {
   }
   .landing-about {
     grid-template-columns: 1fr;
-    gap: 30px;
+    gap: 10px;
   }
   .landing-controls {
     grid-template-columns: 1fr;
@@ -2438,10 +2456,10 @@ body:has(.mobile-cta) main {
     top: 130px;
   }
   .landing-about {
-    padding: 45px 4%;
+    padding: 18px 4%;
   }
   .landing-about p[data-copy] {
-    font-size: 14px;
+    font-size: 16px;
   }
   .landing-objectives {
     padding: 42px 4%;

@@ -1,0 +1,110 @@
+[
+  {
+    "locale": "en",
+    "width": 1440,
+    "sectionHeight": 381,
+    "sectionWidth": 1440,
+    "paragraphWidth": 750,
+    "fontSize": "16px",
+    "lineHeight": "24px",
+    "overflow": false
+  },
+  {
+    "locale": "en",
+    "width": 390,
+    "sectionHeight": 773,
+    "sectionWidth": 390,
+    "paragraphWidth": 359,
+    "fontSize": "16px",
+    "lineHeight": "24px",
+    "overflow": false
+  },
+  {
+    "locale": "en",
+    "aboutObjectives": 6,
+    "aboutAiPresent": false,
+    "policyObjectives": 0,
+    "policyAiPresent": true
+  },
+  {
+    "locale": "hi",
+    "width": 1440,
+    "sectionHeight": 317,
+    "sectionWidth": 1440,
+    "paragraphWidth": 750,
+    "fontSize": "16px",
+    "lineHeight": "24.8px",
+    "overflow": false
+  },
+  {
+    "locale": "hi",
+    "width": 390,
+    "sectionHeight": 597,
+    "sectionWidth": 390,
+    "paragraphWidth": 359,
+    "fontSize": "16px",
+    "lineHeight": "24.8px",
+    "overflow": false
+  },
+  {
+    "locale": "hi",
+    "aboutObjectives": 6,
+    "aboutAiPresent": false,
+    "policyObjectives": 0,
+    "policyAiPresent": true
+  },
+  {
+    "locale": "bn",
+    "width": 1440,
+    "sectionHeight": 317,
+    "sectionWidth": 1440,
+    "paragraphWidth": 750,
+    "fontSize": "16px",
+    "lineHeight": "24.8px",
+    "overflow": false
+  },
+  {
+    "locale": "bn",
+    "width": 390,
+    "sectionHeight": 622,
+    "sectionWidth": 390,
+    "paragraphWidth": 359,
+    "fontSize": "16px",
+    "lineHeight": "24.8px",
+    "overflow": false
+  },
+  {
+    "locale": "bn",
+    "aboutObjectives": 6,
+    "aboutAiPresent": false,
+    "policyObjectives": 0,
+    "policyAiPresent": true
+  },
+  {
+    "locale": "ml",
+    "width": 1440,
+    "sectionHeight": 466,
+    "sectionWidth": 1440,
+    "paragraphWidth": 750,
+    "fontSize": "16px",
+    "lineHeight": "24.8px",
+    "overflow": false
+  },
+  {
+    "locale": "ml",
+    "width": 390,
+    "sectionHeight": 969,
+    "sectionWidth": 390,
+    "paragraphWidth": 359,
+    "fontSize": "16px",
+    "lineHeight": "24.8px",
+    "overflow": false
+  },
+  {
+    "locale": "ml",
+    "aboutObjectives": 6,
+    "aboutAiPresent": false,
+    "policyObjectives": 0,
+    "policyAiPresent": true
+  }
+]
