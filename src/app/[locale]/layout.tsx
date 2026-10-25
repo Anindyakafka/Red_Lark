@@ -4,6 +4,7 @@ import localFont from "next/font/local";
 import { Header, Footer } from "@/components/shell";
 import { BrowseCTA } from "@/components/preferences";
 import { siteUrl } from "@/lib/metadata";
+import "@fontsource-variable/kode-mono/wght.css";
 import "../globals.css";
 import { LocaleProvider, UiText } from "@/i18n/client";
 import { isLocale } from "@/i18n/config";

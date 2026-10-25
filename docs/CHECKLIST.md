@@ -301,3 +301,10 @@ Three cold-cache runs per route, all raw scores recorded, CLS 0. Initial Hindi C
 | Static build and secret audit | PASS | 360 production-equivalent HTML pages, validated links/metadata/alt, no client secrets | Read-only build merged 12 approved works and one retained placeholder; live Netlify pages verified in all four locales. |
 | Live public deployment | PASS | Four localized collections omit the retired poster; old URL returns 404; hydrated CC0 copy visible | Direct admin save requires an authenticated owner session. |
 | Full browser regression | FAIL | Full Playwright run stopped on stale takedown/upload wizard expectations; six focused tests pass | Fixture updates and a complete rerun remain. |
+
+### Kode Mono landing hero — 25 October 2026
+
+| Check | Status | Evidence | Note |
+| --- | --- | --- | --- |
+| Self-hosted Kode Mono hero | PASS | `src/app/[locale]/layout.tsx`, `src/app/globals.css`, `public/fonts/Kode-Mono-OFL.txt`; `tests/browser/landing.spec.ts` | No Google Fonts request; visually reviewed at 390px and 1440px with featured posters. |
+| Responsive headline and copy | PASS | Five viewport checks, six landing browser tests, copy test | Masthead does not clip; Appendix A wording is untouched. |

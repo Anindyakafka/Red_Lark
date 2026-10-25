@@ -2112,9 +2112,11 @@ html:not([lang="en"]) h3 {
   gap: 32px;
 }
 .redlark-hero h1 {
-  font-size: clamp(72px, 11.8vw, 190px);
-  line-height: 0.88;
-  letter-spacing: -0.035em;
+  font-family: "Kode Mono Variable", var(--font-mono), "Courier New", monospace;
+  font-weight: 700;
+  font-size: clamp(64px, 9.2vw, 148px);
+  line-height: 1;
+  letter-spacing: -0.055em;
   overflow-wrap: normal;
 }
 .redlark-hero h1 span {
@@ -2441,8 +2443,8 @@ body:has(.mobile-cta) main {
     padding: 32px 4%;
   }
   .redlark-hero h1 {
-    font-size: clamp(78px, 19.5vw, 142px);
-    line-height: 0.95;
+    font-size: clamp(56px, 16vw, 82px);
+    line-height: 1;
   }
   .poster-wall {
     min-height: 300px;
@@ -2522,7 +2524,7 @@ body:has(.mobile-cta) main {
 }
 /* Brand lettering is Latin in every locale; Indic copy retains its own leading. */
 html[lang] .redlark-hero h1 {
-  line-height: 0.9;
+  line-height: 1;
 }
 .category-grid .category-label {
   min-width: 0;

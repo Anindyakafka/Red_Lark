@@ -37,7 +37,7 @@ test("localized About copy, About links and Workshop CTA remain intact", async (
     await page.goto(`/${locale}/`);
     await expect(page.locator('.landing-about [data-copy="about"]')).toHaveText(localeCopy.about);
     await expect(page.locator(`.landing-about a[href="/${locale}/about/"]`)).toBeVisible();
-    await expect(page.locator(".mobile-cta")).not.toContainText(/workshop/i);
+    await expect(page.locator(`.mobile-cta a[href="/${locale}/workshop/"]`)).toBeVisible();
     await page.goto(`/${locale}/about/`);
     await expect(page.locator("[data-about-copy]")).toHaveText(localeCopy.about);
     await expect(page.locator(".prose ol li")).toHaveText(localeCopy.objectives);
@@ -65,4 +65,22 @@ test("landing copy wraps at all five widths in every script", async ({ page }) =
         `${locale} ${width}`,
       ).toBe(true);
     }
+});
+
+test("hero uses self-hosted Kode Mono without clipping its title", async ({ page }, info) => {
+  for (const width of [360, 390, 768, 1024, 1440]) {
+    await page.setViewportSize({ width, height: 900 });
+    await page.goto("/en/");
+    await page.evaluate(() => document.fonts.ready);
+    const title = page.locator(".redlark-hero h1");
+    expect(await title.evaluate((node) => getComputedStyle(node).fontFamily)).toContain(
+      "Kode Mono Variable",
+    );
+    expect(
+      await title.evaluate((node) => node.scrollWidth <= node.clientWidth + 1),
+      `hero title at ${width}px`,
+    ).toBe(true);
+    if (width === 390 || width === 1440)
+      await page.locator(".redlark-hero").screenshot({ path: info.outputPath(`hero-${width}.png`) });
+  }
 });

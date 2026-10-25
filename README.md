@@ -209,7 +209,7 @@ Dependency details: [DEPENDENCIES](docs/DEPENDENCIES.md). Production audit is cl
 
 ## Licence
 
-Existing AGPL v3 software licence retained. Original placeholder artwork under content/posters and public/posters is dedicated to CC0-1.0. Self-hosted fonts carry their own OFL licences in public/fonts. Supplied and refined Red Lark Workshop brand assets remain separate. A deployed AGPL service must provide corresponding source as required by its licence.
+Existing AGPL v3 software licence retained. Original placeholder artwork under content/posters and public/posters is dedicated to CC0-1.0. Self-hosted fonts carry their own OFL licences in public/fonts. The landing hero uses the locally bundled Kode Mono; it makes no visitor request to Google Fonts. Supplied and refined Red Lark Workshop brand assets remain separate. A deployed AGPL service must provide corresponding source as required by its licence.
 
 ## Becoming an administrator and reviewing contributions
 

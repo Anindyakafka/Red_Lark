@@ -233,3 +233,5 @@ Round 4 update: performance acceptance PASS after the recorded Collection notice
 | Sync categories and retire in-house drafts | PASS | Migration 202610250003 applied; read-only check: 29 categories and one retained private placeholder draft. |
 | Retain only Borders are lines in the archive and Workshop | PASS | Content, print files, Workshop library, generated catalogue and seed reduced to one. |
 | Verify | PARTIAL | 83 local tests, typecheck, lint, static build and six focused browser tests pass. Production-equivalent build merged 12 approved works; real admin save awaits signed-in verification. |
+
+Kode Mono landing hero (25 October 2026): PASS. Self-hosted Fontsource package and OFL notice added; visual screenshots reviewed at 390px and 1440px with live approved poster data. Typecheck, lint, copy test, six landing browser tests and production-equivalent build pass.
