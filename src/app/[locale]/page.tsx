@@ -14,10 +14,20 @@ const baseMetadata = pageMeta(
   "/",
 );
 
+const heroPosterSlugs = [
+  "work-0ed79c2c-db5b-4d3f-b9a5-fa82d55586da", // USUPPER
+  "work-66f6b915-70ab-4554-a4de-5d667ceaa422", // The Everpresent
+  "work-4b74636c-1685-4d15-8c88-49a6482a1a94", // choke
+];
+
 export default async function Home({ params }: { params: Promise<{ locale: string }> }) {
   const language = (await params).locale;
   const locale = isLocale(language) ? language : "en";
   const copy = landingCopy(locale);
+  const heroPosters = heroPosterSlugs.flatMap((slug) => {
+    const poster = publicPosters.find((item) => item.slug === slug && !item.placeholder);
+    return poster ? [poster] : [];
+  });
   const preview = publicPosters
     .filter((poster) => (poster.archiveStatus || "usable") === "usable")
     .sort((a, b) => (b.createdAt || String(b.year)).localeCompare(a.createdAt || String(a.year)))
@@ -44,8 +54,8 @@ export default async function Home({ params }: { params: Promise<{ locale: strin
             </NextLink>
           </div>
         </div>
-        <div className="poster-wall" aria-label="Original CC0 placeholder studies">
-          {[publicPosters[0], publicPosters[7], publicPosters[12]].map((poster, index) => (
+        <div className="poster-wall" aria-label="Featured posters from the collection">
+          {heroPosters.map((poster, index) => (
             <NextLink
               prefetch={false}
               className={`wall-print wall-print-${index}`}
@@ -63,7 +73,7 @@ export default async function Home({ params }: { params: Promise<{ locale: strin
               />
             </NextLink>
           ))}
-          <span className="wall-caption">CC0 PLACEHOLDER STUDIES / 2026</span>
+          <span className="wall-caption">FEATURED FROM THE COLLECTION</span>
         </div>
       </section>
       <section className="prose landing-about">
