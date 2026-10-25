@@ -1,4 +1,4 @@
-﻿# Human prerequisites for RED LARK WORKSHOP
+# Human prerequisites for RED LARK WORKSHOP
 
 ## Simplification release follow-up — 23 October 2026
 
@@ -127,4 +127,4 @@ Human prerequisites before that work are release of the hold, project/region/ret
 
 ## 25 October 2026 live review follow-up
 
-Deploy this change so the static site no longer shows the 17 retired placeholder posters. The database migration is already applied. In a signed-in admin session with valid MFA, open a pending submission, select Anti-Fascism, save metadata, and confirm the success notice and refreshed value. The direct production RPC test was stopped by automatic approval review because it would have impersonated an administrator; local RPC and browser fixtures pass.
+The database migration and Netlify deployment are complete. The four live collections exclude the retired placeholder posters. In a signed-in admin session with valid MFA, open a pending submission, select Anti-Fascism, save metadata, and confirm the success notice and refreshed value. The direct production RPC test was stopped by automatic approval review because it would have impersonated an administrator; local RPC and browser fixtures pass.

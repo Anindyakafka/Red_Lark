@@ -1,6 +1,6 @@
 # RED LARK WORKSHOP: staged implementation plan
 
-## Public simplification â€” 23 October 2026
+## Public simplification Ã¢â‚¬â€ 23 October 2026
 
 | Milestone                 | Status  | Delivery and acceptance                                                                                                                                                                     |
 | ------------------------- | ------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
@@ -13,7 +13,7 @@
 | Navigation                | PASS    | Contribute is a high-visibility CTA; navigation scrolls below 1100px instead of wrapping.                                                                                                   |
 | Review and removal        | PASS    | Admin review actions have no account-request limit. Take-down removes public files and static publication; permanent removal deletes public/private files and the work record.              |
 
-## Approved-work publication repair â€” 23 October 2026
+## Approved-work publication repair Ã¢â‚¬â€ 23 October 2026
 
 | Work                          | Status  | Acceptance                                                                                                                          |
 | ----------------------------- | ------- | ----------------------------------------------------------------------------------------------------------------------------------- |
@@ -22,7 +22,7 @@
 | Verification                  | PASS    | 79 unit tests, typecheck/lint; real two-work build validates 420 HTML pages; 20 locale browser checks, axe 0                        |
 | Production recovery           | PENDING | Merge repair and wait for successful Netlify deployment; no reupload or reapproval                                                  |
 
-## Studio workspace repair â€” 22 October 2026
+## Studio workspace repair Ã¢â‚¬â€ 22 October 2026
 
 | Problem                            | Status | Acceptance                                                                                                                                                  |
 | ---------------------------------- | ------ | ----------------------------------------------------------------------------------------------------------------------------------------------------------- |
@@ -103,7 +103,7 @@ All five requested repairs are implemented on redlark. Three additive migrations
 
 Evidence: docs/evidence/upload-repair/final.json and CHECKLIST.md. Deployment and production inbox/build-hook confirmation remain owner release steps in TODO_HUMAN.md. Indic drafts retain reviewed:false. Older checkpoints below are historical; their backend holds do not apply to this completed repair.
 
-## Guest contributions and interaction repair â€” 21 October 2026
+## Guest contributions and interaction repair Ã¢â‚¬â€ 21 October 2026
 
 Implemented optional-account contribution flow at every localized Submit/new-work entry. Guests provide the same licence/AI/categories/alt data without creating an Auth identity; artwork uses the shared private signed-PUT/sanitization/print pipeline. Hash-only receipts authorize exactly one work, expire after 90 days and show read-only review feedback. Separate per-field contact/UPI consent remains mandatory for publication. Account dashboards/editing and fresh-MFA administration are preserved. Additive migration 202610210006 was applied to the existing hosted project.
 
@@ -117,7 +117,7 @@ Superseded by the 21 October checkpoint: real owner TOTP is verified and guarded
 
 QR rendering and isolated, selectable manual-key field implemented. Server returns Supabase's enrollment SVG as a data image; no external QR service, logging or storage. Build, lint, typecheck and 54 unit/RLS/copy tests pass; two new English/Hindi browser tests pass with zero axe violations at mobile width. Deployment and the owner's real TOTP verification/admin bootstrap remain pending. New setup labels use explicit English fallback in unreviewed Indic messages.
 
-## Account pages continuation â€” 20 October 2026
+## Account pages continuation Ã¢â‚¬â€ 20 October 2026
 
 This section supersedes older public-phase holds. Existing Supabase/Postgres, R2 and Resend are reused. Public pages remain static; private shells call same-origin protected APIs. UUID detail addresses are rewritten to localized static shells, with ownership/role/MFA checked independently on the server. No private record is embedded at build time.
 
@@ -129,7 +129,7 @@ This section supersedes older public-phase holds. Existing Supabase/Postgres, R2
 
 Do not push/deploy the backend until owner confirmation of Netlify server environment scopes. Real signup/admin verification must use a website account, independently of signing into the Supabase dashboard with GitHub.
 
-## Authorized backend continuation â€” 19 October 2026
+## Authorized backend continuation Ã¢â‚¬â€ 19 October 2026
 
 The owner's attached infrastructure request lifts the implementation hold. Existing Supabase Auth/Postgres, R2 buckets and email configuration are reused; no infrastructure is re-provisioned. R2 replaces all prior Supabase Storage plans. Initial admin: redlarkworkshop@gmail.com, granted only after verified real login and TOTP. Backend deployment remains prohibited until the owner confirms scoped Netlify server variables. Historical HOLD text below describes the earlier public checkpoint.
 
@@ -225,7 +225,7 @@ Round 3: durable original notification feedback and audited retry implemented, t
 
 Round 4 update: performance acceptance PASS after the recorded Collection notice/font fix; compact queue and review detail are distinct, status-appropriate decisions and visible pending badge verified in browser tests. Final 202-test run is pending after correcting an isolated QA fixture-server configuration failure.
 
-## 25 October 2026 â€” review metadata and placeholder cleanup
+## 25 October 2026 Ã¢â‚¬â€ review metadata and placeholder cleanup
 
 | Task | Status | Evidence |
 | --- | --- | --- |
