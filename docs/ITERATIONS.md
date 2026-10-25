@@ -482,4 +482,4 @@ Viewed revised desktop and 390px screenshots. At both widths the Collection head
 
 ## Guest contribution capacity - Round 1 critique
 
-Nine legitimate uploads from one shared network reached the former eight-draft daily guest-start limit. The rate limit now permits 30 new guest drafts per network address per UTC day. The anonymous-intake protections remain: the server stores only a salted daily address hash, requires a honeypot and a two-second minimum form-fill time, validates file types and sizes, and keeps files private until review.
+Nine legitimate uploads from one shared network reached the former eight-draft daily guest-start limit. At the owner’s direction, guest contributions now have no count limit. The remaining anonymous-intake protections require a honeypot and a two-second minimum form-fill time, validate file types and sizes, and keep files private until review.

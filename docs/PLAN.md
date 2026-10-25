@@ -2,15 +2,15 @@
 
 ## Public simplification — 23 October 2026
 
-| Milestone                 | Status  | Delivery and acceptance                                                                                                                                                                             |
-| ------------------------- | ------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| Workshop public naming    | PASS    | `/workshop` is canonical; legacy `/studio` URLs permanently redirect.                                                                                                                               |
-| Types and Writing         | PASS    | Public classification is Type while `kind` filter URLs remain stable; Writing has a text-card fallback.                                                                                             |
-| Historical Archive        | PARTIAL | Localized `/archive` has filters, timeline/grid and pagination. The static build now merges the sanitized `archive_catalogue()` snapshot; only the explicit historic backfill remains.              |
-| Takedown workflow removal | PASS    | Dedicated page, policy article, endpoint and private admin workflow removed.                                                                                                                        |
-| Contribute-first upload   | PASS    | Guest quick upload is first, needs right-to-share consent, defaults to CC0 and flags missing details. Images and reviewed Writing uploads are supported; a network can start 30 drafts per UTC day. |
-| Landing hierarchy         | PASS    | Hero is followed by the complete canonical About text without a teaser link, then a centered compact ten-work Collection preview.                                                                   |
-| Navigation                | PASS    | Contribute is a high-visibility CTA; navigation scrolls below 1100px instead of wrapping.                                                                                                           |
+| Milestone                 | Status  | Delivery and acceptance                                                                                                                                                                     |
+| ------------------------- | ------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Workshop public naming    | PASS    | `/workshop` is canonical; legacy `/studio` URLs permanently redirect.                                                                                                                       |
+| Types and Writing         | PASS    | Public classification is Type while `kind` filter URLs remain stable; Writing has a text-card fallback.                                                                                     |
+| Historical Archive        | PARTIAL | Localized `/archive` has filters, timeline/grid and pagination. The static build now merges the sanitized `archive_catalogue()` snapshot; only the explicit historic backfill remains.      |
+| Takedown workflow removal | PASS    | Dedicated page, policy article, endpoint and private admin workflow removed.                                                                                                                |
+| Contribute-first upload   | PASS    | Guest quick upload is first, needs right-to-share consent, defaults to CC0 and flags missing details. Images and reviewed Writing uploads are supported without a guest-upload count limit. |
+| Landing hierarchy         | PASS    | Hero is followed by the complete canonical About text without a teaser link, then a centered compact ten-work Collection preview.                                                           |
+| Navigation                | PASS    | Contribute is a high-visibility CTA; navigation scrolls below 1100px instead of wrapping.                                                                                                   |
 
 ## Approved-work publication repair — 23 October 2026
 
