@@ -1173,6 +1173,7 @@ export function UploadPanel({
             {fieldError("file")}
           </label>
           <input type="hidden" name="licence_id" value="CC0-1.0" />
+          <input type="hidden" name="remixable" value="true" />
           <input type="hidden" name="ai_use" value="none" />
           <p>
             {t(

@@ -5,7 +5,7 @@ import type { Poster } from "@/lib/types";
 export function LicenseGate({ poster }: { poster: Poster }) {
   return canRemix(poster) ? (
     <Link className="button accent" href={`/workshop/?remix=${poster.slug}`} prefetch={false}>
-      <UiText id={"REMIX IN STUDIO ↗"} />
+      <UiText id="OPEN IN WORKSHOP" />
     </Link>
   ) : (
     <div className="notice">

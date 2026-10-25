@@ -18,3 +18,19 @@ test("item codes, actual downloads, AI disclosure, consent and print guidance", 
     expect((await new AxeBuilder({ page }).analyze()).violations).toEqual([]);
   }
 });
+
+test("remixable works open in the Workshop in every locale", async ({ page }) => {
+  const labels = {
+    en: "OPEN IN WORKSHOP",
+    hi: "कार्यशाला में खोलें",
+    bn: "কর্মশালায় খুলুন",
+    ml: "വർക്ക്‌ഷോപ്പിൽ തുറക്കുക",
+  };
+  for (const [locale, label] of Object.entries(labels)) {
+    await page.goto(`/${locale}/poster/a-future-we-share/`);
+    await expect(page.getByRole("link", { name: label })).toHaveAttribute(
+      "href",
+      `/${locale}/workshop/?remix=a-future-we-share`,
+    );
+  }
+});

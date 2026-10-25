@@ -3,6 +3,18 @@ import AxeBuilder from "@axe-core/playwright";
 import fs from "node:fs";
 const token = "a".repeat(43);
 
+test("quick CC0 contribution keeps Workshop remix permission", async ({ page }) => {
+  await page.route("**/api/session", (route) =>
+    route.fulfill({ json: { csrf: "fixture-token", account: null } }),
+  );
+  await page.route("**/api/account", (route) =>
+    route.fulfill({ status: 401, json: { error: "sign_in_required" } }),
+  );
+  await page.goto("/en/contribute/");
+  await expect(page.locator('.quick-contribution input[name="licence_id"]')).toHaveValue("CC0-1.0");
+  await expect(page.locator('.quick-contribution input[name="remixable"]')).toHaveValue("true");
+});
+
 for (const locale of ["en", "hi", "bn", "ml"]) {
   test(`guest private upload and receipt without an account: ${locale}`, async ({ page }) => {
     const stages: string[] = [];

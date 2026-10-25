@@ -85,7 +85,7 @@ export function LanguageSwitcher({ landing = false }: { landing?: boolean }) {
           }}
           aria-current={l === locale ? "page" : undefined}
         >
-          {landing && l !== "en" ? `${["English", "Hindi", "Bengali", "Malayalam"][i]} / ` : ""}
+          {landing && l !== "en" ? `${["English", "Hindi", "Bangla", "Malayalam"][i]} / ` : ""}
           {languageNames[l]}
         </NextLink>
       ))}
