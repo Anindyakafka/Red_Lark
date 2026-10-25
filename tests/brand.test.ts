@@ -6,7 +6,7 @@ import { migrateLocalDrafts, LEGACY_STORAGE_PREFIX } from "../src/lib/storage";
 
 test("legacy bookmarks migrate once without dropping data on a failed write", () => {
   const previous = LEGACY_STORAGE_PREFIX;
-  const values = new Map([[`${previous}.saved.v1`, '["a-future-we-share"]']]);
+  const values = new Map([[`${previous}.saved.v1`, '["borders-are-lines"]']]);
   let fail = true;
   const storage = {
     getItem: (k: string) => values.get(k) ?? null,
@@ -22,7 +22,7 @@ test("legacy bookmarks migrate once without dropping data on a failed write", ()
   assert.ok(values.has(`${previous}.saved.v1`));
   fail = false;
   migrateLocalDrafts(storage);
-  assert.equal(values.get("redlark.saved.v1"), '["a-future-we-share"]');
+  assert.equal(values.get("redlark.saved.v1"), '["borders-are-lines"]');
   assert.ok(!values.has(`${previous}.saved.v1`));
   migrateLocalDrafts(storage);
   assert.equal(values.size, 1);

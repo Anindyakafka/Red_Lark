@@ -53,14 +53,14 @@ test("pointer move/resize/rotate, zoom/pan and paper presets operate", async ({ 
   await expect(page.locator(".studio-paper")).toHaveAttribute("viewBox", "0 0 600 750");
 });
 test("clear bookmarks and filter reset clear local and URL state", async ({ page }) => {
-  await page.goto("/collection/?q=homes");
+  await page.goto("/collection/?q=borders");
   await expect(page.locator(".poster-card")).toHaveCount(1);
-  await page.getByRole("button", { name: "Save Homes for all", exact: true }).click();
+  await page.getByRole("button", { name: "Save Borders are lines", exact: true }).click();
   await page.getByRole("button", { name: /CLEAR 1 LOCAL BOOKMARKS/ }).click();
   expect(await page.evaluate(() => localStorage.getItem("redlark.saved.v1"))).toBeNull();
   await page.locator(".filter-all").click();
   await expect(page).not.toHaveURL(/q=/);
-  await expect(page.locator(".poster-card")).toHaveCount(18);
+  await expect(page.locator(".poster-card")).toHaveCount(1);
 });
 test("honeypot and export failure show honest recoverable errors", async ({ page }) => {
   await page.goto("/contact/");

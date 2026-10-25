@@ -1,18 +1,18 @@
 # Numbered rebuild rounds
 
-## Public simplification — round 1
+## Public simplification Ã¢â‚¬â€ round 1
 
 The first pass exposed two release-blocking details: the shortened landing still mounted the full collection controls, and Archive-only work could still link to a normal item page. The landing now renders a compact card-only preview and Archive-only cards are view-only. The header has enough links to wrap on narrow laptop widths, so it switches to horizontal scrolling at 1100px.
 
 TypeScript, ESLint, Prettier, all 82 unit/RLS/copy tests, the production build, static-export validation and client-secret scan pass. The archive database backfill and non-raster Writing ingestion remain deliberately marked partial.
 
-## Team decisions — round 2
+## Team decisions Ã¢â‚¬â€ round 2
 
-The team approved CC0 as the quick-contribution default and requested Writing submissions use the ordinary review queue. TXT, Markdown and DOCX now remain private until review, DOCX is reduced server-side to sanitized plain text without rendering its markup, and a neutral preview/PDF is generated. The former public/private takedown service, topic, admin area, policy article and redirects are removed. Account deletion remains because it is a user’s own account-data control.
+The team approved CC0 as the quick-contribution default and requested Writing submissions use the ordinary review queue. TXT, Markdown and DOCX now remain private until review, DOCX is reduced server-side to sanitized plain text without rendering its markup, and a neutral preview/PDF is generated. The former public/private takedown service, topic, admin area, policy article and redirects are removed. Account deletion remains because it is a userÃ¢â‚¬â„¢s own account-data control.
 
-The archive migration’s old-record backfill conflicted with the database update guard, so that nonessential statement was removed. Both additive migrations then applied successfully with the RLS audit passing. Final checks: 83 unit tests, TypeScript, lint and formatting pass; build verification follows this round.
+The archive migrationÃ¢â‚¬â„¢s old-record backfill conflicted with the database update guard, so that nonessential statement was removed. Both additive migrations then applied successfully with the RLS audit passing. Final checks: 83 unit tests, TypeScript, lint and formatting pass; build verification follows this round.
 
-## Artist publication — Round 1 diagnosis and repair, 23 October 2026
+## Artist publication Ã¢â‚¬â€ Round 1 diagnosis and repair, 23 October 2026
 
 Public read-only checks found both approved works and reachable previews, but the newest work was absent from live Collection with a 404 item page. The supplied Netlify log proves the approval hook ran and fetched both works; static validation rejected identical Anonymous contributor artist titles, leaving the previous deploy live.
 
@@ -20,39 +20,39 @@ Duplicate display names now receive their existing public archive IDs in metadat
 
 The first build stopped for a Next.js security reminder; retry passed. npm audit confirms one critical production dependency finding for Next.js 16.4.0; a patched dependency upgrade remains a separate follow-up.
 
-## Studio workspace — Round 1 audit and attribution
+## Studio workspace Ã¢â‚¬â€ Round 1 audit and attribution
 
 Inspected the running JavaScript editor at 1440/768/375 and viewed before screenshots. Both sidebars were permanently open on desktop (495 px total); grid stretched to 2239 px; phone replaced the canvas when controls opened. Credit injection comes from the shared sceneSvg renderer plus the known placeholder-edition template marker. Crop does not exist; pinch only attaches to SVG and has no midpoint anchoring. Audit written before application edits.
 
 Separated canvas rendering from export-only credit, retained project-level sources through deletion/save/share, kept default-on attribution/default-off CC0, added positioning/colour/type-size controls and Unicode PNG/PDF/SVG metadata. A PNG unit fixture contained pre-existing EXIF; the metadata helper now removes old EXIF/text/time chunks before writing the new attribution, and all 22 focused Studio/licence/privacy/Indic tests and typecheck pass. Browser export/layout regression will run after the chrome and gesture changes. New non-English labels are explicit English fallbacks with reviewed:false; legal/policy and Appendix A text are unchanged.
 
-## Studio workspace — Round 2 compact options
+## Studio workspace Ã¢â‚¬â€ Round 2 compact options
 
 Moved all audited controls into eight option groups; retained shape/texture, image and caption libraries, layer order/lock/hide, transform/text/font/ink controls, paper/background, print separations, all five exports, credits, project recovery/share and shortcuts. Only undo/redo/export, compact option buttons and zoom/pan/snap/fit remain above the full-width canvas. One modal-style overlay drawer/bottom sheet opens at a time, with focus capture/return, Tab bounds, outside-pointer/toggle/Escape dismissal. Panel coordinates are independent of the canvas layout.
 
 Live-development checks exercised every panel at 1440/768/375: all 24 panel states have axe 0, and opening any panel leaves the canvas viewport rectangle exactly unchanged. Viewed closed desktop and open mobile Layers captures: the canvas stays visible behind the sheet; the permanent 495 px sidebar allocation is gone. Export preview is generated only when its panel opens. Typecheck and lint passed before crop integration. Next: implement the previously absent crop tool and unify viewport gestures, then update the existing interaction tests to navigate the new controls.
 
-## Studio workspace — Round 3 non-destructive crop
+## Studio workspace Ã¢â‚¬â€ Round 3 non-destructive crop
 
 Added normalized original-image crop metadata and eight edge/corner hit targets plus a move region, a dimmed original preview, free/locked/preset ratios, numeric edge controls, keyboard handle nudging, and apply/cancel/reset. Original PNG bytes remain untouched; the shared SVG renderer applies the same crop in outlined SVG/PDF and raster exports. Inverse rotation maps pointer positions into original-image space; applying/reverting a rotated crop preserves world-space source points. Crop controls sit below the viewport so they cannot cover the crop handles. Mobile option sheets were shortened after the prior screenshot showed excessive coverage; Studio intro space is reduced.
 
 Seven focused attribution/geometry/pixel tests pass, including actual rasterized SVG colour sampling, eight independent handles, bounds/minimums, locked ratio, original-pixel preservation and zoom-midpoint math. Live crop save/reopen/reset and axe checks pass at 1440/768/375. Numeric left/top initially attempted to move a full-image rectangle and therefore could not move; corrected them to crop from the requested edge. Viewed the phone crop screenshot: all eight handles remain available. The imported archive PNG itself has baked-in text/credits; those are pixels in that original image, not editor-injected content, and cannot be automatically erased without altering artwork. Final tests will use original clean colour-grid fixtures to distinguish these cases.
 
-## Studio workspace — Round 4 viewport integration
+## Studio workspace Ã¢â‚¬â€ Round 4 viewport integration
 
 viewport-wide Pointer Events now share one zoom/pan transform. Pinch anchors its moving midpoint; wheel/Ctrl/Cmd zoom, two-finger/Space/middle/empty-space pan and double-click/double-tap Fit are implemented. Inverse SVG/layer transforms preserve editing coordinates, and outlines are memoized during camera movement. Gesture suppression is scoped to the viewport; Space only suppresses page scrolling when hovered/focused. Mouse/pen/touch tests revealed rotated crop corners outside the artboard, so crop entry now fits the full rotated original and artboard. All eight 44px handles pass with all three pointer types.
 
 All 78 unit/copy/RLS tests, typecheck and lint pass. Twelve locale/viewport panel scenarios pass with no reflow and axe 0. A browser-only SA catalogue fixture confirms clean editing and default-on/configurable attribution in actual SVG/PNG/PDF exports; published licences are unchanged. The crop select test needed an accessible-role query, and numeric crop values need floating-point tolerance. The full new suite passed 18/19 before double-click mouse capture was corrected; the focused mouse/wheel/middle/200%-drag and touch/double-tap cases now both pass. Production build, full regression and final visual/theme/no-JS review follow. New non-English strings remain flagged English fallbacks.
 
-## Studio workspace — Round 5 final review
+## Studio workspace Ã¢â‚¬â€ Round 5 final review
 
-The first full production browser run passed 266/273. Ranked findings: (1) full axe best-practice checks rejected an aside with role=dialog; changed it to a div dialog and broadened every-panel checks to full axe; (2) three Contact tests had an accidental layer-panel step from migrating “Send” buttons, now removed; (3) disclosure summaries were missing from the panel focus loop and quick Export returned focus to the wrong opener; both repaired. Additional polish moves material format into Paper without resetting the design, handles native Safari gesture events locally, and blocks export/panel shortcuts until an active crop is applied or cancelled. Keyboard crop completion returns focus to the viewport.
+The first full production browser run passed 266/273. Ranked findings: (1) full axe best-practice checks rejected an aside with role=dialog; changed it to a div dialog and broadened every-panel checks to full axe; (2) three Contact tests had an accidental layer-panel step from migrating Ã¢â‚¬Å“SendÃ¢â‚¬Â buttons, now removed; (3) disclosure summaries were missing from the panel focus loop and quick Export returned focus to the wrong opener; both repaired. Additional polish moves material format into Paper without resetting the design, handles native Safari gesture events locally, and blocks export/panel shortcuts until an active crop is applied or cancelled. Keyboard crop completion returns focus to the viewport.
 
 Final affected production rerun: 91/91 pass, including every initial failure and the new polish test. Combined latest results: 274 unique browser tests pass; the original failed report is retained honestly alongside the rerun and browser-summary.json. All 78 unit/copy/RLS tests, typecheck, lint and the 396-page production build/content/brand/client-secret checks pass. Formatting found two whitespace-only issues, corrected before closeout. No dependency or service changes.
 
-Viewed English/Malayalam workspace/export and dark-mode phone/desktop captures, tablet export and original rotated crop captures at 375/768/1440. Canvas is now full width, eight handles remain reachable, scripts are not clipped, red/border/type identity is retained, and overlays leave artwork visible without reflow. Narrow screens deliberately scroll the option strip horizontally within its container. No further functional issue above minor polish found. All four locales’ panel checks have full axe 0. Native translations, real iOS/Android, physical print quality and the optional-visible-credit policy remain explicit human checks; no fresh public Lighthouse score is claimed.
+Viewed English/Malayalam workspace/export and dark-mode phone/desktop captures, tablet export and original rotated crop captures at 375/768/1440. Canvas is now full width, eight handles remain reachable, scripts are not clipped, red/border/type identity is retained, and overlays leave artwork visible without reflow. Narrow screens deliberately scroll the option strip horizontally within its container. No further functional issue above minor polish found. All four localesÃ¢â‚¬â„¢ panel checks have full axe 0. Native translations, real iOS/Android, physical print quality and the optional-visible-credit policy remain explicit human checks; no fresh public Lighthouse score is claimed.
 
-## Account pages P9 critique — 21 October 2026
+## Account pages P9 critique Ã¢â‚¬â€ 21 October 2026
 
 Guest contribution replaces the account wall. Work metadata validation and sanitization/PDF generation are shared with account uploads. Random per-work receipt secrets are returned only to the submitter, stored hashed, never put in query strings/localStorage/analytics, and expire after 90 days. RLS denies receipt access to anon/contributors; server checks its exact work before signing, completion or status. Admin review still requires role/fresh MFA. Optional private contact fields remain separate from public consent.
 
@@ -62,9 +62,9 @@ Early browser runs exposed a wrong test-image path and an assertion racing the c
 
 ## Prior account-page critiques
 
-P9 performance evidence: three cold-cache mobile runs per en/hi Home, Collection and Poster. Page medians are 96–98 Performance; all other categories 100, CLS 0. Raw first runs on both home pages included 93; the required medians pass. Metrics retained in docs/evidence/guest-submissions/lighthouse.json; raw reports in .qa/guest-lighthouse. No performance code change or selective replacement of runs was needed.
+P9 performance evidence: three cold-cache mobile runs per en/hi Home, Collection and Poster. Page medians are 96Ã¢â‚¬â€œ98 Performance; all other categories 100, CLS 0. Raw first runs on both home pages included 93; the required medians pass. Metrics retained in docs/evidence/guest-submissions/lighthouse.json; raw reports in .qa/guest-lighthouse. No performance code change or selective replacement of runs was needed.
 
-### Account pages P8 critique — 21 October 2026
+### Account pages P8 critique Ã¢â‚¬â€ 21 October 2026
 
 Owner TOTP verification succeeded at Supabase, but session persistence reported a false outage. An isolated expired/unusable diagnostic row reproduced PostgREST's existing-upsert response (200/null), which the SELECT checker rejected. The session write now requests only token_hash with single-row confirmation, preserving strict missing-row checks and never returning authentication tokens. Hosted repaired insert/update pass; diagnostic cleanup confirmed. All 55 unit/RLS/copy tests, typecheck, lint and production build/secret checks pass. Guarded admin bootstrap succeeded. Highest remaining issue: deploy and retry fresh MFA/admin access using the existing authenticator. The older P7 text below describes the preceding checkpoint.
 
@@ -72,19 +72,19 @@ Owner-reported setup friction: the UI omitted the provider's QR code and put the
 
 Validation: typecheck, lint, production build/content/brand/output-secret checks and 54 unit/RLS/copy tests pass. Two targeted English/Hindi browser tests pass, including decoded image display, mobile width, axe zero and clearing setup material. Highest remaining issue: deploy this repair and complete the owner's real authenticator verification before guarded admin bootstrap. No claim of hosted MFA success.
 
-## Account pages P1 critique — 20 October 2026
+## Account pages P1 critique Ã¢â‚¬â€ 20 October 2026
 
 The live site and local implementation had diverged: existing APIs were not deployed, account tools were consolidated in one panel, the header was permanently an Account link and auth favored passwords. Added separate localized views, magic-link-first forms, an explicit global logout confirmation, UUID route shells and a session-aware menu. Fixes also cover the source link, readable mailto contact, custom-domain canonical checks and visible multilingual printed credit.
 
 49 unit/model/RLS tests pass, including actual PostgreSQL policies, independent verbatim landing copy and native embedded PDF fonts. Initial build validates 392 HTML pages and excludes private client secrets. Remaining high-impact issues: (1) browser review of every new view and mobile menu; (2) real verified website account and owner DNS/deployment prerequisites; (3) public Lighthouse and final regression. No real signup, approval or email acceptance is inferred from fixtures.
 
-## Backend round 1 — database boundary review, 19 October 2026
+## Backend round 1 Ã¢â‚¬â€ database boundary review, 19 October 2026
 
 Prepared versioned Supabase Auth/Postgres migrations and deterministic private CC0 seed records. Every application table has RLS. Protected roles, approved-only anonymous reads, contributor isolation and fresh MFA moderation run against actual local PostgreSQL. Seeding twice and transactional/idempotent message-outbox creation are tested. Full-history/working-tree Gitleaks and built-client secret exclusion passed. The static public build passes.
 
 Ranked weaknesses: (1) hosted SQL authentication is rejected despite verified TLS; no remote migration applied; (2) sessions/uploads/admin/mail require full integration and accessibility review; (3) public R2 hostname, non-Gmail/header evidence and scoped Netlify variables need owner action. Local SQL tests are not hosted acceptance. Existing services were not re-provisioned and backend was not deployed.
 
-## Deployment follow-up — 17 October 2026
+## Deployment follow-up Ã¢â‚¬â€ 17 October 2026
 
 The first PR #3 Netlify preview compiled and validated all 340 HTML pages, then failed in Edge bundling: the Deno resolver could not find the extensionless src/i18n/config dependency. Local Next/tsx tests accepted extensionless imports, so the prior checks did not exercise the deployment resolver. Fixed both shared TypeScript imports to use their actual .ts extension and added the required JSON import attribute. TypeScript permits these imports with noEmit and allowImportingTsExtensions.
 
@@ -92,7 +92,7 @@ Added scripts/check-edge.mjs, executed by the normal build through native Node r
 
 Local verification: native preflight plus Deno 2.9.6 check/run pass; strict types, ESLint, formatting, 37 unit tests, all 340 exported HTML pages and five localized browser smoke/axe tests pass. The Node engine contract now matches the existing Node 24 hosting/CI/README requirement, since native TypeScript loading is used by the preflight. No dependency was added to the application.
 
-## Red Lark Round 15 critique — final public fresh eyes
+## Red Lark Round 15 critique Ã¢â‚¬â€ final public fresh eyes
 
 Re-read the expanded brief against the implemented public phase and the explicit backend hold. Added an exported-route matrix (84 pages per locale, 336 locale pages), desktop axe including best-practice rules, dark native mobile checks and a no-JS localized article check. Existing full flows still cover forms, derivative gating, actual exports, local image privacy, recovery and real index navigation.
 
@@ -115,7 +115,7 @@ All medians use three consecutive cold-cache runs; raw reports retain individual
 
 Public fresh-eyes acceptance: PASS. Remaining priorities are held backend engineering and its unexecutable auth/upload/admin/mail acceptance; native/legal/physical-print review; live domain/provider/CDN verification. These prevent full-project release acceptance and are explicitly recorded in TODO_HUMAN/PLAN/CHECKLIST. No remaining public functional defect above minor polish was found; no real artist content or final translation approval is claimed. Development-only dependency advisory remains documented, with production audit zero. This is the final numbered round (15); no backend work, push or deployment was performed.
 
-## Red Lark Round 14 critique — M9 public editorial and policies
+## Red Lark Round 14 critique Ã¢â‚¬â€ M9 public editorial and policies
 
 Implemented trusted build-time localized MDX, two marked placeholder posts, four RSS feeds, policy hub/articles, the verbatim AI policy, expanded About, accurate privacy/terms and five contact topics. Current contact remains an email-app handoff. Legal translations explicitly fall back to English; no invented legal sources, artist interview, donation destination or delivered-mail claims. Dependency updates remove production audit findings; the remaining development-only upstream advisory is documented in DEPENDENCIES.md.
 
@@ -125,7 +125,7 @@ Three-run mobile Lighthouse medians (landing/collection/item): English 96/98/95;
 
 Viewed landing narrative/format picker, active collection, item, Studio, About, policy, errors and 404 captures. Brutalist borders/type/palette remain consistent. Ranked remaining issues: (1) Malayalam editorial h1 is technically within bounds but breaks into too many oversized lines; give native editorial headings a considered smaller scale. (2) Hindi Collection text LCP is sensitive to font loading, despite low blocking time and stable layout; reduce late Latin body-font swaps rather than adding unstable layout deferral. (3) Final every-exported-route review in all four languages, dark native pages and no-JS editorial. Round 15 addresses these. Required Supabase/auth/upload/admin/mail work stays held and cannot pass end-to-end acceptance.
 
-## Red Lark Round 13 critique — M6 font-loading correction
+## Red Lark Round 13 critique Ã¢â‚¬â€ M6 font-loading correction
 
 Added tiny name-only navigation fonts (5,232 bytes combined), verified pixel/width-identical for all three native names. The active locale reuses its UI font in controls and titles, avoiding duplicate archive-font transfer. Full language fonts remain fallback; archive subsets still serve actual original-script titles. Sixteen affected browser tests pass after the font changes; the prior full suite has 78 passes.
 
@@ -133,7 +133,7 @@ The initial round exposed a new failure from content-visibility on the artist ra
 
 M6 CREATE passes its public checkpoint. Source checks, copy lock, content/export validation and 316-page build pass. No accounts/uploads/database/admin/mail were implemented. Remaining scope: M9 public editorial/policies and final four-locale route review. Do not reopen performance experiments after the targets pass without a new regression.
 
-## Red Lark Round 12 critique — M6 CREATE and recovery
+## Red Lark Round 12 critique Ã¢â‚¬â€ M6 CREATE and recovery
 
 Added format-first entry, deferred editor font loading, separate coded image/caption libraries, code search, source-preserving image groups/captions and the exact Download for Free action. Existing transforms/layers/palettes/print modes/paper/export/share/privacy tools remain. Build validation checks codes, source eligibility and image layer IDs. The local font bundle now includes licensed Noto fonts. Mobile editing hides the full browse navigation while retaining the wordmark/language/account controls and browser access to the Collection.
 
@@ -141,7 +141,7 @@ Two meaningful recovery issues were fixed: malformed shared scenes no longer rep
 
 Full screenshots and axe: docs/evidence/redlark-round-12, English/Malayalam at 390/1440, zero violations/external requests/page errors. Viewed mobile/desktop Studio: the canvas is now usable after selection, native controls remain within bounds. Performance en 97/98/95 and hi 96/96/94; other categories all 100. Hindi item misses target by one point after the richer M5 page. Ranked next fix: avoid duplicate active-script/archive fonts and preload tiny verified language-name fonts rather than full title subsets; defer rendering the below-fold artist rail. Round 13 measures those concrete changes. M6 UPLOAD and M7/M8 remain held.
 
-## Red Lark Round 11 critique — M5 print-first item pages
+## Red Lark Round 11 critique Ã¢â‚¬â€ M5 print-first item pages
 
 Added actual Image Code/Caption Code, file formats/sizes/resolution, truthful generated-placeholder AI disclosure, tags/category links, more-by-artist rail and four-language print instructions with native review flags. Generated real A4/A2 PNG and JPEG files at 300 DPI alongside outlined vector PDFs; checked physical metadata and exact raster dimensions. Updated Indic source artwork to say DRAFT TRANSLATION. No real artist work or invented donation details were added.
 
@@ -151,7 +151,7 @@ Checks: 34 unit tests, full browser suite 76 passed (1.9m), copy/types/lint/bran
 
 Ranked next work: format-first Studio entry, coded image/caption tools and mobile workspace density; localized MDX/editorial and full policy hub; final four-locale click-through. Backend-dependent contributions/mail remain held.
 
-## Red Lark Round 10 critique — M4 taxonomy and navigation
+## Red Lark Round 10 critique Ã¢â‚¬â€ M4 taxonomy and navigation
 
 Wired all 28 canonical categories and ten artwork formats into real collection filters; default remains ALL (Uncategorized). Works have category arrays/free tags and draft-native title/caption/tag search. Filter URLs restore on load, survive language changes, and reset completely. Source placeholders now state their actual 2026 creation year and truthful AI-assisted origin. Category index/counts and sitemap entries are generated. Discover uses categories; old theme paths redirect with locale/query preserved in Netlify Edge and local preview. The header now follows the requested navigation and includes an account control.
 
@@ -161,7 +161,7 @@ Checks: 32 unit tests, independent copy test, types/lint/brand/content/build pas
 
 Ranked next work: (1) item codes/AI disclosure, per-field public consent and print guidance; (2) real A4/A2 raster choices; (3) format-first Studio and coded libraries; (4) localized MDX and complete policies. Category emptiness is honestly counted, with no invented contributions.
 
-## Red Lark Round 9 critique — M3 measured checkpoint
+## Red Lark Round 9 critique Ã¢â‚¬â€ M3 measured checkpoint
 
 Compact browser messages now transmit only translated overrides; keys themselves provide English fallback. Added current-vocabulary Noto UI subsets with full-font fallback. All 424 complete localized strings render pixel-for-pixel and width-identically to full fonts in Edge, including Bengali canonical decomposition and Malayalam chillus. Hindi UI transfer falls from 50,416 to 29,032 bytes. Provenance and source hashes are committed with assets; no remote fonts/scripts are requested.
 
@@ -171,31 +171,31 @@ Canonical English source/rendered copy and all 30 unit tests pass. Build validat
 
 Ranked next work: (1) M4 category/format filters still use the previous taxonomy and must consume the new inventories; (2) item codes, AI disclosure, artist consent and print instructions need M5; (3) the mobile Studio header/toolbars consume too much first-screen space and need M6 format-first review. Draft translations require native review. This is M3 acceptance, not full-project completion.
 
-## Red Lark Round 3 critique — M3 first narrative
+## Red Lark Round 3 critique Ã¢â‚¬â€ M3 first narrative
 
 Rendered Appendix A from the locked files, original poster-wall hero, archive/Studio CTAs, six oversized objective cards, open policy panel, search/language controls and exact category/format inventories. Canonical copy remains unchanged and readable without JavaScript. Full screenshot checkpoint: English/Malayalam at 390/1440; axe zero. Performance medians (landing/collection/item): en 94/95/96; hi 93/95/96; accessibility/best-practices/SEO all 100. Evidence: docs/evidence/redlark-round-3. Ranked defects: Malayalam long words overflow; landing font traffic too large; old collection taxonomy remains for M4.
 
-## Red Lark Round 4 critique — wrapping and archive font subsets
+## Red Lark Round 4 critique Ã¢â‚¬â€ wrapping and archive font subsets
 
 Fixed native paragraph/objective wrapping and 360px category labels. Added small archive-specific Indic subsets for language controls and original-script titles; verified original shaping. Full browser suite: 72 passed. Twenty locale/width combinations have no horizontal overflow. Full screenshots/axe repeated: zero violations. Performance en 98/99/99, hi 96/99/94; other categories 100. Evidence: docs/evidence/redlark-round-4. Ranked remaining defect: Hindi item LCP above target; the narrative and dense poster wall are visually strong, while Studio mobile controls still need M6 review.
 
-## Red Lark Round 5 critique — preload regression
+## Red Lark Round 5 critique Ã¢â‚¬â€ preload regression
 
 Tested preloading the active full Indic UI font. This regressed Hindi landing performance: 92/97/94 across the three routes, other categories 100. Evidence: docs/evidence/redlark-round-5. Do not treat the prior round as acceptance of this change. Ranked defects: excess font transfer and serialized translations; investigate payload rather than repeatedly measuring unchanged output.
 
-## Red Lark Round 6 critique — active-locale messages
+## Red Lark Round 6 critique Ã¢â‚¬â€ active-locale messages
 
 Removed all-locale message imports from the client bundle; only the active locale is supplied by the server. Explicit archive-font preload improves discovery. Performance en 97/98/98, hi 96/96/94, other categories 100; axe zero. Evidence: docs/evidence/redlark-round-6. Hindi item remains below 95. Ranked next changes: stop unnecessary cross-route prefetch and reduce duplicated English fallback data.
 
-## Red Lark Round 7 critique — avoid speculative route fetches
+## Red Lark Round 7 critique Ã¢â‚¬â€ avoid speculative route fetches
 
 Disabled automatic prefetch in the localized Link wrapper. Network inspection confirms Hindi pages no longer fetch English landing/collection RSC payloads merely because fallback links enter view. Hindi medians 96/96/93, other categories 100, axe zero. Evidence: docs/evidence/redlark-round-7. This privacy/performance cleanup alone does not fix the measured item bottleneck; large native UI font transfer remains the main difference.
 
-## Red Lark Round 8 critique — responsive image discovery
+## Red Lark Round 8 critique Ã¢â‚¬â€ responsive image discovery
 
 Added an explicit responsive AVIF preload for the priority item image. English item 98; Hindi item 94; other categories 100, axe zero. Evidence: docs/evidence/redlark-round-8. The actual image is already small and promptly fetched; this is not sufficient for acceptance. Next fix is a safely shaped current-vocabulary UI font subset plus omission of redundant key=English-value message pairs. Keep the full fonts as fallback for future text; never remove Indic shaping tables to chase a score.
 
-## Red Lark Round 2 critique — M2 locales and shaping
+## Red Lark Round 2 critique Ã¢â‚¬â€ M2 locales and shaping
 
 Added four prerendered locale trees, locale document roots, URL-based switches, canonical/hreflang/OG metadata and locale sitemap entries. A small Netlify Edge function negotiates Accept-Language without cookies and preserves localized 404 status; the preview server mirrors routing. This revises the original full-runtime M2 suggestion: static public pages plus a narrow Edge function are sufficient during the backend hold. The future account/API phase still needs a server runtime. Global-not-found uses the documented experimental Next flag because locale routes have separate root layouts.
 
@@ -205,7 +205,7 @@ Checks: 29 unit/copy/shaping tests passed; typecheck/lint/build green; 168 expor
 
 Ranked remaining issues: (1) replace the previous landing with the exact-copy narrative; (2) finish categories/item models and UI; (3) measure the larger multilingual bundle with Lighthouse and reduce it if needed. Native review remains a human task. No Supabase implementation or deployment.
 
-## Red Lark Round 1 critique — M1 foundations
+## Red Lark Round 1 critique Ã¢â‚¬â€ M1 foundations
 
 Replaced source/content/package branding, authored original geometric lark/splatter/flame/cursor SVGs, regenerated icons/OG/print bundles, fixed corrupt quote strings in source JSON and generator, consolidated placeholder credits under The Wet Ink Workshop, added a single allow-listed repository constant and a build/CI legacy-name scan. Old branded evidence/assets were retired from the working tree; Git history retains prior evidence. New M1 captures are under docs/evidence/redlark-m1.
 
@@ -300,7 +300,7 @@ Remaining issues for the fresh-eyes round:
 
 These are bounded fixes within the stated mission. No accounts, database, remote assets, fabricated submissions or invented contact details are introduced.
 
-## Round 5 critique — fresh eyes
+## Round 5 critique Ã¢â‚¬â€ fresh eyes
 
 Re-read the mission and all nineteen requirements against the final source and UI. Split the client search/artist index from full poster content, stripped Studio scenes and duplicate file variants from collection hydration, and removed unnecessary initial state updates. Home HTML now contains no Studio-layer data. Community reads an initially empty, validated list of approved non-placeholder poster slugs. Added real font-kit download, visible supplied artist links, safe ingest fields, conditional placeholder labels, and consistent single-ink additions/colour replacement.
 
@@ -324,7 +324,7 @@ Maximum CLS across all runs is **0.0231**, below 0.05. Round screenshot axe and 
 
 No technical checklist failure remains. Image search is N-A by the brief's permitted coming-soon option; cookie banner is N-A because there is no non-essential storage/tracking. Real mailbox, legal review, permissions, domain/hosting, optional analytics operation and physical print approval are explicit human launch actions in TODO_HUMAN. The repository remains local on `rebuild`; no deployment, push or external communication was performed.
 
-## Backend round 2 — account/runtime implementation and visual critique
+## Backend round 2 Ã¢â‚¬â€ account/runtime implementation and visual critique
 
 Implemented server-only Supabase clients, encrypted server-side Auth tokens behind opaque secure HttpOnly/SameSite cookies, PKCE callbacks, password and email-link signup/login, recovery, global logout, data export/deletion choices and TOTP enrollment/fresh verification. Contributor profile fields are private by default; per-field and per-work consent are independent. Separate Netlify Functions preserve the public static export. Local development uses the same handler through a bridge.
 
@@ -332,7 +332,7 @@ Evidence: 45 unit/policy tests pass; 36 four-locale auth/account/admin/upload/ta
 
 Hosted follow-up: all three migrations and private seeds now apply over verified TLS; anonymous hosted reads hide private drafts. Real R2 scope/isolation and elapsed five-minute expiry pass, and disposable probes were removed. SMTP sender configuration was corrected by the owner; real contact/team/ack acceptance and stored-message failure behavior pass. The owner confirmed Gmail SPF/DKIM/DMARC PASS. Backend deployment remains prohibited.
 
-## Backend round 3 — upload transaction and private-file review
+## Backend round 3 Ã¢â‚¬â€ upload transaction and private-file review
 
 Applied and tested the atomic upload-finalization, review-transition and category-review migrations. An expired/used ticket or a draft edited during image processing cannot replace the previous file metadata. Images are byte-sniffed, oriented and re-encoded without EXIF/GPS; sanitized PNG, WebP and actual A4/A2 raster PDFs receive randomized keys. A contributor cannot submit while processing. Only sanitized outputs are eligible for publication. Role assignment adds contributor only after verified authentication; it never grants admin. Destructive administrator account deletion also requires fresh TOTP.
 
@@ -340,25 +340,25 @@ Evidence: 47 unit/model/SQL tests pass, including real PostgreSQL transactional 
 
 Viewed the refreshed English/Malayalam account captures. The mobile login controls now have separate 44px targets. Native administrative headings were still too large in the broad capture; bounded their font size with a larger line height, and verified the primary CTA fits at 360/390px in all four locales. Desktop profile cards now stop at their content height. A fresh public Lighthouse series found Hindi Collection at 93 performance (all other category medians met 95); retained that failure and removed unnecessary monospace preloading to avoid competing with critical native/display fonts. Re-measurement remains required. New contributions now sort by the complete submission timestamp rather than year/alphabetical order.
 
-## Account pages P2 critique — 20 October 2026
+## Account pages P2 critique Ã¢â‚¬â€ 20 October 2026
 
 82 initial browser tests passed, including axe checks for every new English/Hindi route, four-locale auth/submit/takedown checks and 360/390 overflow checks. Viewed English desktop dashboard and Malayalam mobile login screenshots: original brutalist typography, strong borders, readable fallback copy and no clipped native heading. The empty dashboard needed an explicit state and admin records needed readable labels; both were corrected. Added inline MFA/profile/deletion/review errors, preserved draft metadata and profile artist names, and expanded upload/export/logout/review tests. Code review also found async service promises escaping the API error boundary; awaiting them now preserves structured errors, with an executable regression test. Full browser regression and performance follow; actual provider acceptance remains separately blocked.
 
-## Account pages P3 critique — privacy and attribution review
+## Account pages P3 critique Ã¢â‚¬â€ privacy and attribution review
 
 The full 175-test browser suite passed after updating one old signup-label assertion. The final code review found two edge cases worth fixing before release: optional analytics could include a private revision pathname, and a single Studio credit line could combine several Indic scripts. Analytics now skips private/auth/admin pageviews and uses a neutral submission URL; credit text is shaped per script instead of producing missing-glyph boxes. Hosted authentication now refuses missing/preview canonical origins. 53 unit/model/RLS/copy tests and typecheck/lint pass. Public performance and final built-bundle regression remain to be measured. The full-history and working-tree secret scan passed after rewording non-secret documentation that triggered its generic heuristic; no allowlist was added.
 
-## Account pages P4 critique — measured mobile layout regression
+## Account pages P4 critique Ã¢â‚¬â€ measured mobile layout regression
 
 The full 176-test suite passed, but isolated cold-cache Lighthouse found a genuine header regression: Performance medians en 90/92/92 and hi 91/91/91, with 100 in Accessibility/Best Practices/SEO. CLS was 0.1446 on all routes. Dark-mode hydration changes the theme-control label, making the new sign-in actions and language controls wrap and shift the entire main landmark. Raw reports and screenshots remain in docs/evidence/redlark-round-1-account-pages-p4. The first visual-only harness also needed to choose an upload format before asking the details form to show errors; that harness failure is retained separately, not treated as a website pass.
 
-## Account pages P5 critique — stable mobile header
+## Account pages P5 critique Ã¢â‚¬â€ stable mobile header
 
 Mobile masthead now uses two stable grid rows: wordmark/account actions, then language/theme controls. Native language links keep their tap targets and the theme label no longer changes the header geometry. A new cold dark/light test at 360/390 passes with CLS below 0.05 and unchanged header height after a theme switch. Final full regression and isolated Lighthouse are running; external account/DNS/deployment/mail evidence remains pending.
 
 Final P5 evidence: 54 unit/RLS/copy tests and all 177 browser tests pass. landing-en 96, collection-en 97, item-en 95, landing-hi 96, collection-hi 97, item-hi 98; every Accessibility/Best Practices/SEO score is 100, CLS is 0. The isolated report records 60 English/Malayalam screenshots and 55 clean route/viewport axe audits. Viewed mobile Collection/Studio/Submit errors and desktop native item/review layouts: thick borders, hard shadows, usable header, no clipped Indic text or overflow. The inbox transition also exposed a duplicate title; the redundant subtitle was removed and the entire suite rerun. No weakness above minor visual polish remains in the automated/public review. Real identity, DNS, publication and mail evidence remain blocked exactly as listed in TODO_HUMAN.md; no production account, approval or delivery is invented.
 
-## Account pages P6 critique — no-JavaScript form privacy
+## Account pages P6 critique Ã¢â‚¬â€ no-JavaScript form privacy
 
 The final safety pass identified default HTML GET submission as a credential/message leak risk if JavaScript fails or is disabled. Auth/contact and all private service forms now explicitly use POST; visible noscript notices explain the account/form requirement and email fallback. The no-JavaScript browser test verifies a submitted dummy reset password never enters the address bar, and contact uses POST. Build, typecheck, lint, format and all 54 unit/RLS/copy tests pass. The full expanded 178-test suite is rerunning. Public landing/collection/item content, layout and assets are unchanged from the measured P5 performance pass.
 
@@ -472,22 +472,28 @@ The RLS fixture proves anonymous callers receive no archive records by default, 
 
 ## Landing hierarchy polish - Round 1 critique
 
-The landing route had replaced the canonical narrative with a teaser and a generic “Learn more” link. Restored the full About, objectives and generative-AI policy blocks after the hero. The visible About label no longer repeats the wordmark, while the canonical source heading remains available to assistive technology and the copy-verification test. The Collection now uses one centered heading and a centered “See more” action; decorative arrows were removed from landing CTAs and the mobile Workshop action.
+The landing route had replaced the canonical narrative with a teaser and a generic Ã¢â‚¬Å“Learn moreÃ¢â‚¬Â link. Restored the full About, objectives and generative-AI policy blocks after the hero. The visible About label no longer repeats the wordmark, while the canonical source heading remains available to assistive technology and the copy-verification test. The Collection now uses one centered heading and a centered Ã¢â‚¬Å“See moreÃ¢â‚¬Â action; decorative arrows were removed from landing CTAs and the mobile Workshop action.
 
 ## Landing hierarchy correction - Round 2 critique
 
-The previous round restored more of the narrative than requested. The landing now keeps the complete canonical About text in its original simple section, without a duplicate wordmark or a “Learn more” prompt, and moves directly to the centered Collection preview. Objectives and the generative-AI policy remain available on their dedicated content pages instead of interrupting the home-page flow.
+The previous round restored more of the narrative than requested. The landing now keeps the complete canonical About text in its original simple section, without a duplicate wordmark or a Ã¢â‚¬Å“Learn moreÃ¢â‚¬Â prompt, and moves directly to the centered Collection preview. Objectives and the generative-AI policy remain available on their dedicated content pages instead of interrupting the home-page flow.
 
 Viewed revised desktop and 390px screenshots. At both widths the Collection heading and action are centered, the grid aligns to its container, and the page has no horizontal overflow. The mobile fixed action now reserves safe-area space and no longer covers the final About text. Typecheck, lint, copy test, format check and static build pass.
 
 ## Guest contribution capacity - Round 1 critique
 
-Nine legitimate uploads from one shared network reached the former eight-draft daily guest-start limit. At the owner’s direction, guest contributions now have no count limit. The remaining anonymous-intake protections require a honeypot and a two-second minimum form-fill time, validate file types and sizes, and keep files private until review.
+Nine legitimate uploads from one shared network reached the former eight-draft daily guest-start limit. At the ownerÃ¢â‚¬â„¢s direction, guest contributions now have no count limit. The remaining anonymous-intake protections require a honeypot and a two-second minimum form-fill time, validate file types and sizes, and keep files private until review.
 
 ## Review and publication repair - Round 1 critique
 
-An admin could reach the general 100-request account cap while opening a review queue, inspecting files and saving decisions. Administration now bypasses that account cap while retaining fresh-MFA enforcement. The review UI had also offered a take-down decision that the server did not accept. Take-down now removes public R2 objects, clears the public record and triggers a static rebuild; a separate typed-confirmation action permanently removes the work record and every private/public file. The manually deleted approved work titled �this is a poster� was removed from production R2 and the database, and the next deployment rebuilds the public catalogue from the remaining eleven approved records.
+An admin could reach the general 100-request account cap while opening a review queue, inspecting files and saving decisions. Administration now bypasses that account cap while retaining fresh-MFA enforcement. The review UI had also offered a take-down decision that the server did not accept. Take-down now removes public R2 objects, clears the public record and triggers a static rebuild; a separate typed-confirmation action permanently removes the work record and every private/public file. The manually deleted approved work titled Ã¯Â¿Â½this is a posterÃ¯Â¿Â½ was removed from production R2 and the database, and the next deployment rebuilds the public catalogue from the remaining eleven approved records.
 
 ## Alt-text threshold correction - Round 1 critique
 
-The 15-character rule blocked approved artwork and replaced short contributor descriptions with generated wording. Removed that threshold from both content validation and the public catalogue. Empty descriptions still receive a title/type/artist fallback; the generic word “poster” still receives that fallback. Focused tests, typecheck, lint, and a production-equivalent build with eleven approved works pass.
+The 15-character rule blocked approved artwork and replaced short contributor descriptions with generated wording. Removed that threshold from both content validation and the public catalogue. Empty descriptions still receive a title/type/artist fallback; the generic word Ã¢â‚¬Å“posterÃ¢â‚¬Â still receives that fallback. Focused tests, typecheck, lint, and a production-equivalent build with eleven approved works pass.
+
+## Round 1 critique Ã¢â‚¬â€ 25 October 2026
+
+The review form exposed Anti-Fascism before the hosted canonical category table contained it. That caused an opaque metadata-save failure while approval used a separate path. I added the category, validated submitted slugs before the RPC and added a specific error. A real signed-in production save remains unverified; browser fixtures and in-memory PostgreSQL do not prove it.
+
+Deleting 17 placeholder JSON records alone would leave print files, Workshop elements and the backend seed able to restore them. I removed those together and kept Borders are lines. The local and production-catalogue builds pass: the latter merged 12 approved works and one retained placeholder into 360 validated pages. The highest-impact remaining work is a live admin save after deployment. A full browser run exposed older tests that still expect a retired takedown route and the former upload wizard on the current quick-contribution page; it was stopped after those timeouts. The six focused changed-route tests pass.

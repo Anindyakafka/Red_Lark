@@ -111,7 +111,7 @@ test("contribution review: optional alt, transactional facets, ownership, admin 
     assert.equal((await db.query("select * from public.work_notifications")).rows.length, 1);
     await db.query(
       "select public.review_work_metadata($1,'Reviewed','A red hand on white paper.','poster-placard',$2,$3)",
-      [work, ["workers", "farmers", "anti-war"], ["Solidarity", "Renamed custom"]],
+      [work, ["workers", "farmers", "anti-fascism"], ["Solidarity", "Renamed custom"]],
     );
     assert.equal(
       (await db.query("select * from public.work_categories where work_id=$1", [work])).rows.length,

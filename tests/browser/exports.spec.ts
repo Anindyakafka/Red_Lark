@@ -48,7 +48,7 @@ test("uploads are locally re-encoded, metadata discarded, and cannot enter share
   await openOption(page, "images");
   await page
     .getByLabel("Import a local image")
-    .setInputFiles("public/posters/a-future-we-share/A3.png");
+    .setInputFiles("public/posters/borders-are-lines/A3.png");
   await expect(page.locator(".studio-notice[role=status]")).toContainText("EXIF/GPS discarded");
   await page.waitForTimeout(650);
   const image = await page.evaluate(() => {
@@ -122,7 +122,7 @@ test("storage failure, font/network failure, unsupported browser and bad shared 
       );
     if (state === "font") await page.route("**/fonts/*.ttf", (route) => route.abort());
     await page.goto(
-      `http://localhost:3000/studio/?format=poster-placard${state === "hash" ? "#design=broken" : ""}`,
+      `http://localhost:3000/workshop/?format=poster-placard${state === "hash" ? "#design=broken" : ""}`,
     );
     if (state === "storage") {
       await expect(page.locator(".studio-paper")).toBeVisible();

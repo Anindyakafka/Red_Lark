@@ -73,13 +73,13 @@ test("all specified breakpoints have no horizontal document overflow", async ({ 
 test("filters/search/count/save are real and search errors are accessible", async ({ page }) => {
   await page.goto("/collection/");
   await page.getByLabel("Category", { exact: true }).selectOption("displacement-and-migration");
-  await expect(page.locator(".poster-card")).toHaveCount(5);
-  await page.getByRole("searchbox", { name: "SEARCH THE ARCHIVE" }).fill("homes");
+  await expect(page.locator(".poster-card")).toHaveCount(1);
+  await page.getByRole("searchbox", { name: "SEARCH THE ARCHIVE" }).fill("borders");
   await page.getByRole("button", { name: "SEARCH" }).click();
   await expect(page.locator(".poster-card")).toHaveCount(1);
-  await page.getByRole("button", { name: "Save Homes for all", exact: true }).click();
+  await page.getByRole("button", { name: "Save Borders are lines", exact: true }).click();
   await expect(
-    page.getByRole("button", { name: "Unsave Homes for all", exact: true }),
+    page.getByRole("button", { name: "Unsave Borders are lines", exact: true }),
   ).toHaveAttribute("aria-pressed", "true");
   await page.getByRole("searchbox", { name: "SEARCH THE ARCHIVE" }).fill("a".repeat(151));
   await page.getByRole("button", { name: "SEARCH" }).click();
@@ -148,7 +148,7 @@ test("Studio add text, colour, lock, undo, export, share and local restore", asy
   await expect(page.locator(".share-input")).toHaveValue(/#design=/);
 });
 test("remix loads the chosen base and retains source credits", async ({ page }) => {
-  await page.goto(`/studio/?remix=${posters[0].slug}`);
+  await page.goto(`/workshop/?remix=${posters[0].slug}`);
   await expect(page.locator(".studio-paper")).toBeVisible();
   await expect(page.getByRole("status")).toContainText("REMIX READY");
   await expect(page.locator(".studio-paper metadata")).toContainText(posters[0].title);

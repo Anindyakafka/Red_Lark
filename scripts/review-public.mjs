@@ -51,7 +51,7 @@ try {
   const routes = [
     ["landing", "/"],
     ["collection", "/collection/"],
-    ["item", "/poster/a-future-we-share/"],
+    ["item", "/poster/borders-are-lines/"],
     ["studio", "/studio/"],
     ["privacy", "/privacy/"],
     ["contact-errors", "/contact/"],
@@ -131,7 +131,7 @@ try {
   // Key Hindi routes also receive axe, beyond the required screenshot languages.
   const hindiContext = await browser.newContext();
   const hindi = await hindiContext.newPage();
-  for (const route of ["/", "/collection/", "/poster/a-future-we-share/"]) {
+  for (const route of ["/", "/collection/", "/poster/borders-are-lines/"]) {
     await hindi.goto(`http://localhost:3000/hi${route}`);
     const audit = await new AxeBuilder({ page: hindi }).analyze();
     summary.axe.push({

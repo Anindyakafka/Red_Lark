@@ -65,7 +65,7 @@ for (const locale of ["en", "hi", "bn", "ml"]) {
       expect(route.request().method()).toBe("PUT");
       await route.fulfill({ status: 200, body: "" });
     });
-    await page.goto(`/${locale}/submit/`);
+    await page.goto(`/${locale}/contribute/`);
     await page.locator(".format-picker button").nth(6).click();
     await page.locator("#upload-title").fill("Guest fixture");
     await page.locator("#upload-alt").fill("A black arrow on off-white paper.");

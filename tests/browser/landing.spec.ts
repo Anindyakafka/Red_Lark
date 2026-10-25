@@ -37,7 +37,7 @@ test("localized About copy, About links and Workshop CTA remain intact", async (
     await page.goto(`/${locale}/`);
     await expect(page.locator('.landing-about [data-copy="about"]')).toHaveText(localeCopy.about);
     await expect(page.locator(`.landing-about a[href="/${locale}/about/"]`)).toBeVisible();
-    await expect(page.locator(".mobile-cta")).not.toContainText(/studio/i);
+    await expect(page.locator(".mobile-cta")).not.toContainText(/workshop/i);
     await page.goto(`/${locale}/about/`);
     await expect(page.locator("[data-about-copy]")).toHaveText(localeCopy.about);
     await expect(page.locator(".prose ol li")).toHaveText(localeCopy.objectives);

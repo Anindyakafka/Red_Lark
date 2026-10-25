@@ -67,7 +67,7 @@ export default async function Page({ params }: { params: Promise<{ locale: strin
         <p>
           <UiText
             id={
-              "All 18 current designs are original vector and typographic placeholder studies, dedicated to CC0. They are not borrowed work or claims of a real artist’s endorsement. The team will replace them with properly credited, explicitly licensed contributions."
+              "The retained in-house study, Borders are lines, is original vector and typographic placeholder art dedicated to CC0. It is not borrowed work or a claim of a real artist’s endorsement. Other works are credited to their contributors with their own licences."
             }
           />
         </p>

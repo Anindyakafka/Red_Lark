@@ -25,7 +25,7 @@ const fixture = {
   ],
   work_categories: [
     { category_slug: "workers" },
-    { category_slug: "anti-war" },
+    { category_slug: "anti-fascism" },
     { category_slug: "farmers" },
   ],
   feedback: "",
@@ -63,7 +63,7 @@ test.afterEach(async ({ page }, info) => {
 });
 test("1 optional image description has help and a 300 character counter", async ({ page }) => {
   await logged(page);
-  await page.goto("/en/submit/");
+  await page.goto("/en/account/works/new/");
   await page.locator(".format-picker button").nth(6).click();
   const alt = page.getByLabel("Describe the image (optional)", { exact: true });
   await expect(alt).not.toHaveAttribute("required", "");
@@ -72,7 +72,7 @@ test("1 optional image description has help and a 300 character counter", async 
 });
 test("2 tags provide a combobox and commit Enter without submitting", async ({ page }) => {
   await logged(page);
-  await page.goto("/en/submit/");
+  await page.goto("/en/account/works/new/");
   await page.locator(".format-picker button").nth(6).click();
   const tags = page.getByRole("combobox", { name: "Tags", exact: true });
   await tags.fill("Local solidarity");
@@ -84,7 +84,7 @@ test("2 tags provide a combobox and commit Enter without submitting", async ({ p
 });
 test("3 licence cards preselect share and remix and prevent CC0 NC", async ({ page }) => {
   await logged(page);
-  await page.goto("/en/submit/");
+  await page.goto("/en/account/works/new/");
   await page.locator(".format-picker button").nth(6).click();
   await expect(
     page.getByRole("radio", {
@@ -101,7 +101,7 @@ test("3 licence cards preselect share and remix and prevent CC0 NC", async ({ pa
 });
 test("4 categories support searchable multiple checkboxes and survive errors", async ({ page }) => {
   await logged(page);
-  await page.goto("/en/submit/");
+  await page.goto("/en/account/works/new/");
   await page.locator(".format-picker button").nth(6).click();
   await page.getByLabel("Search categories", { exact: true }).fill("Workers");
   await page.getByRole("checkbox", { name: "Workers", exact: true }).check();
@@ -125,7 +125,7 @@ test("tags support suggestions, comma, blur, Backspace, limits and error retenti
   page,
 }) => {
   await logged(page);
-  await page.goto("/en/submit/");
+  await page.goto("/en/account/works/new/");
   await page.locator(".format-picker button").nth(6).click();
   const input = page.getByRole("combobox", { name: "Tags", exact: true });
   await input.fill("pro");
@@ -191,7 +191,7 @@ test("untouched recommended licence and blank description submit with all select
   await page.route("**/api/account/submit", (route) =>
     route.fulfill({ json: { ok: true, mailPending: true } }),
   );
-  await page.goto("/en/submit/");
+  await page.goto("/en/account/works/new/");
   await page.locator(".format-picker button").nth(6).click();
   await page.locator("#upload-title").fill("Original fixture");
   for (const slug of ["Workers", "Farmers", "Anti-War"]) {
@@ -275,7 +275,7 @@ for (const locale of ["en", "hi"] as const)
     test(`localized contribution fields and axe ${locale} ${width}`, async ({ page }) => {
       await page.setViewportSize({ width, height: 900 });
       await logged(page);
-      await page.goto(`/${locale}/submit/`);
+  await page.goto(`/${locale}/account/works/new/`);
       await page.locator(".format-picker button").nth(6).click();
       await expect(
         page.getByLabel(t("Describe the image (optional)"), { exact: true }),

@@ -50,22 +50,22 @@ test("archive, forms, policies and Studio do not display decorative brackets", a
   for (const locale of ["en", "hi", "bn", "ml"])
     for (const path of [
       "collection",
-      "poster/a-future-we-share",
+      "poster/borders-are-lines",
       "categories",
       "discover",
       "artists",
       "about",
       "contact",
-      "submit",
+      "contribute",
       "login",
       "privacy",
       "policies",
       "blog",
       "missing-page",
-      "studio",
+      "workshop",
     ]) {
       await page.goto(`/${locale}/${path}/`);
-      if (path === "studio") {
+      if (path === "workshop") {
         await page.getByRole("button", { name: "Poster/Placard", exact: true }).click();
         await expect(page.locator(".studio-paper")).toBeVisible();
       }

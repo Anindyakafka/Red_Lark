@@ -124,3 +124,7 @@ Human prerequisites before that work are release of the hold, project/region/ret
 - Deploy the repair branch through the normal review/merge flow. Migrations 202610210007 and 202610210008 were applied to the configured existing project; do not re-provision it. Existing R2/mail/build-hook settings are reused.
 - Real owner admin role and an enrolled authenticator were confirmed read-only. The owner still needs to sign in and verify a fresh code to review at /en/admin/review/. No real identity was granted or modified during the repair.
 - Hosted acceptance uses disposable accounts and real R2/Supabase with intercepted notification/build-hook transports. It does not prove a newly deployed production notification reached an inbox or a production rebuild completed; confirm those after deployment.
+
+## 25 October 2026 live review follow-up
+
+Deploy this change so the static site no longer shows the 17 retired placeholder posters. The database migration is already applied. In a signed-in admin session with valid MFA, open a pending submission, select Anti-Fascism, save metadata, and confirm the success notice and refreshed value. The direct production RPC test was stopped by automatic approval review because it would have impersonated an administrator; local RPC and browser fixtures pass.

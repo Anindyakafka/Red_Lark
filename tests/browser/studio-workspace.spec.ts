@@ -14,7 +14,7 @@ test("ShareAlike remix keeps a clean canvas and configurable default-on attribut
 }) => {
   test.setTimeout(120000);
   const replacements = await installShareAlikeFixture(page);
-  await page.goto("/en/studio/?remix=a-future-we-share");
+  await page.goto("/en/workshop/?remix=borders-are-lines");
   await expect(page.locator(".studio-paper")).toBeVisible();
   expect(replacements()).toBeGreaterThan(0);
   await expect(page.locator(".studio-paper metadata")).toContainText("CC-BY-SA-4.0");
@@ -51,7 +51,7 @@ for (const locale of ["en", "hi", "bn", "ml"])
       page,
     }, info) => {
       await page.setViewportSize({ width, height: 1000 });
-      await page.goto(`/${locale}/studio/?remix=a-future-we-share`);
+      await page.goto(`/${locale}/workshop/?remix=borders-are-lines`);
       await expect(page.locator(".studio-paper")).toBeVisible();
       await page.locator(".studio-workspace").scrollIntoViewIfNeeded();
       const viewport = page.locator(".canvas-scroll"),
@@ -89,12 +89,12 @@ test("crop edits survive save/undo/restore and exported SVG/PNG/PDF keep origina
   page,
 }) => {
   test.setTimeout(120000);
-  await page.goto("/en/studio/?format=poster-placard");
+  await page.goto("/en/workshop/?format=poster-placard");
   await expect(page.locator(".studio-paper")).toBeVisible();
   await openOption(page, "images");
   await page
     .getByLabel("Import a local image")
-    .setInputFiles("public/posters/a-future-we-share/A3.png");
+    .setInputFiles("public/posters/borders-are-lines/A3.png");
   await page.getByRole("button", { name: "Crop image", exact: true }).click();
   await expect(page.locator("[data-crop-handle]")).toHaveCount(9);
   await page.getByText("Crop dimensions", { exact: true }).click();
@@ -158,7 +158,7 @@ test("crop edits survive save/undo/restore and exported SVG/PNG/PDF keep origina
 test("viewport wheel and mouse pan anchor zoom, preserve layer drags and fit without page zoom", async ({
   page,
 }) => {
-  await page.goto("/en/studio/?format=poster-placard");
+  await page.goto("/en/workshop/?format=poster-placard");
   await expect(page.locator(".studio-paper")).toBeVisible();
   await page.locator(".studio-workspace").scrollIntoViewIfNeeded();
   const viewport = page.locator(".canvas-scroll");
@@ -250,7 +250,7 @@ test("real touch events pinch and translate from viewport margins without draggi
       viewport: { width: 375, height: 844 },
     }),
     page = await context.newPage();
-  await page.goto("/en/studio/?format=poster-placard");
+  await page.goto("/en/workshop/?format=poster-placard");
   await expect(page.locator(".studio-paper")).toBeVisible();
   await page.locator(".canvas-scroll").scrollIntoViewIfNeeded();
   const viewport = page.locator(".canvas-scroll"),
@@ -298,12 +298,12 @@ for (const pointer of ["mouse", "pen", "touch"] as const)
     await page.route("**/api/session", (route) =>
       route.fulfill({ json: { csrf: "fixture", account: null } }),
     );
-    await page.goto("/en/studio/?format=poster-placard");
+    await page.goto("/en/workshop/?format=poster-placard");
     await expect(page.locator(".studio-paper")).toBeVisible();
     await openOption(page, "images");
     await page
       .getByLabel("Import a local image")
-      .setInputFiles("public/posters/a-future-we-share/A3.png");
+      .setInputFiles("public/posters/borders-are-lines/A3.png");
     await openOption(page, "layers");
     await page.getByLabel("rotation", { exact: true }).fill("37");
     await openOption(page, "images");

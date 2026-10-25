@@ -16,7 +16,7 @@ const fonts = {
 };
 
 test("every authored placeholder has explicit CC0, source, credit, alt, dimensions and working files", () => {
-  assert.equal(posters.length, 18);
+  assert.equal(posters.length, 1);
   for (const p of posters) {
     assert.deepEqual(validatePoster(p, artists), []);
     assert.equal(p.license, "CC0-1.0");
@@ -51,7 +51,7 @@ test("validation rejects missing credit/alt/source, conflicting licence flags an
 });
 test("ShareAlike exports carry every unique source and reject incompatible licence mixtures", () => {
   const a = { ...sourceCredit(posters[0], artists[0].name), license: "CC-BY-NC-SA-4.0" as const };
-  const b = { ...sourceCredit(posters[1], artists[0].name), license: "CC-BY-4.0" as const };
+  const b = { ...sourceCredit(posters[0], artists[0].name), id: "second-source", license: "CC-BY-4.0" as const };
   assert.equal(exportLicense([a, b]), "CC-BY-NC-SA-4.0");
   assert.throws(() => exportLicense([a, { ...b, license: "CC-BY-SA-4.0" }]));
   assert.throws(() => exportLicense([{ ...a, license: "CC-BY-ND-4.0" }]));
@@ -118,9 +118,9 @@ test("hash shares roundtrip without uploads and reject malformed/oversized paylo
   assert.throws(() => encodeScene(s));
 });
 test("real search combines terms and all facets, and sorts", () => {
-  const found = filterPosters(posters, { ...emptyFilters, query: "HOMES", theme: "Housing" });
+  const found = filterPosters(posters, { ...emptyFilters, query: "BORDERS", theme: "Migration" });
   assert.equal(found.length, 1);
-  assert.equal(found[0].slug, "homes-for-all");
+  assert.equal(found[0].slug, "borders-are-lines");
   assert.equal(
     filterPosters(posters, { ...emptyFilters, query: "care", language: "French" }).length,
     0,

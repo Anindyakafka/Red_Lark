@@ -67,6 +67,8 @@ const errors: Record<string, string> = {
   tag_too_long: "Keep each tag to 30 characters or fewer.",
   too_many_tags: "Choose up to 10 tags.",
   invalid_tags: "Choose up to 10 tags, each 30 characters or fewer.",
+  invalid_categories:
+    "A selected category is not available yet. Reload the page or choose another category.",
   mail_delivery_pending:
     "Your message was saved, but email delivery is pending. You can retry without sending a duplicate.",
   publishing_not_ready:
@@ -1177,7 +1179,7 @@ export function UploadPanel({
           <input type="hidden" name="ai_use" value="none" />
           <p>
             {t(
-              "Quick contributions use CC0: anyone may use them for any purpose. Staff will flag missing details for review.",
+              "Quick contributions use CC0: anyone may copy, change, share, print or sell the work without asking or crediting you. Submit only work you have the right to release this way. Staff will flag missing details for review.",
             )}
           </p>
           <p>{t("Images: JPEG or PNG. Writing: TXT, Markdown or DOCX, up to 25 MB.")}</p>

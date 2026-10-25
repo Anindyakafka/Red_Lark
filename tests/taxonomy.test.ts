@@ -20,8 +20,8 @@ test("newest submissions sort by their full date within the same year, with stab
   );
 });
 test("canonical inventories, category membership, artwork format and native search combine", () => {
-  assert.equal(categories.length, 28);
-  assert.equal(new Set(categories.map((c) => c.slug)).size, 28);
+  assert.equal(categories.length, 29);
+  assert.equal(new Set(categories.map((c) => c.slug)).size, 29);
   assert.deepEqual(
     formats.map((f) => f.label),
     [
@@ -41,16 +41,16 @@ test("canonical inventories, category membership, artwork format and native sear
   const selected = filterPosters(posters, {
     ...emptyFilters,
     category: "displacement-and-migration",
-    query: "homes",
+    query: "borders",
     kind: "poster-placard",
   });
   assert.deepEqual(
     selected.map((p) => p.slug),
-    ["homes-for-all"],
+    ["borders-are-lines"],
   );
   assert.equal(
     filterPosters(posters, { ...emptyFilters, language: "Malayalam", query: "ഒരുമിച്ച്" }).length,
-    1,
+    0,
   );
   assert.ok(
     validatePoster({ ...posters[0], categories: ["invented-category"] }, artists).some((error) =>

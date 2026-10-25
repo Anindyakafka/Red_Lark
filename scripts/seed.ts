@@ -43,35 +43,13 @@ const artists: Artist[] = [
 ];
 for (const artist of artists)
   await fs.writeFile(`content/artists/${artist.id}.json`, JSON.stringify(artist, null, 2));
+// Preserve the original artwork's palette/edition index while generating only
+// the one placeholder retained in the archive.
 const entries = [
-  ["WE ARE\nSTILL HERE", "We are still here", "Solidarity", "Mutual aid", ""],
-  ["HOMES\nFOR ALL", "Homes for all", "Housing", "Housing justice", ""],
-  ["CARE\nIS WORK", "Care is work", "Labor", "May Day", ""],
-  ["NO ONE\nIS DISPOSABLE", "No one is disposable", "Solidarity", "Mutual aid", ""],
-  ["OUR AIR\nOUR FUTURE", "Our air, our future", "Climate", "Climate justice", ""],
-  ["MAKE\nROOM", "Make room", "Migration", "Freedom of movement", ""],
-  ["LISTEN\nTO THE LAND", "Listen to the land", "Ecology", "Climate justice", ""],
-  ["PUBLIC\nSPACE", "Public space", "Housing", "Right to the city", ""],
-  ["MANY\nVOICES", "Many voices", "Solidarity", "Mutual aid", ""],
-  ["सबके लिए\nदुनिया", "A world for everyone", "Solidarity", "Mutual aid", "सबके लिए दुनिया"],
-  [
-    "NOTHING\nABOUT US\nWITHOUT US",
-    "Nothing about us without us",
-    "Accessibility",
-    "Disability justice",
-    "",
-  ],
-  ["LESS\nEXTRACTION\nMORE CARE", "Less extraction, more care", "Climate", "Climate justice", ""],
-  ["WE KEEP\nEACH OTHER\nSAFE", "We keep each other safe", "Solidarity", "Mutual aid", ""],
-  ["বিশ্রামের\nঅধিকার", "The right to rest", "Labor", "May Day", "বিশ্রামের অধিকার"],
-  ["BORDERS\nARE LINES", "Borders are lines", "Migration", "Freedom of movement", ""],
-  ["A FUTURE\nWE SHARE", "A future we share", "Ecology", "Climate justice", ""],
-  ["ഒരുമിച്ച്\nപണിയാം", "Build together", "Housing", "Right to the city", "ഒരുമിച്ച് പണിയാം"],
-  ["TAKE\nUP SPACE", "Take up space", "Accessibility", "Disability justice", ""],
-];
+  [14, "BORDERS\nARE LINES", "Borders are lines", "Migration", "Freedom of movement", ""],
+] as [number, string, string, string, string, string][];
 const posters: Poster[] = [];
-for (let i = 0; i < entries.length; i++) {
-  const [headline, title, theme, movement, original] = entries[i];
+for (const [i, headline, title, theme, movement, original] of entries) {
   const slug = title.toLowerCase().replace(/[^a-z0-9]+/g, "-");
   const artist = artists[0];
   const bw = i % 4 === 2;

@@ -21,8 +21,7 @@ for (const locale of ["en", "hi", "bn", "ml"])
     "reset-password",
     "account",
     "admin",
-    "submit",
-    "takedown",
+    "contribute",
   ]) {
     test(`backend page + axe ${locale}/${route}`, async ({ page }) => {
       await fixtures(page);
@@ -78,7 +77,7 @@ test("optional contributor signup and guest uploads both remain available", asyn
   await page.route("**/api/account", (route) =>
     route.fulfill({ status: 401, json: { error: "sign_in_required" } }),
   );
-  await page.goto("/en/submit/");
+  await page.goto("/en/contribute/");
   await expect(page.locator("main")).toContainText("No account needed");
   await page.getByRole("button", { name: "Poster/Placard", exact: true }).click();
   await expect(page.locator("input[type=file]")).toBeVisible();

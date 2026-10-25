@@ -306,11 +306,11 @@ test("real Postgres RLS: every table, ownership, roles, MFA and bootstrap", asyn
     await db.exec(fs.readFileSync("supabase/seed.sql", "utf8"));
     assert.equal(
       (await db.query<{ n: number }>("select count(*)::int n from public.categories")).rows[0].n,
-      28,
+      29,
     );
     assert.equal(
       (await db.query<{ n: number }>("select count(*)::int n from public.formats")).rows[0].n,
-      10,
+      11,
     );
     await as("service_role");
     const receipt = "dddddddd-dddd-4ddd-8ddd-dddddddddddd";

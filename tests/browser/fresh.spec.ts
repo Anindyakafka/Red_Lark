@@ -9,7 +9,7 @@ test("fresh-eyes clickthrough of poster, artist and category indexes", async ({ 
     await page.locator(`.card-title-row a[href="/en/poster/${p.slug}/"]`).click();
     await expect(page).toHaveURL(new RegExp(`/poster/${p.slug}/`));
     await expect(page.locator(".downloads")).toBeVisible();
-    await expect(page.getByRole("link", { name: /REMIX IN STUDIO/ })).toBeVisible();
+    await expect(page.getByRole("link", { name: /OPEN IN WORKSHOP/ })).toBeVisible();
   }
   for (const a of artists) {
     await page.goto("/artists/");

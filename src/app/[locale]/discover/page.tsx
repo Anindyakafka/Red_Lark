@@ -57,7 +57,7 @@ export default function Page() {
           <p>
             <UiText
               id={
-                "Original-language titles sit beside English titles. Explore the Hindi, Bengali and Malayalam placeholder studies in the collection’s language filter. Draft translations need native review."
+                "Original-language titles sit beside English titles where supplied. Choose a language in the collection filter. Draft translations need native review."
               }
             />
           </p>

@@ -6,7 +6,7 @@ import { publicArtists, publicPosters } from "@/lib/catalog";
 import { pageMeta } from "@/lib/metadata";
 const baseMetadata = pageMeta(
   "Artists",
-  "Meet the credited creators behind the archive. Current entries are openly labelled invented credits for original placeholder studies.",
+  "Meet the credited creators behind the archive. Contributors may use pseudonyms, and the in-house placeholder is clearly marked.",
   "/artists",
 );
 export default function Page() {

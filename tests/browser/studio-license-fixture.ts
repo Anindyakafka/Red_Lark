@@ -8,7 +8,7 @@ export async function installShareAlikeFixture(page: Page) {
   await page.route("**/_next/static/chunks/*.js", async (route) => {
     const response = await route.fetch();
     const source = await response.text();
-    if (!source.includes("a-future-we-share") || !source.includes("JSON.parse"))
+    if (!source.includes("borders-are-lines") || !source.includes("JSON.parse"))
       return route.fulfill({ response });
     const ast = ts.createSourceFile(
       "fixture.js",
@@ -23,7 +23,7 @@ export async function installShareAlikeFixture(page: Page) {
         const arg = node.arguments[0];
         if (arg && ts.isStringLiteral(arg) && arg.text.startsWith('{"posters":')) {
           const catalog = JSON.parse(arg.text) as { posters: Poster[] };
-          const poster = catalog.posters.find((p) => p.slug === "a-future-we-share");
+          const poster = catalog.posters.find((p) => p.slug === "borders-are-lines");
           if (poster) {
             poster.license = "CC-BY-SA-4.0";
             poster.licenseUrl = "https://creativecommons.org/licenses/by-sa/4.0/";

@@ -15,7 +15,7 @@ for (const locale of ["en", "hi"])
         await ctas.evaluateAll((links) =>
           links.map((link) => new URL((link as HTMLAnchorElement).href).pathname),
         ),
-      ).toEqual([`/${locale}/collection/`, `/${locale}/studio/`, `/${locale}/submit/`]);
+      ).toEqual([`/${locale}/collection/`, `/${locale}/workshop/`, `/${locale}/contribute/`]);
       await expect(page.locator(`header a[href="/${locale}/login/"]`)).toBeVisible();
       await expect(page.locator(`header a[href="/${locale}/signup/"]`)).toBeVisible();
       expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(

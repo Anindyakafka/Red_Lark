@@ -1,6 +1,6 @@
 # Current acceptance checklist
 
-## Public simplification — 23 October 2026
+## Public simplification Ã¢â‚¬â€ 23 October 2026
 
 | Check                                      | Status  | Evidence                                                                                                                  | Note                                                                                                                          |
 | ------------------------------------------ | ------- | ------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------- |
@@ -32,7 +32,7 @@
 | ----------------------------------------- | ------ | ----------------------------------------------------------------------------------------------------------------------- |
 | Before-edit audit / measurements          | PASS   | docs/STUDIO_AUDIT.md; docs/evidence/studio-workspace/before.json and PNGs                                               |
 | Attribution metadata / clean editing      | PASS   | tests/studio-workspace.test.ts: source persistence, CC0/SA defaults, editing SVG, UTF-8 PNG attribution/EXIF stripping  |
-| Overlay controls / full feature retention | PASS   | final-browser.json: four locales × 375/768/1440; all panels full axe 0; no reflow                                       |
+| Overlay controls / full feature retention | PASS   | final-browser.json: four locales Ãƒâ€” 375/768/1440; all panels full axe 0; no reflow                                       |
 | Eight-handle non-destructive crop         | PASS   | Unit pixel/geometry tests; mouse/pen/touch eight handles; keyboard, undo/restore, SVG/PNG/PDF                           |
 | Full viewport pinch/pan                   | PASS   | Real CDP pinch/moving midpoint, wheel/Space/middle, layer drag at zoom, local native-gesture fallback                   |
 | Final regression and real-device limits   | PASS   | 78 unit + 274 unique browser tests; final affected rerun 91/91; build/types/lint pass; real devices/print remain manual |
@@ -106,7 +106,7 @@ This table supersedes the earlier repair progress rows. Measurements and scopes 
 
 Mail and production build-hook requests were intercepted during hosted acceptance. Real deployed inbox delivery and production rebuild completion are owner checks in TODO_HUMAN.md. Screenshots of private pages use explicitly synthetic data; they do not claim a browser session as the real owner. Custom-tag RLS is also verified against anonymous, owner and fresh-MFA admin sessions; unpublished/rejected/orphan labels are not a public dictionary.
 
-## Guest contributions / UX acceptance — 21 October 2026
+## Guest contributions / UX acceptance Ã¢â‚¬â€ 21 October 2026
 
 | Requirement                                                      | Status | Evidence                                                                  | Note                                                                                                          |
 | ---------------------------------------------------------------- | ------ | ------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------- |
@@ -122,7 +122,7 @@ Mail and production build-hook requests were intercepted during hosted acceptanc
 
 ## Prior authenticator acceptance
 
-Current public performance: PASS — docs/evidence/guest-submissions/lighthouse.json records median-of-three mobile Lighthouse performance 96–98 in en/hi Home, Collection and Poster, with Accessibility/Best Practices/SEO 100 and CLS 0. One cold first run scored 93; all six page medians meet the target. Raw runs remain in .qa/guest-lighthouse.
+Current public performance: PASS Ã¢â‚¬â€ docs/evidence/guest-submissions/lighthouse.json records median-of-three mobile Lighthouse performance 96Ã¢â‚¬â€œ98 in en/hi Home, Collection and Poster, with Accessibility/Best Practices/SEO 100 and CLS 0. One cold first run scored 93; all six page medians meet the target. Raw runs remain in .qa/guest-lighthouse.
 
 21 October update: owner email/sign-in/TOTP verified; guarded admin bootstrap PASS. Existing-session update repair PASS (src/server/auth.ts, tests/backend.test.ts, hosted isolated insert 201/object and update 200/object, cleanup confirmed). Typecheck/lint/build/secret checks and 55 tests PASS. Live fresh-MFA/admin retry remains FAIL/pending deployment. Earlier pending-enrollment notes below are superseded.
 
@@ -131,7 +131,7 @@ Current public performance: PASS — docs/evidence/guest-submissions/lighthouse.
 | QR image, separate selectable setup key, responsive layout, cleanup after verification | PASS   | src/server/api.ts; src/components/account-client.tsx; tests/browser/mfa.spec.ts: 2 passed, axe 0 | Synthetic enrollment only; real provider QR is returned without third-party rendering |
 | Real owner TOTP verification and administrator bootstrap                               | FAIL   | Owner signup/email/sign-in verified; guarded bootstrap reported totp_verified=false              | Requires deploying repair or manual-key entry, then owner verification; no MFA bypass |
 
-## Account pages checkpoint — 20 October 2026
+## Account pages checkpoint Ã¢â‚¬â€ 20 October 2026
 
 These rows supersede inherited acceptance for changed features. UI fixtures prove browser behavior only, never real mail delivery or production publication.
 
@@ -147,7 +147,7 @@ These rows supersede inherited acceptance for changed features. UI fixtures prov
 | Real mail end-to-end and independent non-Gmail headers             | FAIL   | Previous Gmail evidence; TODO_HUMAN.md                             | Exposed provider key must be rotated; non-Gmail inbox not supplied                                                                   |
 | Final full regression, axe and performance                         | PASS   | docs/evidence/redlark-round-1-account-pages-p5/summary.json        | 178 browser tests, 54 unit/RLS/copy tests; all six Lighthouse medians >=95; other categories 100; CLS 0; no external asset requests. |
 
-## Backend continuation — 19 October 2026 (overrides historical HOLD rows below)
+## Backend continuation Ã¢â‚¬â€ 19 October 2026 (overrides historical HOLD rows below)
 
 | Requirement                                                       | Status | Evidence                                        | Note                                                                                                                                                                                                 |
 | ----------------------------------------------------------------- | ------ | ----------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
@@ -159,7 +159,7 @@ These rows supersede inherited acceptance for changed features. UI fixtures prov
 | R2 scoped signing, unsigned-read denial and elapsed expiry        | PASS   | scripts/verify-r2.ts --wait-expiry              | Correct-key upload works; changed key rejected; pending absent from approved bucket; unsigned private read denied; actual expiry tested after five minutes. Public-host/CORS acceptance is separate. |
 | Real SPF/DKIM/DMARC, inbox and Reply-To                           | FAIL   | TODO_HUMAN.md                                   | Both authorized addresses are Gmail; non-Gmail inbox/raw-header evidence missing.                                                                                                                    |
 | Netlify variables and deployment confirmation                     | FAIL   | docs/PLAN.md                                    | Backend deployment prohibited until owner confirms runtime configuration.                                                                                                                            |
-| Signup → verify → upload → MFA approval → four locales → takedown | FAIL   | Backend continuation                            | Hosted schema/Auth/public storage must be ready first.                                                                                                                                               |
+| Signup Ã¢â€ â€™ verify Ã¢â€ â€™ upload Ã¢â€ â€™ MFA approval Ã¢â€ â€™ four locales Ã¢â€ â€™ takedown | FAIL   | Backend continuation                            | Hosted schema/Auth/public storage must be ready first.                                                                                                                                               |
 
 Updated 20 October 2026. The implementation checks below are current; real hosted workflow failures remain explicitly listed above and below. Earlier failed rounds are retained in ITERATIONS.md and evidence. No required backend acceptance is relabelled N-A.
 
@@ -235,7 +235,7 @@ Human launch decisions are in TODO_HUMAN.md. No deployment, push, database setup
 | Pending file unreachable from approved PUBLIC hostname | FAIL | R2_DOMAIN_SETUP.md | Credentialed approved-bucket absence passed; actual public hostname is not configured, so that distinct check is not claimed. |
 | Latest public performance regression | PASS | docs/evidence/redlark-round-1-account-pages-p5/summary.json | Fixed the measured dark-mode header shift; CLS 0 and all six performance medians >=95. Earlier failed measurements remain in ITERATIONS and evidence. |
 
-## Requested end-to-end acceptance — 20 October 2026
+## Requested end-to-end acceptance Ã¢â‚¬â€ 20 October 2026
 
 | Check                                                        | Status | Evidence                                                                               | Exact limitation                                                                                                                      |
 | ------------------------------------------------------------ | ------ | -------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------- |
@@ -290,3 +290,13 @@ These FAIL rows are human prerequisites, not missing page implementations. They 
 | Hindi poster       | PASS   | 97                 | 100 / 100 / 100                      | evidence/upload-repair/lighthouse.json                     |
 
 Three cold-cache runs per route, all raw scores recorded, CLS 0. Initial Hindi Collection 94 remains in lighthouse-round3-before.json; only the two affected Collection routes were remeasured after the font-dependency fix. Final-source browser acceptance is pending the corrected QA-configured full run.
+
+### 25 October 2026 review metadata and placeholder cleanup
+
+| Check | Status | Evidence | Note |
+| --- | --- | --- | --- |
+| Metadata save | PARTIAL | Admin slug prevalidation; hosted migration; in-memory RPC and six focused browser tests pass | Real signed-in production save still needs confirmation. |
+| Placeholder cleanup | PASS | Content validator: one poster; hosted read-only check: Borders alone among in-house private drafts | Contributor works untouched. |
+| Quick contribution CC0 | PASS | Quick form wording and right-to-share consent | Copy/change/share/print/sell permitted. |
+| Static build and secret audit | PASS | 360 production-equivalent HTML pages, validated links/metadata/alt, no client secrets | Read-only build merged 12 approved works and one retained placeholder; deployment remains pending. |
+| Full browser regression | FAIL | Full Playwright run stopped on stale takedown/upload wizard expectations; six focused tests pass | Fixture updates and a complete rerun remain. |

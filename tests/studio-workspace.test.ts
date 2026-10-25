@@ -52,7 +52,7 @@ test("blank and CC0 projects default to clean exports; edition removal is narrow
   assert.equal(cleanTemplate(scene).layers[0].text, scene.layers[0].text);
 });
 test("PNG exports embed Unicode attribution without imported EXIF and keep 300-PPI density", async () => {
-  const source = new Blob([fs.readFileSync("public/posters/a-future-we-share/A3.png")]);
+  const source = new Blob([fs.readFileSync("public/posters/borders-are-lines/A3.png")]);
   const metadata = JSON.stringify({ artist: "বাংলা മലയാളം", license: "CC-BY-SA-4.0" });
   const bytes = Buffer.from(await (await pngAt300Ppi(source, metadata)).arrayBuffer());
   assert.ok(bytes.includes(Buffer.from(metadata)));

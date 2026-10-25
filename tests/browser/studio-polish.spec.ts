@@ -4,7 +4,7 @@ test("quick export restores the actual opener; native gesture fallback stays loc
   page,
 }) => {
   await page.setViewportSize({ width: 375, height: 1000 });
-  await page.goto("/en/studio/?format=poster-placard");
+  await page.goto("/en/workshop/?format=poster-placard");
   await expect(page.locator(".studio-paper")).toBeVisible();
   const opener = page.locator(".studio-toolbar [data-studio-option=export]");
   await opener.click();
@@ -57,7 +57,7 @@ test("quick export restores the actual opener; native gesture fallback stays loc
   await openOption(page, "images");
   await page
     .getByLabel("Import a local image")
-    .setInputFiles("public/posters/a-future-we-share/A3.png");
+    .setInputFiles("public/posters/borders-are-lines/A3.png");
   await page.getByRole("button", { name: "Crop image", exact: true }).click();
   const width = page.getByLabel("Crop width (%)", { exact: true });
   await expect(width).toHaveValue("100");

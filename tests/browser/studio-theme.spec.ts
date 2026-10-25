@@ -16,7 +16,7 @@ for (const locale of ["en", "ml"])
       await page.route("**/api/session", (route) =>
         route.fulfill({ json: { csrf: "fixture", account: null } }),
       );
-      await page.goto(`/${locale}/studio/?remix=a-future-we-share`);
+      await page.goto(`/${locale}/workshop/?remix=borders-are-lines`);
       await expect(page.locator(".studio-paper")).toBeVisible();
       await openOption(page, "text");
       expect((await new AxeBuilder({ page }).analyze()).violations).toEqual([]);
@@ -35,7 +35,7 @@ test("Collection and print downloads remain browsable without JavaScript", async
   const context = await browser.newContext({ baseURL, javaScriptEnabled: false }),
     page = await context.newPage();
   await page.goto("/en/collection/");
-  await expect(page.locator(".poster-card")).toHaveCount(18);
+  await expect(page.locator(".poster-card")).toHaveCount(1);
   await page.locator(".card-title-row a").first().click();
   await expect(page.locator(".downloads a").first()).toBeVisible();
   await context.close();

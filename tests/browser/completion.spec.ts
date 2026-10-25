@@ -43,7 +43,7 @@ test("touch pinch changes zoom and mobile controls stay usable", async ({ browse
     isMobile: true,
   });
   const page = await context.newPage();
-  await page.goto("http://localhost:3000/studio/?format=poster-placard");
+  await page.goto("http://localhost:3000/workshop/?format=poster-placard");
   await expect(page.locator(".studio-paper")).toBeVisible();
   await page.locator(".studio-paper").scrollIntoViewIfNeeded();
   const box = await page.locator(".studio-paper").boundingBox();
@@ -86,7 +86,7 @@ test("bad remix source, print modes and shared source credits are handled", asyn
   await openOption(page, "color");
   await page.getByLabel("Separation preview").selectOption({ index: 1 });
   await expect(page.locator(".studio-paper metadata")).toContainText("USER ADDITIONS");
-  await page.goto(`/studio/?remix=${posters[0].slug}`);
+  await page.goto(`/workshop/?remix=${posters[0].slug}`);
   await expect(page.locator(".studio-paper")).toBeVisible();
   await openOption(page, "help");
   await page.getByRole("button", { name: "SHARE LINK", exact: true }).click();

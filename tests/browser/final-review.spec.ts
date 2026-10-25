@@ -49,7 +49,7 @@ test("fresh eyes: dark native pages and no-JS editorial remain usable", async ({
   for (const route of [
     "/ml/",
     "/hi/collection/",
-    "/ml/poster/a-future-we-share/",
+    "/ml/poster/borders-are-lines/",
     "/en/contact/",
   ]) {
     await page.goto(route);

@@ -117,13 +117,23 @@ export async function admin(
     } catch {
       throw new ApiError(422, "invalid_tags");
     }
+    const categories = Array.isArray(data.categories)
+      ? data.categories.filter((value): value is string => typeof value === "string")
+      : [];
+    if (!Array.isArray(data.categories) || categories.length !== data.categories.length)
+      throw new ApiError(422, "invalid_categories");
+    const selected = [...new Set(categories)];
+    if (selected.length) {
+      const known = checked(await who.client.from("categories").select("slug").in("slug", selected));
+      if (known.length !== selected.length) throw new ApiError(422, "invalid_categories");
+    }
     checked(
       await who.client.rpc("review_work_metadata", {
         p_work: text(data, "id", 100, 1),
         p_title: text(data, "title", 200, 1),
         p_alt: text(data, "alt", 300),
         p_format: text(data, "format_slug", 100, 1),
-        p_categories: Array.isArray(data.categories) ? data.categories : [],
+        p_categories: selected,
         p_tags: tags,
       }),
     );

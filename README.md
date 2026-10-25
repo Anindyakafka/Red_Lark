@@ -21,7 +21,7 @@ Optional contributor accounts use `/en/signup/` and `/en/login/` (also hi/bn/ml)
 Administrators use `/admin` and `/admin/review/ID`, with separate messages, users and audit pages. Each API request independently enforces the protected role and fresh TOTP. Netlify rewrites UUID detail addresses to static, noindex shells; private data is fetched after authentication and never included in the build. Local preview/development implements the same rewrites. Keep the supplied `netlify.toml` rewrite rules when deploying.
 
 - npm run db:check / npm run db:migrate: verified TLS, ordered migration ledger and idempotent private seed; local SQL credentials only.
-- npm run seed:backend: regenerate 28 categories, 10 formats, licence policies and 18 original private CC0 placeholder records.
+- npm run seed:backend: regenerate 29 categories, 11 formats, licence policies and the one retained private CC0 placeholder record.
 - npm run admin:bootstrap: owner-configured email; refuses missing verified real login or TOTP; idempotent and audited.
 - npm run dev: Next dev + local API bridge at localhost:3000. npm start serves the static export and the same handler.
 - npm run test:rls / npm test: actual local PostgreSQL policies plus model/security/upload/mail checks. Hosted Auth is a separate acceptance step.
@@ -110,7 +110,7 @@ Image search is honestly labelled coming soon; no photo is collected. Community 
 
 ## Content and licensing
 
-The 18 current posters are **original CC0, AI-assisted vector placeholder studies**, credited to The Wet Ink Workshop and visibly marked. No real artist's work is embedded. Each has editable layers, meaningful alt text, responsive WebP/AVIF previews, poster-specific OG, SVG source, PDF variants (A4/A3/A2/18x24), real A4/A2 300-DPI PNG/JPEG files, an A3 PNG and a graphics bundle. Typography in vector files is outlined. PDFs are RGB and no-bleed, not promises of calibrated professional press colour. Indic studies and translations remain drafts.
+The sole retained placeholder, **Borders are lines**, is an original CC0, AI-assisted vector study credited to The Wet Ink Workshop and visibly marked. No real artist's work is embedded. It has editable layers, meaningful alt text, responsive WebP/AVIF previews, poster-specific OG, SVG source, PDF variants (A4/A3/A2/18x24), real A4/A2 300-DPI PNG/JPEG files, an A3 PNG and a graphics bundle. Typography in vector files is outlined. PDFs are RGB and no-bleed, not promises of calibrated professional press colour. Indic studies and translations remain drafts.
 
 Add reviewed content under content/posters/_.json and content/artists/_.json; put files under public/posters/<slug>/. See [content/README](content/README.md). Run validation after changes. The generated index under src/generated is derived, not edited by hand.
 
