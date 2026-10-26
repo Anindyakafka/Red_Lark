@@ -19,7 +19,7 @@
   directory = "netlify/functions"
   node_bundler = "esbuild"
   external_node_modules = ["sharp", "pdfkit"]
-included_files = ["public/fonts/**/*.ttf"]
+included_files = ["public/fonts/ibm-plex-mono.ttf", "public/fonts/indic/noto-sans-devanagari-full.ttf", "public/fonts/indic/noto-sans-bengali-full.ttf", "public/fonts/indic/noto-sans-malayalam-full.ttf"]
 
 # Legacy public names preserve bookmarks without keeping duplicate canonical pages.
 [[redirects]]

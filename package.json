@@ -9,7 +9,8 @@
   },
   "scripts": {
     "dev": "node scripts/dev.mjs",
-    "build": "node scripts/build-security.mjs --prepare && npm run check:edge && npm run check:brand && npm run validate:content && tsx scripts/fetch-public-catalogue.ts && next build && node scripts/build-security.mjs && node scripts/validate-export.mjs && node scripts/check-client-secrets.mjs",
+    "build": "node scripts/prepare-licensed-font.mjs && node scripts/build-security.mjs --prepare && npm run check:edge && npm run check:brand && npm run validate:content && tsx scripts/fetch-public-catalogue.ts && next build && node scripts/build-security.mjs && node scripts/validate-export.mjs && node scripts/check-client-secrets.mjs",
+    "font:upload": "node scripts/prepare-licensed-font.mjs --upload",
     "start": "node scripts/serve.mjs",
     "typecheck": "tsc --noEmit",
     "test": "tsx --test tests/*.test.ts",

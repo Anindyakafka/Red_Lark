@@ -308,3 +308,13 @@ Three cold-cache runs per route, all raw scores recorded, CLS 0. Initial Hindi C
 | --- | --- | --- | --- |
 | Self-hosted Kode Mono hero | PASS | `src/app/[locale]/layout.tsx`, `src/app/globals.css`, `public/fonts/Kode-Mono-OFL.txt`; `tests/browser/landing.spec.ts` | No Google Fonts request; visually reviewed at 390px and 1440px with featured posters. |
 | Responsive headline and copy | PASS | Five viewport checks, six landing browser tests, copy test | Masthead does not clip; Appendix A wording is untouched. |
+
+### Licensed Bengali font — 26 October 2026
+
+| Check | Status | Evidence | Note |
+| --- | --- | --- | --- |
+| Font source stays out of Git | PASS | `.gitignore`, `git status --short --ignored` | Local source and generated website copy are both ignored. |
+| Private R2 source for Netlify builds | PASS | `npm run font:upload`, `node scripts/prepare-licensed-font.mjs --remote` | Uploaded to private bucket; approved public R2 host is not used. |
+| Bengali UI regular/italic and responsive layout | PASS | `tests/browser/landing.spec.ts`; screenshots in `test-results/` at 390 and 1440 | Font loaded; no horizontal scroll; inspected hero and categories. |
+| Workshop/PDF font rights | PASS | `src/studio/studio.tsx`, `src/server/print.ts` | Continue using OFL Noto; owner confirmed website use only. |
+| Hosted Netlify deploy | PENDING | Live site check after commit/push | Build environment must retain existing private R2 credentials. |

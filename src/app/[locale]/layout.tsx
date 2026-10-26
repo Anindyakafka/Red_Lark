@@ -1,4 +1,6 @@
 import { Link } from "@/i18n/client";
+import { existsSync } from "node:fs";
+import path from "node:path";
 import type { Metadata, Viewport } from "next";
 import localFont from "next/font/local";
 import { Header, Footer } from "@/components/shell";
@@ -25,6 +27,7 @@ const mono = localFont({
   adjustFontFallback: false,
   fallback: ["Courier New", "Courier", "monospace"],
 });
+const licensedBengaliFont = existsSync(path.resolve("public/fonts/licensed/bengali-regular.ttf"));
 export const metadata: Metadata = {
   metadataBase: new URL(siteUrl),
   title: {
@@ -62,7 +65,10 @@ export default async function Layout({
   const language = (await params).locale ?? "en";
   const locale = isLocale(language) ? language : "en";
   return (
-    <html lang={locale} className={`${display.variable} ${mono.variable}`}>
+    <html
+      lang={locale}
+      className={`${display.variable} ${mono.variable}${licensedBengaliFont ? " licensed-bengali" : ""}`}
+    >
       <head>
         <link
           rel="alternate"
@@ -73,10 +79,11 @@ export default async function Layout({
         {["devanagari", "bengali", "malayalam"]
           .filter(
             (script) =>
+              !(script === "bengali" && licensedBengaliFont) &&
               script !==
-              ({ hi: "devanagari", bn: "bengali", ml: "malayalam" } as Record<string, string>)[
-                locale
-              ],
+                ({ hi: "devanagari", bn: "bengali", ml: "malayalam" } as Record<string, string>)[
+                  locale
+                ],
           )
           .map((script) => (
             <link
@@ -88,7 +95,16 @@ export default async function Layout({
               href={`/fonts/indic/noto-sans-${script}-nav.woff2`}
             />
           ))}
-        {locale !== "en" && (
+        {locale === "bn" && licensedBengaliFont && (
+          <link
+            rel="preload"
+            as="font"
+            type="font/ttf"
+            crossOrigin="anonymous"
+            href="/fonts/licensed/bengali-regular.ttf"
+          />
+        )}
+        {locale !== "en" && !(locale === "bn" && licensedBengaliFont) && (
           <link
             rel="preload"
             as="font"

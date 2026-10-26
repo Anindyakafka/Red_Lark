@@ -235,3 +235,12 @@ Round 4 update: performance acceptance PASS after the recorded Collection notice
 | Verify | PARTIAL | 83 local tests, typecheck, lint, static build and six focused browser tests pass. Production-equivalent build merged 12 approved works; real admin save awaits signed-in verification. |
 
 Kode Mono landing hero (25 October 2026): PASS. Self-hosted Fontsource package and OFL notice added; visual screenshots reviewed at 390px and 1440px with live approved poster data. Typecheck, lint, copy test, six landing browser tests and production-equivalent build pass.
+
+## 26 October 2026 — Bengali website typography
+
+| Task | Status | Evidence |
+| --- | --- | --- |
+| Keep purchased files out of public Git | PASS | `.qa/private-fonts/bangla/` and ignored `public/fonts/licensed/`; `git status` has no font binaries. |
+| Deliver font in trusted Netlify build | PASS | Private R2 upload and remote retrieval verified; `scripts/prepare-licensed-font.mjs` runs before `next build`. |
+| Apply regular and italic throughout Bengali UI | PASS | `src/app/globals.css`, locale layout; `tests/browser/landing.spec.ts` checks loaded faces and 390/1440 layouts. |
+| Production publication | PENDING | Push/build on Netlify and inspect live `/bn/` and `/bn/categories/`; no live deployment claimed in this round. |

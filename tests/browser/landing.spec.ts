@@ -5,6 +5,7 @@ import hiCopy from "../../content/copy/landing.hi.json" with { type: "json" };
 import bnCopy from "../../content/copy/landing.bn.json" with { type: "json" };
 import mlCopy from "../../content/copy/landing.ml.json" with { type: "json" };
 import AxeBuilder from "@axe-core/playwright";
+import { existsSync } from "node:fs";
 
 test("landing category destinations and localized policy hubs resolve accessibly", async ({
   page,
@@ -81,6 +82,58 @@ test("hero uses self-hosted Kode Mono without clipping its title", async ({ page
       `hero title at ${width}px`,
     ).toBe(true);
     if (width === 390 || width === 1440)
-      await page.locator(".redlark-hero").screenshot({ path: info.outputPath(`hero-${width}.png`) });
+      await page
+        .locator(".redlark-hero")
+        .screenshot({ path: info.outputPath(`hero-${width}.png`) });
+  }
+});
+
+test("licensed Bengali face loads on the Bengali interface without horizontal clipping", async ({
+  page,
+}, info) => {
+  test.skip(
+    !existsSync("public/fonts/licensed/bengali-regular.ttf"),
+    "The licensed font is available only in the trusted local or Netlify build.",
+  );
+  for (const width of [390, 1440]) {
+    await page.setViewportSize({ width, height: 900 });
+    await page.goto("/bn/");
+    await expect(page.locator("html")).toHaveClass(/licensed-bengali/);
+    const loaded = await page.evaluate(async () => {
+      await document.fonts.load('16px "Subha Letterpress"', "বাংলা ভাষা");
+      return [...document.fonts].some(
+        (face) => face.family === "Subha Letterpress" && face.status === "loaded",
+      );
+    });
+    expect(loaded).toBe(true);
+    const italicLoaded = await page.evaluate(async () => {
+      await document.fonts.load('italic 16px "Subha Letterpress"', "বাংলা ভাষা");
+      return [...document.fonts].some(
+        (face) =>
+          face.family === "Subha Letterpress" &&
+          face.style === "italic" &&
+          face.status === "loaded",
+      );
+    });
+    expect(italicLoaded).toBe(true);
+    expect(
+      await page.locator(".redlark-hero h1").evaluate((node) => getComputedStyle(node).fontFamily),
+    ).toContain("Subha Letterpress");
+    expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(
+      true,
+    );
+    await page
+      .locator(".redlark-hero")
+      .screenshot({ path: info.outputPath(`bengali-hero-${width}.png`) });
+    await page.goto("/bn/categories/");
+    expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(
+      true,
+    );
+    const violations = await new AxeBuilder({ page }).analyze();
+    expect(violations.violations).toEqual([]);
+    await page.screenshot({
+      path: info.outputPath(`bengali-categories-${width}.png`),
+      fullPage: true,
+    });
   }
 });

@@ -2611,6 +2611,42 @@ html[lang="bn"] {
 html[lang="ml"] {
   --font-nav: "Noto Nav Devanagari", "Noto Nav Bengali", "Noto UI Malayalam";
 }
+@font-face {
+  font-family: "Subha Letterpress";
+  src: url("/fonts/licensed/bengali-regular.ttf") format("truetype");
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  unicode-range: U+0980-09FF, U+200C-200D;
+}
+@font-face {
+  font-family: "Subha Letterpress";
+  src: url("/fonts/licensed/bengali-italic.ttf") format("truetype");
+  font-style: italic;
+  font-weight: 400;
+  font-display: swap;
+  unicode-range: U+0980-09FF, U+200C-200D;
+}
+html.licensed-bengali {
+  --font-indic:
+    "Subha Letterpress", "Noto UI Devanagari", "Noto UI Malayalam", "Noto Devanagari",
+    "Noto Malayalam", sans-serif;
+  --font-archive: "Noto Archive Devanagari", "Subha Letterpress", "Noto Archive Malayalam";
+  --font-nav: "Noto Nav Devanagari", "Subha Letterpress", "Noto Nav Malayalam";
+}
+html.licensed-bengali
+  :is(
+    .redlark-hero h1,
+    .edition,
+    .text-card-preview strong,
+    .studio-format-picker .format-grid button,
+    .footer-mark
+  ) {
+  font-family: "Kode Mono Variable", var(--font-display), "Subha Letterpress", var(--font-indic);
+}
+html.licensed-bengali :is(button, input, select, textarea) {
+  font-family: var(--font-mono), "Subha Letterpress", var(--font-indic);
+}
 .card-title-row h3,
 .desktop-poster-title,
 .mobile-poster-title {
