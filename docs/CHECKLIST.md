@@ -317,4 +317,4 @@ Three cold-cache runs per route, all raw scores recorded, CLS 0. Initial Hindi C
 | Private R2 source for Netlify builds | PASS | `npm run font:upload`, `node scripts/prepare-licensed-font.mjs --remote` | Uploaded to private bucket; approved public R2 host is not used. |
 | Bengali UI regular/italic and responsive layout | PASS | `tests/browser/landing.spec.ts`; screenshots in `test-results/` at 390 and 1440 | Font loaded; no horizontal scroll; inspected hero and categories. |
 | Workshop/PDF font rights | PASS | `src/studio/studio.tsx`, `src/server/print.ts` | Continue using OFL Noto; owner confirmed website use only. |
-| Hosted Netlify deploy | PENDING | Live site check after commit/push | Build environment must retain existing private R2 credentials. |
+| Hosted Netlify deploy | PASS | Commit `22cac55`; live `/bn/` has `licensed-bengali`, font URL returns HTTP 200 `font/ttf` | Existing private R2 credentials were available to the production build. |
