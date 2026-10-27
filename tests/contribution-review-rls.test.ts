@@ -173,6 +173,52 @@ test("contribution review: optional alt, transactional facets, ownership, admin 
       "update public.works set status='approved',publication_state='published' where id=$1",
       [guest],
     );
+    await as("authenticated", owner);
+    await assert.rejects(
+      db.query("select public.review_work_metadata($1,'Unauthorized','','poster-placard',$2,$3)", [
+        guest,
+        ["workers"],
+        ["Protest"],
+      ]),
+      "contributors cannot edit approved metadata",
+    );
+    await as("authenticated", admin);
+    await assert.rejects(
+      db.query("select public.review_work_metadata($1,'No MFA','','poster-placard',$2,$3)", [
+        guest,
+        ["workers"],
+        ["Protest"],
+      ]),
+      "stale admin sessions cannot edit approved metadata",
+    );
+    await as("authenticated", admin, true);
+    await db.query(
+      "select public.review_work_metadata($1,'Published edit','A red print on cream paper.','poster-placard',$2,$3)",
+      [guest, ["workers"], ["Renamed custom", "Protest"]],
+    );
+    assert.equal(
+      (await db.query<{ title: string }>("select title from public.works where id=$1", [guest]))
+        .rows[0].title,
+      "Published edit",
+    );
+    assert.deepEqual(
+      (
+        await db.query<{ category_slug: string }>(
+          "select category_slug from public.work_categories where work_id=$1",
+          [guest],
+        )
+      ).rows.map((row) => row.category_slug),
+      ["workers"],
+    );
+    assert.equal(
+      (
+        await db.query(
+          "select * from public.audit_log where action='review_metadata' and target_id=$1",
+          [guest],
+        )
+      ).rows.length,
+      1,
+    );
     await as("anon");
     assert.equal(
       (await db.query("select label from public.tags where label='Renamed custom'")).rows.length,

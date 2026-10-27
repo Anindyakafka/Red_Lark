@@ -128,3 +128,7 @@ Human prerequisites before that work are release of the hold, project/region/ret
 ## 25 October 2026 live review follow-up
 
 The database migration and Netlify deployment are complete. The four live collections exclude the retired placeholder posters. In a signed-in admin session with valid MFA, open a pending submission, select Anti-Fascism, save metadata, and confirm the success notice and refreshed value. The direct production RPC test was stopped by automatic approval review because it would have impersonated an administrator; local RPC and browser fixtures pass.
+
+## Approved-artwork metadata follow-up (27 October 2026)
+
+After the new interface is Published on Netlify, an administrator with a real signed-in MFA session should open Administration → Approved artworks, select an approved work, make an intentional editorial change, save, and confirm the new value appears in the public collection/item page after the triggered rebuild. The database migration is already applied. No existing artwork was changed during implementation. Changing an artwork's licence, artist credit, source or public contact consent still needs a separate rights/consent workflow; this editor does not offer those fields.

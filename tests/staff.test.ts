@@ -92,3 +92,53 @@ test("audit filters and decisions validate before database writes; MFA remains m
     (e: unknown) => e instanceof ApiError && e.code === "fresh_mfa_required",
   );
 });
+
+test("approved metadata requires fresh admin access and requests a public rebuild", async () => {
+  const previousFetch = globalThis.fetch;
+  const previousCatalogue = process.env.PUBLIC_CATALOGUE_ENABLED;
+  const previousHook = process.env.NETLIFY_BUILD_HOOK;
+  process.env.PUBLIC_CATALOGUE_ENABLED = "1";
+  process.env.NETLIFY_BUILD_HOOK = "https://api.netlify.com/build_hooks/fixture";
+  const calls: string[] = [];
+  globalThis.fetch = async (input) => {
+    const url = new URL(String(input instanceof Request ? input.url : input));
+    calls.push(url.pathname);
+    if (url.pathname === "/rest/v1/works")
+      return Response.json({ status: "approved", publication_state: "published" });
+    if (url.pathname === "/rest/v1/rpc/review_work_metadata")
+      return new Response(null, { status: 204 });
+    if (url.pathname === "/build_hooks/fixture") return new Response(null, { status: 200 });
+    throw new Error(`Unexpected request: ${url.pathname}`);
+  };
+  try {
+    const who = { admin: true, aal2: true, fresh: true, client: publicClient() } as Identity;
+    const request = new Request("https://staff.example.invalid/api/admin/metadata");
+    const data = {
+      id: "12345678-1234-1234-1234-123456789012",
+      title: "Updated public work",
+      alt: "A red print on cream paper",
+      format_slug: "poster-placard",
+      categories: [],
+      tags: [],
+    };
+    await assert.rejects(
+      admin(request, "/api/admin/metadata", data, { ...who, fresh: false }),
+      (error: unknown) => error instanceof ApiError && error.code === "fresh_mfa_required",
+    );
+    assert.deepEqual(calls, []);
+    const response = await admin(request, "/api/admin/metadata", data, who);
+    assert.deepEqual(await response.json(), { ok: true, rebuilding: true });
+    assert.deepEqual(calls, [
+      "/rest/v1/works",
+      "/rest/v1/rpc/review_work_metadata",
+      "/rest/v1/works",
+      "/build_hooks/fixture",
+    ]);
+  } finally {
+    globalThis.fetch = previousFetch;
+    if (previousCatalogue === undefined) delete process.env.PUBLIC_CATALOGUE_ENABLED;
+    else process.env.PUBLIC_CATALOGUE_ENABLED = previousCatalogue;
+    if (previousHook === undefined) delete process.env.NETLIFY_BUILD_HOOK;
+    else process.env.NETLIFY_BUILD_HOOK = previousHook;
+  }
+});

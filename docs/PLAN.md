@@ -244,3 +244,13 @@ Kode Mono landing hero (25 October 2026): PASS. Self-hosted Fontsource package a
 | Deliver font in trusted Netlify build | PASS | Private R2 upload and remote retrieval verified; `scripts/prepare-licensed-font.mjs` runs before `next build`. |
 | Apply regular and italic throughout Bengali UI | PASS | `src/app/globals.css`, locale layout; `tests/browser/landing.spec.ts` checks loaded faces and 390/1440 layouts. |
 | Production publication | PASS | Commit `22cac55` on `main`; live `/bn/` contains `licensed-bengali`, and the same-origin regular-font URL returns 200 with `font/ttf`. Local browser checks covered `/bn/categories/`. |
+
+## 27 October 2026 — approved-artwork metadata
+
+| Task | Status | Evidence |
+| --- | --- | --- |
+| Administrator-only editor for approved works | PASS | Approved artworks link and preselected queue filter; existing detail editor extended to approved published/failed works. |
+| Database permission and audit | PASS | `202610270001_approved_metadata.sql` applied to existing Supabase project; PGlite checks reject contributors and stale-MFA admins. |
+| Public rebuild after save | PASS | API prechecks build configuration, commits metadata, then requests the Netlify build hook for published work; mocked API test confirms order. |
+| Local acceptance | PASS | 84 unit/RLS tests, 11 staff browser tests, mobile axe, typecheck, lint, 372-page validated public-catalogue build and client secret scan. Final copy-only build with catalogue disabled validated 300 HTML pages; the later live-catalogue fetch failed twice in this local environment before compilation. |
+| Hosted acceptance | PENDING | Deploy the interface, then use a real signed-in administrator session to edit one approved work and confirm the next public build reflects it. No existing artwork was edited during implementation. |

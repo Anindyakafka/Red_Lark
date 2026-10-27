@@ -1,6 +1,5 @@
 import { AdminPanel } from "@/components/account-client";
 import { PageIntro } from "@/components/page-intro";
-import { Link, UiText } from "@/i18n/client";
 import { pageMeta } from "@/lib/metadata";
 import { localizeMetadata } from "@/i18n/metadata";
 export default function Page() {
@@ -8,25 +7,11 @@ export default function Page() {
     <>
       <PageIntro
         index="ADMIN"
-        title="Review contribution"
-        description="Browsing, downloading, the Workshop and guest submissions need no account. An optional account lets you manage your contributions."
+        title="Review or edit artwork"
+        description="Review pending work or update the title, alt text, type, categories and tags of an approved artwork."
         action="Account security"
         href="/account/settings"
       />
-      <nav className="content-width button-row" aria-label="Administration">
-        <Link href="/account">
-          <UiText id="Dashboard" />
-        </Link>
-        <Link href="/account/profile">
-          <UiText id="Artist profile" />
-        </Link>
-        <Link href="/account/works/new">
-          <UiText id="Upload" />
-        </Link>
-        <Link href="/account/settings">
-          <UiText id="Account security" />
-        </Link>
-      </nav>
       <AdminPanel view="review" />
     </>
   );
@@ -35,8 +20,8 @@ export async function generateMetadata({ params }: { params: Promise<{ locale: s
   return {
     ...localizeMetadata(
       pageMeta(
-        "Review contribution",
-        "Review contribution. Private contributor service; sign in to continue.",
+        "Review or edit artwork",
+        "Review pending work or update an approved artwork's editorial metadata.",
         "/admin/review/item",
       ),
       (await params).locale,

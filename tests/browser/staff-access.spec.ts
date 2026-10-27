@@ -30,6 +30,33 @@ async function staff(page: Page) {
     return route.fulfill({ json: { ok: true } });
   });
 }
+test("admin can find an approved work and save its editorial metadata", async ({ page }, info) => {
+  await page.setViewportSize({ width: 390, height: 844 });
+  await staff(page);
+  const approved = { ...work, status: "approved", publication_state: "published" };
+  await page.route("**/api/admin/queue", (route) => route.fulfill({ json: { works: [approved] } }));
+  let submitted: Record<string, unknown> | null = null;
+  await page.route("**/api/admin/metadata", (route) => {
+    submitted = route.request().postDataJSON();
+    return route.fulfill({ json: { ok: true, rebuilding: true } });
+  });
+  await page.goto("/en/admin/review/?status=approved");
+  await expect(page.getByLabel("Filter by status")).toHaveValue("approved");
+  await page.getByRole("link", { name: work.title, exact: true }).click();
+  await expect(page.getByRole("button", { name: "Save metadata" })).toBeVisible();
+  await expect(page.getByText("Published changes appear after the archive rebuild.")).toBeVisible();
+  expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(true);
+  expect((await new AxeBuilder({ page }).analyze()).violations).toEqual([]);
+  await page.screenshot({ path: info.outputPath("approved-metadata-mobile.png"), fullPage: true });
+  await page.getByLabel("Title", { exact: true }).fill("Edited public title");
+  await page.getByRole("button", { name: "Save metadata" }).click();
+  await expect(page.getByText("Metadata saved. Archive rebuild requested.")).toBeVisible();
+  expect(submitted).toMatchObject({
+    id,
+    title: "Edited public title",
+    format_slug: "poster-placard",
+  });
+});
 test("review preserves entered feedback across expired MFA and safely retries after verification", async ({
   page,
 }, info) => {

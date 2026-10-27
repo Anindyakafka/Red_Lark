@@ -111,6 +111,7 @@ export async function admin(
     return json({ ok: true });
   }
   if (path === "/api/admin/metadata") {
+    const id = text(data, "id", 100, 1);
     let tags: string[];
     try {
       tags = normalizeTags(data.tags);
@@ -124,12 +125,23 @@ export async function admin(
       throw new ApiError(422, "invalid_categories");
     const selected = [...new Set(categories)];
     if (selected.length) {
-      const known = checked(await who.client.from("categories").select("slug").in("slug", selected));
+      const known = checked(
+        await who.client.from("categories").select("slug").in("slug", selected),
+      );
       if (known.length !== selected.length) throw new ApiError(422, "invalid_categories");
     }
+    const before = checked(
+      await who.client.from("works").select("status,publication_state").eq("id", id).single(),
+    );
+    if (
+      !["pending", "changes_requested"].includes(before.status) &&
+      !(before.status === "approved" && ["published", "failed"].includes(before.publication_state))
+    )
+      throw new ApiError(409, "invalid_transition");
+    if (before.status === "approved" && before.publication_state === "published") buildConfigured();
     checked(
       await who.client.rpc("review_work_metadata", {
-        p_work: text(data, "id", 100, 1),
+        p_work: id,
         p_title: text(data, "title", 200, 1),
         p_alt: text(data, "alt", 300),
         p_format: text(data, "format_slug", 100, 1),
@@ -137,7 +149,12 @@ export async function admin(
         p_tags: tags,
       }),
     );
-    return json({ ok: true });
+    const after = checked(
+      await who.client.from("works").select("status,publication_state").eq("id", id).single(),
+    );
+    const rebuilding = after.status === "approved" && after.publication_state === "published";
+    if (rebuilding) await requestBuild();
+    return json({ ok: true, rebuilding });
   }
   if (path === "/api/admin/queue") {
     checked(await who.client.rpc("audit_admin_access", { p_action: "review_queue" }));

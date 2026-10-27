@@ -20,6 +20,8 @@ Optional contributor accounts use `/en/signup/` and `/en/login/` (also hi/bn/ml)
 
 Administrators use `/admin` and `/admin/review/ID`, with separate messages, users and audit pages. Each API request independently enforces the protected role and fresh TOTP. Netlify rewrites UUID detail addresses to static, noindex shells; private data is fetched after authentication and never included in the build. Local preview/development implements the same rewrites. Keep the supplied `netlify.toml` rewrite rules when deploying.
 
+Administrators can open **Approved artworks** from the review area, choose a work and edit its title, image description, type, categories and tags after fresh authenticator verification. The save is atomic, audited and requests a Netlify rebuild for published work; its existing poster URL stays stable. Artist credit, contact consent, source, AI disclosure and licence are intentionally outside this editorial form. Apply `supabase/migrations/202610270001_approved_metadata.sql` before deploying the matching interface.
+
 - npm run db:check / npm run db:migrate: verified TLS, ordered migration ledger and idempotent private seed; local SQL credentials only.
 - npm run seed:backend: regenerate 29 categories, 11 formats, licence policies and the one retained private CC0 placeholder record.
 - npm run admin:bootstrap: owner-configured email; refuses missing verified real login or TOTP; idempotent and audited.

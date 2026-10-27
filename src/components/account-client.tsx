@@ -1578,6 +1578,10 @@ export function AdminPanel({
   const [statusFilter, setStatusFilter] = useState("pending");
   const [selectedId, setSelectedId] = useState("");
   useEffect(() => {
+    if (view === "queue" && new URLSearchParams(location.search).get("status") === "approved")
+      setStatusFilter("approved");
+  }, [view]);
+  useEffect(() => {
     if (access !== "allowed") return;
     if (view === "review") setSelectedId(location.pathname.split("/").filter(Boolean).at(-1) || "");
     void action.run(async () => {
@@ -1621,7 +1625,12 @@ export function AdminPanel({
         </section>
       )}
       <nav className="button-row" aria-label={t("Administration")}>
-        <Link href="/admin/review">{t("Review queue")}</Link>
+        <Link href="/admin/review" onClick={() => setStatusFilter("pending")}>
+          {t("Review queue")}
+        </Link>
+        <Link href="/admin/review/?status=approved" onClick={() => setStatusFilter("approved")}>
+          {t("Approved artworks")}
+        </Link>
         <Link href="/admin/messages">{t("Messages")}</Link>
         <Link href="/admin/users">{t("Contributors")}</Link>
         <Link href="/admin/audit">{t("Audit log")}</Link>
@@ -1790,67 +1799,78 @@ export function AdminPanel({
                 {t("Review contribution")}
               </a>
             )}
-            {view === "review" && ["pending", "changes_requested"].includes(work.status) && (
-              <form
-                method="post"
-                className="handoff-form"
-                onSubmit={(event) => {
-                  event.preventDefault();
-                  const data = new FormData(event.currentTarget);
-                  void action.run(async () => {
-                    await api("admin/metadata", {
-                      id: work.id,
-                      title: data.get("title"),
-                      alt: data.get("alt"),
-                      format_slug: data.get("format_slug"),
-                      categories: data.getAll("categories"),
-                      tags: data.getAll("tags"),
+            {view === "review" &&
+              (["pending", "changes_requested"].includes(work.status) ||
+                (work.status === "approved" &&
+                  ["published", "failed"].includes(work.publication_state || ""))) && (
+                <form
+                  method="post"
+                  className="handoff-form"
+                  onSubmit={(event) => {
+                    event.preventDefault();
+                    const data = new FormData(event.currentTarget);
+                    void action.run(async () => {
+                      const saved = await api<{ rebuilding: boolean }>("admin/metadata", {
+                        id: work.id,
+                        title: data.get("title"),
+                        alt: data.get("alt"),
+                        format_slug: data.get("format_slug"),
+                        categories: data.getAll("categories"),
+                        tags: data.getAll("tags"),
+                      });
+                      setNotice(
+                        t("Metadata saved.") +
+                          (saved.rebuilding ? " " + t("Archive rebuild requested.") : ""),
+                      );
+                      const result = await api<{ works: Work[] }>("admin/queue");
+                      setWorks(result.works);
                     });
-                    setNotice(t("Metadata saved."));
-                    const result = await api<{ works: Work[] }>("admin/queue");
-                    setWorks(result.works);
-                  });
-                }}
-              >
-                <label className="form-field" htmlFor={"review-title-" + work.id}>
-                  {t("Title")}
-                  <input
-                    id={"review-title-" + work.id}
-                    name="title"
-                    required
-                    maxLength={200}
-                    defaultValue={work.title}
-                  />
-                </label>
-                <DescriptionField initial={work.alt} fallback={work} />
-                <label className="form-field" htmlFor={"review-format-" + work.id}>
-                  {t("Choose type")}
-                  <select
-                    id={"review-format-" + work.id}
-                    name="format_slug"
-                    defaultValue={work.format_slug}
-                  >
-                    {formats.map((f) => (
-                      <option key={f.slug} value={f.slug}>
-                        {t(f.label)}
-                      </option>
-                    ))}
-                  </select>
-                </label>
-                <CategoriesField
-                  initial={(work.work_categories || []).map((c) => c.category_slug)}
-                />
-                <TagsField initial={work.tags} />
-                <p>
-                  {t(
-                    "Remove a custom tag and add the preferred spelling to merge or rename it for this work.",
+                  }}
+                >
+                  {work.status === "approved" && (
+                    <p className="notice">
+                      {t("Published changes appear after the archive rebuild.")}
+                    </p>
                   )}
-                </p>
-                <button className="button" disabled={action.busy}>
-                  {t("Save metadata")}
-                </button>
-              </form>
-            )}
+                  <label className="form-field" htmlFor={"review-title-" + work.id}>
+                    {t("Title")}
+                    <input
+                      id={"review-title-" + work.id}
+                      name="title"
+                      required
+                      maxLength={200}
+                      defaultValue={work.title}
+                    />
+                  </label>
+                  <DescriptionField initial={work.alt} fallback={work} />
+                  <label className="form-field" htmlFor={"review-format-" + work.id}>
+                    {t("Choose type")}
+                    <select
+                      id={"review-format-" + work.id}
+                      name="format_slug"
+                      defaultValue={work.format_slug}
+                    >
+                      {formats.map((f) => (
+                        <option key={f.slug} value={f.slug}>
+                          {t(f.label)}
+                        </option>
+                      ))}
+                    </select>
+                  </label>
+                  <CategoriesField
+                    initial={(work.work_categories || []).map((c) => c.category_slug)}
+                  />
+                  <TagsField initial={work.tags} />
+                  <p>
+                    {t(
+                      "Remove a custom tag and add the preferred spelling to merge or rename it for this work.",
+                    )}
+                  </p>
+                  <button className="button" disabled={action.busy}>
+                    {t("Save metadata")}
+                  </button>
+                </form>
+              )}
             <p>{work.ai_disclosure}</p>
             {work.feedback && (
               <p>

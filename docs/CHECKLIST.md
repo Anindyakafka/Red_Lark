@@ -318,3 +318,14 @@ Three cold-cache runs per route, all raw scores recorded, CLS 0. Initial Hindi C
 | Bengali UI regular/italic and responsive layout | PASS | `tests/browser/landing.spec.ts`; screenshots in `test-results/` at 390 and 1440 | Font loaded; no horizontal scroll; inspected hero and categories. |
 | Workshop/PDF font rights | PASS | `src/studio/studio.tsx`, `src/server/print.ts` | Continue using OFL Noto; owner confirmed website use only. |
 | Hosted Netlify deploy | PASS | Commit `22cac55`; live `/bn/` has `licensed-bengali`, font URL returns HTTP 200 `font/ttf` | Existing private R2 credentials were available to the production build. |
+
+### Approved artwork metadata — 27 October 2026
+
+| Check | Status | Evidence | Note |
+| --- | --- | --- | --- |
+| Admin-only approved editor | PASS | `src/components/account-client.tsx`, `tests/browser/staff-access.spec.ts` | Approved filter leads to the existing edit form; contributor UI has no path to the API. |
+| MFA and database role gate | PASS | `supabase/migrations/202610270001_approved_metadata.sql`; PGlite RLS test | Migration applied to production; owner and stale admin attempts rejected in tests. |
+| Atomic metadata and rebuild | PASS | `src/server/admin.ts`; mocked staff API test | Published metadata requests a fresh static build after the DB RPC commits. |
+| Mobile and accessibility | PASS | 390px staff browser screenshot and axe 0 on approved editor | Removed duplicate Administration landmark from detail shell. |
+| Unit, build and secret validation | PASS | 84 unit/RLS tests; 11 staff browser tests; production-equivalent build 372 validated HTML pages; secret scan | Existing Next.js security advisory remains a separate dependency upgrade. |
+| Real hosted admin save | PENDING | Real signed-in MFA session required | No live approved record was changed just to verify this feature. |
