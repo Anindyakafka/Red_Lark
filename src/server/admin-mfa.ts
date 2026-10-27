@@ -1,5 +1,5 @@
 // Owner-selected bounded verification window. Keep private.admin_fresh() in sync.
-export const ADMIN_MFA_MAX_AGE_SECONDS = 86400;
+export const ADMIN_MFA_MAX_AGE_SECONDS = 30 * 86400;
 export type AssuranceClaims = { aal?: string; amr?: { method: string; timestamp: number }[] };
 export function adminMfaFresh(claims: AssuranceClaims, now = Date.now()) {
   return (

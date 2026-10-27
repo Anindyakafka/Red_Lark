@@ -20,7 +20,7 @@ After merging this release, wait for the Netlify production deployment. Contribu
 
 This release also aligns header languages on one row, balances the landing language picker and removes decorative square brackets throughout the interface. Confirm the production header and landing at phone/desktop widths after Netlify reports Published. No new environment variables or dashboard configuration are required for these UI changes.
 
-The owner selected **one day (24 hours)** for administrator authenticator verification in the same signed-in browser. This replaces earlier ten-minute instructions. A new login, logout, different browser or 24-hour expiry still requires verification. No browser-storage MFA bypass or permanent trusted-device token was added. The matching database migration 202610210011_admin_mfa_window.sql has been applied; no Netlify environment variable or Supabase dashboard change is needed. Only a real-browser post-deploy confirmation remains.
+The owner updated administrator sign-in and authenticator verification to **30 days** in the same browser. New login, logout, another browser or expiry still requires verification. Contributor sessions remain seven days. The matching database migration `202610270002_admin_30_day_window.sql` is applied; no new Netlify setting is needed. After deployment, sign out and sign in once to replace an existing seven-day cookie. Confirm a new admin session and TOTP challenge in a real browser. If Supabase Auth has a shorter session time-box or inactivity limit, that provider setting may end a session earlier.
 
 ## Staff invitation link fix
 

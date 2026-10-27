@@ -329,3 +329,13 @@ Three cold-cache runs per route, all raw scores recorded, CLS 0. Initial Hindi C
 | Mobile and accessibility | PASS | 390px staff browser screenshot and axe 0 on approved editor | Removed duplicate Administration landmark from detail shell. |
 | Unit, build and secret validation | PASS | 84 unit/RLS tests; 11 staff browser tests; production-equivalent build 372 validated HTML pages; secret scan | Existing Next.js security advisory remains a separate dependency upgrade. |
 | Real hosted admin save | PENDING | Real signed-in MFA session required | No live approved record was changed just to verify this feature. |
+
+### Administrator session duration — 27 October 2026
+
+| Check | Status | Evidence | Note |
+| --- | --- | --- | --- |
+| Admin cookie and server session last 30 days | PASS | `src/server/auth.ts`, `tests/backend.test.ts` | Role is read server-side; contributors retain seven days. Existing cookies retain their original expiry. |
+| MFA freshness and RLS use 30 days | PASS | `src/server/admin-mfa.ts`, migration `202610270002_admin_30_day_window.sql`, admin-MFA and PGlite RLS tests | Migration applied to production; AAL2, TOTP and admin role remain required. |
+| Four-language account security wording | PASS | `src/components/account-client.tsx`, `messages/{en,hi,bn,ml}.json` | Indic translations remain drafts awaiting native review. |
+| Build and checks | PASS | 84 unit/RLS tests; typecheck; lint; 372-page production-style build and client secret scan | Installed Next.js 16.4.0 emits a security upgrade advisory. |
+| Real browser session after deployment | PENDING | Owner sign-out/sign-in and MFA check | Provider session policies may shorten the application limit. |

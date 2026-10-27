@@ -118,19 +118,28 @@ test("successful minimal PostgREST writes and void RPCs are not mistaken for mis
     ApiError,
   );
 });
-test("MFA and token refresh can update an existing session without treating a successful empty upsert as an outage", async () => {
+test("admin sessions last 30 days while contributor sessions stay at seven days", async () => {
   const originalFetch = globalThis.fetch;
   process.env.SUPABASE_URL = "https://project.example.invalid";
   process.env.SUPABASE_SECRET_KEY = "test";
   const hash = "a".repeat(64);
   let sessionWritten = false;
+  let role = "contributor";
+  let storedExpiry = "";
   globalThis.fetch = async (input, init) => {
     const url = new URL(String(input instanceof Request ? input.url : input));
-    if (url.pathname.endsWith("/roles")) return new Response(null, { status: 201 });
+    if (url.pathname.endsWith("/roles"))
+      return init?.method === "GET"
+        ? new Response(JSON.stringify([{ role }]), {
+            status: 200,
+            headers: { "Content-Type": "application/json" },
+          })
+        : new Response(null, { status: 201 });
     assert.match(url.pathname, /\/app_sessions$/);
     const written = JSON.parse(String(init?.body));
     assert.equal(written.token_hash, hash);
     assert.equal(written.user_id, "fixture-user");
+    storedExpiry = written.expires_at;
     assert.equal(
       decrypt<{ access_token: string }>(written.encrypted_auth).access_token,
       "fixture-access",
@@ -145,26 +154,32 @@ test("MFA and token refresh can update an existing session without treating a su
       : new Response(null, { status: 200 });
   };
   try {
-    const saved = await saveSession(
-      {
-        access_token: "fixture-access",
-        refresh_token: "fixture-refresh",
-        expires_in: 3600,
-        expires_at: Math.floor(Date.now() / 1000) + 3600,
-        token_type: "bearer",
-        user: {
-          id: "fixture-user",
-          aud: "authenticated",
-          app_metadata: {},
-          user_metadata: {},
-          created_at: "2026-10-21T00:00:00Z",
-          email_confirmed_at: "2026-10-21T00:00:00Z",
-        },
+    const fixture = {
+      access_token: "fixture-access",
+      refresh_token: "fixture-refresh",
+      expires_in: 3600,
+      expires_at: Math.floor(Date.now() / 1000) + 3600,
+      token_type: "bearer" as const,
+      user: {
+        id: "fixture-user",
+        aud: "authenticated",
+        app_metadata: {},
+        user_metadata: {},
+        created_at: "2026-10-21T00:00:00Z",
+        email_confirmed_at: "2026-10-21T00:00:00Z",
       },
-      hash,
-    );
+    };
+    const saved = await saveSession(fixture, hash);
     assert.equal(saved.tokenHash, hash);
     assert.equal(sessionWritten, true);
+    assert.match(saved.cookie, /Max-Age=604800/);
+    assert.ok(Date.parse(storedExpiry) > Date.now() + 6 * 86400000);
+    assert.ok(Date.parse(storedExpiry) < Date.now() + 8 * 86400000);
+    role = "admin";
+    const adminSaved = await saveSession(fixture, hash);
+    assert.match(adminSaved.cookie, /Max-Age=2592000/);
+    assert.ok(Date.parse(storedExpiry) > Date.now() + 29 * 86400000);
+    assert.ok(Date.parse(storedExpiry) < Date.now() + 31 * 86400000);
   } finally {
     globalThis.fetch = originalFetch;
   }

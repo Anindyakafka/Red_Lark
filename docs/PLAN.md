@@ -254,3 +254,13 @@ Kode Mono landing hero (25 October 2026): PASS. Self-hosted Fontsource package a
 | Public rebuild after save | PASS | API prechecks build configuration, commits metadata, then requests the Netlify build hook for published work; mocked API test confirms order. |
 | Local acceptance | PASS | 84 unit/RLS tests, 11 staff browser tests, mobile axe, typecheck, lint, 372-page validated public-catalogue build and client secret scan. Final copy-only build with catalogue disabled validated 300 HTML pages; the later live-catalogue fetch failed twice in this local environment before compilation. |
 | Hosted acceptance | PENDING | Deploy the interface, then use a real signed-in administrator session to edit one approved work and confirm the next public build reflects it. No existing artwork was edited during implementation. |
+
+## 27 October 2026 — 30-day administrator sessions
+
+| Task | Status | Evidence |
+| --- | --- | --- |
+| Extend administrator cookie and stored session, retain contributor lifetime | PASS | `src/server/auth.ts`, backend tests for both roles. |
+| Align API and database MFA enforcement | PASS | 30-day API boundary and RLS tests; migration `202610270002_admin_30_day_window.sql` applied over verified TLS. |
+| Update four-language UI and deployment guidance | PASS | Account security message, README, DEPLOY and TODO_HUMAN. |
+| Local release checks | PASS | 84 unit/RLS tests, typecheck, lint, 372-page public-catalogue build, static validation and client secret audit. |
+| Verify after deployment | PENDING | Sign out and sign in again in a real admin browser, then confirm the new session and MFA challenge. |

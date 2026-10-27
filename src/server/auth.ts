@@ -82,6 +82,10 @@ export async function saveSession(session: Session, hash?: string) {
         { onConflict: "user_id,role", ignoreDuplicates: true },
       ),
   );
+  const roles = checked(
+    await service().from("roles").select("role").eq("user_id", session.user.id),
+  );
+  const sessionDays = roles.some((role) => role.role === "admin") ? 30 : 7;
   const token = opaque(),
     tokenHash = hash || sha256(token);
   checked(
@@ -95,14 +99,14 @@ export async function saveSession(session: Session, hash?: string) {
           refresh_token: session.refresh_token,
           expires_at: session.expires_at || 0,
         }),
-        expires_at: new Date(Date.now() + 7 * 86400000).toISOString(),
+        expires_at: new Date(Date.now() + sessionDays * 86400000).toISOString(),
       })
       // Existing-session upserts return 200/null with return=minimal. Request
       // only the row identifier so a successful MFA/refresh update is explicit.
       .select("token_hash")
       .single(),
   );
-  return { tokenHash, cookie: cookie(sessionName, token, 7 * 86400) };
+  return { tokenHash, cookie: cookie(sessionName, token, sessionDays * 86400) };
 }
 export async function identity(req: Request): Promise<Identity> {
   const token = cookies(req)[sessionName];

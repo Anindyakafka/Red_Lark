@@ -390,7 +390,7 @@ export function MfaPanel({ onVerified }: { onVerified?: () => void } = {}) {
       <h2>{t("Account security")}</h2>
       <p>
         {t(
-          "Admin verification lasts up to 24 hours in this signed-in browser. Signing out or using another browser requires verification again.",
+          "Admin sign-in and verification last up to 30 days in this browser. Signing out or using another browser requires verification again.",
         )}
       </p>
       <p>
