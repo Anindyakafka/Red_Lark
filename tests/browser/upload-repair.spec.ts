@@ -317,6 +317,7 @@ for (const locale of ["en", "hi"] as const)
       await page.route("**/api/admin/metadata", (route) => {
         const data = route.request().postDataJSON();
         expect(data.alt).toBe("A red hand on white paper.");
+        expect(data.languages).toEqual(["English", "Bengali"]);
         expect(data.tags).toEqual(["Local solidarity"]);
         expect(data.categories).toHaveLength(3);
         return route.fulfill({ json: { ok: true } });
@@ -333,6 +334,7 @@ for (const locale of ["en", "hi"] as const)
       await page
         .getByLabel(t("Describe the image (optional)"), { exact: true })
         .fill("A red hand on white paper.");
+      await page.getByLabel(t("Bengali"), { exact: true }).check();
       await page.getByRole("button", { name: t("Save metadata"), exact: true }).click();
       await expect(page.getByText(t("Metadata saved."), { exact: true })).toBeVisible();
       expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(

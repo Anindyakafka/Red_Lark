@@ -1815,6 +1815,7 @@ export function AdminPanel({
                         title: data.get("title"),
                         alt: data.get("alt"),
                         format_slug: data.get("format_slug"),
+                        languages: data.getAll("languages"),
                         categories: data.getAll("categories"),
                         tags: data.getAll("tags"),
                       });
@@ -1857,6 +1858,22 @@ export function AdminPanel({
                       ))}
                     </select>
                   </label>
+                  <fieldset className="metadata-field">
+                    <legend>{t("Languages (required)")}</legend>
+                    <div className="metadata-chips">
+                      {["English", "Hindi", "Bengali", "Malayalam"].map((language) => (
+                        <label key={language}>
+                          <input
+                            type="checkbox"
+                            name="languages"
+                            value={language}
+                            defaultChecked={work.languages.includes(language)}
+                          />
+                          {t(language)}
+                        </label>
+                      ))}
+                    </div>
+                  </fieldset>
                   <CategoriesField
                     initial={(work.work_categories || []).map((c) => c.category_slug)}
                   />

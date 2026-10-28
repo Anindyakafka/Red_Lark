@@ -4,6 +4,8 @@ import { checked, requireAdmin, type Identity, service } from "./auth.ts";
 import { ApiError, json, required, text } from "./security.ts";
 import { copyPublic, publicBase, publicUrl, remove, signedRead } from "./storage.ts";
 
+const supportedLanguages = ["English", "Hindi", "Bengali", "Malayalam"] as const;
+
 export function buildConfigured() {
   if (process.env.PUBLIC_CATALOGUE_ENABLED !== "1") throw new ApiError(503, "publishing_not_ready");
   const url = new URL(required("NETLIFY_BUILD_HOOK"));
@@ -123,6 +125,18 @@ export async function admin(
       : [];
     if (!Array.isArray(data.categories) || categories.length !== data.categories.length)
       throw new ApiError(422, "invalid_categories");
+    const languages = Array.isArray(data.languages)
+      ? data.languages.filter((value): value is string => typeof value === "string")
+      : [];
+    if (
+      !Array.isArray(data.languages) ||
+      languages.length !== data.languages.length ||
+      !languages.length ||
+      languages.some(
+        (language) => !supportedLanguages.includes(language as (typeof supportedLanguages)[number]),
+      )
+    )
+      throw new ApiError(422, "invalid_languages");
     const selected = [...new Set(categories)];
     if (selected.length) {
       const known = checked(
@@ -145,6 +159,7 @@ export async function admin(
         p_title: text(data, "title", 200, 1),
         p_alt: text(data, "alt", 300),
         p_format: text(data, "format_slug", 100, 1),
+        p_languages: [...new Set(languages)],
         p_categories: selected,
         p_tags: tags,
       }),
