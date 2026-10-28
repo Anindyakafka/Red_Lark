@@ -25,7 +25,7 @@ export function newLayer(kind: Layer["kind"], id = crypto.randomUUID()): Layer {
 }
 export function freshScene(): Scene {
   return {
-    version: 2,
+    version: 3,
     preset: "A3",
     background: "#f3f0e6",
     colors: 2,
@@ -50,11 +50,16 @@ export function freshScene(): Scene {
     ],
   };
 }
+/** Additive version migration keeps earlier browser drafts and share links readable. */
+export function migrateScene(input: unknown): Scene | null {
+  if (!validateScene(input)) return null;
+  return input.version === 3 ? input : { ...input, version: 3 };
+}
 export function validateScene(input: unknown): input is Scene {
   if (!input || typeof input !== "object") return false;
   const s = input as Partial<Scene>;
   if (
-    s.version !== 2 ||
+    ![2, 3].includes(s.version ?? 0) ||
     !s.preset ||
     !(s.preset in PRESETS) ||
     typeof s.background !== "string" ||
@@ -65,6 +70,36 @@ export function validateScene(input: unknown): input is Scene {
   )
     return false;
   const ids = new Set<string>();
+  const groupIds = new Set<string>();
+  if (
+    s.groups &&
+    (!Array.isArray(s.groups) ||
+      s.groups.length > 80 ||
+      !s.groups.every((group) => {
+        if (!group || typeof group.id !== "string" || !group.id || groupIds.has(group.id))
+          return false;
+        groupIds.add(group.id);
+        if (
+          ![group.x, group.y, group.width, group.height, group.rotation].every(Number.isFinite) ||
+          group.width < 10 ||
+          group.height < 10 ||
+          Math.abs(group.rotation) > 180
+        )
+          return false;
+        const crop = group.crop;
+        return (
+          !crop ||
+          ([crop.x, crop.y, crop.width, crop.height].every(Number.isFinite) &&
+            crop.x >= 0 &&
+            crop.y >= 0 &&
+            crop.width >= 0.02 &&
+            crop.height >= 0.02 &&
+            crop.x + crop.width <= 1.000001 &&
+            crop.y + crop.height <= 1.000001)
+        );
+      }))
+  )
+    return false;
   const validCredit = (credit: unknown) => {
     if (!credit || typeof credit !== "object") return false;
     const c = credit as Record<string, unknown>;
@@ -111,6 +146,7 @@ export function validateScene(input: unknown): input is Scene {
     if (!l || typeof l !== "object" || typeof l.id !== "string" || !l.id || ids.has(l.id))
       return false;
     ids.add(l.id);
+    if (l.groupId !== undefined && (!groupIds.has(l.groupId) || l.kind === "text")) return false;
     if (
       !["text", "rectangle", "circle", "star", "arrow", "halftone", "grain", "image"].includes(
         l.kind,
@@ -143,9 +179,10 @@ export function validateScene(input: unknown): input is Scene {
         l.image.length > 8_000_000)
     )
       return false;
+    if (l.kind !== "image" && l.image !== undefined) return false;
     if (
       l.crop &&
-      (l.kind !== "image" ||
+      (l.kind === "text" ||
         ![l.crop.x, l.crop.y, l.crop.width, l.crop.height].every(Number.isFinite) ||
         l.crop.x < 0 ||
         l.crop.y < 0 ||

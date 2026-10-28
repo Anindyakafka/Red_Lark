@@ -36,11 +36,11 @@ test("fresh-eyes form focus and true empty Studio recovery", async ({ page }) =>
   await expect(page.locator(".studio-paper")).toBeVisible();
   await page.evaluate(() => {
     const raw = JSON.parse(
-      localStorage.getItem("redlark.studio.v2") ??
-        '{"version":2,"preset":"A3","background":"#f3f0e6","colors":2,"layers":[]}',
+      localStorage.getItem("redlark.studio.v3") ??
+        '{"version":3,"preset":"A3","background":"#f3f0e6","colors":2,"layers":[]}',
     );
     raw.layers = [];
-    localStorage.setItem("redlark.studio.v2", JSON.stringify(raw));
+    localStorage.setItem("redlark.studio.v3", JSON.stringify(raw));
   });
   await page.reload();
   await expect(page.getByText("EMPTY CANVAS", { exact: false })).toBeVisible();

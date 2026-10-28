@@ -63,8 +63,19 @@ export interface Credit {
 export type LayerKind =
   "text" | "rectangle" | "circle" | "star" | "arrow" | "halftone" | "grain" | "image";
 export type FontId = "display" | "mono";
+export interface PosterGroup {
+  id: string;
+  x: number;
+  y: number;
+  width: number;
+  height: number;
+  rotation: number;
+  crop?: { x: number; y: number; width: number; height: number };
+}
 export interface Layer {
   id: string;
+  /** Archive elements added together retain a shared, editable poster frame. */
+  groupId?: string;
   kind: LayerKind;
   name: string;
   x: number;
@@ -92,11 +103,12 @@ export const PRESETS = {
 } as const;
 export type PresetId = keyof typeof PRESETS;
 export interface Scene {
-  version: 2;
+  version: 2 | 3;
   preset: PresetId;
   background: string;
   colors: 1 | 2 | 3;
   layers: Layer[];
+  groups?: PosterGroup[];
   /** Source attribution survives layer deletion and is never an editing layer. */
   sources?: Credit[];
   exportCredit?: {

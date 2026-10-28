@@ -1,5 +1,6 @@
 import { chooseLocale, isLocale } from "../../src/i18n/config.ts";
 import { SECURITY_HEADERS } from "../../src/config/security.ts";
+import { contentSecurityPolicy } from "../../src/config/csp.ts";
 import legacyRoutes from "../../content/legacy-routes.json" with { type: "json" };
 interface EdgeContext {
   next: () => Promise<Response>;
@@ -39,6 +40,8 @@ export default async function language(request: Request, context: EdgeContext) {
   const response = await route(request, context);
   const headers = new Headers(response.headers);
   for (const [key, value] of Object.entries(SECURITY_HEADERS)) headers.set(key, value);
+  const pathname = new URL(request.url).pathname;
+  headers.set("Content-Security-Policy", contentSecurityPolicy(pathname, response.status === 404));
   return new Response(response.body, {
     status: response.status,
     statusText: response.statusText,

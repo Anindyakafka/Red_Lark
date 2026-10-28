@@ -1,0 +1,7 @@
+{
+  "actualEmailsSent": 0,
+  "getDoesNotVerifyOrConsume": true,
+  "explicitAcceptCreatesVerifiedStaffSessionWithoutBypassingMfa": true,
+  "tokenSingleUse": true,
+  "inviteeCanSetPassword": true
+}

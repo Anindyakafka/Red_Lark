@@ -2,7 +2,7 @@ import fs from "node:fs/promises";
 import { spawn } from "node:child_process";
 const round = Number(process.argv[2]);
 if (!Number.isInteger(round) || round < 1 || round > 15) throw new Error("Supply round 1–15");
-const dir = `docs/evidence/round-${round}`;
+const dir = `docs/evidence-local/round-${round}`;
 await fs.mkdir(dir, { recursive: true });
 const log = [];
 const results = [];

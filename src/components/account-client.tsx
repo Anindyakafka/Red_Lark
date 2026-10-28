@@ -1199,7 +1199,7 @@ export function UploadPanel({
           </button>
         </fieldset>
       </form>
-      <details className="optional-contribution-details">
+      <details className="optional-contribution-details" open={Boolean(initialWork)}>
         <summary>{t("Add details (optional)")}</summary>
         <p>
           {t(

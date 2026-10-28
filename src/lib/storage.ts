@@ -1,4 +1,4 @@
-import { validateScene } from "../studio/model";
+import { migrateScene, validateScene } from "../studio/model";
 // Keep old drafts recoverable after the repository itself has been renamed.
 export const LEGACY_STORAGE_PREFIX = String.fromCharCode(109, 105, 114, 97, 102, 114, 97);
 
@@ -22,6 +22,18 @@ export function migrateLocalDrafts(storage: Storage) {
       storage.removeItem(from);
     } catch {
       // Corrupt values and unavailable storage must not destroy the original draft.
+    }
+  }
+  const prior = storage.getItem("redlark.studio.v2");
+  if (prior !== null && storage.getItem("redlark.studio.v3") === null) {
+    try {
+      const scene = migrateScene(JSON.parse(prior));
+      if (scene) {
+        storage.setItem("redlark.studio.v3", JSON.stringify(scene));
+        storage.removeItem("redlark.studio.v2");
+      }
+    } catch {
+      // Keep the old draft if storage or parsing fails.
     }
   }
 }

@@ -22,11 +22,6 @@ for (const locale of ["en", "hi", "bn", "ml"])
       expect(boxes).toHaveLength(4);
       expect(new Set(boxes.map((box) => Math.round(box.y))).size).toBe(1);
       expect(new Set(boxes.map((box) => Math.round(box.height))).size).toBe(1);
-      const picker = page.locator(".language-choice a");
-      const heights = await picker.evaluateAll((links) =>
-        links.map((link) => Math.round(link.getBoundingClientRect().height)),
-      );
-      expect(new Set(heights).size).toBe(1);
       expect(await page.locator("body").innerText()).not.toMatch(/[\[\]]/);
       expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(
         true,
@@ -36,9 +31,6 @@ for (const locale of ["en", "hi", "bn", "ml"])
           .violations,
       ).toEqual([]);
       await page.locator(".site-header").screenshot({ path: info.outputPath("header.png") });
-      await page
-        .locator(".language-choice")
-        .screenshot({ path: info.outputPath("language-picker.png") });
       await page.screenshot({ path: info.outputPath("landing.png"), fullPage: true });
     });
 

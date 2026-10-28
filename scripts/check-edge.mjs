@@ -7,8 +7,17 @@ function assert(condition, message) {
   if (!condition) throw new Error(`Edge preflight: ${message}`);
 }
 function secure(response) {
-  for (const [name, value] of Object.entries(SECURITY_HEADERS))
-    assert(response.headers.get(name) === value, `missing ${name}`);
+  for (const [name, value] of Object.entries(SECURITY_HEADERS)) {
+    const actual = response.headers.get(name);
+    assert(
+      actual &&
+        (name === "Content-Security-Policy"
+          ? actual.startsWith("default-src 'self'; script-src 'self'") &&
+            !/script-src[^;]*'unsafe-inline'/.test(actual)
+          : actual === value),
+      `missing or weak ${name}`,
+    );
+  }
 }
 const passthrough = { next: async () => new Response("static asset") };
 const redirect = await language(

@@ -13,12 +13,13 @@ import { canRemix, sourceCredit, creditLines } from "@/lib/licenses";
 import {
   dimensions,
   freshScene,
+  migrateScene,
   newLayer,
   reducer,
   validateScene,
   assertExportable,
 } from "./model";
-import { sceneSvg, type Fonts } from "./render";
+import { layerMarkup, sceneSvg, type Fonts } from "./render";
 import { decodeScene, encodeScene } from "./share";
 import { exportFile, importImage } from "./exports";
 import { migrateLocalDrafts } from "@/lib/storage";
@@ -32,11 +33,14 @@ import { CropOverlay } from "./crop-overlay";
 import { CropControls } from "./crop-controls";
 import { useViewport } from "./use-viewport";
 import { cropImageFrame, localPoint, worldPoint } from "./geometry";
+import { groupFor, groupLocalLayer, transformGroup } from "./groups";
 
-const KEY = "redlark.studio.v2";
+const KEY = "redlark.studio.v3";
 const PALETTE = ["#151515", "#e32219", "#f3f0e6"];
 function verifySources(scene: Scene) {
-  scene = cleanTemplate(scene);
+  const migrated = migrateScene(scene);
+  if (!migrated) throw new Error("This saved composition is invalid or unsupported.");
+  scene = cleanTemplate(migrated);
   scene.sources = scene.sources?.map((credit) => {
     const poster = posters.find((p) => p.slug === credit.id);
     if (!poster || !canRemix(poster))
@@ -68,6 +72,7 @@ export default function Studio({
   const [ready, setReady] = useState(false);
   const [autosaveEnabled, setAutosaveEnabled] = useState(false);
   const [selected, setSelected] = useState<string | null>("headline");
+  const [groupMode, setGroupMode] = useState(true);
   const [status, setStatus] = useState("LOADING Preparing same-origin fonts and assets…");
   const [failure, setFailure] = useState("");
   const [busy, setBusy] = useState(false);
@@ -101,6 +106,7 @@ export default function Studio({
   const [shareLink, setShareLink] = useState("");
   const [separation, setSeparation] = useState("");
   const [liveLayer, setLiveLayer] = useState<Layer | null>(null);
+  const [liveScene, setLiveScene] = useState<Scene | null>(null);
   const [shelfQuery, setShelfQuery] = useState("");
   const svgRef = useRef<SVGSVGElement>(null);
   const restoreRef = useRef<Scene | null>(null);
@@ -109,10 +115,18 @@ export default function Studio({
     startX: number;
     startY: number;
     layer: Layer;
+    groupId?: string;
     mode: "move" | "resize" | "rotate";
   } | null>(null);
   const uploadRef = useRef<HTMLInputElement>(null);
   const selectedLayer = scene.layers.find((l) => l.id === selected);
+  const selectedGroup = groupFor(scene, selectedLayer);
+  const cropBlocked = Boolean(
+    selectedLayer?.locked ||
+    (groupMode &&
+      selectedGroup &&
+      scene.layers.some((member) => member.groupId === selectedGroup.id && member.locked)),
+  );
   const dim = dimensions(scene);
   const viewport = useViewport(dim.width, dim.height, Boolean(fonts));
   const zoom = viewport.view.zoom;
@@ -124,18 +138,36 @@ export default function Studio({
     dispatch({ type: "commit", scene: cleanTemplate(next) });
     setShareLink("");
   }, []);
-  const crop = useImageCrop(scene, selectedLayer, commit, point);
-  function beginCrop() {
-    if (!selectedLayer || selectedLayer.kind !== "image") return;
+  const crop = useImageCrop(
+    scene,
+    selectedLayer,
+    commit,
+    point,
+    groupMode ? selectedGroup : undefined,
+  );
+  /* eslint-disable react-hooks/preserve-manual-memoization -- The global keyboard handler needs the same crop callback as the visible controls. */
+  const beginCrop = useCallback(() => {
+    if (!selectedLayer || selectedLayer.kind === "text" || cropBlocked) return;
     crop.start();
-    setPanel(null);
-    const frame = cropImageFrame(selectedLayer);
+    const target =
+      groupMode && selectedGroup
+        ? {
+            ...selectedLayer,
+            x: selectedGroup.x,
+            y: selectedGroup.y,
+            width: selectedGroup.width,
+            height: selectedGroup.height,
+            rotation: selectedGroup.rotation,
+            crop: undefined,
+          }
+        : selectedLayer;
+    const frame = cropImageFrame(target);
     const corners = [
       { x: frame.x, y: frame.y },
       { x: frame.x + frame.width, y: frame.y },
       { x: frame.x, y: frame.y + frame.height },
       { x: frame.x + frame.width, y: frame.y + frame.height },
-    ].map((p) => worldPoint(selectedLayer, p));
+    ].map((p) => worldPoint(target, p));
     const left = Math.min(0, ...corners.map((p) => p.x)),
       top = Math.min(0, ...corners.map((p) => p.y));
     viewport.fitBounds({
@@ -144,7 +176,8 @@ export default function Studio({
       width: Math.max(dim.width, ...corners.map((p) => p.x)) - left,
       height: Math.max(dim.height, ...corners.map((p) => p.y)) - top,
     });
-  }
+  }, [selectedLayer, selectedGroup, groupMode, cropBlocked, crop, viewport, dim.width, dim.height]);
+  /* eslint-enable react-hooks/preserve-manual-memoization */
   useEffect(() => {
     let cancelled = false;
     async function init() {
@@ -186,8 +219,9 @@ export default function Studio({
           const raw = localStorage.getItem(KEY);
           if (raw) {
             const v: unknown = JSON.parse(raw);
-            if (validateScene(v)) {
-              stored = verifySources(v);
+            const migrated = migrateScene(v);
+            if (migrated) {
+              stored = verifySources(migrated);
               restoreRef.current = stored;
             } else
               setStatus(
@@ -253,6 +287,7 @@ export default function Studio({
               : "READY Your draft autosaves in this browser. Nothing is uploaded.",
           );
         if (chosen) {
+          chosen = migrateScene(chosen)!;
           sceneSvg(chosen, { display, mono, indic });
           dispatch({ type: "reset", scene: chosen });
           setSelected(chosen.layers[0]?.id ?? null);
@@ -373,6 +408,11 @@ export default function Studio({
         }
         return;
       }
+      if (event.key.toLowerCase() === "c" && !event.ctrlKey && !event.metaKey && !event.altKey) {
+        if (cropBlocked) setStatus(t("Unlock the layer to crop."));
+        else if (selectedLayer && selectedLayer.kind !== "text") beginCrop();
+        return;
+      }
       if ((event.ctrlKey || event.metaKey) && event.key.toLowerCase() === "z") {
         event.preventDefault();
         dispatch({ type: event.shiftKey ? "redo" : "undo" });
@@ -388,14 +428,17 @@ export default function Studio({
       } else if (selectedLayer && !selectedLayer.locked && event.key.startsWith("Arrow")) {
         event.preventDefault();
         const amount = event.shiftKey ? 10 : 1;
-        patch({
-          x:
-            selectedLayer.x +
-            (event.key === "ArrowRight" ? amount : event.key === "ArrowLeft" ? -amount : 0),
-          y:
-            selectedLayer.y +
-            (event.key === "ArrowDown" ? amount : event.key === "ArrowUp" ? -amount : 0),
-        });
+        const dx = event.key === "ArrowRight" ? amount : event.key === "ArrowLeft" ? -amount : 0;
+        const dy = event.key === "ArrowDown" ? amount : event.key === "ArrowUp" ? -amount : 0;
+        if (groupMode && selectedGroup)
+          commit(
+            transformGroup(scene, selectedGroup.id, {
+              ...selectedGroup,
+              x: selectedGroup.x + dx,
+              y: selectedGroup.y + dy,
+            }),
+          );
+        else patch({ x: selectedLayer.x + dx, y: selectedLayer.y + dy });
       } else if (event.key === "Escape") {
         setSelected(null);
         setPan(false);
@@ -403,7 +446,21 @@ export default function Studio({
     };
     window.addEventListener("keydown", key);
     return () => window.removeEventListener("keydown", key);
-  }, [selectedLayer, patch, duplicate, remove, crop, scrollRef, t]);
+  }, [
+    selectedLayer,
+    selectedGroup,
+    groupMode,
+    cropBlocked,
+    scene,
+    commit,
+    patch,
+    duplicate,
+    remove,
+    crop,
+    scrollRef,
+    t,
+    beginCrop,
+  ]);
   function add(kind: Layer["kind"]) {
     if (scene.layers.length >= 80) {
       setFailure("LIMIT This Workshop supports up to 80 layers.");
@@ -414,6 +471,7 @@ export default function Studio({
     if (!inks.includes(layer.color) && inks.length >= scene.colors) layer.color = inks[0];
     commit({ ...scene, layers: [...scene.layers, layer] });
     setSelected(layer.id);
+    setGroupMode(false);
     setPanel(kind === "text" ? "text" : "layers");
   }
   function addSource(slug: string) {
@@ -434,9 +492,19 @@ export default function Studio({
     const height = Math.max(...sources.map((layer) => layer.y + layer.height)) - top;
     const scale = Math.min(260 / width, 200 / height);
     const inks = [...new Set(scene.layers.filter((l) => l.kind !== "image").map((l) => l.color))];
+    const groupId = crypto.randomUUID();
+    const group = {
+      id: groupId,
+      x: 80,
+      y: 300,
+      width: width * scale,
+      height: height * scale,
+      rotation: 0,
+    };
     const layers = sources.map((source) => ({
       ...structuredClone(source),
       id: crypto.randomUUID(),
+      groupId,
       name: `Image ${p.imageCode}`,
       x: 80 + (source.x - left) * scale,
       y: 300 + (source.y - top) * scale,
@@ -446,9 +514,16 @@ export default function Studio({
       color: !inks.includes(source.color) && inks.length >= scene.colors ? inks[0] : source.color,
     }));
     try {
-      assertExportable({ ...scene, layers: [...scene.layers, ...layers] });
-      commit({ ...scene, layers: [...scene.layers, ...layers] });
+      const next: Scene = {
+        ...scene,
+        version: 3,
+        groups: [...(scene.groups ?? []), group],
+        layers: [...scene.layers, ...layers],
+      };
+      assertExportable(next);
+      commit(next);
       setSelected(layers[0].id);
+      setGroupMode(true);
     } catch (error) {
       setFailure(String(error));
     }
@@ -501,16 +576,37 @@ export default function Studio({
   ) {
     if (pan || layer.locked || crop.session || viewport.overridesLayer(e) || viewport.isPanning())
       return;
+    const group = groupFor(scene, layer);
+    if (group && scene.layers.some((member) => member.groupId === group.id && member.locked))
+      return;
     e.stopPropagation();
     setSelected(layer.id);
+    if (group) setGroupMode(true);
     const p = point(e);
-    dragRef.current = { id: layer.id, startX: p.x, startY: p.y, layer, mode };
+    dragRef.current = {
+      id: layer.id,
+      startX: p.x,
+      startY: p.y,
+      layer: group
+        ? {
+            ...layer,
+            x: group.x,
+            y: group.y,
+            width: group.width,
+            height: group.height,
+            rotation: group.rotation,
+          }
+        : layer,
+      groupId: group?.id,
+      mode,
+    };
   }
   function down(e: React.PointerEvent) {
     if (viewport.down(e, pan)) {
       dragRef.current = null;
       liveLayerRef.current = null;
       setLiveLayer(null);
+      setLiveScene(null);
       crop.end(true);
     }
   }
@@ -557,15 +653,31 @@ export default function Studio({
       l.x = center.x - l.width / 2;
       l.y = center.y - l.height / 2;
     }
-    liveLayerRef.current = l;
-    setLiveLayer(l);
+    if (d.groupId) {
+      const group = scene.groups?.find((item) => item.id === d.groupId);
+      if (group) {
+        const next = transformGroup(scene, group.id, {
+          ...group,
+          x: l.x,
+          y: l.y,
+          width: l.width,
+          height: l.height,
+          rotation: l.rotation,
+        });
+        if (validateScene(next)) setLiveScene(next);
+      }
+    } else {
+      liveLayerRef.current = l;
+      setLiveLayer(l);
+    }
   }
 
   function end(e: React.PointerEvent, cancel = false) {
     const gesture = viewport.end(e, cancel);
     crop.end(cancel || gesture);
     const live = liveLayerRef.current;
-    if (!gesture && dragRef.current && live && !cancel)
+    if (!gesture && dragRef.current?.groupId && liveScene && !cancel) commit(liveScene);
+    else if (!gesture && dragRef.current && live && !cancel)
       commit({
         ...scene,
         layers: scene.layers.map((layer) => (layer.id === live.id ? live : layer)),
@@ -573,6 +685,7 @@ export default function Studio({
     dragRef.current = null;
     liveLayerRef.current = null;
     setLiveLayer(null);
+    setLiveScene(null);
   }
   async function upload(file: File | undefined) {
     if (!file) return;
@@ -672,11 +785,14 @@ export default function Studio({
   ];
   const displayScene = useMemo(
     () =>
-      liveLayer
-        ? { ...scene, layers: scene.layers.map((l) => (l.id === liveLayer.id ? liveLayer : l)) }
-        : scene,
-    [scene, liveLayer],
+      liveScene
+        ? liveScene
+        : liveLayer
+          ? { ...scene, layers: scene.layers.map((l) => (l.id === liveLayer.id ? liveLayer : l)) }
+          : scene,
+    [scene, liveLayer, liveScene],
   );
+  const displayGroup = groupFor(displayScene, selectedLayer);
   const body = useMemo(
     () =>
       fonts
@@ -800,6 +916,21 @@ export default function Studio({
             <button onClick={viewport.fit}>
               <UiText id="FIT" />
             </button>
+            {selectedLayer && selectedLayer.kind !== "text" && (
+              <button
+                onClick={beginCrop}
+                disabled={cropBlocked || busy}
+                title={t(cropBlocked ? "Unlock the layer to crop." : "Crop selected layer (C)")}
+                aria-label={t("Crop")}
+              >
+                <UiText id="Crop" />
+              </button>
+            )}
+            {selectedGroup && (
+              <button aria-pressed={groupMode} onClick={() => setGroupMode(!groupMode)}>
+                <UiText id={groupMode ? "Edit this layer" : "Edit whole poster"} />
+              </button>
+            )}
           </div>
           <div
             className="canvas-scroll"
@@ -853,11 +984,15 @@ export default function Studio({
                         width={l.width}
                         height={l.height}
                         fill="transparent"
-                        stroke={selected === l.id ? "#151515" : "none"}
-                        strokeWidth={selected === l.id ? 3 : 0}
-                        strokeDasharray={selected === l.id ? "9 5" : undefined}
+                        stroke={
+                          selected === l.id && !(groupMode && selectedGroup) ? "#151515" : "none"
+                        }
+                        strokeWidth={selected === l.id && !(groupMode && selectedGroup) ? 3 : 0}
+                        strokeDasharray={
+                          selected === l.id && !(groupMode && selectedGroup) ? "9 5" : undefined
+                        }
                       />
-                      {selected === l.id && !l.locked && (
+                      {selected === l.id && !l.locked && !(groupMode && selectedGroup) && (
                         <>
                           <rect
                             x={l.width - 6 / ((viewport.base.width / dim.width) * zoom)}
@@ -899,10 +1034,70 @@ export default function Studio({
                       )}
                     </g>
                   ))}
+                {displayGroup && groupMode && selectedLayer && !crop.session && (
+                  <g
+                    data-poster-group={displayGroup.id}
+                    transform={`translate(${displayGroup.x} ${displayGroup.y}) rotate(${displayGroup.rotation} ${displayGroup.width / 2} ${displayGroup.height / 2})`}
+                  >
+                    <rect
+                      width={displayGroup.width}
+                      height={displayGroup.height}
+                      fill="transparent"
+                      stroke="#151515"
+                      strokeWidth="3"
+                      strokeDasharray="9 5"
+                      onPointerDown={(e) => startDrag(e, selectedLayer)}
+                    />
+                    <rect
+                      data-layer-action="resize"
+                      x={displayGroup.width - 22 / ((viewport.base.width / dim.width) * zoom)}
+                      y={displayGroup.height - 22 / ((viewport.base.width / dim.width) * zoom)}
+                      width={44 / ((viewport.base.width / dim.width) * zoom)}
+                      height={44 / ((viewport.base.width / dim.width) * zoom)}
+                      fill="transparent"
+                      onPointerDown={(e) => startDrag(e, selectedLayer, "resize")}
+                    />
+                    <circle
+                      data-layer-action="rotate"
+                      cx={displayGroup.width / 2}
+                      cy={-28 / ((viewport.base.width / dim.width) * zoom)}
+                      r={22 / ((viewport.base.width / dim.width) * zoom)}
+                      fill="transparent"
+                      onPointerDown={(e) => startDrag(e, selectedLayer, "rotate")}
+                    />
+                  </g>
+                )}
                 {crop.session && (
                   <CropOverlay
                     layer={crop.session.layer}
                     draft={crop.session.draft}
+                    preview={(() => {
+                      const layer = crop.session.layer;
+                      if (crop.session.group)
+                        return scene.layers
+                          .filter(
+                            (member) =>
+                              member.groupId === crop.session?.group?.id && !member.hidden,
+                          )
+                          .map((member) =>
+                            layerMarkup(groupLocalLayer(member, crop.session!.group!), fonts),
+                          )
+                          .join("");
+                      if (layer.kind === "image") return undefined;
+                      const frame = cropImageFrame(layer);
+                      return layerMarkup(
+                        {
+                          ...layer,
+                          x: frame.x,
+                          y: frame.y,
+                          width: frame.width,
+                          height: frame.height,
+                          rotation: 0,
+                          crop: undefined,
+                        },
+                        fonts,
+                      );
+                    })()}
                     scale={(viewport.base.width / dim.width) * zoom}
                     start={(e, handle) => {
                       if (!pan && !viewport.overridesLayer(e) && !viewport.isPanning())
@@ -924,7 +1119,7 @@ export default function Studio({
           crop={crop}
           onDone={() => scrollRef.current?.focus({ preventScroll: true })}
         />
-        {panel && <div className="studio-panel-scrim" aria-hidden="true" />}
+        {panel && !crop.session && <div className="studio-panel-scrim" aria-hidden="true" />}
         <OptionPanel id="text" open={panel === "text"} close={closePanel}>
           <button onClick={() => add("text")} disabled={busy}>
             + TEXT
@@ -1068,6 +1263,7 @@ export default function Studio({
                   aria-pressed={selected === l.id}
                   onClick={() => {
                     setSelected(l.id);
+                    setGroupMode(false);
                     setPanel("layers");
                   }}
                 >
@@ -1120,9 +1316,58 @@ export default function Studio({
               </div>
             ))}
           </div>
-          {selectedLayer && (
+          {selectedGroup && selectedLayer && (
+            <button onClick={() => setGroupMode(!groupMode)} aria-pressed={groupMode}>
+              <UiText id={groupMode ? "Edit this layer" : "Edit whole poster"} />
+            </button>
+          )}
+          {selectedGroup && groupMode && selectedLayer && (
+            <fieldset
+              disabled={
+                busy ||
+                scene.layers.some((member) => member.groupId === selectedGroup.id && member.locked)
+              }
+            >
+              <legend>
+                <UiText id="Whole poster" />
+              </legend>
+              <button onClick={beginCrop}>
+                <UiText id="Crop" />
+              </button>
+              <div className="coordinate-grid">
+                {(["x", "y", "width", "height", "rotation"] as const).map((key) => (
+                  <label className="control" key={key}>
+                    {key}
+                    <input
+                      type="number"
+                      value={selectedGroup[key]}
+                      min={
+                        key === "rotation" ? -180 : key === "width" || key === "height" ? 10 : -1000
+                      }
+                      max={key === "rotation" ? 180 : 2000}
+                      onChange={(event) => {
+                        const value = Number(event.target.value);
+                        if (!Number.isFinite(value)) return;
+                        const next = transformGroup(scene, selectedGroup.id, {
+                          ...selectedGroup,
+                          [key]: value,
+                        });
+                        if (validateScene(next)) commit(next);
+                      }}
+                    />
+                  </label>
+                ))}
+              </div>
+            </fieldset>
+          )}
+          {selectedLayer && (!groupMode || !selectedGroup) && (
             <fieldset disabled={selectedLayer.locked || busy}>
               <legend>{selectedLayer.name}</legend>
+              {selectedLayer.kind !== "text" && (
+                <button onClick={beginCrop} title={t("Crop selected layer (C)")}>
+                  <UiText id="Crop" />
+                </button>
+              )}
               <label className="control">
                 <UiText id={"Layer name"} />
                 <input
@@ -1170,9 +1415,13 @@ export default function Studio({
           )}
         </OptionPanel>
         <OptionPanel id="images" open={panel === "images"} close={closePanel}>
-          {selectedLayer?.kind === "image" && (
-            <button disabled={selectedLayer.locked || busy} onClick={beginCrop}>
-              <UiText id="Crop image" />
+          {selectedLayer && selectedLayer.kind !== "text" && (
+            <button
+              disabled={cropBlocked || busy}
+              onClick={beginCrop}
+              title={t(cropBlocked ? "Unlock the layer to crop." : "Crop selected layer (C)")}
+            >
+              <UiText id={selectedLayer.kind === "image" ? "Crop image" : "Crop"} />
             </button>
           )}
           <input

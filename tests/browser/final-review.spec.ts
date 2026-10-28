@@ -17,7 +17,8 @@ for (const locale of ["en", "hi", "bn", "ml"])
     const errors: string[] = [];
     page.on("pageerror", (error) => errors.push(error.message));
     const paths = routes(path.resolve("out", locale), `/${locale}/`);
-    expect(paths.length).toBeGreaterThan(75);
+    // The retired placeholder catalogue deliberately reduces the generated route count.
+    expect(paths.length).toBeGreaterThan(60);
     for (const route of paths)
       await test.step(route, async () => {
         expect((await page.goto(route))?.status()).toBe(200);

@@ -2,34 +2,29 @@ import fs from "node:fs/promises";
 import { test, expect } from "@playwright/test";
 import AxeBuilder from "@axe-core/playwright";
 import { openOption, closeOptions, addElement } from "./studio-helpers";
-import { installShareAlikeFixture } from "./studio-license-fixture";
 test.beforeEach(async ({ page }) => {
   await page.route("**/api/session", (route) =>
     route.fulfill({ json: { csrf: "fixture", account: null } }),
   );
 });
 
-test("ShareAlike remix keeps a clean canvas and configurable default-on attribution in every export", async ({
+test("CC0 remix keeps a clean canvas and source metadata in every export", async ({
   page,
 }) => {
   test.setTimeout(120000);
-  const replacements = await installShareAlikeFixture(page);
   await page.goto("/en/workshop/?remix=borders-are-lines");
   await expect(page.locator(".studio-paper")).toBeVisible();
-  expect(replacements()).toBeGreaterThan(0);
-  await expect(page.locator(".studio-paper metadata")).toContainText("CC-BY-SA-4.0");
+  await expect(page.locator(".studio-paper metadata")).toContainText("CC0-1.0");
   await expect(page.locator(".studio-paper [data-export-credit]")).toHaveCount(0);
   await openOption(page, "export");
   const credit = page.getByLabel("Add credit line", { exact: true });
-  await expect(credit).toBeChecked();
-  await credit.uncheck();
-  await expect(page.getByText(/Metadata can be lost when printing or reposting/)).toBeVisible();
+  await expect(credit).not.toBeChecked();
   for (const name of ["SVG ↓", "PNG / 300 PPI", "PDF ↓"]) {
     const pending = page.waitForEvent("download");
     await page.getByRole("button", { name, exact: true }).click();
     const file = await pending,
       bytes = await fs.readFile((await file.path())!);
-    expect(bytes.includes(Buffer.from("CC-BY-SA-4.0"))).toBe(true);
+    expect(bytes.includes(Buffer.from("CC0-1.0"))).toBe(true);
     if (name.startsWith("SVG")) {
       expect(bytes.toString()).toContain("The Wet Ink Workshop");
       expect(bytes.toString()).not.toContain("data-export-credit");
@@ -105,7 +100,7 @@ test("crop edits survive save/undo/restore and exported SVG/PNG/PDF keep origina
     .poll(async () =>
       page.evaluate(
         () =>
-          JSON.parse(localStorage.getItem("redlark.studio.v2") || "{}").layers?.find(
+          JSON.parse(localStorage.getItem("redlark.studio.v3") || "{}").layers?.find(
             (l: { kind: string }) => l.kind === "image",
           )?.crop?.width,
       ),
@@ -113,7 +108,7 @@ test("crop edits survive save/undo/restore and exported SVG/PNG/PDF keep origina
     .toBeCloseTo(0.5);
   const original = await page.evaluate(
     () =>
-      JSON.parse(localStorage.getItem("redlark.studio.v2")!).layers.find(
+      JSON.parse(localStorage.getItem("redlark.studio.v3")!).layers.find(
         (l: { kind: string }) => l.kind === "image",
       ).image,
   );

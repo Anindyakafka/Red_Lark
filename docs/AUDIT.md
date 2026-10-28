@@ -1,4 +1,4 @@
-﻿# RED LARK WORKSHOP: current audit
+# RED LARK WORKSHOP: current audit
 
 ## Backend continuation decision — 19 October 2026
 

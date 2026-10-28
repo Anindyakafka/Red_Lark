@@ -7,7 +7,7 @@ import { launch } from "chrome-launcher";
 const round = Number(process.argv[2]);
 if (!Number.isInteger(round) || round < 1 || round > 15)
   throw new Error("Use npm run qa:round -- N (1–15)");
-const dir = `docs/evidence/round-${round}`;
+const dir = `docs/evidence-local/round-${round}`;
 await fs.mkdir(dir, { recursive: true });
 const catalog = JSON.parse(await fs.readFile("src/generated/catalog.json", "utf8"));
 const executable =

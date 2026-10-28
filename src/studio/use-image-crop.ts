@@ -1,6 +1,6 @@
 "use client";
 import { useEffect, useRef, useState, type PointerEvent, type KeyboardEvent } from "react";
-import type { Layer, Scene } from "@/lib/types";
+import type { Layer, PosterGroup, Scene } from "@/lib/types";
 import {
   applyCrop,
   clamp,
@@ -13,19 +13,33 @@ import {
   type CropRect,
   type Point,
 } from "./geometry";
-type Session = { layer: Layer; draft: CropRect; locked: boolean; ratio: string };
+type Session = {
+  layer: Layer;
+  draft: CropRect;
+  locked: boolean;
+  ratio: string;
+  group?: PosterGroup;
+};
 export function useImageCrop(
   scene: Scene,
   selected: Layer | undefined,
   commit: (next: Scene) => void,
   point: (e: { clientX: number; clientY: number }) => Point,
+  selectedGroup?: PosterGroup,
 ) {
   const [session, setSession] = useState<Session | null>(null);
   const drag = useRef<{ start: Point; draft: CropRect; handle: CropHandle } | null>(null);
   useEffect(() => {
-    setSession(null);
-    drag.current = null;
-  }, [scene, selected?.id]);
+    if (!session) return;
+    const current = session.group
+      ? scene.groups?.find((group) => group.id === session.group?.id)
+      : scene.layers.find((layer) => layer.id === session.layer.id);
+    const expected = session.group ?? session.layer;
+    if (!current || JSON.stringify(current) !== JSON.stringify(expected)) {
+      setSession(null);
+      drag.current = null;
+    }
+  }, [scene, session]);
   function ratio(value: string, layer: Layer) {
     const frame = cropImageFrame(layer),
       aspect = frame.width / frame.height;
@@ -46,12 +60,27 @@ export function useImageCrop(
     return { x: Math.max(0.02, 10 / frame.width), y: Math.max(0.02, 10 / frame.height) };
   }
   function start() {
-    if (selected?.kind !== "image" || selected.locked) return;
+    if (!selected || selected.kind === "text" || selected.locked) return;
+    const group = selectedGroup ? structuredClone(selectedGroup) : undefined;
+    const layer = group
+      ? {
+          ...selected,
+          id: group.id,
+          kind: "rectangle" as const,
+          x: group.x,
+          y: group.y,
+          width: group.width,
+          height: group.height,
+          rotation: group.rotation,
+          crop: undefined,
+        }
+      : structuredClone(selected);
     setSession({
-      layer: structuredClone(selected),
-      draft: selected.crop ?? FULL_CROP,
+      layer,
+      draft: group?.crop ?? selected.crop ?? FULL_CROP,
       locked: false,
       ratio: "free",
+      group,
     });
   }
   function pointerStart(e: PointerEvent<SVGElement>, handle: CropHandle) {
@@ -164,12 +193,21 @@ export function useImageCrop(
     lock: (locked: boolean) => setSession((current) => (current ? { ...current, locked } : null)),
     apply: () => {
       if (!session) return;
-      commit({
-        ...scene,
-        layers: scene.layers.map((layer) =>
-          layer.id === session.layer.id ? applyCrop(session.layer, session.draft) : layer,
-        ),
-      });
+      commit(
+        session.group
+          ? {
+              ...scene,
+              groups: scene.groups?.map((group) =>
+                group.id === session.group?.id ? { ...group, crop: session.draft } : group,
+              ),
+            }
+          : {
+              ...scene,
+              layers: scene.layers.map((layer) =>
+                layer.id === session.layer.id ? applyCrop(session.layer, session.draft) : layer,
+              ),
+            },
+      );
       setSession(null);
       drag.current = null;
     },

@@ -66,29 +66,30 @@ for (const locale of ["en", "hi", "bn", "ml"]) {
       await route.fulfill({ status: 200, body: "" });
     });
     await page.goto(`/${locale}/contribute/`);
-    await page.locator(".format-picker button").nth(6).click();
+    await page.locator(".optional-contribution-details > summary").click();
+    await page.locator("#upload-format").selectOption("poster-placard");
     await page.locator("#upload-title").fill("Guest fixture");
     await page.locator("#upload-alt").fill("A black arrow on off-white paper.");
     // Switching format must preserve details rather than resetting the form.
-    await page.locator('form button[type="button"]').first().click();
-    await page.locator(".format-picker button").nth(6).click();
+    await page.locator("#upload-format").selectOption("sticker");
+    await page.locator("#upload-format").selectOption("poster-placard");
     await expect(page.locator("#upload-title")).toHaveValue("Guest fixture");
     await page.locator("#upload-file").setInputFiles({
       name: "fixture.png",
       mimeType: "image/png",
       buffer: fs.readFileSync("public/icons/icon-192.png"),
     });
-    await page.locator('input[name="permission"]').check();
+    await page.locator(".optional-contribution-details .handoff-form input[name=permission]").check();
     await page.setViewportSize({ width: 390, height: 844 });
     expect((await new AxeBuilder({ page }).analyze()).violations).toEqual([]);
     if (["en", "ml"].includes(locale)) {
-      fs.mkdirSync("docs/evidence/guest-submissions", { recursive: true });
+      fs.mkdirSync("docs/evidence-local/guest-submissions", { recursive: true });
       await page.screenshot({
-        path: `docs/evidence/guest-submissions/${locale}-details-390.png`,
+        path: `docs/evidence-local/guest-submissions/${locale}-details-390.png`,
         fullPage: true,
       });
     }
-    await page.locator("form button.accent").click();
+    await page.locator(".optional-contribution-details .handoff-form button.accent").click();
     await expect.poll(() => stages).toEqual(["draft", "sign", "private-put", "sanitize", "review"]);
     await expect(page.locator("#upload-file")).toHaveCount(0);
     const link = page.locator("input[readonly]").filter({ visible: true });
@@ -103,12 +104,12 @@ for (const locale of ["en", "hi", "bn", "ml"]) {
     await expect(page.locator("main")).toContainText("Awaiting review");
     if (["en", "ml"].includes(locale)) {
       await page.screenshot({
-        path: `docs/evidence/guest-submissions/${locale}-status-390.png`,
+        path: `docs/evidence-local/guest-submissions/${locale}-status-390.png`,
         fullPage: true,
       });
       await page.setViewportSize({ width: 1440, height: 1000 });
       await page.screenshot({
-        path: `docs/evidence/guest-submissions/${locale}-status-1440.png`,
+        path: `docs/evidence-local/guest-submissions/${locale}-status-1440.png`,
         fullPage: true,
       });
     }

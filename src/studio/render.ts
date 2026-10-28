@@ -131,8 +131,33 @@ export function textPaths(
     })
     .join("");
 }
-export function layerMarkup(l: Layer, fonts: Fonts) {
+export function layerMarkup(l: Layer, fonts: Fonts): string {
   const { width: w, height: h } = l;
+  if (l.crop && l.kind !== "image" && l.kind !== "text") {
+    const crop = l.crop;
+    const frame = {
+      x: (-crop.x * w) / crop.width,
+      y: (-crop.y * h) / crop.height,
+      width: w / crop.width,
+      height: h / crop.height,
+    };
+    const original = layerMarkup(
+      {
+        ...l,
+        x: frame.x,
+        y: frame.y,
+        width: frame.width,
+        height: frame.height,
+        rotation: 0,
+        crop: undefined,
+      },
+      fonts,
+    );
+    const clipId = `crop-${Array.from(l.id)
+      .map((char) => char.codePointAt(0)!.toString(16))
+      .join("-")}`;
+    return `<g data-crop="${l.kind}" transform="translate(${l.x} ${l.y}) rotate(${l.rotation} ${w / 2} ${h / 2})"><defs><clipPath id="${clipId}"><rect width="${w}" height="${h}"/></clipPath></defs><g clip-path="url(#${clipId})">${original}</g></g>`;
+  }
   let inner = "";
   switch (l.kind) {
     case "text":
@@ -204,7 +229,17 @@ export function sceneSvg(scene: Scene, fonts: Fonts, separation?: string, editin
   );
   const layers = scene.layers
     .filter((l) => !l.hidden && (!separation || l.color === separation))
-    .map((l) => layerMarkup(separation ? { ...l, color: "#151515" } : l, fonts))
+    .map((l) => {
+      const markup = layerMarkup(separation ? { ...l, color: "#151515" } : l, fonts);
+      const index = scene.groups?.findIndex((group) => group.id === l.groupId) ?? -1;
+      return index < 0 ? markup : `<g clip-path="url(#poster-group-${index})">${markup}</g>`;
+    })
+    .join("");
+  const groupClips = (scene.groups ?? [])
+    .map((group, index) => {
+      const crop = group.crop ?? { x: 0, y: 0, width: 1, height: 1 };
+      return `<clipPath id="poster-group-${index}" clipPathUnits="userSpaceOnUse"><rect x="${group.x + crop.x * group.width}" y="${group.y + crop.y * group.height}" width="${crop.width * group.width}" height="${crop.height * group.height}" transform="rotate(${group.rotation} ${group.x + group.width / 2} ${group.y + group.height / 2})"/></clipPath>`;
+    })
     .join("");
   const credits =
     !editing && settings.enabled
@@ -226,5 +261,5 @@ export function sceneSvg(scene: Scene, fonts: Fonts, separation?: string, editin
     !editing && settings.enabled
       ? `<g data-export-credit="true"><rect x="${settings.x}" y="${settings.y}" width="${settings.width}" height="${lines.length * settings.fontSize * 1.5 + 8}" fill="${settings.background}"/>${credits}</g>`
       : "";
-  return `<svg xmlns="http://www.w3.org/2000/svg" width="${preset.width}${preset.unit}" height="${preset.height}${preset.unit}" viewBox="0 0 ${width} ${height}"><title>Red Lark Workshop composition</title><metadata>${xml(JSON.stringify(attributionMetadata(scene)))}</metadata><defs><clipPath id="artboard"><rect width="${width}" height="${height}"/></clipPath></defs><rect width="${width}" height="${height}" fill="${separation ? "#ffffff" : scene.background}"/><g clip-path="url(#artboard)">${layers}${credit}</g></svg>`;
+  return `<svg xmlns="http://www.w3.org/2000/svg" width="${preset.width}${preset.unit}" height="${preset.height}${preset.unit}" viewBox="0 0 ${width} ${height}"><title>Red Lark Workshop composition</title><metadata>${xml(JSON.stringify(attributionMetadata(scene)))}</metadata><defs><clipPath id="artboard"><rect width="${width}" height="${height}"/></clipPath>${groupClips}</defs><rect width="${width}" height="${height}" fill="${separation ? "#ffffff" : scene.background}"/><g clip-path="url(#artboard)">${layers}${credit}</g></svg>`;
 }

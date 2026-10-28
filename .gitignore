@@ -10,7 +10,8 @@ coverage/
 .DS_Store
 Thumbs.db
 *.log
-!docs/evidence/**/checks.log
+docs/evidence/
+Red Lark Workshop.pptx
 test-results/
 playwright-report/
 .qa/

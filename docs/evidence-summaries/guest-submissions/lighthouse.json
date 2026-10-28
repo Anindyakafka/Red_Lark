@@ -1,0 +1,308 @@
+[
+  {
+    "page": "en-home",
+    "method": "Median of three consecutive cold-cache mobile Lighthouse runs; all raw runs retained",
+    "scores": {
+      "performance": 96,
+      "accessibility": 100,
+      "best-practices": 100,
+      "seo": 100
+    },
+    "cls": 0,
+    "lcp": 2644.8552,
+    "tbt": 38.5,
+    "runs": [
+      {
+        "run": 1,
+        "scores": {
+          "performance": 93,
+          "accessibility": 100,
+          "best-practices": 100,
+          "seo": 100
+        },
+        "cls": 0,
+        "lcp": 3099.35675,
+        "tbt": 43
+      },
+      {
+        "run": 2,
+        "scores": {
+          "performance": 96,
+          "accessibility": 100,
+          "best-practices": 100,
+          "seo": 100
+        },
+        "cls": 0,
+        "lcp": 2644.8552,
+        "tbt": 35
+      },
+      {
+        "run": 3,
+        "scores": {
+          "performance": 98,
+          "accessibility": 100,
+          "best-practices": 100,
+          "seo": 100
+        },
+        "cls": 0,
+        "lcp": 2350.9536,
+        "tbt": 38.5
+      }
+    ]
+  },
+  {
+    "page": "en-collection",
+    "method": "Median of three consecutive cold-cache mobile Lighthouse runs; all raw runs retained",
+    "scores": {
+      "performance": 98,
+      "accessibility": 100,
+      "best-practices": 100,
+      "seo": 100
+    },
+    "cls": 0,
+    "lcp": 2423.8187499999995,
+    "tbt": 36,
+    "runs": [
+      {
+        "run": 1,
+        "scores": {
+          "performance": 98,
+          "accessibility": 100,
+          "best-practices": 100,
+          "seo": 100
+        },
+        "cls": 0,
+        "lcp": 2348.6214,
+        "tbt": 34
+      },
+      {
+        "run": 2,
+        "scores": {
+          "performance": 98,
+          "accessibility": 100,
+          "best-practices": 100,
+          "seo": 100
+        },
+        "cls": 0,
+        "lcp": 2431.52425,
+        "tbt": 42.5
+      },
+      {
+        "run": 3,
+        "scores": {
+          "performance": 98,
+          "accessibility": 100,
+          "best-practices": 100,
+          "seo": 100
+        },
+        "cls": 0,
+        "lcp": 2423.8187499999995,
+        "tbt": 36
+      }
+    ]
+  },
+  {
+    "page": "en-poster",
+    "method": "Median of three consecutive cold-cache mobile Lighthouse runs; all raw runs retained",
+    "scores": {
+      "performance": 98,
+      "accessibility": 100,
+      "best-practices": 100,
+      "seo": 100
+    },
+    "cls": 0,
+    "lcp": 2268.4005,
+    "tbt": 38,
+    "runs": [
+      {
+        "run": 1,
+        "scores": {
+          "performance": 98,
+          "accessibility": 100,
+          "best-practices": 100,
+          "seo": 100
+        },
+        "cls": 0,
+        "lcp": 2263.5705,
+        "tbt": 38
+      },
+      {
+        "run": 2,
+        "scores": {
+          "performance": 97,
+          "accessibility": 100,
+          "best-practices": 100,
+          "seo": 100
+        },
+        "cls": 0,
+        "lcp": 2414.0253000000002,
+        "tbt": 32.5
+      },
+      {
+        "run": 3,
+        "scores": {
+          "performance": 98,
+          "accessibility": 100,
+          "best-practices": 100,
+          "seo": 100
+        },
+        "cls": 0,
+        "lcp": 2268.4005,
+        "tbt": 45
+      }
+    ]
+  },
+  {
+    "page": "hi-home",
+    "method": "Median of three consecutive cold-cache mobile Lighthouse runs; all raw runs retained",
+    "scores": {
+      "performance": 96,
+      "accessibility": 100,
+      "best-practices": 100,
+      "seo": 100
+    },
+    "cls": 0,
+    "lcp": 2736.0709999999995,
+    "tbt": 38,
+    "runs": [
+      {
+        "run": 1,
+        "scores": {
+          "performance": 93,
+          "accessibility": 100,
+          "best-practices": 100,
+          "seo": 100
+        },
+        "cls": 0,
+        "lcp": 3130.91725,
+        "tbt": 38
+      },
+      {
+        "run": 2,
+        "scores": {
+          "performance": 96,
+          "accessibility": 100,
+          "best-practices": 100,
+          "seo": 100
+        },
+        "cls": 0,
+        "lcp": 2736.0709999999995,
+        "tbt": 50
+      },
+      {
+        "run": 3,
+        "scores": {
+          "performance": 96,
+          "accessibility": 100,
+          "best-practices": 100,
+          "seo": 100
+        },
+        "cls": 0,
+        "lcp": 2733.71525,
+        "tbt": 38
+      }
+    ]
+  },
+  {
+    "page": "hi-collection",
+    "method": "Median of three consecutive cold-cache mobile Lighthouse runs; all raw runs retained",
+    "scores": {
+      "performance": 97,
+      "accessibility": 100,
+      "best-practices": 100,
+      "seo": 100
+    },
+    "cls": 0,
+    "lcp": 2646.4546,
+    "tbt": 41.5,
+    "runs": [
+      {
+        "run": 1,
+        "scores": {
+          "performance": 97,
+          "accessibility": 100,
+          "best-practices": 100,
+          "seo": 100
+        },
+        "cls": 0,
+        "lcp": 2646.4546,
+        "tbt": 41.5
+      },
+      {
+        "run": 2,
+        "scores": {
+          "performance": 97,
+          "accessibility": 100,
+          "best-practices": 100,
+          "seo": 100
+        },
+        "cls": 0,
+        "lcp": 2642.923200000001,
+        "tbt": 47.5
+      },
+      {
+        "run": 3,
+        "scores": {
+          "performance": 97,
+          "accessibility": 100,
+          "best-practices": 100,
+          "seo": 100
+        },
+        "cls": 0,
+        "lcp": 2647.1317499999996,
+        "tbt": 38.5
+      }
+    ]
+  },
+  {
+    "page": "hi-poster",
+    "method": "Median of three consecutive cold-cache mobile Lighthouse runs; all raw runs retained",
+    "scores": {
+      "performance": 96,
+      "accessibility": 100,
+      "best-practices": 100,
+      "seo": 100
+    },
+    "cls": 0,
+    "lcp": 2637.3402,
+    "tbt": 82.33095000000026,
+    "runs": [
+      {
+        "run": 1,
+        "scores": {
+          "performance": 96,
+          "accessibility": 100,
+          "best-practices": 100,
+          "seo": 100
+        },
+        "cls": 0,
+        "lcp": 2637.3402,
+        "tbt": 90.58247500000039
+      },
+      {
+        "run": 2,
+        "scores": {
+          "performance": 96,
+          "accessibility": 100,
+          "best-practices": 100,
+          "seo": 100
+        },
+        "cls": 0,
+        "lcp": 2640.3524,
+        "tbt": 82.33095000000026
+      },
+      {
+        "run": 3,
+        "scores": {
+          "performance": 96,
+          "accessibility": 100,
+          "best-practices": 100,
+          "seo": 100
+        },
+        "cls": 0,
+        "lcp": 2619.3589999999995,
+        "tbt": 68.08012499999995
+      }
+    ]
+  }
+]

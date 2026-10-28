@@ -79,8 +79,7 @@ test("optional contributor signup and guest uploads both remain available", asyn
   );
   await page.goto("/en/contribute/");
   await expect(page.locator("main")).toContainText("No account needed");
-  await page.getByRole("button", { name: "Poster/Placard", exact: true }).click();
-  await expect(page.locator("input[type=file]")).toBeVisible();
+  await expect(page.getByRole("button", { name: "Choose a file", exact: true })).toBeVisible();
 });
 
 test("admin is gated by fresh MFA and never shows a counterfeit queue", async ({ page }) => {
@@ -89,15 +88,13 @@ test("admin is gated by fresh MFA and never shows a counterfeit queue", async ({
   await expect(page).toHaveURL(/\/en\/login\//);
   await expect(page.getByRole("button", { name: "Save decision" })).toHaveCount(0);
 });
-test("contact and takedown keep messages on network/provider failure and expose required URL errors", async ({
+test("contact keeps messages on network/provider failure and exposes required errors", async ({
   page,
 }) => {
   await fixtures(page);
-  await page.goto("/en/takedown/");
+  await page.goto("/en/contact/");
   await page.getByRole("button", { name: "Send message" }).click();
-  await expect(page.locator("#work_url")).toBeFocused();
-  await expect(page.locator("#work_url-error")).toBeVisible();
-  await page.getByLabel("Artwork URL").fill("https://redlarkworkshop.com/en/poster/fixture/");
+  await expect(page.locator("#message")).toBeFocused();
   await page.getByLabel("YOUR MESSAGE").fill("A rights concern about this fixture.");
   await page.getByRole("button", { name: "Send message" }).click();
   await expect(page.locator("main [role=alert]")).toBeVisible();
@@ -105,7 +102,7 @@ test("contact and takedown keep messages on network/provider failure and expose 
 });
 test("backend visual evidence: English/Malayalam at 390 and 1440", async ({ page }) => {
   test.setTimeout(120000);
-  const dir = "docs/evidence/backend-pages-round-1";
+  const dir = "docs/evidence-local/backend-pages-round-1";
   fs.mkdirSync(dir, { recursive: true });
   for (const locale of ["en", "ml"])
     for (const width of [390, 1440])

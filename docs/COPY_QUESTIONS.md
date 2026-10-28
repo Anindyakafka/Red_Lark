@@ -13,7 +13,7 @@ Owner-directed visual change, 21 October 2026: remove decorative square brackets
 
 ## Owner-directed footer change — 20 October 2026
 
-Removed the pre-rebrand footer tagline “FREE TO FIND. YOURS TO PRINT.” as requested. Appendix A landing wording remains unchanged. The formats continue using the supplied union of ten labels.
+Removed the pre-rebrand footer tagline "FREE TO FIND. YOURS TO PRINT." as requested. Appendix A landing wording remains unchanged. The formats continue using the supplied union of ten labels.
 
 ## Owner-directed upload wording (21 October 2026)
 

@@ -1,0 +1,114 @@
+[
+  {
+    "path": "/en/artist/artist-df777847e6252f98/",
+    "status": 200,
+    "title": "Anonymous contributor / artist-df777847e6252f98 | Red Lark Workshop",
+    "axe": 0
+  },
+  {
+    "path": "/en/poster/work-e88708b1-f9f3-45a5-a3f3-32b43c6d7aa6/",
+    "status": 200,
+    "title": "this is a poster | Red Lark Workshop",
+    "axe": 0
+  },
+  {
+    "path": "/en/artist/artist-cf5c7bb1b33ebdba/",
+    "status": 200,
+    "title": "Anonymous contributor / artist-cf5c7bb1b33ebdba | Red Lark Workshop",
+    "axe": 0
+  },
+  {
+    "path": "/en/poster/work-4cd31991-9b33-4ef3-8b3e-0599c9aba10d/",
+    "status": 200,
+    "title": "something testing | Red Lark Workshop",
+    "axe": 0
+  },
+  {
+    "path": "/en/collection/",
+    "approvedWorksPresent": 2
+  },
+  {
+    "path": "/hi/artist/artist-df777847e6252f98/",
+    "status": 200,
+    "title": "हिन्दी / Anonymous contributor / artist-df777847e6252f98 | Red Lark Workshop",
+    "axe": 0
+  },
+  {
+    "path": "/hi/poster/work-e88708b1-f9f3-45a5-a3f3-32b43c6d7aa6/",
+    "status": 200,
+    "title": "हिन्दी / this is a poster | Red Lark Workshop",
+    "axe": 0
+  },
+  {
+    "path": "/hi/artist/artist-cf5c7bb1b33ebdba/",
+    "status": 200,
+    "title": "हिन्दी / Anonymous contributor / artist-cf5c7bb1b33ebdba | Red Lark Workshop",
+    "axe": 0
+  },
+  {
+    "path": "/hi/poster/work-4cd31991-9b33-4ef3-8b3e-0599c9aba10d/",
+    "status": 200,
+    "title": "हिन्दी / something testing | Red Lark Workshop",
+    "axe": 0
+  },
+  {
+    "path": "/hi/collection/",
+    "approvedWorksPresent": 2
+  },
+  {
+    "path": "/bn/artist/artist-df777847e6252f98/",
+    "status": 200,
+    "title": "বাংলা / Anonymous contributor / artist-df777847e6252f98 | Red Lark Workshop",
+    "axe": 0
+  },
+  {
+    "path": "/bn/poster/work-e88708b1-f9f3-45a5-a3f3-32b43c6d7aa6/",
+    "status": 200,
+    "title": "বাংলা / this is a poster | Red Lark Workshop",
+    "axe": 0
+  },
+  {
+    "path": "/bn/artist/artist-cf5c7bb1b33ebdba/",
+    "status": 200,
+    "title": "বাংলা / Anonymous contributor / artist-cf5c7bb1b33ebdba | Red Lark Workshop",
+    "axe": 0
+  },
+  {
+    "path": "/bn/poster/work-4cd31991-9b33-4ef3-8b3e-0599c9aba10d/",
+    "status": 200,
+    "title": "বাংলা / something testing | Red Lark Workshop",
+    "axe": 0
+  },
+  {
+    "path": "/bn/collection/",
+    "approvedWorksPresent": 2
+  },
+  {
+    "path": "/ml/artist/artist-df777847e6252f98/",
+    "status": 200,
+    "title": "മലയാളം / Anonymous contributor / artist-df777847e6252f98 | Red Lark Workshop",
+    "axe": 0
+  },
+  {
+    "path": "/ml/poster/work-e88708b1-f9f3-45a5-a3f3-32b43c6d7aa6/",
+    "status": 200,
+    "title": "മലയാളം / this is a poster | Red Lark Workshop",
+    "axe": 0
+  },
+  {
+    "path": "/ml/artist/artist-cf5c7bb1b33ebdba/",
+    "status": 200,
+    "title": "മലയാളം / Anonymous contributor / artist-cf5c7bb1b33ebdba | Red Lark Workshop",
+    "axe": 0
+  },
+  {
+    "path": "/ml/poster/work-4cd31991-9b33-4ef3-8b3e-0599c9aba10d/",
+    "status": 200,
+    "title": "മലയാളം / something testing | Red Lark Workshop",
+    "axe": 0
+  },
+  {
+    "path": "/ml/collection/",
+    "approvedWorksPresent": 2
+  }
+]

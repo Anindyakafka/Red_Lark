@@ -1,12 +1,7 @@
 {
   "borders-are-lines": {
-    "categories": [
-      "displacement-and-migration"
-    ],
-    "tags": [
-      "migration",
-      "freedom of movement"
-    ],
+    "categories": ["displacement-and-migration"],
+    "tags": ["migration", "freedom of movement"],
     "kind": "poster-placard",
     "imageCode": "1c",
     "captionCode": "2e",

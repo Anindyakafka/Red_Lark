@@ -1,0 +1,348 @@
+# Current acceptance checklist
+
+## Public simplification — 23 October 2026
+
+| Check                                      | Status  | Evidence                                                                                                                  | Note                                                                                                                          |
+| ------------------------------------------ | ------- | ------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------- |
+| Workshop public rename and legacy redirect | PASS    | `netlify.toml`, `src/app/[locale]/workshop/page.tsx`, `tests/simplification.test.ts`                                      | `/studio` redirects permanently; technical editor module names remain internal.                                               |
+| Type terminology and Writing catalogue     | PASS    | `content/formats.json`, `src/components/collection.tsx`, `src/components/poster-image.tsx`                                | `kind` remains the stable URL/data parameter.                                                                                 |
+| Historical Archive public shell            | PASS    | `src/app/[locale]/archive/page.tsx`, `src/components/historical-archive.tsx`                                              | Archive-only cards are view-only and never link to downloads.                                                                 |
+| Historical Archive static snapshot         | PASS    | `supabase/migrations/202610230003_static_archive_catalogue.sql`, `scripts/fetch-public-catalogue.ts`, `tests/rls.test.ts` | Static builds merge a safe archive-only snapshot; no owner IDs, contact, UPI, private keys or unpublished works are returned. |
+| Historical Archive database backfill       | PARTIAL | `supabase/migrations/202610230001_archive_history.sql`                                                                    | Applied. Future publications are tracked; existing records were not directly backfilled.                                      |
+| Takedown workflow removal                  | PASS    | contact, mail, admin and policy sources                                                                                   | No public/private endpoint, route, policy article or admin view remains.                                                      |
+| Contribute-first guest upload              | PASS    | `src/app/[locale]/contribute/page.tsx`, `src/components/account-client.tsx`, `src/server/guest.ts`, `tests/guest.test.ts` | Right-to-share consent is required; quick uploads default to CC0 and have no count limit.                                     |
+| Admin review and work removal              | PASS    | `src/server/admin.ts`, `src/server/api.ts`, `supabase/migrations/202610250001_admin_work_removal.sql`                     | Review routes have no account-request cap. Take-down and permanent removal clean R2 objects and rebuild the public catalogue. |
+| Writing file/text contribution pipeline    | PASS    | `src/server/text-upload.ts`, `tests/text-upload.test.ts`                                                                  | TXT/Markdown/DOCX sanitize to plain text and follow private review.                                                           |
+| Compact landing preview                    | PASS    | `src/app/[locale]/page.tsx`, `src/components/collection.tsx`                                                              | Exactly ten newest usable works, without the full filter interface.                                                           |
+| Simplification verification                | PASS    | typecheck, lint, test, build                                                                                              | 83 unit tests; static export and client-secret audits pass.                                                                   |
+
+## Approved-work publication repair
+
+| Item                   | Status  | Evidence                                                                                                                                                                                         |
+| ---------------------- | ------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| Root cause             | PASS    | 22 October 21:01 IST Netlify rejected duplicate Anonymous contributor artist titles after fetching both approved works                                                                           |
+| Unique artist metadata | PASS    | artist-metadata.ts and artist-metadata.test.ts: public archive IDs in title/OG/Twitter across four locales; credit unchanged                                                                     |
+| Real publication build | PASS    | PUBLIC_CATALOGUE_ENABLED=1; two approved works; 420 HTML pages pass metadata/link/alt and client-secret validation                                                                               |
+| Regression             | PASS    | 79 unit/copy/RLS tests, typecheck/lint; docs/evidence/artist-publication/browser.json: 20 checks in four locales, 16 artist/item pages with full axe 0 and both works present in each Collection |
+| Live publication       | PENDING | Merge and successful production deployment required                                                                                                                                              |
+
+## Studio workspace repair
+
+| Item                                      | Status | Evidence                                                                                                                |
+| ----------------------------------------- | ------ | ----------------------------------------------------------------------------------------------------------------------- |
+| Before-edit audit / measurements          | PASS   | docs/STUDIO_AUDIT.md; docs/evidence/studio-workspace/before.json and PNGs                                               |
+| Attribution metadata / clean editing      | PASS   | tests/studio-workspace.test.ts: source persistence, CC0/SA defaults, editing SVG, UTF-8 PNG attribution/EXIF stripping  |
+| Overlay controls / full feature retention | PASS   | final-browser.json: four locales × 375/768/1440; all panels full axe 0; no reflow                                       |
+| Eight-handle non-destructive crop         | PASS   | Unit pixel/geometry tests; mouse/pen/touch eight handles; keyboard, undo/restore, SVG/PNG/PDF                           |
+| Full viewport pinch/pan                   | PASS   | Real CDP pinch/moving midpoint, wheel/Space/middle, layer drag at zoom, local native-gesture fallback                   |
+| Final regression and real-device limits   | PASS   | 78 unit + 274 unique browser tests; final affected rerun 91/91; build/types/lint pass; real devices/print remain manual |
+
+## Navigation and admin verification window
+
+| Item                                    | Status | Evidence                                                                                                                             |
+| --------------------------------------- | ------ | ------------------------------------------------------------------------------------------------------------------------------------ |
+| Contribution CTA and visitor auth links | PASS   | Landing/header links; navigation-session browser checks                                                                              |
+| No warning badge                        | PASS   | Admin shows a pending number only when known; no ! placeholder                                                                       |
+| Bounded 24-hour MFA                     | PASS   | admin-mfa unit boundaries; RLS allows twelve-hour verified admin and denies past 24h; mandatory role/AAL2/TOTP retained              |
+| API/DB consistency                      | PASS   | Applied 202610210011_admin_mfa_window.sql through verified TLS; no new account or service configuration                              |
+| Final browser/session proof             | PASS   | docs/evidence/navigation-session/browser-summary.json: 249 unique tests passing; hosted.json: repeated sessions/provider refresh/RLS |
+| Language alignment / bracket-free UI    | PASS   | 20 locale/width geometry and axe checks; viewed header/picker PNGs; export-brackets.json: 396 HTML files, zero hits                  |
+| Public performance                      | PASS   | docs/evidence/navigation-session/lighthouse.json: en medians 96/98/98; hi 96/96/97; Accessibility/Best Practices/SEO 100; CLS 0      |
+
+## Staff invitation correction
+
+| Item                             | Status | Evidence                                                                               |
+| -------------------------------- | ------ | -------------------------------------------------------------------------------------- |
+| Wrong link diagnosed             | PASS   | Unset local SITE_URL made old command choose localhost; owner confirmed refusal        |
+| Public URL and rollout guard     | PASS   | staff-invitation.ts; CLI checks deployed confirm-v1 before any user/role/mail change   |
+| Scanner-safe invitation          | PASS   | GET redirects only; explicit CSRF POST verifies token; new links use fragment          |
+| Recovery / accessibility / roles | PASS   | invitation browser/unit/hosted checks; MFA and service-only invitation grants retained |
+
+Final evidence: docs/evidence/invitation-fix/. 70 unit/copy/RLS + 46 focused browser tests pass; build/typecheck/lint/format/content/brand/canonical/client-secret checks pass. en/hi at 390/1440 px have axe 0 and no page overflow. Hosted disposable invitation opens without verifying, accepts once, grants no MFA bypass, and sets a password; fixture removed. Public homepage/collection/poster performance is unchanged and not remeasured in this focused repair. Deployment and a fresh invitation remain owner release steps.
+
+## Password reset and optional contributor accounts
+
+| Item                            | Status | Evidence                                                                                                              |
+| ------------------------------- | ------ | --------------------------------------------------------------------------------------------------------------------- |
+| MFA password failure reproduced | PASS   | docs/evidence/password-reset/before.json: insufficient_aal -> old generic update error                                |
+| MFA-preserving password change  | PASS   | docs/evidence/password-reset/after.json: code verification, password updated, old session revoked, new password works |
+| Clear password failure states   | PASS   | passwordError maps same/weak/stale-session/MFA cases; password remains in page memory only                            |
+| Contributor signup optional     | PASS   | Public signup/login/recovery restored, guest upload unchanged, staff grant and MFA/RLS unchanged                      |
+| Final browser regression        | PASS   | tests/browser/password-reset.spec.ts plus existing suite                                                              |
+
+The earlier provider signup FAIL row is superseded: keeping public signup enabled is now the owner's explicit requirement.
+
+Final verification: 67 unit/copy/RLS and 51 focused browser checks PASS; typecheck/lint/format/build/content/brand/canonical/client-secret checks PASS. Password/MFA checks cover en/hi at 390 and 1440 px with axe 0 and no page overflow. Real disposable recovery session verified against the configured Supabase project; no real email or password was used. Evidence: docs/evidence/password-reset/. Prior full-browser/Lighthouse evidence is retained for unchanged public-page scope; not represented as rerun here.
+
+## Staff-only release verification (21 October 2026)
+
+| Item                              | Status | Evidence / limit                                                                                                                             |
+| --------------------------------- | ------ | -------------------------------------------------------------------------------------------------------------------------------------------- |
+| Public signup blocked server-side | PASS   | tests/staff.test.ts; /signup and /signup-link return 403 without contacting Auth                                                             |
+| Staff password and invitation     | PASS   | docs/evidence/staff-access/hosted-auth.json; disposable real Supabase invite/password login; MFA remains mandatory                           |
+| Provider direct-signup setting    | FAIL   | Hosted settings check found disable_signup=false; owner dashboard step in TODO_HUMAN                                                         |
+| Review recovery and audit table   | PASS   | browser-full.json: 212 passed; hosted.json real upload/review/public R2 and audit filters; fresh-MFA preservation and all-locale audit axe 0 |
+| Copy/licence/strict checks        | PASS   | 67 unit/copy/RLS tests; build/typecheck/lint green before final browser run                                                                  |
+
+Final evidence: docs/evidence/staff-access/final.json. 67 unit/copy/RLS + 212 full browser + 47 final focused browser checks pass. Typecheck/lint/format/build/content/canonical/client-secret checks pass; commit secret scan has zero findings. Mobile Lighthouse medians: en landing/collection/poster 96/97/96; hi 96/96/95. A11y/BP/SEO 100 throughout; CLS 0. Existing real accounts/artwork were not changed. Production deployment/inbox verification remains the owner release step.
+
+## Current upload/review acceptance (21 October 2026)
+
+This table supersedes the earlier repair progress rows. Measurements and scopes are retained in docs/evidence/upload-repair/final.json; production deployment is not claimed.
+
+| Requirement                                                    | Status | Evidence                                                                       | Note                                                                                                                                                                        |
+| -------------------------------------------------------------- | ------ | ------------------------------------------------------------------------------ | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 1 / carry-over 9: optional image description, described images | PASS   | contribution-metadata and core tests; DescriptionField; fetch-public-catalogue | Empty upload accepted; short descriptions kept without a minimum length; blank or generic descriptions receive a fallback. Checked-in archive files still require alt text. |
+| 2: tags                                                        | PASS   | upload-repair browser tests; contribution-review-rls tests                     | Suggestions, Enter/comma/blur, Add, x/Backspace, dedup/limits/errors/retention; tags/work_tags rows; custom flag and admin editing                                          |
+| 3: licence choices                                             | PASS   | metadata unit tests; default-submission browser test; hosted ND gate           | Four cards map to seven IDs, CC0 disables NC, default persisted, no ND remix                                                                                                |
+| 4: category selection/persistence                              | PASS   | hosted.json; category browser/RLS tests                                        | Existing handler supported arrays; replaced confusing native control. Three rows visible in dashboard/admin and three public category pages in all four locales             |
+| 5: admin review and notifications                              | PASS   | hosted.json; queue/detail/MFA tests; grant_admin RLS                           | Real fixture role/TOTP/private upload/edit/changes/approve/reject/public download; transactional mail outbox and audited retry; transport failure preserved decisions       |
+| Carry-over 13: accessible errors and retained state            | PASS   | upload-repair.spec.ts                                                          | English/Hindi 390/1440, optional alt, tag limits, category retention, reason errors, no forced Enter submission                                                             |
+| Four locale draft handling / landing copy                      | PASS   | messages/*.json; copy.test.ts                                                  | hi/bn/ml reviewed:false, visible fallback notice; Appendix A untouched                                                                                                      |
+| Complete automated verification                                | PASS   | final.json; browser-full-final.json                                            | 64 unit/copy/RLS; 202 browser; all 392 locale pages broad axe 0; build/typecheck/lint/format/content/brand green                                                            |
+| Mobile/desktop visual inspection                               | PASS   | after/*.png; ITERATIONS round 5                                                | English/Hindi 390/1440 inspected; readable scripts, visible badge, compact queue and large detail preview                                                                   |
+| Performance                                                    | PASS   | lighthouse.json; lighthouse-collection-followup.json                           | Six route medians >=95, other categories 100, CLS 0. Initial 94 retained transparently                                                                                      |
+| Secret handling                                                | PASS   | security.json; complete build client-secret scan                               | Ignored/untracked local env; no private credentials in static output; focused source scan passed                                                                            |
+
+Mail and production build-hook requests were intercepted during hosted acceptance. Real deployed inbox delivery and production rebuild completion are owner checks in TODO_HUMAN.md. Screenshots of private pages use explicitly synthetic data; they do not claim a browser session as the real owner. Custom-tag RLS is also verified against anonymous, owner and fresh-MFA admin sessions; unpublished/rejected/orphan labels are not a public dictionary.
+
+## Guest contributions / UX acceptance — 21 October 2026
+
+| Requirement                                                      | Status | Evidence                                                                  | Note                                                                                                          |
+| ---------------------------------------------------------------- | ------ | ------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------- |
+| Optional accounts; guest submit in en/hi/bn/ml                   | PASS   | src/server/guest.ts; tests/browser/guest.spec.ts                          | No phantom Auth user or mandatory email/name                                                                  |
+| Private R2, sanitization, real PDF outputs, ND and consent gates | PASS   | docs/evidence/guest-submissions/hosted.json                               | Real services, pending invisibility and fixture cleanup verified                                              |
+| Real browser upload/CORS and private receipt                     | PASS   | docs/evidence/guest-submissions/browser-live-services.json                | Same local website and hosted services, no network fixtures                                                   |
+| Receipt isolation/expiry and guest RPC/RLS                       | PASS   | tests/guest.test.ts; tests/rls.test.ts; scripts/verify-hosted-database.ts | Hash-only capability; private table inaccessible to anon/contributors; fresh MFA for admins                   |
+| Menu dismissal and form preservation                             | PASS   | tests/browser/guest.spec.ts                                               | Outside click/tap, focus leave, Escape, navigation; chosen-format changes retain details                      |
+| Typecheck/lint/build/copy/content/client-secret gates            | PASS   | npm run typecheck; npm run lint; npm test; npm run build                  | 58 unit tests; Appendix A unchanged                                                                           |
+| Full browser suite and accessibility                             | PASS   | npm run test:e2e: 185 passed; test-results/results.json                   | All four locale exports axe 0; guest form/status axe 0                                                        |
+| Secret scan of changed/new source                                | PASS   | .qa/scan-guest-changes.mjs                                                | Full unchanged-history rescan stopped for runtime cost; prior history evidence retained, not claimed as rerun |
+| Production guest approval/publication/takedown                   | FAIL   | Pending deployment/owner acceptance                                       | No fixture artwork published; do not infer this from private upload acceptance                                |
+
+## Prior authenticator acceptance
+
+Current public performance: PASS — docs/evidence/guest-submissions/lighthouse.json records median-of-three mobile Lighthouse performance 96–98 in en/hi Home, Collection and Poster, with Accessibility/Best Practices/SEO 100 and CLS 0. One cold first run scored 93; all six page medians meet the target. Raw runs remain in .qa/guest-lighthouse.
+
+21 October update: owner email/sign-in/TOTP verified; guarded admin bootstrap PASS. Existing-session update repair PASS (src/server/auth.ts, tests/backend.test.ts, hosted isolated insert 201/object and update 200/object, cleanup confirmed). Typecheck/lint/build/secret checks and 55 tests PASS. Live fresh-MFA/admin retry remains FAIL/pending deployment. Earlier pending-enrollment notes below are superseded.
+
+| Feature                                                                                | Status | Evidence                                                                                         | Note                                                                                  |
+| -------------------------------------------------------------------------------------- | ------ | ------------------------------------------------------------------------------------------------ | ------------------------------------------------------------------------------------- |
+| QR image, separate selectable setup key, responsive layout, cleanup after verification | PASS   | src/server/api.ts; src/components/account-client.tsx; tests/browser/mfa.spec.ts: 2 passed, axe 0 | Synthetic enrollment only; real provider QR is returned without third-party rendering |
+| Real owner TOTP verification and administrator bootstrap                               | FAIL   | Owner signup/email/sign-in verified; guarded bootstrap reported totp_verified=false              | Requires deploying repair or manual-key entry, then owner verification; no MFA bypass |
+
+## Account pages checkpoint — 20 October 2026
+
+These rows supersede inherited acceptance for changed features. UI fixtures prove browser behavior only, never real mail delivery or production publication.
+
+| Requirement                                                        | Status | Evidence                                                           | Note                                                                                                                                 |
+| ------------------------------------------------------------------ | ------ | ------------------------------------------------------------------ | ------------------------------------------------------------------------------------------------------------------------------------ |
+| Dedicated localized auth/contributor/admin routes                  | PASS   | src/app/[locale]; tests/browser/private-pages.spec.ts              | 82 initial browser tests pass; every new en/hi route axe-clean; full regression in progress                                          |
+| Canonical and OG host safety                                       | PASS   | src/lib/site-origin.ts; scripts/validate-export.mjs; npm run build | Default custom domain; reject preview hosts; scan every built HTML including 404                                                     |
+| New source URL and retired-brand scan                              | PASS   | src/config/site.ts; npm run check:brand                            | New GitHub URL; no source-name exception; old draft keys migrated without retired literal                                            |
+| Accessible contact link and removed old footer tagline             | PASS   | src/components/contact-address.tsx; shell.tsx; COPY_QUESTIONS.md   | Client mailto verified by Playwright, readable no-JS fallback; old footer tagline removed                                            |
+| Visible printed licence/credit including Indic                     | PASS   | src/server/print.ts; tests/backend.test.ts                         | Embedded self-hosted fonts and Unicode maps; A4/A2; no metadata-only attribution                                                     |
+| Real website signup, verification and MFA admin bootstrap          | FAIL   | TODO_HUMAN.md                                                      | No verified website admin yet; infrastructure dashboard login is separate                                                            |
+| Real pending upload, approval, all-locale publication and takedown | FAIL   | TODO_HUMAN.md                                                      | Public R2 hostname/CORS, build hook and configured deployment still needed                                                           |
+| Real mail end-to-end and independent non-Gmail headers             | FAIL   | Previous Gmail evidence; TODO_HUMAN.md                             | Exposed provider key must be rotated; non-Gmail inbox not supplied                                                                   |
+| Final full regression, axe and performance                         | PASS   | docs/evidence/redlark-round-1-account-pages-p5/summary.json        | 178 browser tests, 54 unit/RLS/copy tests; all six Lighthouse medians >=95; other categories 100; CLS 0; no external asset requests. |
+
+## Backend continuation — 19 October 2026 (overrides historical HOLD rows below)
+
+| Requirement                                                       | Status | Evidence                                        | Note                                                                                                                                                                                                 |
+| ----------------------------------------------------------------- | ------ | ----------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Every-table RLS, own-row isolation, protected roles               | PASS   | tests/rls.test.ts; supabase/migrations          | Actual local PostgreSQL permissions; hosted integration still required.                                                                                                                              |
+| Admin bootstrap idempotent; verified real login and TOTP          | PASS   | tests/rls.test.ts; bootstrap_admin SQL          | Local conditions tested. No real admin manufactured.                                                                                                                                                 |
+| Hosted migrations                                                 | PASS   | scripts/database.ts; verify-hosted-database.ts  | Five migrations applied with verified TLS; anonymous private-table denial verified.                                                                                                                  |
+| Repository and history secret scan                                | PASS   | scripts/check-secrets.mjs; Gitleaks 8.30.1      | Redacted scan clean; .env.local ignored/untracked; CI fetches full history.                                                                                                                          |
+| Client output excludes actual private secrets/prefixes            | PASS   | scripts/check-client-secrets.mjs; npm run build | Export scanned; no secret values printed.                                                                                                                                                            |
+| R2 scoped signing, unsigned-read denial and elapsed expiry        | PASS   | scripts/verify-r2.ts --wait-expiry              | Correct-key upload works; changed key rejected; pending absent from approved bucket; unsigned private read denied; actual expiry tested after five minutes. Public-host/CORS acceptance is separate. |
+| Real SPF/DKIM/DMARC, inbox and Reply-To                           | FAIL   | TODO_HUMAN.md                                   | Both authorized addresses are Gmail; non-Gmail inbox/raw-header evidence missing.                                                                                                                    |
+| Netlify variables and deployment confirmation                     | FAIL   | docs/PLAN.md                                    | Backend deployment prohibited until owner confirms runtime configuration.                                                                                                                            |
+| Signup → verify → upload → MFA approval → four locales → takedown | FAIL   | Backend continuation                            | Hosted schema/Auth/public storage must be ready first.                                                                                                                                               |
+
+Updated 20 October 2026. The implementation checks below are current; real hosted workflow failures remain explicitly listed above and below. Earlier failed rounds are retained in ITERATIONS.md and evidence. No required backend acceptance is relabelled N-A.
+
+| Requirement                                                | Status | Evidence                                                                                   | Note                                                                                                                                                                                             |
+| ---------------------------------------------------------- | ------ | ------------------------------------------------------------------------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| 1. Localized custom 404, search and links                  | PASS   | global-not-found.tsx; locale 404 routes; site/i18n browser tests                           | Edge and preview return real 404 for unknown paths.                                                                                                                                              |
+| 2. Key-page above-fold CTA                                 | PASS   | page-intro.tsx; item/landing/editorial routes; round 14 captures                           | Archive primary, Studio second; editorial CTAs precede long native headings.                                                                                                                     |
+| 3. Unique per-locale title                                 | PASS   | validate-export.mjs; i18n/metadata.ts                                                      | Validates all exported HTML.                                                                                                                                                                     |
+| 4. Unique per-locale description                           | PASS   | metadata helpers; content-derived metadata                                                 | Draft fallback is explicit.                                                                                                                                                                      |
+| 5. Absolute canonical/OG/Twitter URLs and images           | PASS   | site-origin.ts; validate-export.mjs; 392-page build                                        | Custom-domain default; reject deployment hosts and scan every built HTML, including 404.                                                                                                         |
+| 6. Original lark favicon set/manifest/theme                | PASS   | scripts/brand.ts; public/icons; site.webmanifest                                           | Original SVG mark; self-hosted assets.                                                                                                                                                           |
+| 7. Robots, private-path exclusions                         | PASS   | src/app/robots.ts; browser tests                                                           | Admin/account/API excluded, noindex private-service notices.                                                                                                                                     |
+| 8. Locale sitemap and hreflang                             | PASS   | src/app/sitemap.ts; metadata tests                                                         | Includes content, categories, blog and policy pages.                                                                                                                                             |
+| 9. Meaningful required alt                                 | PASS   | validatePoster; validate-content.ts; unit rejection tests                                  | Build fails on missing/meaningless alt.                                                                                                                                                          |
+| 10. Five responsive widths                                 | PASS   | site/editorial/i18n browser tests                                                          | 360/390/768/1024/1440; native text wraps.                                                                                                                                                        |
+| 11. Browse-only safe-area mobile CTA                       | PASS   | preferences.tsx; mobile browser tests/captures                                             | Hidden in Studio, forms and account/admin notices.                                                                                                                                               |
+| 12. Loading states/placeholders/CLS                        | PASS   | docs/evidence/redlark-round-1-account-pages-p5/summary.json                                | Stable image geometry and mobile account/theme header; measured CLS 0 on all six key routes.                                                                                                     |
+| 13. All requested form error paths                         | PASS   | account-client.tsx; handoff-form.tsx; backend/private-pages browser tests; backend.test.ts | Inline focus/aria errors, network/provider failures, generic auth responses, upload errors and stored-mail retry states verified. Real identity lifecycle remains a separate blocked acceptance. |
+| 14. Noindex thank-you                                      | PASS   | thank-you/page.tsx; browser tests                                                          | Shows server-reported saved/queued status; does not claim inbox delivery.                                                                                                                        |
+| 15. Accurate draft privacy                                 | PASS   | privacy/page.tsx; content/copy; privacy.test.ts                                            | Describes necessary auth cookies, browser-only Studio, private R2 contributions, optional contact/UPI, database/mail and draft retention obligations.                                            |
+| 16. Draft terms/licensing/removal                          | PASS   | terms/page.tsx; policy JSON/routes                                                         | No invented legal authority or response SLA.                                                                                                                                                     |
+| 17. Cookie banner only if needed                           | PASS   | AUDIT.md; privacy routes                                                                   | Necessary auth cookies and user-requested local storage; optional cookieless analytics; no third-party tracker scripts.                                                                          |
+| 18. Cookieless analytics, DNT and allowed events           | PASS   | analytics.ts; privacy.test.ts                                                              | DNT respected; private auth/account/admin pageviews skipped; upload event URL omits private revision IDs.                                                                                        |
+| 19. Real optional CONTACT_EMAIL                            | PASS   | site.ts; contact-address.tsx; .env.example                                                 | Supplied redlarkworkshop@gmail.com, accessible obfuscation; explicit blank warns.                                                                                                                |
+| Four locales, review flags and native font shaping         | PASS   | messages; Indic provenance/parity; i18n/indic tests                                        | Drafts remain reviewed:false; native approval is pending.                                                                                                                                        |
+| Appendix A verbatim source and rendered-copy lock          | PASS   | tests/copy.test.ts; independent fixture; landing browser test                              | Curly quotes, repeated links, block and sentence order preserved.                                                                                                                                |
+| No legacy name except single repository constant           | PASS   | scripts/check-no-legacy-name.mjs; build/CI                                                 | One-time old storage migration derives the former prefix.                                                                                                                                        |
+| Exact 28 categories/10 formats/codes/tags                  | PASS   | content inventories; taxonomy/items tests                                                  | File formats are distinct from artwork formats.                                                                                                                                                  |
+| AI disclosure and independent public-field consent         | PASS   | item/artist components; validate.ts; items tests                                           | No real artist contact/UPI fabricated.                                                                                                                                                           |
+| Localized MDX blog, two placeholder posts, RSS             | PASS   | blog.server.ts; editorial unit/browser tests; four feeds                                   | Trusted build-time content; no visitor MDX execution.                                                                                                                                            |
+| Policy hub, verbatim AI, guidelines/takedown/About         | PASS   | policy JSON/routes; editorial tests                                                        | Legal translations explicitly fall back to English pending review.                                                                                                                               |
+| Auth/session/verification/reset/logout/export/delete       | FAIL   | src/server/auth.ts; api.ts; account routes; TODO_HUMAN.md                                  | Implemented and automated tests green; real verified website identity and account lifecycle acceptance still required.                                                                           |
+| Database, roles, every-table RLS and policy tests          | PASS   | supabase/migrations; tests/rls.test.ts; hosted verification                                | Five hosted migrations; every application table RLS; actual PostgreSQL anonymous/owner/other/admin policy matrix.                                                                                |
+| Account upload sanitization/storage/status pipeline        | FAIL   | server/contributions.ts; storage.ts; private-pages.spec.ts                                 | Implementation, metadata stripping and scoped R2 signing tested; authenticated browser-to-R2 acceptance awaits owner CORS and website identity.                                                  |
+| Role-gated admin review/audit/revalidation                 | FAIL   | admin service-pending page; PLAN.md                                                        | Pending notice is not a review queue.                                                                                                                                                            |
+| Persisted contact/takedown, rate limits and delivered mail | FAIL   | server/mail.ts; backend-integration/summary.json; TODO_HUMAN.md                            | Stored contact/team/ack and outage persistence verified; current-key takedown and non-Gmail evidence remain pending.                                                                             |
+| Signup -> upload -> approval -> collection acceptance      | FAIL   | Account/admin/upload routes; TODO_HUMAN.md                                                 | Implemented; real website identity, public hostname/CORS, rebuild hook and configured deployment are still required.                                                                             |
+| Contact -> database -> test-mode delivered email           | PASS   | backend-integration/summary.json; real handler integration                                 | Real stored message and authorized Gmail team/ack accepted; owner confirmed Inbox. Current-key takedown and non-Gmail checks remain separate.                                                    |
+| Studio: format-first, coded eligible images/captions       | PASS   | workshop.spec.ts; content/studio; validation                                               | Editor fonts deferred until format choice.                                                                                                                                                       |
+| Studio: layers/add/remove/order/lock/hide                  | PASS   | studio.tsx; interaction/completion tests                                                   | Labelled keyboard alternatives.                                                                                                                                                                  |
+| Studio: drag/resize/rotate/type/fonts/palettes             | PASS   | interaction/export tests; local fonts                                                      | Native outlines use HarfBuzz; mixed-script error is recoverable.                                                                                                                                 |
+| Studio: 1/2/3-ink previews/separations                     | PASS   | render.ts; separation export tests                                                         | Palette-limited added elements.                                                                                                                                                                  |
+| Studio: paper presets and 300-DPI PNG/vector PDF/SVG       | PASS   | exports tests; real export metadata                                                        | A4/A3/A2/18x24/social.                                                                                                                                                                           |
+| Studio: tiled A4 printing                                  | PASS   | exports.ts; tiled browser checks                                                           | Page labels and clipping.                                                                                                                                                                        |
+| Studio: snap/undo/redo/shortcuts                           | PASS   | reducer/interaction tests                                                                  | Meaningful state transitions checked.                                                                                                                                                            |
+| Studio: zoom/pan/pinch/mobile toolbar                      | PASS   | touch/interaction tests; round 14 captures                                                 | Safe-area controls, large targets.                                                                                                                                                               |
+| Studio: autosave/restore/fresh/private bounded share       | PASS   | workshop/fresh/privacy tests                                                               | Broken shared state cannot overwrite an existing draft.                                                                                                                                          |
+| Studio: browser-only image import/EXIF-GPS stripping       | PASS   | importImage; privacy/export tests                                                          | Decode/re-encode, no server transfer.                                                                                                                                                            |
+| Studio: loading/empty/export/error/storage/unsupported     | PASS   | dynamic loader; recovery browser tests                                                     | Honest errors and export progress.                                                                                                                                                               |
+| Studio: lazy bundle/no accounts                            | PASS   | studio/client.tsx; font-defer assertion                                                    | Archive does not load editor fonts/runtime.                                                                                                                                                      |
+| Licence: ND never remixed                                  | PASS   | canRemix; ND browser fixture; validatePoster                                               | No Remix button; artist explanation/link.                                                                                                                                                        |
+| Licence: required licence/credit/source/alt                | PASS   | validator rejection tests; build                                                           | No unlicensed real artist work.                                                                                                                                                                  |
+| Licence: permissions derived and consistent                | PASS   | LICENSES; validatePoster                                                                   | Remixable + forbidden derivatives fails build.                                                                                                                                                   |
+| Licence: ShareAlike credit strip/metadata/compatibility    | PASS   | creditLines/exportLicense; export tests                                                    | Incompatible source combinations rejected.                                                                                                                                                       |
+| Licence: 18 original marked CC0 studies                    | PASS   | seed.ts; content/posters; content README                                                   | Original AI-assisted placeholder art disclosed; no deck images copied.                                                                                                                           |
+| Image search                                               | N-A    | search/image route; AUDIT.md                                                               | Brief permits clearly labelled coming soon.                                                                                                                                                      |
+| Public axe zero and Lighthouse >=95                        | PASS   | docs/evidence/redlark-round-1-account-pages-p5/summary.json                                | landing-en 96, collection-en 97, item-en 95, landing-hi 96, collection-hi 97, item-hi 98; Accessibility/Best Practices/SEO 100. All raw runs retained; medians of three cold-cache runs.         |
+| Final fresh-eyes all-locale public review                  | PASS   | tests/browser/final-review.spec.ts; private-pages.spec.ts                                  | Every exported locale page checked; new en/hi routes, native/dark/mobile and no-JS public content pass. Hosted workflow acceptance is separate.                                                  |
+
+Human launch decisions are in TODO_HUMAN.md. No deployment, push, database setup or provider configuration is claimed.
+
+## Backend integration updates
+
+| Requirement                                                  | Status | Evidence                                              | Note                                                                                                                |
+| ------------------------------------------------------------ | ------ | ----------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------- |
+| Secure opaque sessions, CSRF, daily rotated hashes           | PASS   | tests/backend.test.ts; src/server/auth.ts             | Cryptographic/unit checks pass; real account lifecycle still pending owner Auth configuration.                      |
+| Four-locale auth/account/admin/upload/takedown axe           | PASS   | backend.spec.ts; private-pages.spec.ts                | All new en/hi routes and four-locale account/auth basics; explicit fixtures do not establish hosted authentication. |
+| Stored contact + team/ack acceptance                         | PASS   | real handler integration, 19 October 2026             | Real Postgres message/outbox; Resend accepted team and authorized sender mail; disposable DB records cleaned.       |
+| Provider outage preserves stored message and reports failure | PASS   | real handler + simulated Resend 503                   | saved=true/503 and persisted retry job verified before disposable fixture cleanup.                                  |
+| Gmail SPF/DKIM/DMARC                                         | PASS   | owner confirmed all three PASS in Gmail Show original | Owner also confirmed Inbox placement. Non-Gmail and precise raw-header domains/Reply-To remain separate acceptance. |
+| R2 CORS/lifecycle configuration                              | FAIL   | restricted-token configuration request refused        | Manual bucket Settings instructions in DEPLOY.md; no runtime-token privilege expansion.                             |
+
+| Pending file unreachable from approved PUBLIC hostname | FAIL | R2_DOMAIN_SETUP.md | Credentialed approved-bucket absence passed; actual public hostname is not configured, so that distinct check is not claimed. |
+| Latest public performance regression | PASS | docs/evidence/redlark-round-1-account-pages-p5/summary.json | Fixed the measured dark-mode header shift; CLS 0 and all six performance medians >=95. Earlier failed measurements remain in ITERATIONS and evidence. |
+
+## Requested end-to-end acceptance — 20 October 2026
+
+| Check                                                        | Status | Evidence                                                                               | Exact limitation                                                                                                                      |
+| ------------------------------------------------------------ | ------ | -------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------- |
+| 1. Real signup, verification, Gmail/non-Gmail headers        | FAIL   | TODO_HUMAN.md; prior Gmail evidence                                                    | Website signup/TOTP and a controlled non-Gmail inbox are still needed; Resend key rotation unconfirmed.                               |
+| 2. Authenticated pending upload, private R2 only             | FAIL   | verify-r2.ts; private-pages.spec.ts                                                    | Real scoped/expired signing passes; complete browser flow awaits website account and bucket CORS.                                     |
+| 3. Real MFA approval, public files and all four locale pages | FAIL   | server/admin.ts; fetch-public-catalogue.ts                                             | Public hostname does not resolve; R2_PUBLIC_BASE_URL, build hook and publication flag are absent locally; Netlify scopes unconfirmed. |
+| 4. Contact/takedown team and acknowledgment delivery         | FAIL   | backend-integration/summary.json; mail.ts; backend.test.ts                             | Earlier real contact/team/ack and persisted-outage checks pass; current-key takedown and non-Gmail acceptance remain pending.         |
+| 5. Public file and page removed after takedown               | FAIL   | server/admin.ts; RLS/state-machine tests                                               | Requires the real approved/public test work and deployed rebuild path.                                                                |
+| 6. Reset, global logout, export and deletion                 | FAIL   | account-client.tsx; backend/private-pages tests                                        | UI/API/unit coverage passes; actual owner-controlled verified account lifecycle must be exercised.                                    |
+| 7. Anonymous/own-row/admin-only RLS                          | PASS   | tests/rls.test.ts; hosted migration verification                                       | Actual local PostgreSQL matrix and hosted anonymous isolation; no fabricated production identity.                                     |
+| 8. Axe, Lighthouse, client and repository secrets            | PASS   | docs/evidence/redlark-round-1-account-pages-p5/summary.json; build and Gitleaks checks | 178 browser tests; all key public medians >=95, other categories 100; CLS 0; no private client credentials.                           |
+
+These FAIL rows are human prerequisites, not missing page implementations. They prevent a claim of full live-service acceptance. No backend push/deployment was performed.
+
+## Upload/review repair - current acceptance (21 October 2026)
+
+| Item                             | Status      | Evidence                                                              | Note                                                                                                                                  |
+| -------------------------------- | ----------- | --------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------- |
+| 9: descriptions on images        | IN PROGRESS | src/lib/contribution-metadata.ts; tests/contribution-metadata.test.ts | Upload description optional, deterministic title/format/artist fallback; archive file alt remains required. Hosted migration pending. |
+| 13: contribution form errors     | IN PROGRESS | tests/browser/upload-repair.spec.ts; evidence/upload-repair/after     | Original five regressions green; expanded limits/keyboard/mobile checks pending.                                                      |
+| Category and tag persistence     | IN PROGRESS | tests/contribution-review-rls.test.ts                                 | Transactional three-category/two-tag persistence and ownership guards verified locally.                                               |
+| Admin discoverability and review | IN PROGRESS | /admin/review; tests/browser/upload-repair.spec.ts                    | Direct route green; hosted edit/approval/mail acceptance pending.                                                                     |
+
+### Round 2 measured evidence
+
+| Item                                            | Status | Evidence                                                                            | Note                                                                                                                                                    |
+| ----------------------------------------------- | ------ | ----------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 9: every image described, optional upload input | PASS   | tests/contribution-metadata.test.ts; scripts/fetch-public-catalogue.ts; hosted.json | Blank alt stored successfully; review/public rendering supplies deterministic title/format/artist fallback; archive remains strict.                     |
+| 13: form errors and retained selections         | PASS   | tests/browser/upload-repair.spec.ts (14 passed)                                     | Tag limits/errors, duplicates, keyboard, blur, comma, Enter, removal and category retention; en/hi 390/1440 axe 0. Full regression pending.             |
+| Relational tags and three categories            | PASS   | tests/contribution-review-rls.test.ts; hosted.json                                  | Persisted relational rows -> dashboard/admin -> three public category pages in four locales.                                                            |
+| Review permissions and decisions                | PASS   | hosted.json; local RLS tests                                                        | Real fixture admin role/TOTP, non-admin denied, metadata edits, approval/changes/rejection, public-copy workflow; production build request intercepted. |
+| Notification failure recovery                   | PASS   | hosted.json                                                                         | Real persisted outbox, injected provider failure and successful transport retry. Does not establish real inbox delivery.                                |
+
+### Round 3 verification progress
+
+| Check                                              | Status      | Evidence                                            | Note                                                                                                                                |
+| -------------------------------------------------- | ----------- | --------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------- |
+| Full route/browser regression                      | PASS        | npm run test:e2e: 201 passed                        | Includes route-wide four-locale axe checks; final timestamp/action polish to be retested.                                           |
+| Delayed notification correctness and audited retry | PASS        | tests/contribution-review-rls.test.ts; hosted.json  | Original feedback retained; persisted failed mail can be retried without repeating the decision.                                    |
+| Source and client secrets                          | PASS        | evidence/upload-repair/security.json; npm run build | Focused changed-source Gitleaks; complete static output checked against configured private credentials. Historic scan not repeated. |
+| Final performance / polished screenshot review     | IN PROGRESS | evidence/upload-repair                              | Final measurements pending.                                                                                                         |
+
+### Round 4 performance acceptance
+
+| Route              | Status | Performance median | Accessibility / Best practices / SEO | Evidence                                                   |
+| ------------------ | ------ | ------------------ | ------------------------------------ | ---------------------------------------------------------- |
+| English landing    | PASS   | 95                 | 100 / 100 / 100                      | evidence/upload-repair/lighthouse.json                     |
+| English Collection | PASS   | 99                 | 100 / 100 / 100                      | evidence/upload-repair/lighthouse-collection-followup.json |
+| English poster     | PASS   | 96                 | 100 / 100 / 100                      | evidence/upload-repair/lighthouse.json                     |
+| Hindi landing      | PASS   | 97                 | 100 / 100 / 100                      | evidence/upload-repair/lighthouse.json                     |
+| Hindi Collection   | PASS   | 97                 | 100 / 100 / 100                      | evidence/upload-repair/lighthouse-collection-followup.json |
+| Hindi poster       | PASS   | 97                 | 100 / 100 / 100                      | evidence/upload-repair/lighthouse.json                     |
+
+Three cold-cache runs per route, all raw scores recorded, CLS 0. Initial Hindi Collection 94 remains in lighthouse-round3-before.json; only the two affected Collection routes were remeasured after the font-dependency fix. Final-source browser acceptance is pending the corrected QA-configured full run.
+
+### 25 October 2026 review metadata and placeholder cleanup
+
+| Check | Status | Evidence | Note |
+| --- | --- | --- | --- |
+| Metadata save | PARTIAL | Admin slug prevalidation; hosted migration; in-memory RPC and six focused browser tests pass | Real signed-in production save still needs confirmation. |
+| Placeholder cleanup | PASS | Content validator: one poster; hosted read-only check: Borders alone among in-house private drafts | Contributor works untouched. |
+| Quick contribution CC0 | PASS | Quick form wording and right-to-share consent | Copy/change/share/print/sell permitted. |
+| Static build and secret audit | PASS | 360 production-equivalent HTML pages, validated links/metadata/alt, no client secrets | Read-only build merged 12 approved works and one retained placeholder; live Netlify pages verified in all four locales. |
+| Live public deployment | PASS | Four localized collections omit the retired poster; old URL returns 404; hydrated CC0 copy visible | Direct admin save requires an authenticated owner session. |
+| Full browser regression | FAIL | Full Playwright run stopped on stale takedown/upload wizard expectations; six focused tests pass | Fixture updates and a complete rerun remain. |
+
+### Kode Mono landing hero — 25 October 2026
+
+| Check | Status | Evidence | Note |
+| --- | --- | --- | --- |
+| Self-hosted Kode Mono hero | PASS | `src/app/[locale]/layout.tsx`, `src/app/globals.css`, `public/fonts/Kode-Mono-OFL.txt`; `tests/browser/landing.spec.ts` | No Google Fonts request; visually reviewed at 390px and 1440px with featured posters. |
+| Responsive headline and copy | PASS | Five viewport checks, six landing browser tests, copy test | Masthead does not clip; Appendix A wording is untouched. |
+
+### Licensed Bengali font — 26 October 2026
+
+| Check | Status | Evidence | Note |
+| --- | --- | --- | --- |
+| Font source stays out of Git | PASS | `.gitignore`, `git status --short --ignored` | Local source and generated website copy are both ignored. |
+| Private R2 source for Netlify builds | PASS | `npm run font:upload`, `node scripts/prepare-licensed-font.mjs --remote` | Uploaded to private bucket; approved public R2 host is not used. |
+| Bengali UI regular/italic and responsive layout | PASS | `tests/browser/landing.spec.ts`; screenshots in `test-results/` at 390 and 1440 | Font loaded; no horizontal scroll; inspected hero and categories. |
+| Workshop/PDF font rights | PASS | `src/studio/studio.tsx`, `src/server/print.ts` | Continue using OFL Noto; owner confirmed website use only. |
+| Hosted Netlify deploy | PASS | Commit `22cac55`; live `/bn/` has `licensed-bengali`, font URL returns HTTP 200 `font/ttf` | Existing private R2 credentials were available to the production build. |
+
+### Approved artwork metadata — 27 October 2026
+
+| Check | Status | Evidence | Note |
+| --- | --- | --- | --- |
+| Admin-only approved editor | PASS | `src/components/account-client.tsx`, `tests/browser/staff-access.spec.ts` | Approved filter leads to the existing edit form; contributor UI has no path to the API. |
+| MFA and database role gate | PASS | `supabase/migrations/202610270001_approved_metadata.sql`; PGlite RLS test | Migration applied to production; owner and stale admin attempts rejected in tests. |
+| Atomic metadata and rebuild | PASS | `src/server/admin.ts`; mocked staff API test | Published metadata requests a fresh static build after the DB RPC commits. |
+| Mobile and accessibility | PASS | 390px staff browser screenshot and axe 0 on approved editor | Removed duplicate Administration landmark from detail shell. |
+| Unit, build and secret validation | PASS | 84 unit/RLS tests; 11 staff browser tests; production-equivalent build 372 validated HTML pages; secret scan | Existing Next.js security advisory remains a separate dependency upgrade. |
+| Real hosted admin save | PENDING | Real signed-in MFA session required | No live approved record was changed just to verify this feature. |
+
+### Administrator session duration — 27 October 2026
+
+| Check | Status | Evidence | Note |
+| --- | --- | --- | --- |
+| Admin cookie and server session last 30 days | PASS | `src/server/auth.ts`, `tests/backend.test.ts` | Role is read server-side; contributors retain seven days. Existing cookies retain their original expiry. |
+| MFA freshness and RLS use 30 days | PASS | `src/server/admin-mfa.ts`, migration `202610270002_admin_30_day_window.sql`, admin-MFA and PGlite RLS tests | Migration applied to production; AAL2, TOTP and admin role remain required. |
+| Four-language account security wording | PASS | `src/components/account-client.tsx`, `messages/{en,hi,bn,ml}.json` | Indic translations remain drafts awaiting native review. |
+| Build and checks | PASS | 84 unit/RLS tests; typecheck; lint; 372-page production-style build and client secret scan | Installed Next.js 16.4.0 emits a security upgrade advisory. |
+| Real browser session after deployment | PENDING | Owner sign-out/sign-in and MFA check | Provider session policies may shorten the application limit. |
+
+### Static-review repair — baseline
+
+| Check | Status | Evidence | Note |
+| --- | --- | --- | --- |
+| Vector crop reproduction | FAIL | `tests/studio-crop-regression.test.ts`: `validateScene` returned false before repair | Non-image crop rejected by model. |
+| Mobile crop discoverability reproduction | FAIL | `tests/browser/studio-crop-regression.spec.ts`: Crop absent after adding rectangle | Only Images panel offered image-only crop. |

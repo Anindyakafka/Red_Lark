@@ -1,0 +1,23 @@
+[
+  {
+    "width": 1440,
+    "handles": 8,
+    "moveArea": true,
+    "nonDestructiveSave": true,
+    "axe": 0
+  },
+  {
+    "width": 768,
+    "handles": 8,
+    "moveArea": true,
+    "nonDestructiveSave": true,
+    "axe": 0
+  },
+  {
+    "width": 375,
+    "handles": 8,
+    "moveArea": true,
+    "nonDestructiveSave": true,
+    "axe": 0
+  }
+]

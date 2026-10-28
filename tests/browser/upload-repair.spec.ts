@@ -64,7 +64,8 @@ test.afterEach(async ({ page }, info) => {
 test("1 optional image description has help and a 300 character counter", async ({ page }) => {
   await logged(page);
   await page.goto("/en/account/works/new/");
-  await page.locator(".format-picker button").nth(6).click();
+  await page.locator(".optional-contribution-details > summary").click();
+  await page.locator("#upload-format").selectOption("poster-placard");
   const alt = page.getByLabel("Describe the image (optional)", { exact: true });
   await expect(alt).not.toHaveAttribute("required", "");
   await expect(alt).toHaveAttribute("maxlength", "300");
@@ -73,7 +74,8 @@ test("1 optional image description has help and a 300 character counter", async 
 test("2 tags provide a combobox and commit Enter without submitting", async ({ page }) => {
   await logged(page);
   await page.goto("/en/account/works/new/");
-  await page.locator(".format-picker button").nth(6).click();
+  await page.locator(".optional-contribution-details > summary").click();
+  await page.locator("#upload-format").selectOption("poster-placard");
   const tags = page.getByRole("combobox", { name: "Tags", exact: true });
   await tags.fill("Local solidarity");
   await tags.press("Enter");
@@ -82,13 +84,14 @@ test("2 tags provide a combobox and commit Enter without submitting", async ({ p
   ).toBeVisible();
   await expect(page.locator("#upload-file")).toBeVisible();
 });
-test("3 licence cards preselect share and remix and prevent CC0 NC", async ({ page }) => {
+test("3 licence cards preselect unrestricted CC0 and prevent CC0 NC", async ({ page }) => {
   await logged(page);
   await page.goto("/en/account/works/new/");
-  await page.locator(".format-picker button").nth(6).click();
+  await page.locator(".optional-contribution-details > summary").click();
+  await page.locator("#upload-format").selectOption("poster-placard");
   await expect(
     page.getByRole("radio", {
-      name: "Share it and let others remix it, as long as remixes stay open too. Recommended.",
+      name: "Anyone can use it for anything, no credit needed.",
       exact: true,
     }),
   ).toBeChecked();
@@ -102,13 +105,14 @@ test("3 licence cards preselect share and remix and prevent CC0 NC", async ({ pa
 test("4 categories support searchable multiple checkboxes and survive errors", async ({ page }) => {
   await logged(page);
   await page.goto("/en/account/works/new/");
-  await page.locator(".format-picker button").nth(6).click();
+  await page.locator(".optional-contribution-details > summary").click();
+  await page.locator("#upload-format").selectOption("poster-placard");
   await page.getByLabel("Search categories", { exact: true }).fill("Workers");
   await page.getByRole("checkbox", { name: "Workers", exact: true }).check();
   await expect(
     page.getByRole("button", { name: "Remove category Workers", exact: true }),
   ).toBeVisible();
-  await page.locator("form button.accent").click();
+  await page.locator(".optional-contribution-details .handoff-form button.accent").click();
   await expect(page.getByRole("checkbox", { name: "Workers", exact: true })).toBeChecked();
 });
 test("5 admin review queue is directly reachable", async ({ page }) => {
@@ -126,7 +130,8 @@ test("tags support suggestions, comma, blur, Backspace, limits and error retenti
 }) => {
   await logged(page);
   await page.goto("/en/account/works/new/");
-  await page.locator(".format-picker button").nth(6).click();
+  await page.locator(".optional-contribution-details > summary").click();
+  await page.locator("#upload-format").selectOption("poster-placard");
   const input = page.getByRole("combobox", { name: "Tags", exact: true });
   await input.fill("pro");
   await input.press("ArrowDown");
@@ -164,7 +169,7 @@ test("tags support suggestions, comma, blur, Backspace, limits and error retenti
   await input.press("Enter");
   await expect(page.getByText("Choose up to 10 tags.", { exact: true })).toBeVisible();
   await input.fill("");
-  await page.locator("form button.accent").click();
+  await page.locator(".optional-contribution-details .handoff-form button.accent").click();
   await expect(page.getByRole("button", { name: "Remove tag Protest", exact: true })).toBeVisible();
   await expect(page.locator("input[name=tags]")).toHaveCount(10);
 });
@@ -175,7 +180,7 @@ test("untouched recommended licence and blank description submit with all select
   await logged(page);
   await page.route("**/api/account/work", async (route) => {
     const data = route.request().postDataJSON();
-    expect(data.licence_id).toBe("CC-BY-SA-4.0");
+    expect(data.licence_id).toBe("CC0-1.0");
     expect(data.alt).toBe("");
     expect(data.tags).toEqual(["Protest", "Local solidarity"]);
     expect(data.categories).toEqual(["workers", "farmers", "anti-war"]);
@@ -192,7 +197,8 @@ test("untouched recommended licence and blank description submit with all select
     route.fulfill({ json: { ok: true, mailPending: true } }),
   );
   await page.goto("/en/account/works/new/");
-  await page.locator(".format-picker button").nth(6).click();
+  await page.locator(".optional-contribution-details > summary").click();
+  await page.locator("#upload-format").selectOption("poster-placard");
   await page.locator("#upload-title").fill("Original fixture");
   for (const slug of ["Workers", "Farmers", "Anti-War"]) {
     await page.getByLabel("Search categories", { exact: true }).fill(slug);
@@ -208,13 +214,13 @@ test("untouched recommended licence and blank description submit with all select
     mimeType: "image/png",
     buffer: fs.readFileSync("public/icons/icon-16.png"),
   });
-  await page.locator("input[name=permission]").check();
-  await page.locator("form button.accent").click();
+  await page.locator(".optional-contribution-details .handoff-form input[name=permission]").check();
+  await page.locator(".optional-contribution-details .handoff-form button.accent").click();
   await expect(
     page.getByRole("heading", { name: "Submission saved for review.", exact: true }),
   ).toBeVisible();
   await expect(
-    page.getByText("You chose: Share and remix, keep it open", { exact: true }),
+    page.getByText("You chose: Anyone can use it for anything", { exact: true }),
   ).toBeVisible();
   await expect(page.getByText(/Email delivery is pending/)).toBeVisible();
 });
@@ -275,8 +281,9 @@ for (const locale of ["en", "hi"] as const)
     test(`localized contribution fields and axe ${locale} ${width}`, async ({ page }) => {
       await page.setViewportSize({ width, height: 900 });
       await logged(page);
-  await page.goto(`/${locale}/account/works/new/`);
-      await page.locator(".format-picker button").nth(6).click();
+      await page.goto(`/${locale}/account/works/new/`);
+      await page.locator(".optional-contribution-details > summary").click();
+      await page.locator("#upload-format").selectOption("poster-placard");
       await expect(
         page.getByLabel(t("Describe the image (optional)"), { exact: true }),
       ).toBeVisible();

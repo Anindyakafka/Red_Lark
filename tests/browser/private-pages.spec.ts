@@ -149,7 +149,7 @@ test("upload wizard edits an owned revision, preserves metadata and validates fi
 }) => {
   await fixtures(page, "contributor");
   await page.goto(`/en/account/works/${id}/`);
-  await page.getByRole("button", { name: "Poster/Placard", exact: true }).click();
+  await page.locator("#upload-format").selectOption("poster-placard");
   await expect(page.locator("#upload-title")).toHaveValue(work.title);
   await expect(page.locator("#upload-alt")).toHaveValue(work.alt);
   await page.getByRole("button", { name: "Upload", exact: true }).click();
@@ -173,7 +173,7 @@ test("language switching preserves a private revision address through the static
   await page.getByRole("link", { name: "हिन्दी", exact: true }).click();
   await expect(page).toHaveURL(new RegExp(`/hi/account/works/${id}/`));
   await expect(page.locator("html")).toHaveAttribute("lang", "hi");
-  await page.locator(".format-picker button").nth(6).click();
+  await page.locator("#upload-format").selectOption("poster-placard");
   await expect(page.locator("#upload-title")).toHaveValue(work.title);
 });
 
@@ -256,7 +256,8 @@ test("upload wizard sends only a private signed PUT before submitting for review
     await route.fulfill({ json: { ok: true } });
   });
   await page.goto("/en/account/works/new/");
-  await page.getByRole("button", { name: "Sticker", exact: true }).click();
+  await page.locator(".optional-contribution-details > summary").click();
+  await page.locator("#upload-format").selectOption("sticker");
   await page.locator("#upload-title").fill("Fixture, never published");
   await page.locator("#upload-alt").fill("Large red lettering on a white rectangle.");
   await page
@@ -273,7 +274,7 @@ test("upload wizard sends only a private signed PUT before submitting for review
     mimeType: "image/png",
     buffer: fs.readFileSync("public/icons/icon-16.png"),
   });
-  await page.locator("input[name=permission]").check();
+  await page.locator(".optional-contribution-details .handoff-form input[name=permission]").check();
   await page.getByRole("button", { name: "Upload", exact: true }).click();
   await expect(
     page.getByRole("heading", { name: "Submission saved for review.", exact: true }),
@@ -362,8 +363,10 @@ test("review screenshots include real UI states with explicitly mocked private d
         await fixtures(page, route.startsWith("admin") ? "admin" : "contributor");
         await page.setViewportSize({ width, height: 1000 });
         await page.goto(`/${locale}/${route}/`);
-        if (route === "account/works/new")
-          await page.locator(".format-picker button").nth(6).click();
+        if (route === "account/works/new") {
+          await page.locator(".optional-contribution-details > summary").click();
+          await page.locator("#upload-format").selectOption("poster-placard");
+        }
         await page.evaluate(() => document.fonts.ready);
         await page.screenshot({
           path: `${dir}/${locale}-${route.replaceAll("/", "-")}-${width}.png`,

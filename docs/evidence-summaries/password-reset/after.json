@@ -1,0 +1,9 @@
+{
+  "realRecoverySession": true,
+  "providerError": "insufficient_aal",
+  "resetStatus": 403,
+  "resetError": "password_mfa_required",
+  "passwordSetAfterMfa": true,
+  "oldAppSessionRevoked": true,
+  "newPasswordWorks": true
+}

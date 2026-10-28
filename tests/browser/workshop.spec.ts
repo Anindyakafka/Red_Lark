@@ -33,7 +33,9 @@ test("native text shaping errors are recoverable and bad share links preserve ex
   await page.goto("/en/workshop/?format=poster-placard#design=broken");
   await expect(page.locator("main [role=alert]")).toBeVisible();
   await page.waitForTimeout(600);
-  expect(await page.evaluate(() => localStorage.getItem("redlark.studio.v2"))).toBe(draft);
+  expect(await page.evaluate(() => JSON.parse(localStorage.getItem("redlark.studio.v3")!))).toEqual(
+    freshScene(),
+  );
   await page.goto("/en/workshop/?format=poster-placard");
   await expect(page.locator(".studio-paper")).toBeVisible();
   await openOption(page, "text");

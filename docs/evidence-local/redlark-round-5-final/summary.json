@@ -1,0 +1,13 @@
+{
+  "round": 5,
+  "screenshots": [
+    "landing-top-en-390.png"
+  ],
+  "axe": [],
+  "lighthouse": [],
+  "externalRequests": [],
+  "errors": [],
+  "held": [
+    "Account/admin/upload screenshots use explicit API fixtures. Real signup/recovery/admin approval require owner verification, public R2 hostname and build hook; backend deployment is not authorized."
+  ]
+}

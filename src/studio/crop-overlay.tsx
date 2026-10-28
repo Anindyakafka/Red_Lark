@@ -19,12 +19,14 @@ export function CropOverlay({
   scale,
   start,
   nudge,
+  preview,
 }: {
   layer: Layer;
   draft: CropRect;
   scale: number;
   start: (event: PointerEvent<SVGElement>, handle: CropHandle) => void;
   nudge: (event: KeyboardEvent<SVGElement>, handle: CropHandle) => void;
+  preview?: string;
 }) {
   const id = useId().replaceAll(":", ""),
     { t } = useI18n(),
@@ -55,7 +57,11 @@ export function CropOverlay({
           <rect {...box} fill="black" />
         </mask>
       </defs>
-      <image href={layer.image} {...frame} preserveAspectRatio="none" />
+      {layer.kind === "image" ? (
+        <image href={layer.image} {...frame} preserveAspectRatio="none" />
+      ) : (
+        <g dangerouslySetInnerHTML={{ __html: preview ?? "" }} />
+      )}
       <rect
         {...frame}
         fill="#000"

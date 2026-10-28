@@ -1,0 +1,13 @@
+{
+  "uniqueTests": 274,
+  "passing": 274,
+  "initial": {
+    "total": 273,
+    "passed": 266
+  },
+  "final": {
+    "total": 91,
+    "passed": 91
+  },
+  "method": "Latest result per file and title; initial failures retained in original report."
+}

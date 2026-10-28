@@ -1,9 +1,9 @@
-# Dependency review — 16 October 2026
+# Dependency review — 28 October 2026
 
-The M9 install exposed advisories in existing packages. Updated jsPDF to 4.2.1 and Sharp to 0.35.5; PDF/PNG/tiled exports and raster metadata are covered by the browser/unit suite. `npm audit --omit=dev` reports **zero vulnerabilities** after these updates. The repository-only MDX compiler runs during builds; it never evaluates uploaded or remote content. See the [MDX compiler API](https://mdxjs.com/packages/mdx/).
+Before this repair, the lockfile resolved Next.js **16.4.0**. Earlier project notes flagged a critical production advisory, but the first local `npm audit` request failed because registry access was unavailable in the sandbox. I therefore do not claim a new numeric pre-upgrade audit result.
 
-The full audit still reports five high-severity dependency nodes from one development-only chain: eslint-config-next → @next/eslint-plugin-next → fast-glob → micromatch → braces 3.0.3. The [braces advisory](https://github.com/advisories/GHSA-vfj7-8cjw-p6xm) lists no patched version; the published latest checked is 3.0.3. This is not shipped to visitors or used for visitor input: ESLint consumes repository-controlled patterns during development/CI. Treat untrusted repository/build configuration as code and review it before execution.
+Next.js and `eslint-config-next` are now **16.4.3**, the current stable 16.4 patch at the time of this repair. The first successful full `npm audit --json` after the upgrade reported **one moderate transitive `fast-uri` finding**. `npm audit fix` updated that dependency; the command then reported **zero vulnerabilities** across the installed dependency tree. Re-run audit regularly because advisories and dependency versions change.
 
-Do not run `npm audit fix --force`: its proposed downgrade to a Next 14 ESLint configuration would break the framework/tooling contract without fixing the current stack coherently. Follow upstream for a real patched release, then update and rerun lint/build. This is a tracked tooling limitation, not a claim that the full audit is clean.
+The upgrade passed TypeScript, ESLint, 88 unit tests, the 300-page static build, and focused browser checks. Full browser and Lighthouse verification is tracked in [CHECKLIST.md](CHECKLIST.md).
 
-Primary patch references: [jsPDF output-method advisory](https://github.com/parallax/jsPDF/security/advisories/GHSA-wfv2-pwc8-crg5), [Sharp dependency advisory](https://github.com/lovell/sharp/security/advisories/GHSA-wq5f-xc86-pv6w).
+Sources: [Next.js 16.4.3 release](https://github.com/vercel/next.js/releases/tag/v16.4.3), [Next.js security advisories](https://github.com/vercel/next.js/security/advisories), [fast-uri advisory](https://github.com/advisories/GHSA-w74x-v6f9-j3xg).

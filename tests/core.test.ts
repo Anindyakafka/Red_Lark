@@ -51,7 +51,11 @@ test("validation rejects missing credit/alt/source, conflicting licence flags an
 });
 test("ShareAlike exports carry every unique source and reject incompatible licence mixtures", () => {
   const a = { ...sourceCredit(posters[0], artists[0].name), license: "CC-BY-NC-SA-4.0" as const };
-  const b = { ...sourceCredit(posters[0], artists[0].name), id: "second-source", license: "CC-BY-4.0" as const };
+  const b = {
+    ...sourceCredit(posters[0], artists[0].name),
+    id: "second-source",
+    license: "CC-BY-4.0" as const,
+  };
   assert.equal(exportLicense([a, b]), "CC-BY-NC-SA-4.0");
   assert.throws(() => exportLicense([a, { ...b, license: "CC-BY-SA-4.0" }]));
   assert.throws(() => exportLicense([{ ...a, license: "CC-BY-ND-4.0" }]));

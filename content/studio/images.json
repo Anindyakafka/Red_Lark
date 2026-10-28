@@ -2,8 +2,6 @@
   {
     "code": "1c",
     "workSlug": "borders-are-lines",
-    "layerIds": [
-      "borders-are-lines-symbol"
-    ]
+    "layerIds": ["borders-are-lines-symbol"]
   }
 ]

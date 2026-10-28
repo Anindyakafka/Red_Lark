@@ -1,6 +1,6 @@
 import fs from "node:fs";
 const round = Number(process.argv[2] ?? 1);
-const dir = `docs/evidence/round-${round}`;
+const dir = `docs/evidence-local/round-${round}`;
 const summary = JSON.parse(fs.readFileSync(`${dir}/summary.json`, "utf8"));
 const green =
   summary.lighthouse.length === 3 &&

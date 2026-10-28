@@ -17,7 +17,7 @@ for (const locale of ["en", "hi", "bn", "ml"])
       await expect(page.locator(".legal-draft")).toContainText("PLACEHOLDER");
       expect((await new AxeBuilder({ page }).analyze()).violations).toEqual([]);
     }
-    for (const policy of ["ai-policy", "licensing", "contributor-guidelines", "takedown"]) {
+    for (const policy of ["ai-policy", "licensing", "contributor-guidelines"]) {
       expect((await page.goto(`/${locale}/policies/${policy}/`))?.status()).toBe(200);
       await expect(page.locator(".legal-draft")).toContainText("legal review");
       expect((await new AxeBuilder({ page }).analyze()).violations).toEqual([]);

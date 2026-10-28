@@ -32,6 +32,7 @@ const types = {
   ".zip": "application/zip",
 };
 const { SECURITY_HEADERS } = await import("../src/config/security.ts");
+const { contentSecurityPolicy } = await import("../src/config/csp.ts");
 const csp = SECURITY_HEADERS["Content-Security-Policy"];
 http
   .createServer(async (req, res) => {
@@ -115,7 +116,8 @@ http
         : bytes;
       res.writeHead(status, {
         "Content-Type": types[path.extname(file)] ?? "application/octet-stream",
-        "Content-Security-Policy": csp,
+        "Content-Security-Policy":
+          path.extname(file) === ".html" ? contentSecurityPolicy(pathname, status === 404) : csp,
         "Referrer-Policy": "no-referrer",
         "X-Content-Type-Options": "nosniff",
         "X-Frame-Options": "DENY",

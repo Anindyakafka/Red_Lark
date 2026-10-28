@@ -18,14 +18,18 @@ try {
         ? "C:/Program Files (x86)/Microsoft/Edge/Application/msedge.exe"
         : undefined,
   });
-  await fs.mkdir(`docs/evidence/${directory}`, { recursive: true });
+  await fs.mkdir(`docs/evidence-local/${directory}`, { recursive: true });
   for (const locale of languages)
     for (const width of [390, 1440]) {
       const page = await browser.newPage({ viewport: { width, height: 900 } });
       await page.goto(`http://localhost:3000/${locale}/`, { waitUntil: "networkidle" });
-      await page.screenshot({ path: `docs/evidence/${directory}/home-${locale}-${width}.png` });
+      await page.screenshot({
+        path: `docs/evidence-local/${directory}/home-${locale}-${width}.png`,
+      });
       await page.goto(`http://localhost:3000/${locale}/contact/`, { waitUntil: "networkidle" });
-      await page.screenshot({ path: `docs/evidence/${directory}/contact-${locale}-${width}.png` });
+      await page.screenshot({
+        path: `docs/evidence-local/${directory}/contact-${locale}-${width}.png`,
+      });
       await page.close();
     }
 } finally {

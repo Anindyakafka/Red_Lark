@@ -19,9 +19,9 @@ export function CropControls({
   const session = crop.session;
   if (!session) return null;
   return (
-    <div ref={ref} className="crop-toolbar" role="region" aria-label={t("Image crop controls")}>
+    <div ref={ref} className="crop-toolbar" role="region" aria-label={t("Crop controls")}>
       <strong>
-        <UiText id="Crop image" />
+        <UiText id={session.layer.kind === "image" ? "Crop image" : "Crop artwork"} />
       </strong>
       <label>
         <UiText id="Crop ratio" />
@@ -75,7 +75,7 @@ export function CropControls({
           <UiText id="Crop dimensions" />
         </summary>
         <p className="small">
-          <UiText id="Percent of the original image. Drag any edge or corner; move inside the crop. Shift locks the ratio. Arrow keys adjust a focused handle." />
+          <UiText id="Percent of the original artwork. Drag any edge or corner; move inside the crop. Shift locks the ratio. Arrow keys adjust a focused handle." />
         </p>
         <div className="coordinate-grid">
           {(["x", "y", "width", "height"] as const).map((key) => (

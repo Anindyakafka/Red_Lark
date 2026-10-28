@@ -191,7 +191,7 @@
 }
 .crop-toolbar {
   position: relative;
-  z-index: 3;
+  z-index: 6;
   margin: 0 12px 12px;
   max-width: calc(100% - 24px);
   max-height: 48dvh;

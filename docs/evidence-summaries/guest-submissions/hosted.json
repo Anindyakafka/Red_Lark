@@ -1,0 +1,13 @@
+{
+  "accountlessDraftCreated": true,
+  "realPrivateSignedPut": true,
+  "serverSanitizedAndPrintPdfsCreated": true,
+  "receiptStatus": "pending",
+  "idempotentSubmit": true,
+  "noAccountOwner": true,
+  "noDerivativesGate": true,
+  "noPublicContact": true,
+  "fourPrivateOutputs": true,
+  "anonCannotReadPending": true,
+  "fixtureCleanupSucceeded": true
+}

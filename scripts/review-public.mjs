@@ -9,7 +9,7 @@ if (!Number.isInteger(round) || round < 1 || round > 15)
   throw new Error("Use npm run qa:round -- N (1–15)");
 const suffix = process.env.QA_EVIDENCE_SUFFIX ?? "";
 if (!/^[a-z0-9-]*$/.test(suffix)) throw new Error("Invalid QA evidence suffix");
-const dir = `docs/evidence/redlark-round-${round}${suffix}`;
+const dir = `docs/evidence-local/redlark-round-${round}${suffix}`;
 await fs.mkdir(dir, { recursive: true });
 const executable =
   process.env.BROWSER_PATH ??
@@ -99,7 +99,10 @@ try {
           if (await select.count()) await select.selectOption("workers");
           else await page.locator('select[aria-label="Category"]').selectOption("workers");
         }
-        if (name === "submit-errors") await page.locator(".format-picker button").nth(6).click();
+        if (name === "submit-errors") {
+          await page.locator(".optional-contribution-details > summary").click();
+          await page.locator("#upload-format").selectOption("poster-placard");
+        }
         if (name.endsWith("errors"))
           await page
             .locator('main form button[type="submit"], main form button:not([type])')

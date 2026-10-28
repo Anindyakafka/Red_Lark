@@ -1,0 +1,6 @@
+{
+  "tests": 5,
+  "failed": 5,
+  "scope": "Original failing browser regressions, before implementation",
+  "screenshots": "before/"
+}
