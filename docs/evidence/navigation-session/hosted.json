@@ -1,6 +1,0 @@
-{
-  "sameCookieVerifiedAcrossTenSessionChecks": true,
-  "providerRefreshPreservesMfa": true,
-  "rlsAllowsVerifiedAdmin": true,
-  "noRealEmailSent": true
-}

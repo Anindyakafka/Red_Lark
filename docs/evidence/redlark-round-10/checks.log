@@ -1,9 +1,0 @@
-M4 observed verification summary, 16 October 2026.
-Unit suite: 32 passed
-Full Playwright suite: 75 passed (1.4m), before final compact-intro polish
-Affected regression after compact-intro polish: 8 passed (19.0s)
-Build/content/export: 18 valid posters, 316 valid HTML pages
-Copy/typecheck/lint/brand: passed
-Targeted captures: categories and active collection filters, en/ml at390/1440; no overflow
-Lighthouse: not rerun at this milestone; next full checkpoint M6
-Supabase/auth/RLS/mail: held, not executed
