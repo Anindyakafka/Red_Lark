@@ -36,7 +36,6 @@ export default async function Home({ params }: { params: Promise<{ locale: strin
     <>
       <section className="redlark-hero">
         <div className="hero-heading">
-          <p className="label">ARCHIVE / WORKSHOP / INDIA</p>
           <h1>
             RED LARK
             <br />
@@ -46,10 +45,10 @@ export default async function Home({ params }: { params: Promise<{ locale: strin
             <NextLink prefetch={false} className="button accent" href={`/${locale}/collection/`}>
               <UiText id="Browse collection" />
             </NextLink>
-            <NextLink prefetch={false} className="button" href={`/${locale}/workshop/`}>
+            <NextLink prefetch={false} className="hero-link" href={`/${locale}/workshop/`}>
               <UiText id="Open Workshop" />
             </NextLink>
-            <NextLink prefetch={false} className="button" href={`/${locale}/contribute/`}>
+            <NextLink prefetch={false} className="hero-link" href={`/${locale}/contribute/`}>
               <UiText id="Contribute" />
             </NextLink>
           </div>
@@ -73,7 +72,7 @@ export default async function Home({ params }: { params: Promise<{ locale: strin
               />
             </NextLink>
           ))}
-          <span className="wall-caption">FEATURED FROM THE COLLECTION</span>
+          <span className="wall-caption">FROM THE COLLECTION</span>
         </div>
       </section>
       <section className="prose landing-about">
@@ -92,7 +91,7 @@ export default async function Home({ params }: { params: Promise<{ locale: strin
           </h2>
         </div>
         <Collection posters={preview} compact />
-        <NextLink prefetch={false} className="button accent" href={`/${locale}/collection/`}>
+        <NextLink prefetch={false} className="button landing-preview-link" href={`/${locale}/collection/`}>
           <UiText id="See more" />
         </NextLink>
       </section>

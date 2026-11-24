@@ -96,9 +96,13 @@
   --border-thin: 2px;
   --border-heavy: 3px;
   --hard-shadow: 4px 4px 0 var(--ink);
-  --space-1: 0.5rem;
-  --space-2: 1rem;
-  --space-3: 1.5rem;
+  /* Four-point spacing rhythm: 4, 8, 12, 16, 24, 32… */
+  --space-1: 0.25rem;
+  --space-2: 0.5rem;
+  --space-3: 0.75rem;
+  --space-4: 1rem;
+  --space-6: 1.5rem;
+  --space-8: 2rem;
   --radius-none: 0;
   color-scheme: light;
 }
@@ -315,7 +319,7 @@ picture {
   text-underline-offset: 4px;
 }
 .label {
-  font-size: 11px;
+  font-size: 12px;
   line-height: 1.5;
   font-weight: 400;
   letter-spacing: 0.4px;
@@ -346,7 +350,7 @@ picture {
 }
 .edition {
   font-family: var(--font-mono), monospace;
-  font-size: 10px;
+  font-size: 12px;
   line-height: 1.5;
   margin-left: 12px;
 }
@@ -2101,15 +2105,15 @@ html:not([lang="en"]) h3 {
   display: grid;
   grid-template-columns: 1.2fr 1fr;
   border-bottom: 3px solid var(--line);
-  min-height: 490px;
+  min-height: 496px;
   overflow: hidden;
 }
 .hero-heading {
-  padding: 38px 5% 42px;
+  padding: 40px 5% 40px;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
-  gap: 32px;
+  gap: 24px;
 }
 .redlark-hero h1 {
   font-family: "Kode Mono Variable", var(--font-mono), "Courier New", monospace;
@@ -2125,18 +2129,25 @@ html:not([lang="en"]) h3 {
 .hero-ctas {
   display: flex;
   flex-wrap: wrap;
-  gap: 14px;
+  align-items: center;
+  gap: 16px;
+}
+.hero-link {
+  min-height: 44px;
+  display: inline-flex;
+  align-items: center;
+  text-underline-offset: 4px;
+}
+.hero-link:hover {
+  text-decoration-thickness: 2px;
 }
 .poster-wall {
-  min-height: 490px;
+  min-height: 496px;
   position: relative;
   background: var(--panel);
   border-left: 3px solid var(--line);
   overflow: hidden;
-  background-image:
-    linear-gradient(var(--line) 1px, transparent 1px),
-    linear-gradient(90deg, var(--line) 1px, transparent 1px);
-  background-size: 48px 48px;
+  background-image: none;
 }
 .wall-print {
   position: absolute;
@@ -2179,7 +2190,7 @@ html:not([lang="en"]) h3 {
   padding: 12px;
   background: var(--ink);
   color: var(--paper);
-  font-size: 10px;
+  font-size: 12px;
   z-index: 4;
 }
 .landing-about {
@@ -2222,9 +2233,9 @@ html:not([lang="en"]) .landing-about p[data-copy] {
 }
 .landing-preview-heading {
   display: flex;
-  justify-content: center;
-  margin: 0 0 30px;
-  text-align: center;
+  justify-content: flex-start;
+  margin: 0 0 32px;
+  text-align: left;
 }
 .landing-preview-heading h2 {
   margin: 0;
@@ -2234,11 +2245,8 @@ html:not([lang="en"]) .landing-about p[data-copy] {
 .landing-preview .collection {
   padding: 0;
 }
-.landing-preview > .button {
-  display: flex;
-  width: min(250px, 100%);
-  margin: 32px auto 0;
-  text-align: center;
+.landing-preview-link {
+  margin-top: 32px;
 }
 .policy-link {
   text-underline-offset: 5px;
@@ -2497,20 +2505,6 @@ body:has(.mobile-cta) main {
   }
   .format-grid strong {
     font-size: 29px;
-  }
-}
-@media (prefers-reduced-motion: no-preference) {
-  @supports (animation-timeline: scroll()) {
-    .wall-print-2 {
-      animation: wall-drift linear both;
-      animation-timeline: scroll();
-      animation-range: 0px 700px;
-    }
-    @keyframes wall-drift {
-      to {
-        transform: translateY(-55px) rotate(-7deg);
-      }
-    }
   }
 }
 @media (prefers-reduced-motion: reduce) {
